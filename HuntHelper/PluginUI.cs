@@ -174,13 +174,16 @@ namespace HuntHelper
 
         private void ClientState_TerritoryChanged(object? sender, ushort e)
         {
-            TerritoryName = DataManager.Excel.GetSheet<TerritoryType>()?.GetRow(this.ClientState.TerritoryType)?.PlaceName?.Value?.Name.ToString() ?? "location not found";
+            //TerritoryName = DataManager.Excel.GetSheet<TerritoryType>()?.GetRow(this.ClientState.TerritoryType)?.PlaceName?.Value?.Name.ToString() ?? "location not found";
+            TerritoryName = Utilities.MapHelpers.GetMapName(DataManager, this.ClientState.TerritoryType);
             TerritoryID = ClientState.TerritoryType;
 
         }
+
+        //redundant...
         private double ConvertPosToCoordinate(float pos)
         {
-            return (Math.Floor((21.48 + (pos / 50)) * 100)) / 100 ;
+            return Utilities.MapHelpers.ConvertToMapCoordinate(pos);
         }
 
 

@@ -79,5 +79,25 @@ namespace HuntHelper
         {
             this.PluginUi.SettingsVisible = true;
         }
+
+
+        private void LoadHuntData()
+        {
+            //load hunt data from jsons / factories into dictionaries
+
+            //reuse logic from ufht
+            /*
+             * load data into dictionaries
+             *
+             * also later, move logic into own class... HuntStatus -contains current status, MobA1,MobB2,MobS,MobSS, MobA2,Mobb2 - maybe player,playerpos,map.etc.
+             *
+             * scan against dictionary based on map location
+             *
+             */
+            
+
+
+            //ToDo
+        }
     }
 }
