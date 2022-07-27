@@ -1,8 +1,11 @@
 ﻿using ImGuiNET;
 using System;
 using System.Numerics;
+using Dalamud.Game.ClientState;
+using Dalamud.Game.ClientState.Objects;
+using Dalamud.Game.ClientState.Objects.Types;
 
-namespace SamplePlugin
+namespace HuntHelper
 {
     // It is good to have this be disposable in general, in case you ever need it
     // to do any cleanup
@@ -11,6 +14,7 @@ namespace SamplePlugin
         private Configuration configuration;
 
         private ImGuiScene.TextureWrap goatImage;
+        private ObjectTable ObjectTable;
 
         // this extra bool exists for ImGui, since you can't ref a property
         private bool visible = false;
@@ -28,10 +32,11 @@ namespace SamplePlugin
         }
 
         // passing in the image here just for simplicity
-        public PluginUI(Configuration configuration, ImGuiScene.TextureWrap goatImage)
+        public PluginUI(Configuration configuration, ImGuiScene.TextureWrap goatImage, ObjectTable objectTable)
         {
             this.configuration = configuration;
             this.goatImage = goatImage;
+            this.ObjectTable = objectTable;
         }
 
         public void Dispose()
@@ -69,13 +74,37 @@ namespace SamplePlugin
                 {
                     SettingsVisible = true;
                 }
-
+                
                 ImGui.Spacing();
 
-                ImGui.Text("Have a goat:");
+                //ImGui.Text("Have a goat:");
+                ImGui.Text("poop: ");
                 ImGui.Indent(55);
-                ImGui.Image(this.goatImage.ImGuiHandle, new Vector2(this.goatImage.Width, this.goatImage.Height));
+                //ImGui.Image(this.goatImage.ImGuiHandle, new Vector2(this.goatImage.Width, this.goatImage.Height));
                 ImGui.Unindent(55);
+
+                var hunt = "";
+                foreach (var obj in this.ObjectTable)
+                {
+                    if (obj is BattleNpc)
+                    //if (obj.Name.ToString() == "Skogs Fru")
+                    {
+                        var bobj = obj as BattleNpc;
+                        if (bobj.MaxHp < 10000) continue;
+
+                        hunt += $"{obj.Name.ToString()} \n" +
+                                $"NAMEID: {bobj.NameId}\n" +
+                                $"|HP: {bobj.CurrentHp}\n" +
+                                $"|HP: {(bobj.CurrentHp*1.0 / bobj.MaxHp)*100}"+ "%\n" +
+                                $"|object ID: {obj.ObjectId}\n| Data ID: {obj.DataId} \n| OwnerID: {obj.OwnerId}\n" +
+                                $"X: {obj.Position.X}\n" +
+                                $"Y: {obj.Position.Y}\n" +
+                                $"Z: {obj.Position.Z}\n";
+                    }
+                }
+                
+
+                ImGui.Text($"Found: {hunt}");
             }
             ImGui.End();
         }
