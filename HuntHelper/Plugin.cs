@@ -3,6 +3,7 @@ using Dalamud.IoC;
 using Dalamud.Plugin;
 using System.IO;
 using System.Reflection;
+using Dalamud.Data;
 using Dalamud.Game.ClientState;
 using Dalamud.Game.ClientState.Objects;
 
@@ -18,16 +19,24 @@ namespace HuntHelper
         private CommandManager CommandManager { get; init; }
         private Configuration Configuration { get; init; }
         private PluginUI PluginUi { get; init; }
+
+        private ClientState ClientState { get; init; }
         private ObjectTable ObjectTable { get; init; }
+        private DataManager DataManager { get; init; }
 
         public Plugin(
             [RequiredVersion("1.0")] DalamudPluginInterface pluginInterface,
             [RequiredVersion("1.0")] CommandManager commandManager,
-            [RequiredVersion("1.0")] ObjectTable objectTable)
+            ClientState clientState,
+            [RequiredVersion("1.0")] ObjectTable objectTable,
+            DataManager dataManager)
         {
             this.PluginInterface = pluginInterface;
             this.CommandManager = commandManager;
+
+            this.ClientState = clientState;
             this.ObjectTable = objectTable;
+            this.DataManager = dataManager;
 
             this.Configuration = this.PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
             this.Configuration.Initialize(this.PluginInterface);
@@ -35,7 +44,7 @@ namespace HuntHelper
             // you might normally want to embed resources and load them from the manifest stream
             var imagePath = Path.Combine(PluginInterface.AssemblyLocation.Directory?.FullName!, "goat.png");
             var goatImage = this.PluginInterface.UiBuilder.LoadImage(imagePath);
-            this.PluginUi = new PluginUI(this.Configuration, goatImage, objectTable);
+            this.PluginUi = new PluginUI(this.Configuration, goatImage, clientState, objectTable, dataManager);
 
             this.CommandManager.AddHandler(commandName, new CommandInfo(OnCommand)
             {
