@@ -22,6 +22,10 @@ namespace HuntHelper
         private ObjectTable ObjectTable;
         private DataManager DataManager;
 
+        private String TerritoryName;
+        private uint TerritoryID;
+
+
         // this extra bool exists for ImGui, since you can't ref a property
         private bool visible = false;
         public bool Visible
@@ -46,7 +50,14 @@ namespace HuntHelper
             this.ClientState = clientState;
             this.ObjectTable = objectTable;
             this.DataManager = dataManager;
+
+            TerritoryName = String.Empty;
+            ClientState_TerritoryChanged(null, 0);
+
+            ClientState.TerritoryChanged += ClientState_TerritoryChanged;
         }
+
+       
 
         public void Dispose()
         {
@@ -79,7 +90,7 @@ namespace HuntHelper
             {
                 ImGui.Text($"The random config bool is {this.configuration.SomePropertyToBeSavedAndWithADefault}");
 
-                if (ImGui.Button("Show Settings"))
+                if (ImGui.Button("Settings"))
                 {
                     SettingsVisible = true;
                 }
@@ -92,10 +103,21 @@ namespace HuntHelper
                 //ImGui.Image(this.goatImage.ImGuiHandle, new Vector2(this.goatImage.Width, this.goatImage.Height));
                 ImGui.Unindent(55);
 
-                var territory = DataManager.Excel.GetSheet<TerritoryType>()?.GetRow(this.ClientState.TerritoryType);
+                
 
-                ImGui.Text($"Territory: {territory?.PlaceName.Value?.Name}");
-                ImGui.Text($"TerritoryType: {ClientState.TerritoryType}");
+                ImGui.Text($"Territory: {TerritoryName}");
+                ImGui.Text($"Territory ID: {ClientState.TerritoryType}");
+
+                //PLAYER POS
+                var v3 = ClientState.LocalPlayer?.Position ?? new Vector3(0,0,0);
+                ImGui.Text($"v3: -----\n" +
+                           $"X: {ConvertPosToCoordinate(v3.X)} |" +
+                           $"Y: {ConvertPosToCoordinate(v3.Z)} |\n" +
+                           $"v3: -----\n" +
+                           $"X: {Math.Round(v3.X, 2)} |" +
+                           $"Y: {Math.Round(v3.Z, 2)} |");
+                //END
+
 
                 ImGui.Indent(55);
                 ImGui.Text("");
@@ -107,15 +129,15 @@ namespace HuntHelper
                     if (bobj.MaxHp < 10000) continue; //not really needed if subkind is enemy, once matching to id / name
                     if (bobj.BattleNpcKind != BattleNpcSubKind.Enemy) continue; //not really needed if matching to 'nameID'
 
+                   
                     hunt += $"{obj.Name} \n" +
                             $"KIND: {bobj.BattleNpcKind}\n" +
                             $"NAMEID: {bobj.NameId}\n" +
                             $"|HP: {bobj.CurrentHp}\n" +
                             $"|HP: {(bobj.CurrentHp * 1.0 / bobj.MaxHp) * 100}" + "%\n" +
                             //$"|object ID: {obj.ObjectId}\n| Data ID: {obj.DataId} \n| OwnerID: {obj.OwnerId}\n" +
-                            $"X: {obj.Position.X}\n" +
-                            $"Y: {obj.Position.Y}\n" +
-                            $"Z: {obj.Position.Z}\n" +
+                            $"X: {ConvertPosToCoordinate(obj.Position.X)};\n" +
+                            $"Y: {ConvertPosToCoordinate(obj.Position.Y)}\n" +
                             $"  --------------  \n";
 
                 }
@@ -147,6 +169,29 @@ namespace HuntHelper
                 }
             }
             ImGui.End();
+        }
+
+
+        private void ClientState_TerritoryChanged(object? sender, ushort e)
+        {
+            TerritoryName = DataManager.Excel.GetSheet<TerritoryType>()?.GetRow(this.ClientState.TerritoryType)?.PlaceName?.Value?.Name.ToString() ?? "location not found";
+            TerritoryID = ClientState.TerritoryType;
+
+        }
+        private double ConvertPosToCoordinate(float pos)
+        {
+            return (Math.Floor((21.48 + (pos / 50)) * 100)) / 100 ;
+        }
+
+
+        //z pos offset seems diff for every map, idk idc...
+        private double ConvertARR_Z_ToCoordinate(float pos)
+        {
+            // arr z index seems to be 0 == 12. since: 1.0 == 112 and 0.5 == 62. 
+            // not exactly super thorough testing tbh
+            
+            //return Math.Floor(((pos - 12) / 100.0) * 100) / 100; //western than
+            return Math.Floor(((pos + 1) / 100.0) * 100) / 100; //middle la noscea 
         }
     }
 }
