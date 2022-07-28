@@ -163,6 +163,7 @@ namespace HuntHelper
 
         private float thickness = 8f;
         private Vector2 pos = new Vector2(500, 500);
+        //private Vector2 lineEnding = new Vector2(0, 0);
         public void DrawTestWindow()
         {
             if (!TestVisible)
@@ -220,30 +221,70 @@ namespace HuntHelper
                     if (obj is BattleNpc bnpc)
                     {
                         if (bnpc.MaxHp < 10000) continue;
+                        if (bnpc.BattleNpcKind != BattleNpcSubKind.Enemy) continue;
 
                         //Todo - make these easier to read...
                         var mobPos = new Vector2(ImGui.GetWindowPos().X + gridRatioX * ((float)Utilities.MapHelpers.ConvertToMapCoordinate(obj.Position.X)-1),
                             ImGui.GetWindowPos().Y + gridRatioY * ((float)Utilities.MapHelpers.ConvertToMapCoordinate(obj.Position.Z)-1));
 
-                        drawlist.AddCircleFilled(mobPos, 8, ImGui.ColorConvertFloat4ToU32(new Vector4(0.4f, 0.5f, 0.567f, 1f)));
+                        drawlist.AddCircleFilled(mobPos, 8, ImGui.ColorConvertFloat4ToU32(new Vector4(0.4f, 1f, 0.567f, 1f)));
                     }
                 }
 
-                //Todo - make these easier to read...
-                var playerPos = new Vector2(ImGui.GetWindowPos().X + gridRatioX * ((float)Utilities.MapHelpers.ConvertToMapCoordinate(ClientState.LocalPlayer.Position.X)-1),
-                    ImGui.GetWindowPos().Y  + gridRatioY * ((float)Utilities.MapHelpers.ConvertToMapCoordinate(ClientState.LocalPlayer.Position.Z)-1));
+                //if this stuff ain't null, draw player position
+                if (ClientState?.LocalPlayer?.Position != null)
+                {
+                    //Todo - make these easier to read...
+                    var playerPos = new Vector2(
+                        ImGui.GetWindowPos().X + gridRatioX *
+                        ((float) Utilities.MapHelpers.ConvertToMapCoordinate(ClientState.LocalPlayer.Position.X) - 1),
+                        ImGui.GetWindowPos().Y + gridRatioY *
+                        ((float) Utilities.MapHelpers.ConvertToMapCoordinate(ClientState.LocalPlayer.Position.Z) - 1));
 
-                //Todo - make these easier to read...
-                //green - Player Position Circle Marker
-                drawlist.AddCircleFilled(playerPos, 4, ImGui.ColorConvertFloat4ToU32(new Vector4(.5f, 1f, 0.567f, 1f)));
+                    //Todo - make these easier to read...
+                    //green - Player Position Circle Marker --DRAWN BELOW
+                    var playerCircleRadius = 4;
 
-                //aoe detection circle = ~2 in-game coords.
-                var detectionRadius = 2*(ImGui.GetContentRegionAvail().X / 41) ;
-                drawlist.AddCircle(playerPos, detectionRadius, ImGui.ColorConvertFloat4ToU32( new Vector4(1f, 1f, 0f, 1f)), 0, 1f );
 
-                ImGui.Text($"window padding: {ImGui.GetStyle().WindowPadding}");
+                    //aoe detection circle = ~2 in-game coords. --DRAWN BELOW
+var detectionRadius = 2 * (ImGui.GetContentRegionAvail().X / 41);
+                    
 
-                #endregion
+                    // DRAW A LINE STARTING FROM PLAYERPOS CENTER, AND GOING OUT DEPENDING ON PLAYER ROTATION 
+                    //SOMETHING TO DO WTH PI AND FLOATS AND SHIT. IDK. TRIG. W/E.
+
+                    ImGui.Text($"window padding: {ImGui.GetStyle().WindowPadding}");
+
+                    //var rotation = Math.Abs(ClientState.LocalPlayer.Rotation * (180 / Math.PI) - 180);
+                    var rotation = Math.Abs(ClientState.LocalPlayer.Rotation- Math.PI);
+
+                    //idk trig man... it's been years...
+                    ImGui.Text($"rotation: {ClientState.LocalPlayer.Rotation}");
+                    ImGui.Text($"rotation deg.: {Math.Round(rotation,2)}");
+                    ImGui.Text($"rotation sin.: {Math.Round(Math.Sin(rotation),2)}");
+                    ImGui.Text($"rotation cos.: {Math.Round(Math.Cos(rotation),2)}");
+                    ImGui.Text($"rotation rad.: {Math.Abs(ClientState.LocalPlayer.Rotation - (Math.PI))}");
+                    
+                   
+                    var lineEnding = 
+                        new Vector2( 
+                            playerPos.X + (float)(detectionRadius * Math.Sin(rotation)),
+                            playerPos.Y - (float)(detectionRadius * Math.Cos(rotation)));
+                    
+                    #region Player Icon Drawing - order: direction, detection, player
+
+                    drawlist.AddLine(playerPos, lineEnding, ImGui.ColorConvertFloat4ToU32(new Vector4(1f, 0.3f, 0.3f, 1f)), 2);
+                    drawlist.AddCircleFilled(playerPos, playerCircleRadius,
+                        ImGui.ColorConvertFloat4ToU32(new Vector4(.5f, 1f, 0.567f, 1f)));
+                    drawlist.AddCircle(playerPos, detectionRadius,
+                        ImGui.ColorConvertFloat4ToU32(new Vector4(1f, 1f, 0f, 1f)), 0, 1f);
+
+                    #endregion
+
+                    ImGui.Text($"Line Ending: {lineEnding.X}, {lineEnding.Y}");
+                    ImGui.Text($"Player Pos: {playerPos.X}, {playerPos.Y}");
+                    #endregion
+                }
 
                 // ImGui.Image(goatImage.ImGuiHandle, new Vector2(goatImage.Width, goatImage.Height ));
             }
