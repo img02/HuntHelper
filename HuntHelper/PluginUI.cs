@@ -1,6 +1,7 @@
 ﻿using ImGuiNET;
 using System;
 using System.Numerics;
+using System.Threading;
 using Dalamud.Data;
 using Dalamud.Game.ClientState;
 using Dalamud.Game.ClientState.Objects;
@@ -34,7 +35,16 @@ namespace HuntHelper
             set { this.visible = value; }
         }
 
+
+        private bool testVisible = false;
+        public bool TestVisible
+        {
+            get => testVisible;
+            set => testVisible = value;
+        }
+
         private bool settingsVisible = false;
+
         public bool SettingsVisible
         {
             get { return this.settingsVisible; }
@@ -42,8 +52,10 @@ namespace HuntHelper
         }
 
         // passing in the image here just for simplicity
-        public PluginUI(Configuration configuration, ImGuiScene.TextureWrap goatImage, ClientState clientState, ObjectTable objectTable, DataManager dataManager )
+        public PluginUI(Configuration configuration, ImGuiScene.TextureWrap goatImage, ClientState clientState, ObjectTable objectTable, DataManager dataManager)
         {
+            //add hunt manager to this class
+
             this.configuration = configuration;
             this.goatImage = goatImage;
 
@@ -57,7 +69,7 @@ namespace HuntHelper
             ClientState.TerritoryChanged += ClientState_TerritoryChanged;
         }
 
-       
+
 
         public void Dispose()
         {
@@ -75,6 +87,9 @@ namespace HuntHelper
 
             DrawMainWindow();
             DrawSettingsWindow();
+
+
+            DrawTestWindow();
         }
 
         public void DrawMainWindow()
@@ -96,20 +111,18 @@ namespace HuntHelper
                 }
 
                 ImGui.Spacing();
-
-                //ImGui.Text("Have a goat:");
-                ImGui.Text("poop: ");
+                
                 ImGui.Indent(55);
                 //ImGui.Image(this.goatImage.ImGuiHandle, new Vector2(this.goatImage.Width, this.goatImage.Height));
                 ImGui.Unindent(55);
 
-                
+
 
                 ImGui.Text($"Territory: {TerritoryName}");
                 ImGui.Text($"Territory ID: {ClientState.TerritoryType}");
 
                 //PLAYER POS
-                var v3 = ClientState.LocalPlayer?.Position ?? new Vector3(0,0,0);
+                var v3 = ClientState.LocalPlayer?.Position ?? new Vector3(0, 0, 0);
                 ImGui.Text($"v3: -----\n" +
                            $"X: {ConvertPosToCoordinate(v3.X)} |" +
                            $"Y: {ConvertPosToCoordinate(v3.Z)} |\n" +
@@ -129,12 +142,12 @@ namespace HuntHelper
                     if (bobj.MaxHp < 10000) continue; //not really needed if subkind is enemy, once matching to id / name
                     if (bobj.BattleNpcKind != BattleNpcSubKind.Enemy) continue; //not really needed if matching to 'nameID'
 
-                   
+
                     hunt += $"{obj.Name} \n" +
                             $"KIND: {bobj.BattleNpcKind}\n" +
                             $"NAMEID: {bobj.NameId}\n" +
                             $"|HP: {bobj.CurrentHp}\n" +
-                            $"|HP: {(bobj.CurrentHp * 1.0 / bobj.MaxHp) * 100}" + "%\n" +
+                            $"|HP%%: {(bobj.CurrentHp * 1.0 / bobj.MaxHp) * 100}%%\n" +
                             //$"|object ID: {obj.ObjectId}\n| Data ID: {obj.DataId} \n| OwnerID: {obj.OwnerId}\n" +
                             $"X: {ConvertPosToCoordinate(obj.Position.X)};\n" +
                             $"Y: {ConvertPosToCoordinate(obj.Position.Y)}\n" +
@@ -146,6 +159,98 @@ namespace HuntHelper
                 ImGui.Text($"Found: {hunt}");
             }
             ImGui.End();
+        }
+
+        private float thickness = 8f;
+        private Vector2 pos = new Vector2(500, 500);
+        public void DrawTestWindow()
+        {
+            if (!TestVisible)
+            {
+                return;
+            }
+            
+            ImGui.SetNextWindowSize(new Vector2(375, 330), ImGuiCond.FirstUseEver);
+            ImGui.SetNextWindowSizeConstraints(new Vector2(375, 330), new Vector2(float.MaxValue, float.MaxValue));
+            //sets window pos
+            ImGui.SetNextWindowPos(Vector2.Divide(pos,2f), ImGuiCond.FirstUseEver);
+            ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, new Vector2(0,0));
+            ImGui.PushStyleVar(ImGuiStyleVar.WindowBorderSize,0f);
+
+
+            if (ImGui.Begin("Test Window!", ref this.testVisible,
+                    ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse | ImGuiWindowFlags.NoTitleBar))
+            {
+                //update pos to stay in place when window moves. equation is 'current window pos' (topleft) + 'half of window height'.
+                pos = Vector2.Add(ImGui.GetWindowPos(), new Vector2(ImGui.GetWindowSize().Y/2)); 
+
+                var drawlist = ImGui.GetWindowDrawList();
+                
+                /*ImGui.DragFloat("Thickness", ref thickness);
+                ImGui.DragFloat2("pos", ref pos);
+
+                drawlist.AddCircle(
+                    //Vector2.Divide(ImGui.GetWindowSize(),2),
+                    //ImGui.GetWindowPos() + Vector2.Divide(ImGui.GetWindowSize(), 2),
+                    pos,
+                    100,
+                    ImGui.ColorConvertFloat4ToU32(new Vector4(0.9f, .16f, 0.567f, 1f)),
+                    0,
+                    thickness);*/
+
+                /*drawlist.AddCircleFilled(
+                   //Vector2.Divide(ImGui.GetWindowSize(),2),
+                   ImGui.GetWindowPos() + Vector2.Divide(ImGui.GetWindowSize(), 2),
+                   100,
+                   ImGui.ColorConvertFloat4ToU32(new Vector4(0.9f, .16f, 0.567f, 1f)));
+
+               drawlist.AddCircleFilled(
+                   //Vector2.Divide(ImGui.GetWindowSize(),2),
+                   ImGui.GetWindowPos() + Vector2.Divide(ImGui.GetWindowSize(), 1.5f),
+                   100,
+                   ImGui.ColorConvertFloat4ToU32(new Vector4(0.4f, 0.5f, 0.567f, 1f)));*/
+
+                #region Drawing Mob and Player circles
+
+                var gridRatioX = ImGui.GetContentRegionAvail().X / 41;
+                var gridRatioY = ImGui.GetContentRegionAvail().Y / 41;
+
+                foreach (var obj in this.ObjectTable)
+                {
+                    if (obj is BattleNpc bnpc)
+                    {
+                        if (bnpc.MaxHp < 10000) continue;
+
+                        //Todo - make these easier to read...
+                        var mobPos = new Vector2(ImGui.GetWindowPos().X + gridRatioX * ((float)Utilities.MapHelpers.ConvertToMapCoordinate(obj.Position.X)-1),
+                            ImGui.GetWindowPos().Y + gridRatioY * ((float)Utilities.MapHelpers.ConvertToMapCoordinate(obj.Position.Z)-1));
+
+                        drawlist.AddCircleFilled(mobPos, 8, ImGui.ColorConvertFloat4ToU32(new Vector4(0.4f, 0.5f, 0.567f, 1f)));
+                    }
+                }
+
+                //Todo - make these easier to read...
+                var playerPos = new Vector2(ImGui.GetWindowPos().X + gridRatioX * ((float)Utilities.MapHelpers.ConvertToMapCoordinate(ClientState.LocalPlayer.Position.X)-1),
+                    ImGui.GetWindowPos().Y  + gridRatioY * ((float)Utilities.MapHelpers.ConvertToMapCoordinate(ClientState.LocalPlayer.Position.Z)-1));
+
+                //Todo - make these easier to read...
+                //green - Player Position Circle Marker
+                drawlist.AddCircleFilled(playerPos, 4, ImGui.ColorConvertFloat4ToU32(new Vector4(.5f, 1f, 0.567f, 1f)));
+
+                //aoe detection circle = ~2 in-game coords.
+                var detectionRadius = 2*(ImGui.GetContentRegionAvail().X / 41) ;
+                drawlist.AddCircle(playerPos, detectionRadius, ImGui.ColorConvertFloat4ToU32( new Vector4(1f, 1f, 0f, 1f)), 0, 1f );
+
+                ImGui.Text($"window padding: {ImGui.GetStyle().WindowPadding}");
+
+                #endregion
+
+                // ImGui.Image(goatImage.ImGuiHandle, new Vector2(goatImage.Width, goatImage.Height ));
+            }
+
+            ImGui.End();
+
+          
         }
 
         public void DrawSettingsWindow()
@@ -192,7 +297,7 @@ namespace HuntHelper
         {
             // arr z index seems to be 0 == 12. since: 1.0 == 112 and 0.5 == 62. 
             // not exactly super thorough testing tbh
-            
+
             //return Math.Floor(((pos - 12) / 100.0) * 100) / 100; //western than
             return Math.Floor(((pos + 1) / 100.0) * 100) / 100; //middle la noscea 
         }

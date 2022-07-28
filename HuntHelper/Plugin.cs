@@ -1,4 +1,5 @@
-﻿using Dalamud.Game.Command;
+﻿using System;
+using Dalamud.Game.Command;
 using Dalamud.IoC;
 using Dalamud.Plugin;
 using System.IO;
@@ -6,6 +7,7 @@ using System.Reflection;
 using Dalamud.Data;
 using Dalamud.Game.ClientState;
 using Dalamud.Game.ClientState.Objects;
+using System.Drawing;
 
 namespace HuntHelper
 {
@@ -43,12 +45,23 @@ namespace HuntHelper
 
             // you might normally want to embed resources and load them from the manifest stream
             var imagePath = Path.Combine(PluginInterface.AssemblyLocation.Directory?.FullName!, "goat.png");
+
             var goatImage = this.PluginInterface.UiBuilder.LoadImage(imagePath);
+
+            #region idk
+  
+            #endregion
+
             this.PluginUi = new PluginUI(this.Configuration, goatImage, clientState, objectTable, dataManager);
 
             this.CommandManager.AddHandler(commandName, new CommandInfo(OnCommand)
             {
                 HelpMessage = "A useful message to display in /xlhelp"
+            });
+            
+            this.CommandManager.AddHandler("/hh", new CommandInfo(TestCommand)
+            {
+                HelpMessage = "test"
             });
 
             this.PluginInterface.UiBuilder.Draw += DrawUI;
@@ -62,12 +75,19 @@ namespace HuntHelper
         {
             this.PluginUi.Dispose();
             this.CommandManager.RemoveHandler(commandName);
+            this.CommandManager.RemoveHandler("/hh");
         }
 
         private void OnCommand(string command, string args)
         {
             // in response to the slash command, just display our main ui
             this.PluginUi.Visible = true;
+        }
+        private void TestCommand(string command, string args)
+        {
+            //this.PluginUi.TestVisible = true;
+
+            PluginUi.TestVisible = !PluginUi.TestVisible;
         }
 
         private void DrawUI()
