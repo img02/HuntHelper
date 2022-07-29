@@ -182,10 +182,11 @@ namespace HuntHelper
 
 
             if (ImGui.Begin("Test Window!", ref this.testVisible,
-                    ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse | ImGuiWindowFlags.NoTitleBar))
+                    ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse | ImGuiWindowFlags.NoTitleBar ))
             {
                 //update pos to stay in place when window moves. equation is 'current window pos' (topleft) + 'half of window height'.
                 pos = Vector2.Add(ImGui.GetWindowPos(), new Vector2(ImGui.GetWindowSize().Y / 2));
+                var bottomDockingPos = Vector2.Add(ImGui.GetWindowPos(), new Vector2(0,ImGui.GetWindowSize().Y) );
 
                 var drawlist = ImGui.GetWindowDrawList();
 
@@ -299,13 +300,30 @@ namespace HuntHelper
                 }
 
                 // ImGui.Image(goatImage.ImGuiHandle, new Vector2(goatImage.Width, goatImage.Height ));
+
+                //Current mob info 'docking'
+                ImGui.BeginChild(1, new Vector2(ImGui.GetWindowSize().X, 25));
+                ImGui.SetNextWindowSize(new Vector2(ImGui.GetWindowSize().X, 80));
+                //sets window pos
+                //ImGui.SetNextWindowPos(new Vector2(ImGui.GetWindowPos().X), ImGuiCond.FirstUseEver); //fix this...
+                ImGui.SetNextWindowSizeConstraints(new Vector2(-1,0), new Vector2(-1, float.MaxValue));
+                //ImGui.PushStyleColor(ImGuiCol.ResizeGrip, ImGui.ColorConvertFloat4ToU32(new Vector4(1f, 1f, 1f, 1f)));
+                //hide grip color
+                ImGui.PushStyleColor(ImGuiCol.ResizeGrip, 0);
+
+                ImGui.Begin("test",  ImGuiWindowFlags.NoTitleBar |ImGuiWindowFlags.NoMove);
+                ImGui.SetWindowPos(bottomDockingPos);
+                ImGui.Indent(ImGui.GetWindowSize().X/3);
+
+                ImGui_CentreText("HELLO THIS IS TEXT");
+                ImGui_CentreText("HELLO THIS IS TEXT");
+                ImGui_CentreText("HELLO %%%%%%% TEXT");
+
+                ImGui.End();
+                ImGui.EndChildFrame();
             }
-
             ImGui.End();
-
-
         }
-
       
         public void DrawSettingsWindow()
         {
@@ -339,17 +357,30 @@ namespace HuntHelper
 
         }
 
+        #region Imgui Helpers
+
         private void DrawPlayerIcon(ImDrawListPtr drawlist, Vector2 playerPos, float playerCircleRadius, float detectionRadius, Vector2 lineEnding)
         {
-
+            //direction line
             drawlist.AddLine(playerPos, lineEnding, ImGui.ColorConvertFloat4ToU32(new Vector4(1f, 0.3f, 0.3f, 1f)), 2);
+            //player filled circle
             drawlist.AddCircleFilled(playerPos, playerCircleRadius,
-                ImGui.ColorConvertFloat4ToU32(new Vector4(.5f, 1f, 0.567f, 1f)));
+                ImGui.ColorConvertFloat4ToU32(new Vector4(.5f, 0.567f, 1f, 1f)));
+            //detection circle
             drawlist.AddCircle(playerPos, detectionRadius,
                 ImGui.ColorConvertFloat4ToU32(new Vector4(1f, 1f, 0f, 1f)), 0, 1f);
 
         }
 
+        private void ImGui_CentreText(string text)
+        {
+            var windowWidth = ImGui.GetWindowSize().X;
+            var textWidth = ImGui.CalcTextSize(text).X;
+            ImGui.SetCursorPosX((windowWidth - textWidth) * 0.5f);
+            ImGui.TextUnformatted(text);
+        }
+
+        #endregion
 
         //=================================================================
 
