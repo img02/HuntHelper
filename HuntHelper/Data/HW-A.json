@@ -1,0 +1,74 @@
+[
+	{
+		"Name": "Mirka",
+		"ModelID": 4362,
+		"Rank": "A",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Lyuba",
+		"ModelID": 4363,
+		"Rank": "A",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Agathos",
+		"ModelID": 4369,
+		"Rank": "A",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Bune",
+		"ModelID": 4368,
+		"Rank": "A",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Campacti",
+		"ModelID": 4372,
+		"Rank": "A",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Stench Blossom",
+		"ModelID": 4373,
+		"Rank": "A",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Pylraster",
+		"ModelID": 4364,
+		"Rank": "A",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Lord of the Wyverns",
+		"ModelID": 4365,
+		"Rank": "A",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Slipkinx Steeljoints",
+		"ModelID": 4366,
+		"Rank": "A",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Stolas",
+		"ModelID": 4367,
+		"Rank": "A",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Enkelados",
+		"ModelID": 4370,
+		"Rank": "A",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Sisiutl",
+		"ModelID": 4371,
+		"Rank": "A",
+		"IsEnabled": "true"
+	}
+]

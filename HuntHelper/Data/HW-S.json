@@ -1,0 +1,38 @@
+[
+	{
+		"Name": "Kaiser Behemoth",
+		"ModelID": 4374,
+		"Rank": "S",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Senmurv",
+		"ModelID": 4375,
+		"Rank": "S",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "The Pale Rider",
+		"ModelID": 4376,
+		"Rank": "S",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Gandarewa",
+		"ModelID": 4377,
+		"Rank": "S",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Bird of Paradise",
+		"ModelID": 4378,
+		"Rank": "S",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Leucrotta",
+		"ModelID": 4380,
+		"Rank": "S",
+		"IsEnabled": "true"
+	}
+]

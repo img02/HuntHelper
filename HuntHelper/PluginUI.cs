@@ -1,5 +1,7 @@
 ﻿using ImGuiNET;
 using System;
+using System.Drawing;
+using System.IO;
 using System.Numerics;
 using System.Threading;
 using Dalamud.Data;
@@ -7,6 +9,9 @@ using Dalamud.Game.ClientState;
 using Dalamud.Game.ClientState.Objects;
 using Dalamud.Game.ClientState.Objects.Enums;
 using Dalamud.Game.ClientState.Objects.Types;
+using Dalamud.Interface;
+using Dalamud.Logging;
+using Dalamud.Plugin;
 using Lumina.Excel.GeneratedSheets;
 
 namespace HuntHelper
@@ -16,16 +21,17 @@ namespace HuntHelper
     class PluginUI : IDisposable
     {
         private Configuration configuration;
+        private DalamudPluginInterface pluginInterface;
 
         private ImGuiScene.TextureWrap goatImage;
 
         private ClientState ClientState;
         private ObjectTable ObjectTable;
         private DataManager DataManager;
+        private HuntManager HuntManager;
 
         private String TerritoryName;
         private uint TerritoryID;
-
 
         // this extra bool exists for ImGui, since you can't ref a property
         private bool visible = false;
@@ -51,22 +57,26 @@ namespace HuntHelper
             set { this.settingsVisible = value; }
         }
 
-        // passing in the image here just for simplicity
-        public PluginUI(Configuration configuration, ImGuiScene.TextureWrap goatImage, ClientState clientState, ObjectTable objectTable, DataManager dataManager)
+
+        public PluginUI(Configuration configuration, DalamudPluginInterface pluginInterface, ImGuiScene.TextureWrap goatImage, ClientState clientState, ObjectTable objectTable, DataManager dataManager, HuntManager huntManager)
         {
             //add hunt manager to this class
 
             this.configuration = configuration;
+            this.pluginInterface = pluginInterface; //not using atm...
             this.goatImage = goatImage;
 
             this.ClientState = clientState;
             this.ObjectTable = objectTable;
             this.DataManager = dataManager;
+            this.HuntManager = huntManager;
 
             TerritoryName = String.Empty;
             ClientState_TerritoryChanged(null, 0);
 
             ClientState.TerritoryChanged += ClientState_TerritoryChanged;
+
+
         }
 
 
@@ -166,6 +176,8 @@ namespace HuntHelper
         private float thickness = 8f;
         //initial window position
         private Vector2 pos = new Vector2(500, 500);
+        private float bottomPanelHeight = 80;
+        private bool ShowDatabaseListWindow = false;
         public void DrawTestWindow()
         {
             if (!TestVisible)
@@ -182,39 +194,13 @@ namespace HuntHelper
 
 
             if (ImGui.Begin("Test Window!", ref this.testVisible,
-                    ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse | ImGuiWindowFlags.NoTitleBar ))
+                    ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse | ImGuiWindowFlags.NoTitleBar))
             {
                 //update pos to stay in place when window moves. equation is 'current window pos' (topleft) + 'half of window height'.
                 pos = Vector2.Add(ImGui.GetWindowPos(), new Vector2(ImGui.GetWindowSize().Y / 2));
-                var bottomDockingPos = Vector2.Add(ImGui.GetWindowPos(), new Vector2(0,ImGui.GetWindowSize().Y) );
+                var bottomDockingPos = Vector2.Add(ImGui.GetWindowPos(), new Vector2(0, ImGui.GetWindowSize().Y));
 
                 var drawlist = ImGui.GetWindowDrawList();
-
-                #region delete this.. prob
-                /*ImGui.DragFloat("Thickness", ref thickness);
-                     ImGui.DragFloat2("pos", ref pos);
-
-                     drawlist.AddCircle(
-                         //Vector2.Divide(ImGui.GetWindowSize(),2),
-                         //ImGui.GetWindowPos() + Vector2.Divide(ImGui.GetWindowSize(), 2),
-                         pos,
-                         100,
-                         ImGui.ColorConvertFloat4ToU32(new Vector4(0.9f, .16f, 0.567f, 1f)),
-                         0,
-                         thickness);*/
-
-                /*drawlist.AddCircleFilled(
-                   //Vector2.Divide(ImGui.GetWindowSize(),2),
-                   ImGui.GetWindowPos() + Vector2.Divide(ImGui.GetWindowSize(), 2),
-                   100,
-                   ImGui.ColorConvertFloat4ToU32(new Vector4(0.9f, .16f, 0.567f, 1f)));
-
-               drawlist.AddCircleFilled(
-                   //Vector2.Divide(ImGui.GetWindowSize(),2),
-                   ImGui.GetWindowPos() + Vector2.Divide(ImGui.GetWindowSize(), 1.5f),
-                   100,
-                   ImGui.ColorConvertFloat4ToU32(new Vector4(0.4f, 0.5f, 0.567f, 1f)));*/
-                #endregion
 
                 #region Drawing Mob and Player circles
 
@@ -266,14 +252,7 @@ namespace HuntHelper
 
                     #region Player Icon Drawing - order: direction, detection, player
 
-                    /*drawlist.AddLine(playerPos, lineEnding, ImGui.ColorConvertFloat4ToU32(new Vector4(1f, 0.3f, 0.3f, 1f)), 2);
-                    drawlist.AddCircleFilled(playerPos, playerCircleRadius,
-                        ImGui.ColorConvertFloat4ToU32(new Vector4(.5f, 1f, 0.567f, 1f)));
-                    drawlist.AddCircle(playerPos, detectionRadius,
-                        ImGui.ColorConvertFloat4ToU32(new Vector4(1f, 1f, 0f, 1f)), 0, 1f);
-                        */
-
-                    DrawPlayerIcon(drawlist,playerPos,playerCircleRadius,detectionRadius,lineEnding);
+                    DrawPlayerIcon(drawlist, playerPos, playerCircleRadius, detectionRadius, lineEnding);
 
                     #endregion
 
@@ -294,37 +273,61 @@ namespace HuntHelper
                                $"," +
                                $" {Utilities.MapHelpers.ConvertToMapCoordinate(ClientState.LocalPlayer.Position.Y)}" +
                                $")");
+
                     #endregion
 
                     #endregion
                 }
 
-                // ImGui.Image(goatImage.ImGuiHandle, new Vector2(goatImage.Width, goatImage.Height ));
 
                 //Current mob info 'docking'
                 ImGui.BeginChild(1, new Vector2(ImGui.GetWindowSize().X, 25));
-                ImGui.SetNextWindowSize(new Vector2(ImGui.GetWindowSize().X, 80));
-                //sets window pos
-                //ImGui.SetNextWindowPos(new Vector2(ImGui.GetWindowPos().X), ImGuiCond.FirstUseEver); //fix this...
-                ImGui.SetNextWindowSizeConstraints(new Vector2(-1,0), new Vector2(-1, float.MaxValue));
-                //ImGui.PushStyleColor(ImGuiCol.ResizeGrip, ImGui.ColorConvertFloat4ToU32(new Vector4(1f, 1f, 1f, 1f)));
+                ImGui.SetNextWindowSize(new Vector2(ImGui.GetWindowSize().X, bottomPanelHeight), ImGuiCond.None);
+                ImGui.SetNextWindowSizeConstraints(new Vector2(-1, 0), new Vector2(-1, float.MaxValue));
+
                 //hide grip color
                 ImGui.PushStyleColor(ImGuiCol.ResizeGrip, 0);
 
-                ImGui.Begin("test",  ImGuiWindowFlags.NoTitleBar |ImGuiWindowFlags.NoMove);
+                ImGui.Begin("test", ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoMove);
                 ImGui.SetWindowPos(bottomDockingPos);
-                ImGui.Indent(ImGui.GetWindowSize().X/3);
+                ImGui.Indent(ImGui.GetWindowSize().X / 3);
 
+                ///////////////////////////////////////////////////////////////////////////////////// PLACEHOLDER TEXT DELETE DELETE DELETE LATER
                 ImGui_CentreText("HELLO THIS IS TEXT");
-                ImGui_CentreText("HELLO THIS IS TEXT");
+                ImGui_CentreText(HuntManager.Text);
                 ImGui_CentreText("HELLO %%%%%%% TEXT");
 
+                if (ImGui.Button("Show Mob Database"))
+                {
+                    ShowDatabaseListWindow = !ShowDatabaseListWindow;
+                    //open new window
+
+                }
+
+                if (ShowDatabaseListWindow) //move this out
+                {
+                    ImGui.SetNextWindowSize(new Vector2(450,800));
+                    ImGui.Begin("Mob Database", ref ShowDatabaseListWindow);
+                    ImGui.PushFont(UiBuilder.MonoFont);
+                    ImGui_CentreText(HuntManager.GetDatabaseAsString());
+                    ImGui.PopFont();
+                    ImGui.End();
+                }
+
+                bottomPanelHeight = ImGui.GetWindowSize().Y;
                 ImGui.End();
                 ImGui.EndChildFrame();
+
+                if (HuntManager.ErrorPopUpVisible)
+                {
+                    ImGui.Begin("Error loading data");
+                    ImGui.Text(HuntManager.ErrorMessage);
+                    ImGui.End();
+                }
             }
             ImGui.End();
         }
-      
+
         public void DrawSettingsWindow()
         {
             if (!SettingsVisible)

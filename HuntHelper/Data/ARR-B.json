@@ -1,0 +1,104 @@
+[
+	{
+		"Name": "Sewer Syrup",
+		"ModelID": 2923,
+		"Rank": "B",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Ovjang",
+		"ModelID": 2924,
+		"Rank": "B",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Gatling",
+		"ModelID": 2925,
+		"Rank": "B",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Albin the Ashen",
+		"ModelID": 2926,
+		"Rank": "B",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Flame Sergeant Dalvag",
+		"ModelID": 2927,
+		"Rank": "B",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "White Joker",
+		"ModelID": 2919,
+		"Rank": "B",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Stinging Sophie",
+		"ModelID": 2920,
+		"Rank": "B",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Monarch Ogrefly",
+		"ModelID": 2921,
+		"Rank": "B",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Phecda",
+		"ModelID": 2922,
+		"Rank": "B",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Skogs Fru",
+		"ModelID": 2928,
+		"Rank": "B",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Barbastelle",
+		"ModelID": 2929,
+		"Rank": "B",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Bloody Mary",
+		"ModelID": 2930,
+		"Rank": "B",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Dark Helmet",
+		"ModelID": 2931,
+		"Rank": "B",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Myradrosh",
+		"ModelID": 2932,
+		"Rank": "B",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Vuokho",
+		"ModelID": 2933,
+		"Rank": "B",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Naul",
+		"ModelID": 2934,
+		"Rank": "B",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Leech King",
+		"ModelID": 2935,
+		"Rank": "B",
+		"IsEnabled": "true"
+	}
+]

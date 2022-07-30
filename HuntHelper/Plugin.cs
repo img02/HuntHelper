@@ -8,6 +8,7 @@ using Dalamud.Data;
 using Dalamud.Game.ClientState;
 using Dalamud.Game.ClientState.Objects;
 using System.Drawing;
+using ImGuiNET;
 
 namespace HuntHelper
 {
@@ -26,6 +27,8 @@ namespace HuntHelper
         private ObjectTable ObjectTable { get; init; }
         private DataManager DataManager { get; init; }
 
+        private HuntManager huntManager { get; init; }
+
         public Plugin(
             [RequiredVersion("1.0")] DalamudPluginInterface pluginInterface,
             [RequiredVersion("1.0")] CommandManager commandManager,
@@ -39,6 +42,7 @@ namespace HuntHelper
             this.ClientState = clientState;
             this.ObjectTable = objectTable;
             this.DataManager = dataManager;
+            this.huntManager = new HuntManager(PluginInterface);
 
             this.Configuration = this.PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
             this.Configuration.Initialize(this.PluginInterface);
@@ -49,16 +53,15 @@ namespace HuntHelper
             var goatImage = this.PluginInterface.UiBuilder.LoadImage(imagePath);
 
             #region idk
-  
             #endregion
 
-            this.PluginUi = new PluginUI(this.Configuration, goatImage, clientState, objectTable, dataManager);
+            this.PluginUi = new PluginUI(this.Configuration, pluginInterface, goatImage, clientState, objectTable, dataManager, huntManager);
 
             this.CommandManager.AddHandler(commandName, new CommandInfo(OnCommand)
             {
                 HelpMessage = "A useful message to display in /xlhelp"
             });
-            
+
             this.CommandManager.AddHandler("/hh", new CommandInfo(TestCommand)
             {
                 HelpMessage = "test"
@@ -114,7 +117,7 @@ namespace HuntHelper
              * scan against dictionary based on map location
              *
              */
-            
+
 
 
             //ToDo

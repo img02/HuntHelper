@@ -1,0 +1,74 @@
+[
+	{
+		"Name": "Shadow-dweller Yamini",
+		"ModelID": 6008,
+		"Rank": "B",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Ouzelum",
+		"ModelID": 6009,
+		"Rank": "B",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Gwas-y-neidr",
+		"ModelID": 6010,
+		"Rank": "B",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Buccaboo",
+		"ModelID": 6011,
+		"Rank": "B",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Manes",
+		"ModelID": 6012,
+		"Rank": "B",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Kiwa",
+		"ModelID": 6013,
+		"Rank": "B",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Gauki Strongblade",
+		"ModelID": 6002,
+		"Rank": "B",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Guhuo Niao",
+		"ModelID": 6003,
+		"Rank": "B",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Deidar",
+		"ModelID": 6004,
+		"Rank": "B",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Gyorai Quickstrike",
+		"ModelID": 6005,
+		"Rank": "B",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Aswang",
+		"ModelID": 6007,
+		"Rank": "B",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Kurma",
+		"ModelID": 6006,
+		"Rank": "B",
+		"IsEnabled": "true"
+	}
+]

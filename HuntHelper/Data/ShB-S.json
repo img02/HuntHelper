@@ -1,0 +1,50 @@
+[
+	{
+		"Name": "Aglaope",
+		"ModelID": 8653,
+		"Rank": "S",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Ixtab",
+		"ModelID": 8890,
+		"Rank": "S",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Gunitt",
+		"ModelID": 8895,
+		"Rank": "S",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Tarchia",
+		"ModelID": 8900,
+		"Rank": "S",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Tyger",
+		"ModelID": 8905,
+		"Rank": "S",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Forgiven Pedantry",
+		"ModelID": 8910,
+		"Rank": "S",
+		"IsEnabled": "true"
+	},
+  {
+    "Name": "Forgiven Rebellion",
+    "ModelID": 8915,
+    "Rank": "SS",
+    "IsEnabled": "true"
+  },
+	{
+		"Name": "Forgiven Gossip",
+    "ModelID": 8916,
+    "Rank": "SS",
+    "IsEnabled": "true"
+  }
+]

@@ -1,0 +1,68 @@
+[
+	{
+		"Name": "Orcus",
+		"ModelID": 5990,
+		"Rank": "A",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Erle",
+		"ModelID": 5991,
+		"Rank": "A",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Vochstein",
+		"ModelID": 5992,
+		"Rank": "A",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Aqrabuamelu",
+		"ModelID": 5993,
+		"Rank": "A",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Mahisha",
+		"ModelID": 5994,
+		"Rank": "A",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Luminare",
+		"ModelID": 5995,
+		"Rank": "A",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Funa Yurei",
+		"ModelID": 5996,
+		"Rank": "A",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Oni Yumemi",
+		"ModelID": 5997,
+		"Rank": "A",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Angada",
+		"ModelID": 5999,
+		"Rank": "A",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Girimekhala",
+		"ModelID": 6000,
+		"Rank": "A",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Sum",
+		"ModelID": 6001,
+		"Rank": "A",
+		"IsEnabled": "true"
+	}
+]

@@ -1,0 +1,104 @@
+[
+	{
+		"Name": "Laideronnette",
+		"ModelID": 2953,
+		"Rank": "S",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Wulgaru",
+		"ModelID": 2954,
+		"Rank": "S",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Mindflayer",
+		"ModelID": 2955,
+		"Rank": "S",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Thousand-cast Theda",
+		"ModelID": 2956,
+		"Rank": "S",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Zona Seeker",
+		"ModelID": 2957,
+		"Rank": "S",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Brontes",
+		"ModelID": 2958,
+		"Rank": "S",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Lampalagua",
+		"ModelID": 2959,
+		"Rank": "S",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Nunyunuwi",
+		"ModelID": 2960,
+		"Rank": "S",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Minhocao",
+		"ModelID": 2961,
+		"Rank": "S",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Croque-mitaine",
+		"ModelID": 2962,
+		"Rank": "S",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Croakadile",
+		"ModelID": 2963,
+		"Rank": "S",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "The Garlok",
+		"ModelID": 2964,
+		"Rank": "S",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Bonnacon",
+		"ModelID": 2965,
+		"Rank": "S",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Nandi",
+		"ModelID": 2966,
+		"Rank": "S",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Chernobog",
+		"ModelID": 2967,
+		"Rank": "S",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Safat",
+		"ModelID": 2968,
+		"Rank": "S",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Agrippa The Mighty",
+		"ModelID": 2969,
+		"Rank": "S",
+		"IsEnabled": "true"
+	}
+]

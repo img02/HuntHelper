@@ -1,0 +1,74 @@
+[
+	{
+		"Name": "The Mudman",
+		"ModelID": 8654,
+		"Rank": "A",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "O Poorest Pauldia",
+		"ModelID": 8655,
+		"Rank": "A",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Supay",
+		"ModelID": 8891,
+		"Rank": "A",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Grassman",
+		"ModelID": 8892,
+		"Rank": "A",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Rusalka",
+		"ModelID": 8896,
+		"Rank": "A",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Baal",
+		"ModelID": 8897,
+		"Rank": "A",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Maliktender",
+		"ModelID": 8901,
+		"Rank": "A",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Sugaar",
+		"ModelID": 8902,
+		"Rank": "A",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Nuckelavee",
+		"ModelID": 8906,
+		"Rank": "A",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Nariphon",
+		"ModelID": 8907,
+		"Rank": "A",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Li'l Murderer",
+		"ModelID": 8911,
+		"Rank": "A",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Huracan",
+		"ModelID": 8912,
+		"Rank": "A",
+		"IsEnabled": "true"
+	}
+]

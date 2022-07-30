@@ -1,0 +1,50 @@
+[
+	{
+		"Name": "Armstrong",
+		"ModelID": 10619,
+		"Rank": "S",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Narrow-rift",
+		"ModelID": 10622,
+		"Rank": "S",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Ophioneus",
+		"ModelID": 8895,
+		"Rank": "S",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Ruminator",
+		"ModelID": 8900,
+		"Rank": "S",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Sphatika",
+		"ModelID": 10618,
+		"Rank": "S",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Burfurlur the Canny",
+		"ModelID": 10617,
+		"Rank": "S",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Ker",
+		"ModelID": 8900,
+		"Rank": "SS",
+		"IsEnabled": "true"
+	},
+  {
+    "Name": "Ker Shroud",
+    "ModelID": 10616,
+    "Rank": "SS",
+    "IsEnabled": "true"
+  }
+]

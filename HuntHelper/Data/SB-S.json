@@ -1,0 +1,38 @@
+[
+	{
+		"Name": "Okina",
+		"ModelID": 5984,
+		"Rank": "S",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Gamma",
+		"ModelID": 5985,
+		"Rank": "S",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Orghana",
+		"ModelID": 5986,
+		"Rank": "S",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Udumbara",
+		"ModelID": 5987,
+		"Rank": "S",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Bone Crawler",
+		"ModelID": 5988,
+		"Rank": "S",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Salt and Light",
+		"ModelID": 5989,
+		"Rank": "S",
+		"IsEnabled": "true"
+	}
+]

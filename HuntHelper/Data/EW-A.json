@@ -1,0 +1,74 @@
+[
+	{
+		"Name": "Storsie",
+		"ModelID": 10623,
+		"Rank": "A",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Hulder",
+		"ModelID": 10624,
+		"Rank": "A",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Yilan",
+		"ModelID": 10625,
+		"Rank": "A",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Sugriva",
+		"ModelID": 10626,
+		"Rank": "A",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Minerva",
+		"ModelID": 10627,
+		"Rank": "A",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Aegeiros",
+		"ModelID": 10628,
+		"Rank": "A",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Lunatender Queen",
+		"ModelID": 10629,
+		"Rank": "A",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Mousse Princess",
+		"ModelID": 10630,
+		"Rank": "A",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Arch-Eta",
+		"ModelID": 10634,
+		"Rank": "A",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Fan Ail",
+		"ModelID": 10633,
+		"Rank": "A",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Petalodus",
+		"ModelID": 10632,
+		"Rank": "A",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Gurangatch",
+		"ModelID": 10631,
+		"Rank": "A",
+		"IsEnabled": "true"
+	}
+]

@@ -1,0 +1,74 @@
+[
+	{
+		"Name": "Alteci",
+		"ModelID": 4350,
+		"Rank": "B",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Kreutzet",
+		"ModelID": 4351,
+		"Rank": "B",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Lycidas",
+		"ModelID": 4360,
+		"Rank": "B",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Omni",
+		"ModelID": 4361,
+		"Rank": "B",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Gnath Cometdrone",
+		"ModelID": 4352,
+		"Rank": "B",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Pterygotus",
+		"ModelID": 4354,
+		"Rank": "B",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "False Gigantopithecus",
+		"ModelID": 4355,
+		"Rank": "B",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Stolas",
+		"ModelID": 4367,
+		"Rank": "B",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "The Scarecrow",
+		"ModelID": 4357,
+		"Rank": "B",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Scitalis",
+		"ModelID": 4356,
+		"Rank": "B",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Squonk",
+		"ModelID": 4358,
+		"Rank": "B",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Sanu Vali of Dancing Wings",
+		"ModelID": 4359,
+		"Rank": "B",
+		"IsEnabled": "true"
+	}
+]

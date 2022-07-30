@@ -1,0 +1,74 @@
+[
+	{
+		"Name": "Domovoi",
+		"ModelID": 8656,
+		"Rank": "B",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Vulpangue",
+		"ModelID": 8657,
+		"Rank": "B",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Mindmaker",
+		"ModelID": 8893,
+		"Rank": "B",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Pachamama",
+		"ModelID": 8894,
+		"Rank": "B",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Gilshs Aath Swiftclaw",
+		"ModelID": 8898,
+		"Rank": "B",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Deacon",
+		"ModelID": 8899,
+		"Rank": "B",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Worm of the Well",
+		"ModelID": 8903,
+		"Rank": "B",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Juggler Hecatomb",
+		"ModelID": 8904,
+		"Rank": "B",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "La Velue",
+		"ModelID": 8908,
+		"Rank": "B",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Itzpapalotl",
+		"ModelID": 8909,
+		"Rank": "B",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Coquecigrue",
+		"ModelID": 8913,
+		"Rank": "B",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Indomitable",
+		"ModelID": 8914,
+		"Rank": "B",
+		"IsEnabled": "true"
+	}
+]

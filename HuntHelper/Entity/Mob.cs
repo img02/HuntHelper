@@ -13,7 +13,7 @@ public class Mob
     public string Name { get; init; }
     public string Rank { get; init; }
     public uint ModelID { get; init; }
-
+    public bool IsEnabled { get; set; }
     public Vector2 Position => new Vector2(bNpc?.Position.X ?? 0, bNpc?.Position.Y ?? 0);
     public string Hpp => UpdateHpp();
 
@@ -26,11 +26,12 @@ public class Mob
     }
 
     [JsonConstructor]
-    public Mob(string name, string rank, uint modelId)
+    public Mob(string name, string rank, uint modelId, bool isEnabled)
     {
         Name = name;
         Rank = rank;
         ModelID = modelId;
+        IsEnabled = isEnabled;
     }
 
 

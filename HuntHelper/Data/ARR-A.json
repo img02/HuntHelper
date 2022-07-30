@@ -1,0 +1,104 @@
+[
+	{
+		"Name": "Alectryon",
+		"ModelID": 2940,
+		"Rank": "A",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Sabotender Bailarina",
+		"ModelID": 2941,
+		"Rank": "A",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Maahes",
+		"ModelID": 2942,
+		"Rank": "A",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Zanig'oh",
+		"ModelID": 2943,
+		"Rank": "A",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Dalvag's Final Flame",
+		"ModelID": 2944,
+		"Rank": "A",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Forneus",
+		"ModelID": 2936,
+		"Rank": "A",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Melt",
+		"ModelID": 2937,
+		"Rank": "A",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Ghede Ti Malice",
+		"ModelID": 2938,
+		"Rank": "A",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Girtab",
+		"ModelID": 2939,
+		"Rank": "A",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Vogaal Ja",
+		"ModelID": 2945,
+		"Rank": "A",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Unktehi",
+		"ModelID": 2946,
+		"Rank": "A",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Hellsclaw",
+		"ModelID": 2947,
+		"Rank": "A",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Nahn",
+		"ModelID": 2948,
+		"Rank": "A",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Marberry",
+		"ModelID": 2949,
+		"Rank": "A",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Cornu",
+		"ModelID": 2950,
+		"Rank": "A",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Marraco",
+		"ModelID": 2951,
+		"Rank": "A",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Kurrea",
+		"ModelID": 2952,
+		"Rank": "A",
+		"IsEnabled": "true"
+	}
+]

@@ -1,0 +1,74 @@
+[
+	{
+		"Name": "Green Archon",
+		"ModelID": 10635,
+		"Rank": "B",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Ü-u-ü-u",
+		"ModelID": 10636,
+		"Rank": "B",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Vajrakumara",
+		"ModelID": 10637,
+		"Rank": "B",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Iravati",
+		"ModelID": 10638,
+		"Rank": "B",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Warmonger",
+		"ModelID": 10639,
+		"Rank": "B",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Emperor's Rose",
+		"ModelID": 10640,
+		"Rank": "B",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Daphnia Magna",
+		"ModelID": 10641,
+		"Rank": "B",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Genesis Rock",
+		"ModelID": 10642,
+		"Rank": "B",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Level Cheater",
+		"ModelID": 10645,
+		"Rank": "B",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Oskh Rhei",
+		"ModelID": 10646,
+		"Rank": "B",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Shockmaw",
+		"ModelID": 10644,
+		"Rank": "B",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Yumcax",
+		"ModelID": 10643,
+		"Rank": "B",
+		"IsEnabled": "true"
+	}
+]
