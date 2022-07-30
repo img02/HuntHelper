@@ -12,6 +12,7 @@ using Dalamud.Game.ClientState.Objects.Types;
 using Dalamud.Interface;
 using Dalamud.Logging;
 using Dalamud.Plugin;
+using HuntHelper.MapInfoManager;
 using Lumina.Excel.GeneratedSheets;
 
 namespace HuntHelper
@@ -29,6 +30,7 @@ namespace HuntHelper
         private ObjectTable ObjectTable;
         private DataManager DataManager;
         private HuntManager HuntManager;
+        private MapDataManager mapDataManager;
 
         private String TerritoryName;
         private uint TerritoryID;
@@ -58,7 +60,9 @@ namespace HuntHelper
         }
 
 
-        public PluginUI(Configuration configuration, DalamudPluginInterface pluginInterface, ImGuiScene.TextureWrap goatImage, ClientState clientState, ObjectTable objectTable, DataManager dataManager, HuntManager huntManager)
+        public PluginUI(Configuration configuration, DalamudPluginInterface pluginInterface, ImGuiScene.TextureWrap goatImage, 
+            ClientState clientState, ObjectTable objectTable, DataManager dataManager, 
+            HuntManager huntManager, MapDataManager mapDataManager)
         {
             //add hunt manager to this class
 
@@ -70,6 +74,7 @@ namespace HuntHelper
             this.ObjectTable = objectTable;
             this.DataManager = dataManager;
             this.HuntManager = huntManager;
+            this.mapDataManager = mapDataManager;
 
             TerritoryName = String.Empty;
             ClientState_TerritoryChanged(null, 0);
@@ -196,6 +201,8 @@ namespace HuntHelper
             if (ImGui.Begin("Test Window!", ref this.testVisible,
                     ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse | ImGuiWindowFlags.NoTitleBar))
             {
+                var thickness = ImGui.GetWindowSize().X / 82; //thickness for mob/player circles
+
                 var width = ImGui.GetWindowSize().X;
                 ImGui.SetWindowSize(new Vector2(width));
 
@@ -221,7 +228,7 @@ namespace HuntHelper
                         var mobPos = new Vector2(ImGui.GetWindowPos().X + gridRatioX * ((float)Utilities.MapHelpers.ConvertToMapCoordinate(obj.Position.X) - 1),
                             ImGui.GetWindowPos().Y + gridRatioY * ((float)Utilities.MapHelpers.ConvertToMapCoordinate(obj.Position.Z) - 1));
 
-                        drawlist.AddCircleFilled(mobPos, 8, ImGui.ColorConvertFloat4ToU32(new Vector4(0.4f, 1f, 0.567f, 1f)));
+                        drawlist.AddCircleFilled(mobPos, thickness, ImGui.ColorConvertFloat4ToU32(new Vector4(0.4f, 1f, 0.567f, 1f)));
                     }
                 }
 
@@ -237,7 +244,7 @@ namespace HuntHelper
 
                     //Todo - make these easier to read...
                     //green - Player Position Circle Marker --DRAWN BELOW
-                    var playerCircleRadius = 4;
+                    var playerCircleRadius = thickness/2;
 
 
                     //aoe detection circle = ~2 in-game coords. --DRAWN BELOW
@@ -255,13 +262,14 @@ namespace HuntHelper
 
                     #region Player Icon Drawing - order: direction, detection, player
 
-                    DrawPlayerIcon(drawlist, playerPos, playerCircleRadius, detectionRadius, lineEnding);
+                    DrawPlayerIcon(drawlist, playerPos, playerCircleRadius, detectionRadius, lineEnding, thickness/2);
 
                     #endregion
 
                     #region PRINT DEBUG INFO
 
                     ImGui.Text("Random Debug Info?!:");
+                    ImGui.Columns(2);
                     ImGui.Text($"Window Size: {ImGui.GetWindowSize()}");
                     //idk trig man... it's been years...
                     ImGui.Text($"rotation: {ClientState.LocalPlayer.Rotation}");
@@ -277,6 +285,12 @@ namespace HuntHelper
                                $"," +
                                $" {Utilities.MapHelpers.ConvertToMapCoordinate(ClientState.LocalPlayer.Position.Y)}" +
                                $")");
+
+                    ImGui.NextColumn();
+                    ImGui.Text($"Map: {TerritoryName}");
+                    ImGui.Text($"Map ID: {ClientState.TerritoryType}");
+                    
+
 
                     #endregion
 
@@ -298,7 +312,7 @@ namespace HuntHelper
 
                 ///////////////////////////////////////////////////////////////////////////////////// PLACEHOLDER TEXT DELETE DELETE DELETE LATER
                 ImGui_CentreText("HELLO THIS IS TEXT");
-                ImGui_CentreText(HuntManager.Text);
+                ImGui_CentreText("FDSFD");
                 ImGui_CentreText("HELLO %%%%%%% TEXT");
                 DrawDataBaseWindow();
 
@@ -366,9 +380,16 @@ namespace HuntHelper
             {
                 ImGui.SetNextWindowSize(new Vector2(450, 800));
                 ImGui.Begin("Mob Database", ref ShowDatabaseListWindow);
+                ImGui.BeginTabBar("info");
+                ImGui.BeginTabItem("database");
                 ImGui.PushFont(UiBuilder.MonoFont);
                 ImGui_CentreText(HuntManager.GetDatabaseAsString());
                 ImGui.PopFont();
+                ImGui.EndTabItem();
+                ImGui.BeginTabItem("spawn points");
+                ImGui_CentreText(mapDataManager.ToString());
+                ImGui.EndTabItem();
+                ImGui.EndTabBar();
                 ImGui.End();
             }
         }
@@ -377,7 +398,7 @@ namespace HuntHelper
 
         #region Imgui Helpers
 
-        private void DrawPlayerIcon(ImDrawListPtr drawlist, Vector2 playerPos, float playerCircleRadius, float detectionRadius, Vector2 lineEnding)
+        private void DrawPlayerIcon(ImDrawListPtr drawlist, Vector2 playerPos, float playerCircleRadius, float detectionRadius, Vector2 lineEnding, float lineThickness)
         {
             //direction line
             drawlist.AddLine(playerPos, lineEnding, ImGui.ColorConvertFloat4ToU32(new Vector4(1f, 0.3f, 0.3f, 1f)), 2);

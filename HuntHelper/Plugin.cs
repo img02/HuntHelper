@@ -8,6 +8,7 @@ using Dalamud.Data;
 using Dalamud.Game.ClientState;
 using Dalamud.Game.ClientState.Objects;
 using System.Drawing;
+using HuntHelper.MapInfoManager;
 using ImGuiNET;
 
 namespace HuntHelper
@@ -28,6 +29,7 @@ namespace HuntHelper
         private DataManager DataManager { get; init; }
 
         private HuntManager huntManager { get; init; }
+        private MapDataManager mapDataManager { get; init; }
 
         public Plugin(
             [RequiredVersion("1.0")] DalamudPluginInterface pluginInterface,
@@ -42,7 +44,9 @@ namespace HuntHelper
             this.ClientState = clientState;
             this.ObjectTable = objectTable;
             this.DataManager = dataManager;
+            
             this.huntManager = new HuntManager(PluginInterface);
+            this.mapDataManager = new MapDataManager(PluginInterface);
 
             this.Configuration = this.PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
             this.Configuration.Initialize(this.PluginInterface);
@@ -55,7 +59,7 @@ namespace HuntHelper
             #region idk
             #endregion
 
-            this.PluginUi = new PluginUI(this.Configuration, pluginInterface, goatImage, clientState, objectTable, dataManager, huntManager);
+            this.PluginUi = new PluginUI(this.Configuration, pluginInterface, goatImage, clientState, objectTable, dataManager, huntManager, mapDataManager);
 
             this.CommandManager.AddHandler(commandName, new CommandInfo(OnCommand)
             {

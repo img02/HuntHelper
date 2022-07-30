@@ -22,7 +22,6 @@ public class HuntManager
     public string ErrorMessage = string.Empty;
 
     //-contains current status, MobA1,MobB2,MobS,MobSS, MobA2,MobB2 - maybe player,playerpos,map.etc.
-    public string Text { get; set; }
 
     public HuntManager(DalamudPluginInterface pluginInterface)
     {
@@ -96,6 +95,7 @@ public class HuntManager
 
     }
 
+    //override tostring?
     public string GetDatabaseAsString()
     {
         var text = String.Format("{0,-4} | {1,-26} | {2,-5} | {3,5}\n" +

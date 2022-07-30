@@ -35,6 +35,7 @@
     <None Remove="Data\ShB-A.json" />
     <None Remove="Data\ShB-B.json" />
     <None Remove="Data\ShB-S.json" />
+    <None Remove="Data\SpawnPointData.json" />
   </ItemGroup>
 
   <ItemGroup>
@@ -87,6 +88,9 @@
     <Content Include="Data\ShB-S.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Data\SpawnPointData.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <PropertyGroup>
@@ -129,6 +133,7 @@
 
   <ItemGroup>
     <Folder Include="Entity\" />
+    <Folder Include="HuntManager\" />
   </ItemGroup>
 
 </Project>
