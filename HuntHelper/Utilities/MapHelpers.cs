@@ -12,9 +12,9 @@ public class MapHelpers
         return dataManager.Excel.GetSheet<TerritoryType>()?.GetRow(mapID)?.PlaceName?.Value?.Name.ToString() ?? "location not found";
     }
 
-    public static double ConvertToMapCoordinate(float pos)
+    public static float ConvertToMapCoordinate(float pos)
     {
-        return (Math.Floor((21.48 + (pos / 50)) * 100)) / 100;
+        return (float)(Math.Floor((21.48 + (pos / 50)) * 100)) / 100;
     }
 
 

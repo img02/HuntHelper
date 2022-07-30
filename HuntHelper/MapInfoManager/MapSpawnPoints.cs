@@ -10,6 +10,10 @@ public class MapSpawnPoints
     public ushort MapID { get; set; }
     public List<Vector2> Positions { get; set; }
 
+    public MapSpawnPoints()
+    {
+        Positions = new List<Vector2>();
+    }
 
     [JsonConstructor]
     public MapSpawnPoints(string mapName, ushort mapID, List<Vector2> positions)

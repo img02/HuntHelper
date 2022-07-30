@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Numerics;
 using Dalamud.Plugin;
 using Newtonsoft.Json;
 
@@ -38,6 +40,12 @@ public class MapDataManager
 
         var data = JsonConvert.DeserializeObject<List<MapSpawnPoints>>(File.ReadAllText(combinedPath));
         if (data != null) SpawnPointsList = data;
+    }
+
+    //search for relevant map, and return list of spawn points, or if null return blank
+    public List<Vector2> GetSpawnPoints(ushort mapID)
+    {
+        return SpawnPointsList.FirstOrDefault(spawnPoints => spawnPoints.MapID == mapID)?.Positions ??  new List<Vector2>();
     }
 
     public override string ToString()

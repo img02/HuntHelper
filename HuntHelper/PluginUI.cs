@@ -33,7 +33,11 @@ namespace HuntHelper
         private MapDataManager mapDataManager;
 
         private String TerritoryName;
-        private uint TerritoryID;
+        private ushort TerritoryID;
+
+        private uint spawnPointColour = ImGui.ColorConvertFloat4ToU32(new Vector4(0.69f, 0.69f, 0.69f, 1f));
+        private uint mobColour = ImGui.ColorConvertFloat4ToU32(new Vector4(0.4f, 1f, 0.567f, 1f));
+        private uint playerColour = ImGui.ColorConvertFloat4ToU32(new Vector4(.5f, 0.567f, 1f, 1f));
 
         // this extra bool exists for ImGui, since you can't ref a property
         private bool visible = false;
@@ -201,7 +205,7 @@ namespace HuntHelper
             if (ImGui.Begin("Test Window!", ref this.testVisible,
                     ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse | ImGuiWindowFlags.NoTitleBar))
             {
-                var thickness = ImGui.GetWindowSize().X / 82; //thickness for mob/player circles
+                var radius = 0.25f*ImGui.GetWindowSize().X / 41; //radius for mob / spawn point circles - equal to half a map coord size
 
                 var width = ImGui.GetWindowSize().X;
                 ImGui.SetWindowSize(new Vector2(width));
@@ -212,10 +216,13 @@ namespace HuntHelper
 
                 var drawlist = ImGui.GetWindowDrawList();
 
-                #region Drawing Mob and Player circles
+                #region Draw Spawn Positions
 
-                var gridRatioX = ImGui.GetContentRegionAvail().X / 41;
-                var gridRatioY = ImGui.GetContentRegionAvail().Y / 41;
+                DrawSpawnPoints(TerritoryID, radius);
+
+                #endregion
+
+                #region Drawing Mob and Player circles
 
                 foreach (var obj in this.ObjectTable)
                 {
@@ -223,12 +230,11 @@ namespace HuntHelper
                     {
                         if (bnpc.MaxHp < 10000) continue;
                         if (bnpc.BattleNpcKind != BattleNpcSubKind.Enemy) continue;
+                        
+                        var mobPos = CoordinateToPositionInWindow(new Vector2(ConvertPosToCoordinate(bnpc.Position.X),
+                            ConvertPosToCoordinate(bnpc.Position.Z)));
 
-                        //Todo - make these easier to read...
-                        var mobPos = new Vector2(ImGui.GetWindowPos().X + gridRatioX * ((float)Utilities.MapHelpers.ConvertToMapCoordinate(obj.Position.X) - 1),
-                            ImGui.GetWindowPos().Y + gridRatioY * ((float)Utilities.MapHelpers.ConvertToMapCoordinate(obj.Position.Z) - 1));
-
-                        drawlist.AddCircleFilled(mobPos, thickness, ImGui.ColorConvertFloat4ToU32(new Vector4(0.4f, 1f, 0.567f, 1f)));
+                        drawlist.AddCircleFilled(mobPos, radius, mobColour);
                     }
                 }
 
@@ -236,15 +242,13 @@ namespace HuntHelper
                 if (ClientState?.LocalPlayer?.Position != null)
                 {
                     //Todo - make these easier to read...
-                    var playerPos = new Vector2(
-                        ImGui.GetWindowPos().X + gridRatioX *
-                        ((float)Utilities.MapHelpers.ConvertToMapCoordinate(ClientState.LocalPlayer.Position.X) - 1),
-                        ImGui.GetWindowPos().Y + gridRatioY *
-                        ((float)Utilities.MapHelpers.ConvertToMapCoordinate(ClientState.LocalPlayer.Position.Z) - 1));
+                    var playerPos = CoordinateToPositionInWindow(
+                        new Vector2(ConvertPosToCoordinate(ClientState.LocalPlayer.Position.X),
+                            ConvertPosToCoordinate(ClientState.LocalPlayer.Position.Z)));
 
                     //Todo - make these easier to read...
                     //green - Player Position Circle Marker --DRAWN BELOW
-                    var playerCircleRadius = thickness/2;
+                    var playerCircleRadius = radius/2;
 
 
                     //aoe detection circle = ~2 in-game coords. --DRAWN BELOW
@@ -262,7 +266,7 @@ namespace HuntHelper
 
                     #region Player Icon Drawing - order: direction, detection, player
 
-                    DrawPlayerIcon(drawlist, playerPos, playerCircleRadius, detectionRadius, lineEnding, thickness/2);
+                    DrawPlayerIcon(drawlist, playerPos, playerCircleRadius, detectionRadius, lineEnding, radius/2);
 
                     #endregion
 
@@ -283,14 +287,12 @@ namespace HuntHelper
                     ImGui.Text($"Player Pos: (" +
                                $"{Utilities.MapHelpers.ConvertToMapCoordinate(ClientState.LocalPlayer.Position.X)}" +
                                $"," +
-                               $" {Utilities.MapHelpers.ConvertToMapCoordinate(ClientState.LocalPlayer.Position.Y)}" +
+                               $" {Utilities.MapHelpers.ConvertToMapCoordinate(ClientState.LocalPlayer.Position.Z)}" +
                                $")");
 
                     ImGui.NextColumn();
                     ImGui.Text($"Map: {TerritoryName}");
                     ImGui.Text($"Map ID: {ClientState.TerritoryType}");
-                    
-
 
                     #endregion
 
@@ -406,13 +408,34 @@ namespace HuntHelper
 
         #region Imgui Helpers
 
+        public void DrawSpawnPoints(ushort mapID, float radius )
+        {
+            var spawnPoints = mapDataManager.GetSpawnPoints(mapID);
+            if (spawnPoints.Count == 0) return;
+
+            var drawList = ImGui.GetWindowDrawList();
+            var windowPos = ImGui.GetWindowPos();
+            var windowSize = ImGui.GetWindowSize();
+
+            foreach (var sp in spawnPoints)
+            {
+                //window size should be uniform - so windowSize.X should work by itself, but..
+                //var drawPos = new Vector2(((windowSize.X / 41) * (sp.X-1)) + windowPos.X, (windowSize.Y / 41) * (sp.Y-1) + windowPos.Y);
+                var drawPos = CoordinateToPositionInWindow(sp);
+                drawList.AddCircleFilled(drawPos, radius, spawnPointColour);
+            }
+
+            ImGui.Text($"Content1 Region: {ImGui.GetContentRegionAvail()}");
+            ImGui.Text($"Window Size: {ImGui.GetWindowSize()}");
+        }
+
         private void DrawPlayerIcon(ImDrawListPtr drawlist, Vector2 playerPos, float playerCircleRadius, float detectionRadius, Vector2 lineEnding, float lineThickness)
         {
             //direction line
             drawlist.AddLine(playerPos, lineEnding, ImGui.ColorConvertFloat4ToU32(new Vector4(1f, 0.3f, 0.3f, 1f)), 2);
             //player filled circle
             drawlist.AddCircleFilled(playerPos, playerCircleRadius,
-                ImGui.ColorConvertFloat4ToU32(new Vector4(.5f, 0.567f, 1f, 1f)));
+                playerColour);
             //detection circle
             drawlist.AddCircle(playerPos, detectionRadius,
                 ImGui.ColorConvertFloat4ToU32(new Vector4(1f, 1f, 0f, 1f)), 0, 1f);
@@ -432,11 +455,21 @@ namespace HuntHelper
         //=================================================================
 
         //redundant...
-        private double ConvertPosToCoordinate(float pos)
+        private float ConvertPosToCoordinate(float pos)
         {
             return Utilities.MapHelpers.ConvertToMapCoordinate(pos);
         }
 
+        private Vector2 CoordinateToPositionInWindow(Vector2 pos)
+        {
+            var ratio = ImGui.GetWindowSize().X / 41;
+            var winPos = ImGui.GetWindowPos();
+
+            var x = (pos.X - 1) * ratio + winPos.X;
+            var y = (pos.Y - 1) * ratio + winPos.Y;
+
+            return new Vector2(x, y);
+        }
 
         //z pos offset seems diff for every map, idk idc...
         private double ConvertARR_Z_ToCoordinate(float pos)
