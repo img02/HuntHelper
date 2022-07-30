@@ -369,7 +369,7 @@ namespace HuntHelper
 
         private void DrawDataBaseWindow()
         {
-            if (ImGui.Button("Show Mob Database"))
+            if (ImGui.Button("Show Loaded Hunt Data"))
             {
                 ShowDatabaseListWindow = !ShowDatabaseListWindow;
                 //open new window
@@ -379,17 +379,25 @@ namespace HuntHelper
             if (ShowDatabaseListWindow) //move this out
             {
                 ImGui.SetNextWindowSize(new Vector2(450, 800));
-                ImGui.Begin("Mob Database", ref ShowDatabaseListWindow);
-                ImGui.BeginTabBar("info");
-                ImGui.BeginTabItem("database");
-                ImGui.PushFont(UiBuilder.MonoFont);
-                ImGui_CentreText(HuntManager.GetDatabaseAsString());
-                ImGui.PopFont();
-                ImGui.EndTabItem();
-                ImGui.BeginTabItem("spawn points");
-                ImGui_CentreText(mapDataManager.ToString());
-                ImGui.EndTabItem();
-                ImGui.EndTabBar();
+                ImGui.Begin("Loaded Hunt Data", ref ShowDatabaseListWindow);
+                if (ImGui.BeginTabBar("info"))
+                {
+                    if (ImGui.BeginTabItem("database"))
+                    {
+                        ImGui.PushFont(UiBuilder.MonoFont);
+                        ImGui_CentreText(HuntManager.GetDatabaseAsString());
+                        ImGui.PopFont();
+                        ImGui.EndTabItem();
+                    }
+
+                    if (ImGui.BeginTabItem("spawn points"))
+                    {
+                        ImGui_CentreText(mapDataManager.ToString());
+                        ImGui.EndTabItem();
+                    }
+                    ImGui.EndTabBar();
+                }
+
                 ImGui.End();
             }
         }
