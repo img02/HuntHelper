@@ -185,8 +185,8 @@ namespace HuntHelper
                 return;
             }
 
-            ImGui.SetNextWindowSize(new Vector2(375, 330), ImGuiCond.FirstUseEver);
-            ImGui.SetNextWindowSizeConstraints(new Vector2(375, 330), new Vector2(float.MaxValue, float.MaxValue));
+            ImGui.SetNextWindowSize(new Vector2(512, 512), ImGuiCond.FirstUseEver);
+            ImGui.SetNextWindowSizeConstraints(new Vector2(512, -1), new Vector2(float.MaxValue, -1)); //disable manual resize vertical
             //sets window pos
             ImGui.SetNextWindowPos(Vector2.Divide(pos, 2f), ImGuiCond.FirstUseEver);
             ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, new Vector2(0, 0));
@@ -196,6 +196,9 @@ namespace HuntHelper
             if (ImGui.Begin("Test Window!", ref this.testVisible,
                     ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse | ImGuiWindowFlags.NoTitleBar))
             {
+                var width = ImGui.GetWindowSize().X;
+                ImGui.SetWindowSize(new Vector2(width));
+
                 //update pos to stay in place when window moves. equation is 'current window pos' (topleft) + 'half of window height'.
                 pos = Vector2.Add(ImGui.GetWindowPos(), new Vector2(ImGui.GetWindowSize().Y / 2));
                 var bottomDockingPos = Vector2.Add(ImGui.GetWindowPos(), new Vector2(0, ImGui.GetWindowSize().Y));
@@ -259,6 +262,7 @@ namespace HuntHelper
                     #region PRINT DEBUG INFO
 
                     ImGui.Text("Random Debug Info?!:");
+                    ImGui.Text($"Window Size: {ImGui.GetWindowSize()}");
                     //idk trig man... it's been years...
                     ImGui.Text($"rotation: {ClientState.LocalPlayer.Rotation}");
                     ImGui.Text($"rotation deg.: {Math.Round(rotation, 2)}");
