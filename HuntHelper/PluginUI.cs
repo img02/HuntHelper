@@ -64,7 +64,7 @@ namespace HuntHelper
         }
 
 
-        public PluginUI(Configuration configuration, DalamudPluginInterface pluginInterface, ImGuiScene.TextureWrap goatImage, 
+        public PluginUI(Configuration configuration, DalamudPluginInterface pluginInterface,  
             ClientState clientState, ObjectTable objectTable, DataManager dataManager, 
             HuntManager huntManager, MapDataManager mapDataManager)
         {
@@ -72,7 +72,7 @@ namespace HuntHelper
 
             this.configuration = configuration;
             this.pluginInterface = pluginInterface; //not using atm...
-            this.goatImage = goatImage;
+            //this.goatImage = goatImage;
 
             this.ClientState = clientState;
             this.ObjectTable = objectTable;

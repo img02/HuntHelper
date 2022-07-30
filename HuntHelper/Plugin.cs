@@ -54,12 +54,12 @@ namespace HuntHelper
             // you might normally want to embed resources and load them from the manifest stream
             var imagePath = Path.Combine(PluginInterface.AssemblyLocation.Directory?.FullName!, "goat.png");
 
-            var goatImage = this.PluginInterface.UiBuilder.LoadImage(imagePath);
+            //var goatImage = this.PluginInterface.UiBuilder.LoadImage(imagePath);
 
             #region idk
             #endregion
 
-            this.PluginUi = new PluginUI(this.Configuration, pluginInterface, goatImage, clientState, objectTable, dataManager, huntManager, mapDataManager);
+            this.PluginUi = new PluginUI(this.Configuration, pluginInterface, clientState, objectTable, dataManager, huntManager, mapDataManager);
 
             this.CommandManager.AddHandler(commandName, new CommandInfo(OnCommand)
             {
