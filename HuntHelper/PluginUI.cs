@@ -300,23 +300,9 @@ namespace HuntHelper
                 ImGui_CentreText("HELLO THIS IS TEXT");
                 ImGui_CentreText(HuntManager.Text);
                 ImGui_CentreText("HELLO %%%%%%% TEXT");
+                DrawDataBaseWindow();
 
-                if (ImGui.Button("Show Mob Database"))
-                {
-                    ShowDatabaseListWindow = !ShowDatabaseListWindow;
-                    //open new window
 
-                }
-
-                if (ShowDatabaseListWindow) //move this out
-                {
-                    ImGui.SetNextWindowSize(new Vector2(450,800));
-                    ImGui.Begin("Mob Database", ref ShowDatabaseListWindow);
-                    ImGui.PushFont(UiBuilder.MonoFont);
-                    ImGui_CentreText(HuntManager.GetDatabaseAsString());
-                    ImGui.PopFont();
-                    ImGui.End();
-                }
 
                 bottomPanelHeight = ImGui.GetWindowSize().Y;
                 ImGui.End();
@@ -351,6 +337,7 @@ namespace HuntHelper
                     // can save immediately on change, if you don't want to provide a "Save and Close" button
                     this.configuration.Save();
                 }
+                DrawDataBaseWindow();
             }
             ImGui.End();
         }
@@ -363,6 +350,30 @@ namespace HuntHelper
             TerritoryID = ClientState.TerritoryType;
 
         }
+
+        #region Draw Sub Windows
+
+        private void DrawDataBaseWindow()
+        {
+            if (ImGui.Button("Show Mob Database"))
+            {
+                ShowDatabaseListWindow = !ShowDatabaseListWindow;
+                //open new window
+
+            }
+
+            if (ShowDatabaseListWindow) //move this out
+            {
+                ImGui.SetNextWindowSize(new Vector2(450, 800));
+                ImGui.Begin("Mob Database", ref ShowDatabaseListWindow);
+                ImGui.PushFont(UiBuilder.MonoFont);
+                ImGui_CentreText(HuntManager.GetDatabaseAsString());
+                ImGui.PopFont();
+                ImGui.End();
+            }
+        }
+
+        #endregion
 
         #region Imgui Helpers
 
