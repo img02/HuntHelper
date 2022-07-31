@@ -65,8 +65,8 @@ namespace HuntHelper
         }
 
 
-        public PluginUI(Configuration configuration, DalamudPluginInterface pluginInterface,  
-            ClientState clientState, ObjectTable objectTable, DataManager dataManager, 
+        public PluginUI(Configuration configuration, DalamudPluginInterface pluginInterface,
+            ClientState clientState, ObjectTable objectTable, DataManager dataManager,
             HuntManager huntManager, MapDataManager mapDataManager)
         {
             //add hunt manager to this class
@@ -206,8 +206,7 @@ namespace HuntHelper
             if (ImGui.Begin("Test Window!", ref this.testVisible,
                     ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse | ImGuiWindowFlags.NoTitleBar))
             {
-                var radius = 0.25f*ImGui.GetWindowSize().X / 41; //radius for mob / spawn point circles - equal to half a map coord size
-
+                var radius = 0.25f * ImGui.GetWindowSize().X / 41; //radius for mob / spawn point circles - equal to half a map coord size
                 var width = ImGui.GetWindowSize().X;
                 ImGui.SetWindowSize(new Vector2(width));
 
@@ -216,7 +215,9 @@ namespace HuntHelper
                 var bottomDockingPos = Vector2.Add(ImGui.GetWindowPos(), new Vector2(0, ImGui.GetWindowSize().Y));
 
                 var drawlist = ImGui.GetWindowDrawList();
-                
+
+                //show map coordinates when mouse is over gui
+                ShowCoordOnMouseOver();
 
                 //draw spawn points for the current map, if applicable.
                 DrawSpawnPoints(TerritoryID, radius);
@@ -336,7 +337,7 @@ namespace HuntHelper
 
         #region Imgui Helpers
 
-        public void DrawSpawnPoints(ushort mapID, float radius )
+        public void DrawSpawnPoints(ushort mapID, float radius)
         {
             var spawnPoints = mapDataManager.GetSpawnPoints(mapID);
             if (spawnPoints.Count == 0) return;
@@ -440,18 +441,16 @@ namespace HuntHelper
                         var mobPos = CoordinateToPositionInWindow(new Vector2(ConvertPosToCoordinate(mob.Position.X),
                             ConvertPosToCoordinate(mob.Position.Z)));
                         drawlist.AddCircleFilled(mobPos, radius, mobColour);
-                        if (Vector2.Distance(ImGui.GetMousePos(), mobPos) < radius*mouseOverModifier)
+                        //is mouse is near circle, show popup
+                        if (Vector2.Distance(ImGui.GetMousePos(), mobPos) < radius * mouseOverModifier)
                         {
-                            ImGui.BeginTooltip();
-                            ImGui.PushTextWrapPos(ImGui.GetFontSize() * 50.0f);
-                            ImGui.Separator();
-                            ImGui_CentreText($"{mob.Name}");
-                            ImGui_CentreText($"({ConvertPosToCoordinate(mob.Position.X)}, {ConvertPosToCoordinate(mob.Position.Y)})");
-                            ImGui_CentreText($"{Math.Round((mob.CurrentHp*1.0)/mob.MaxHp*100,2)}%");
-                            ImGui.Separator();
-                            ImGui.SetCursorPosX(ImGui.GetCursorPosX() + ImGui.GetStyle().IndentSpacing * 0.5f);
-                            ImGui.PopTextWrapPos();
-                            ImGui.EndTooltip();
+                            var text = new string[]
+                            {
+                                $"{mob.Name}",
+                                $"({ConvertPosToCoordinate(mob.Position.X)}, {ConvertPosToCoordinate(mob.Position.Y)})",
+                                $"{Math.Round((mob.CurrentHp * 1.0) / mob.MaxHp * 100, 2)}%"
+                            };
+                            Imgui_ToolTip(text);
                         }
                     }
                 }
@@ -470,6 +469,22 @@ namespace HuntHelper
 
         }
 
+        private void ShowCoordOnMouseOver()
+        {
+            var winPos = ImGui.GetWindowPos();
+            var winSize = ImGui.GetWindowSize();
+            var mousePos = ImGui.GetMousePos();
+
+            //if mouse pos is between top left (window pos) and bottom right of window (window pos + window size)
+            if (Vector2.Subtract(mousePos, winPos).X > 0 && Vector2.Subtract(mousePos, winPos).Y > 0 &&
+                Vector2.Subtract(mousePos, Vector2.Add(winPos, winSize)).X < 0 && Vector2.Subtract(mousePos, Vector2.Add(winPos, winSize)).Y <0)
+            {
+                var coord = MouseOverPositionToGameCoordinate();
+                var text = new string[] { $"({Math.Round(coord.X,2)}, {Math.Round(coord.Y,2)})" };
+                Imgui_ToolTip(text);
+            }
+        }
+
         private void ImGui_CentreText(string text)
         {
             var windowWidth = ImGui.GetWindowSize().X;
@@ -478,9 +493,35 @@ namespace HuntHelper
             ImGui.TextUnformatted(text);
         }
 
+        //use list instead? fixed input, so slightly more 'optimized' w/ array i guess...
+        private void Imgui_ToolTip(string[] text)
+        {
+            ImGui.BeginTooltip();
+            ImGui.PushTextWrapPos(ImGui.GetFontSize() * 50.0f);
+            ImGui.Separator();
+
+            foreach (var s in text)
+            {
+                ImGui_CentreText(s);
+            }
+
+            ImGui.Separator();
+            ImGui.SetCursorPosX(ImGui.GetCursorPosX() + ImGui.GetStyle().IndentSpacing * 0.5f);
+            ImGui.PopTextWrapPos();
+            ImGui.EndTooltip();
+
+        }
         #endregion
 
         //=================================================================
+
+        private Vector2 MouseOverPositionToGameCoordinate()
+        {
+            var coordinateSize = (ImGui.GetWindowSize().X / 41);
+            var mousePos = ImGui.GetMousePos() - ImGui.GetWindowPos();
+            var coord = mousePos / coordinateSize + Vector2.One;
+            return coord;
+        }
 
         //redundant...
         private float ConvertPosToCoordinate(float pos)

@@ -23,6 +23,7 @@ public class HuntManager
     public string ErrorMessage = string.Empty;
 
     //-contains current status, MobA1,MobB2,MobS,MobSS, MobA2,MobB2 - maybe player,playerpos,map.etc.
+    public Mob PriorityMob;
 
     public HuntManager(DalamudPluginInterface pluginInterface)
     {
@@ -42,6 +43,18 @@ public class HuntManager
     public void GetPriorityMob()
     {
 
+    }
+
+    public void AddMob()
+    {
+        //add mob when detected
+
+        //set priority mob here SS > S > A > B 
+    }
+
+    public void ClearMobs()
+    {
+        //clear mobs before every loop
     }
 
 
