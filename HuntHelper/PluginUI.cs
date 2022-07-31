@@ -39,6 +39,7 @@ namespace HuntHelper
         private uint mobColour = ImGui.ColorConvertFloat4ToU32(new Vector4(0.4f, 1f, 0.567f, 1f));
         private uint playerColour = ImGui.ColorConvertFloat4ToU32(new Vector4(.5f, 0.567f, 1f, 1f));
 
+        private double mouseOverModifier = 2.5;
         // this extra bool exists for ImGui, since you can't ref a property
         private bool visible = false;
         public bool Visible
@@ -432,13 +433,26 @@ namespace HuntHelper
             var drawlist = ImGui.GetWindowDrawList();
             foreach (var obj in this.ObjectTable)
             {
-                if (obj is BattleNpc bnpc)
+                if (obj is BattleNpc mob)
                 {
-                    if (HuntManager.IsHunt(bnpc.NameId))
+                    if (HuntManager.IsHunt(mob.NameId))
                     {
-                        var mobPos = CoordinateToPositionInWindow(new Vector2(ConvertPosToCoordinate(bnpc.Position.X),
-                            ConvertPosToCoordinate(bnpc.Position.Z)));
+                        var mobPos = CoordinateToPositionInWindow(new Vector2(ConvertPosToCoordinate(mob.Position.X),
+                            ConvertPosToCoordinate(mob.Position.Z)));
                         drawlist.AddCircleFilled(mobPos, radius, mobColour);
+                        if (Vector2.Distance(ImGui.GetMousePos(), mobPos) < radius*mouseOverModifier)
+                        {
+                            ImGui.BeginTooltip();
+                            ImGui.PushTextWrapPos(ImGui.GetFontSize() * 50.0f);
+                            ImGui.Separator();
+                            ImGui_CentreText($"{mob.Name}");
+                            ImGui_CentreText($"({ConvertPosToCoordinate(mob.Position.X)}, {ConvertPosToCoordinate(mob.Position.Y)})");
+                            ImGui_CentreText($"{Math.Round((mob.CurrentHp*1.0)/mob.MaxHp*100,2)}%");
+                            ImGui.Separator();
+                            ImGui.SetCursorPosX(ImGui.GetCursorPosX() + ImGui.GetStyle().IndentSpacing * 0.5f);
+                            ImGui.PopTextWrapPos();
+                            ImGui.EndTooltip();
+                        }
                     }
                 }
             }
