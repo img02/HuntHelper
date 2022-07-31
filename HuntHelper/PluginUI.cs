@@ -92,7 +92,7 @@ namespace HuntHelper
 
         public void Dispose()
         {
-            this.goatImage.Dispose();
+            //this.goatImage.Dispose();
         }
 
         public void Draw()
@@ -394,7 +394,7 @@ namespace HuntHelper
 
                     if (ImGui.BeginTabItem("spawn points"))
                     {
-                        ImGui_CentreText(mapDataManager.ToString());
+                        ImGui.TextUnformatted(mapDataManager.ToString());
                         ImGui.EndTabItem();
                     }
                     ImGui.EndTabBar();

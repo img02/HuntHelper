@@ -39,10 +39,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="..\Data\goat.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Visible>false</Visible>
-    </Content>
     <Content Include="Data\ARR-A.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -135,5 +131,7 @@
     <Folder Include="Entity\" />
     <Folder Include="HuntManager\" />
   </ItemGroup>
+
+  <ProjectExtensions><VisualStudio><UserProperties /></VisualStudio></ProjectExtensions>
 
 </Project>

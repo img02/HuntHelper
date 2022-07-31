@@ -51,6 +51,7 @@ public class MapDataManager
     public override string ToString()
     {
         var text = string.Empty;
+
         foreach (var map in SpawnPointsList)
         {
             text += $"{map.MapName} - {map.MapID}\n" +
@@ -59,7 +60,7 @@ public class MapDataManager
             {
                 text += $"({v2.X}), ({v2.Y})\n";
             }
-            text += "-----------------------------------------\n";
+            text += $"-----------------------------------------\n";
         }
         return text;
     }

@@ -12,6 +12,7 @@ public class MapSpawnPoints
 
     public MapSpawnPoints()
     {
+        MapName = string.Empty;
         Positions = new List<Vector2>();
     }
 
