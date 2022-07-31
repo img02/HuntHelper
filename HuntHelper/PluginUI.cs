@@ -41,11 +41,12 @@ namespace HuntHelper
 
         private double mouseOverModifier = 2.5;
         // this extra bool exists for ImGui, since you can't ref a property
-        private bool visible = false;
-        public bool Visible
+        private bool mainWindowVisible = false;
+        private bool showDebug = false;
+        public bool MainWindowVisible
         {
-            get { return this.visible; }
-            set { this.visible = value; }
+            get { return this.mainWindowVisible; }
+            set { this.mainWindowVisible = value; }
         }
 
 
@@ -114,14 +115,14 @@ namespace HuntHelper
 
         public void DrawMainWindow()
         {
-            if (!Visible)
+            if (!MainWindowVisible)
             {
                 return;
             }
 
             ImGui.SetNextWindowSize(new Vector2(375, 330), ImGuiCond.FirstUseEver);
             ImGui.SetNextWindowSizeConstraints(new Vector2(375, 330), new Vector2(float.MaxValue, float.MaxValue));
-            if (ImGui.Begin("My Amazing Window!", ref this.visible, ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse))
+            if (ImGui.Begin("My Amazing Window!", ref this.mainWindowVisible, ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse))
             {
                 ImGui.Text($"The random config bool is {this.configuration.SomePropertyToBeSavedAndWithADefault}");
 
@@ -215,7 +216,7 @@ namespace HuntHelper
                 var bottomDockingPos = Vector2.Add(ImGui.GetWindowPos(), new Vector2(0, ImGui.GetWindowSize().Y));
 
                 var drawlist = ImGui.GetWindowDrawList();
-
+                
                 //show map coordinates when mouse is over gui
                 ShowCoordOnMouseOver();
 
@@ -229,6 +230,8 @@ namespace HuntHelper
                 //draw player icon and info
                 UpdatePlayerInfo(radius);
 
+                #region Bottom docking info window
+
                 //Current mob info 'docking'
                 ImGui.BeginChild(1, new Vector2(ImGui.GetWindowSize().X, 25));
                 ImGui.SetNextWindowSize(new Vector2(ImGui.GetWindowSize().X, bottomPanelHeight), ImGuiCond.None);
@@ -239,26 +242,34 @@ namespace HuntHelper
 
                 ImGui.Begin("test", ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoMove);
                 ImGui.SetWindowPos(bottomDockingPos);
-                ImGui.Indent(ImGui.GetWindowSize().X / 3);
+                //ImGui.Indent(ImGui.GetWindowSize().X / 3);
 
                 ///////////////////////////////////////////////////////////////////////////////////// PLACEHOLDER TEXT DELETE DELETE DELETE LATER
-                ImGui_CentreText("HELLO THIS IS TEXT");
-                ImGui_CentreText("FDSFD");
-                ImGui_CentreText("HELLO %%%%%%% TEXT");
+                ImGui.Columns(2);
+                if (ImGui.Button("Show Debug"))
+                {
+                    showDebug = !showDebug;
+                }
                 DrawDataBaseWindow();
-
-
+                ImGui.NextColumn();
+                ImGui.TextUnformatted("HELLO THIS IS TEXT");
+                ImGui.TextUnformatted("FDSFD");
+                ImGui.TextUnformatted("HELLO %%%%%%% TEXT");
 
                 bottomPanelHeight = ImGui.GetWindowSize().Y;
                 ImGui.End();
                 ImGui.EndChildFrame();
+                #endregion
 
-                if (HuntManager.ErrorPopUpVisible)
+                if (HuntManager.ErrorPopUpVisible || mapDataManager.ErrorPopUpVisible)
                 {
                     ImGui.Begin("Error loading data");
                     ImGui.Text(HuntManager.ErrorMessage);
+                    ImGui.Text(mapDataManager.ErrorMessage);
                     ImGui.End();
                 }
+
+                if (showDebug) ShowDebugInfo();
             }
             ImGui.End();
         }
@@ -353,9 +364,6 @@ namespace HuntHelper
                 var drawPos = CoordinateToPositionInWindow(sp);
                 drawList.AddCircleFilled(drawPos, radius, spawnPointColour);
             }
-
-            ImGui.Text($"Content1 Region: {ImGui.GetContentRegionAvail()}");
-            ImGui.Text($"Window Size: {ImGui.GetWindowSize()}");
         }
 
         private void UpdateMobInfo(float radius)
@@ -397,34 +405,6 @@ namespace HuntHelper
                 DrawPlayerIcon(drawlist, playerPos, playerCircleRadius, detectionRadius, lineEnding, radius / 2);
 
                 #endregion
-
-                #region PRINT DEBUG INFO
-
-                ImGui.Text("Random Debug Info?!:");
-                ImGui.Columns(2);
-                ImGui.Text($"Window Size: {ImGui.GetWindowSize()}");
-                //idk trig man... it's been years...
-                ImGui.Text($"rotation: {ClientState.LocalPlayer.Rotation}");
-                ImGui.Text($"rotation deg.: {Math.Round(rotation, 2)}");
-                ImGui.Text($"rotation rad.: {Math.Round(Math.Abs(ClientState.LocalPlayer.Rotation - (Math.PI)), 2)}");
-                ImGui.Text($"rotation sin.: {Math.Round(Math.Sin(rotation), 2)}");
-                ImGui.Text($"rotation cos.: {Math.Round(Math.Cos(rotation), 2)}");
-
-                ImGui.Text($"Line Ending Pos: {lineEnding.X}, {lineEnding.Y}");
-                ImGui.Text($"Player Screen Pos: {playerPos.X}, {playerPos.Y}");
-                ImGui.Text($"Player Pos: (" +
-                           $"{Utilities.MapHelpers.ConvertToMapCoordinate(ClientState.LocalPlayer.Position.X)}" +
-                           $"," +
-                           $" {Utilities.MapHelpers.ConvertToMapCoordinate(ClientState.LocalPlayer.Position.Z)}" +
-                           $")");
-
-                ImGui.NextColumn();
-                ImGui.Text($"Map: {TerritoryName}");
-                ImGui.Text($"Map ID: {ClientState.TerritoryType}");
-
-                #endregion
-
-
             }
             #endregion
         }
@@ -447,7 +427,7 @@ namespace HuntHelper
                             var text = new string[]
                             {
                                 $"{mob.Name}",
-                                $"({ConvertPosToCoordinate(mob.Position.X)}, {ConvertPosToCoordinate(mob.Position.Y)})",
+                                $"({ConvertPosToCoordinate(mob.Position.X)}, {ConvertPosToCoordinate(mob.Position.Z)})",
                                 $"{Math.Round((mob.CurrentHp * 1.0) / mob.MaxHp * 100, 2)}%"
                             };
                             Imgui_ToolTip(text);
@@ -477,14 +457,45 @@ namespace HuntHelper
 
             //if mouse pos is between top left (window pos) and bottom right of window (window pos + window size)
             if (Vector2.Subtract(mousePos, winPos).X > 0 && Vector2.Subtract(mousePos, winPos).Y > 0 &&
-                Vector2.Subtract(mousePos, Vector2.Add(winPos, winSize)).X < 0 && Vector2.Subtract(mousePos, Vector2.Add(winPos, winSize)).Y <0)
+                Vector2.Subtract(mousePos, Vector2.Add(winPos, winSize)).X < 0 && Vector2.Subtract(mousePos, Vector2.Add(winPos, winSize)).Y < 0)
             {
                 var coord = MouseOverPositionToGameCoordinate();
-                var text = new string[] { $"({Math.Round(coord.X,2)}, {Math.Round(coord.Y,2)})" };
+                var text = new string[] { $"({Math.Round(coord.X, 2)}, {Math.Round(coord.Y, 2)})" };
                 Imgui_ToolTip(text);
             }
         }
 
+        private void ShowDebugInfo()
+        {
+
+            ImGui.Text("Random Debug Info?!:");
+            ImGui.Columns(2);
+            ImGui.Text($"Content1 Region: {ImGui.GetContentRegionAvail()}");
+            ImGui.Text($"Window Size: {ImGui.GetWindowSize()}");
+
+            if (ClientState?.LocalPlayer?.Position != null)
+            {
+                ImGui.Text($"rotation: {ClientState.LocalPlayer.Rotation}");
+                var rotation = Math.Abs(ClientState.LocalPlayer.Rotation - Math.PI);
+                ImGui.Text($"rotation deg.: {Math.Round(rotation, 2)}");
+                ImGui.Text($"rotation rad.: {Math.Round(rotation, 2)}");
+                ImGui.Text($"rotation sin.: {Math.Round(Math.Sin(rotation), 2)}");
+                ImGui.Text($"rotation cos.: {Math.Round(Math.Cos(rotation), 2)}");
+                ImGui.Text($"Player Pos: (" +
+                           $"{Utilities.MapHelpers.ConvertToMapCoordinate(ClientState.LocalPlayer.Position.X)}" +
+                           $"," +
+                           $" {Utilities.MapHelpers.ConvertToMapCoordinate(ClientState.LocalPlayer.Position.Z)}" +
+                           $")");
+                ImGui.NextColumn();
+                ImGui.Text($"Map: {TerritoryName}");
+                ImGui.Text($"Map ID: {ClientState.TerritoryType}");
+                ImGui.Text($"Map ID: {TerritoryID}");
+            }
+            else
+            {
+                ImGui.Text("Can't find local player");
+            }
+        }
         private void ImGui_CentreText(string text)
         {
             var windowWidth = ImGui.GetWindowSize().X;

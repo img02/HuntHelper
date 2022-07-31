@@ -88,7 +88,7 @@ namespace HuntHelper
         private void OnCommand(string command, string args)
         {
             // in response to the slash command, just display our main ui
-            this.PluginUi.Visible = true;
+            this.PluginUi.MainWindowVisible = true;
         }
         private void TestCommand(string command, string args)
         {
