@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using Dalamud.Plugin;
-using HuntHelper.Entity;
+using HuntHelper.HuntInfo;
 using ImGuiNET;
 using Newtonsoft.Json;
 
@@ -107,6 +108,17 @@ public class HuntManager
         text += DictToString(EWDict);
         return text;
     }
+    public bool IsHunt(uint modelID)
+    {
+        var exists = false;
+        exists = ARRDict.Any(kvp => kvp.Value.Any(m => m.ModelID == modelID));
+        if (!exists) exists = HWDict.Any(kvp => kvp.Value.Any(m => m.ModelID == modelID));
+        if (!exists) exists = SBDict.Any(kvp => kvp.Value.Any(m => m.ModelID == modelID));
+        if (!exists) exists = ShBDict.Any(kvp => kvp.Value.Any(m => m.ModelID == modelID));
+        if (!exists) exists = EWDict.Any(kvp => kvp.Value.Any(m => m.ModelID == modelID));
+        return exists;
+    }
+
 
     private string DictToString(Dictionary<HuntRank, List<Mob>> dic)
     {
@@ -145,8 +157,7 @@ public class HuntManager
         if (S != null) dict.Add(HuntRank.S, S);
     }
 
-
-
+   
 
 
 

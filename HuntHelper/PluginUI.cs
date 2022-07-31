@@ -215,90 +215,17 @@ namespace HuntHelper
                 var bottomDockingPos = Vector2.Add(ImGui.GetWindowPos(), new Vector2(0, ImGui.GetWindowSize().Y));
 
                 var drawlist = ImGui.GetWindowDrawList();
+                
 
-                #region Draw Spawn Positions
-
+                //draw spawn points for the current map, if applicable.
                 DrawSpawnPoints(TerritoryID, radius);
-
-                #endregion
 
                 #region Drawing Mob and Player circles
 
-                foreach (var obj in this.ObjectTable)
-                {
-                    if (obj is BattleNpc bnpc)
-                    {
-                        if (bnpc.MaxHp < 10000) continue;
-                        if (bnpc.BattleNpcKind != BattleNpcSubKind.Enemy) continue;
-                        
-                        var mobPos = CoordinateToPositionInWindow(new Vector2(ConvertPosToCoordinate(bnpc.Position.X),
-                            ConvertPosToCoordinate(bnpc.Position.Z)));
+                UpdateMobInfo(radius);
 
-                        drawlist.AddCircleFilled(mobPos, radius, mobColour);
-                    }
-                }
-
-                //if this stuff ain't null, draw player position
-                if (ClientState?.LocalPlayer?.Position != null)
-                {
-                    //Todo - make these easier to read...
-                    var playerPos = CoordinateToPositionInWindow(
-                        new Vector2(ConvertPosToCoordinate(ClientState.LocalPlayer.Position.X),
-                            ConvertPosToCoordinate(ClientState.LocalPlayer.Position.Z)));
-
-                    //Todo - make these easier to read...
-                    //green - Player Position Circle Marker --DRAWN BELOW
-                    var playerCircleRadius = radius/2;
-
-
-                    //aoe detection circle = ~2 in-game coords. --DRAWN BELOW
-                    var detectionRadius = 2 * (ImGui.GetContentRegionAvail().X / 41);
-
-
-                    //var rotation = Math.Abs(ClientState.LocalPlayer.Rotation * (180 / Math.PI) - 180);
-                    var rotation = Math.Abs(ClientState.LocalPlayer.Rotation - Math.PI);
-
-
-                    var lineEnding =
-                        new Vector2(
-                            playerPos.X + (float)(detectionRadius * Math.Sin(rotation)),
-                            playerPos.Y - (float)(detectionRadius * Math.Cos(rotation)));
-
-                    #region Player Icon Drawing - order: direction, detection, player
-
-                    DrawPlayerIcon(drawlist, playerPos, playerCircleRadius, detectionRadius, lineEnding, radius/2);
-
-                    #endregion
-
-                    #region PRINT DEBUG INFO
-
-                    ImGui.Text("Random Debug Info?!:");
-                    ImGui.Columns(2);
-                    ImGui.Text($"Window Size: {ImGui.GetWindowSize()}");
-                    //idk trig man... it's been years...
-                    ImGui.Text($"rotation: {ClientState.LocalPlayer.Rotation}");
-                    ImGui.Text($"rotation deg.: {Math.Round(rotation, 2)}");
-                    ImGui.Text($"rotation rad.: {Math.Round(Math.Abs(ClientState.LocalPlayer.Rotation - (Math.PI)), 2)}");
-                    ImGui.Text($"rotation sin.: {Math.Round(Math.Sin(rotation), 2)}");
-                    ImGui.Text($"rotation cos.: {Math.Round(Math.Cos(rotation), 2)}");
-
-                    ImGui.Text($"Line Ending Pos: {lineEnding.X}, {lineEnding.Y}");
-                    ImGui.Text($"Player Screen Pos: {playerPos.X}, {playerPos.Y}");
-                    ImGui.Text($"Player Pos: (" +
-                               $"{Utilities.MapHelpers.ConvertToMapCoordinate(ClientState.LocalPlayer.Position.X)}" +
-                               $"," +
-                               $" {Utilities.MapHelpers.ConvertToMapCoordinate(ClientState.LocalPlayer.Position.Z)}" +
-                               $")");
-
-                    ImGui.NextColumn();
-                    ImGui.Text($"Map: {TerritoryName}");
-                    ImGui.Text($"Map ID: {ClientState.TerritoryType}");
-
-                    #endregion
-
-                    #endregion
-                }
-
+                //draw player icon and info
+                UpdatePlayerInfo(radius);
 
                 //Current mob info 'docking'
                 ImGui.BeginChild(1, new Vector2(ImGui.GetWindowSize().X, 25));
@@ -429,6 +356,93 @@ namespace HuntHelper
             ImGui.Text($"Window Size: {ImGui.GetWindowSize()}");
         }
 
+        private void UpdateMobInfo(float radius)
+        {
+            //assume I'm gonna use this method to also other mob info stuff - like tooltips or w/e idk
+            DrawMobIcon(radius);
+        }
+        private void UpdatePlayerInfo(float radius)
+        {
+            //if this stuff ain't null, draw player position
+            if (ClientState?.LocalPlayer?.Position != null)
+            {
+                //Todo - make these easier to read...
+                var playerPos = CoordinateToPositionInWindow(
+                    new Vector2(ConvertPosToCoordinate(ClientState.LocalPlayer.Position.X),
+                        ConvertPosToCoordinate(ClientState.LocalPlayer.Position.Z)));
+
+                //Todo - make these easier to read...
+                //green - Player Position Circle Marker --DRAWN BELOW
+                var playerCircleRadius = radius / 2;
+
+
+                //aoe detection circle = ~2 in-game coords. --DRAWN BELOW
+                var detectionRadius = 2 * (ImGui.GetContentRegionAvail().X / 41);
+
+
+                //var rotation = Math.Abs(ClientState.LocalPlayer.Rotation * (180 / Math.PI) - 180);
+                var rotation = Math.Abs(ClientState.LocalPlayer.Rotation - Math.PI);
+
+
+                var lineEnding =
+                    new Vector2(
+                        playerPos.X + (float)(detectionRadius * Math.Sin(rotation)),
+                        playerPos.Y - (float)(detectionRadius * Math.Cos(rotation)));
+
+                #region Player Icon Drawing - order: direction, detection, player
+
+                var drawlist = ImGui.GetWindowDrawList();
+                DrawPlayerIcon(drawlist, playerPos, playerCircleRadius, detectionRadius, lineEnding, radius / 2);
+
+                #endregion
+
+                #region PRINT DEBUG INFO
+
+                ImGui.Text("Random Debug Info?!:");
+                ImGui.Columns(2);
+                ImGui.Text($"Window Size: {ImGui.GetWindowSize()}");
+                //idk trig man... it's been years...
+                ImGui.Text($"rotation: {ClientState.LocalPlayer.Rotation}");
+                ImGui.Text($"rotation deg.: {Math.Round(rotation, 2)}");
+                ImGui.Text($"rotation rad.: {Math.Round(Math.Abs(ClientState.LocalPlayer.Rotation - (Math.PI)), 2)}");
+                ImGui.Text($"rotation sin.: {Math.Round(Math.Sin(rotation), 2)}");
+                ImGui.Text($"rotation cos.: {Math.Round(Math.Cos(rotation), 2)}");
+
+                ImGui.Text($"Line Ending Pos: {lineEnding.X}, {lineEnding.Y}");
+                ImGui.Text($"Player Screen Pos: {playerPos.X}, {playerPos.Y}");
+                ImGui.Text($"Player Pos: (" +
+                           $"{Utilities.MapHelpers.ConvertToMapCoordinate(ClientState.LocalPlayer.Position.X)}" +
+                           $"," +
+                           $" {Utilities.MapHelpers.ConvertToMapCoordinate(ClientState.LocalPlayer.Position.Z)}" +
+                           $")");
+
+                ImGui.NextColumn();
+                ImGui.Text($"Map: {TerritoryName}");
+                ImGui.Text($"Map ID: {ClientState.TerritoryType}");
+
+                #endregion
+
+
+            }
+            #endregion
+        }
+
+        private void DrawMobIcon(float radius)
+        {
+            var drawlist = ImGui.GetWindowDrawList();
+            foreach (var obj in this.ObjectTable)
+            {
+                if (obj is BattleNpc bnpc)
+                {
+                    if (HuntManager.IsHunt(bnpc.NameId))
+                    {
+                        var mobPos = CoordinateToPositionInWindow(new Vector2(ConvertPosToCoordinate(bnpc.Position.X),
+                            ConvertPosToCoordinate(bnpc.Position.Z)));
+                        drawlist.AddCircleFilled(mobPos, radius, mobColour);
+                    }
+                }
+            }
+        }
         private void DrawPlayerIcon(ImDrawListPtr drawlist, Vector2 playerPos, float playerCircleRadius, float detectionRadius, Vector2 lineEnding, float lineThickness)
         {
             //direction line

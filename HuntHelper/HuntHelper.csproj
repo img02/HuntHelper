@@ -128,7 +128,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Entity\" />
+    <Folder Include="HuntInfo\" />
     <Folder Include="HuntManager\" />
   </ItemGroup>
 

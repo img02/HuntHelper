@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Numerics;
 using Dalamud.Game.ClientState.Objects.Types;
-using ImGuizmoNET;
 using Newtonsoft.Json;
 
-namespace HuntHelper.Entity;
+namespace HuntHelper.HuntInfo;
 
 public class Mob
 {
