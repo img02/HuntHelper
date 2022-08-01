@@ -19,7 +19,7 @@ public class HuntManager
     private readonly Dictionary<HuntRank, List<Mob>> _ewDict;
     private readonly DalamudPluginInterface _pluginInterface;
 
-    private readonly Dictionary<HuntRank, BattleNpc> _currentMobs;
+    private readonly new List<(HuntRank, BattleNpc)> _currentMobs;
     private BattleNpc? _priorityMob;
     private HuntRank _highestRank;
 
@@ -33,7 +33,7 @@ public class HuntManager
         _shbDict = new Dictionary<HuntRank, List<Mob>>();
         _sbDict = new Dictionary<HuntRank, List<Mob>>();
         _ewDict = new Dictionary<HuntRank, List<Mob>>();
-        _currentMobs = new Dictionary<HuntRank, BattleNpc>();
+        _currentMobs = new List<(HuntRank, BattleNpc)>();
         this._pluginInterface = pluginInterface;
         LoadHuntData();
     }
@@ -43,15 +43,15 @@ public class HuntManager
         return (_highestRank,_priorityMob);
     }
 
-    private void GetAllCurrentMobs()
+    public new List<(HuntRank, BattleNpc)> GetAllCurrentMobs()
     {
-        //return a string?
+        return _currentMobs;
     }
 
     public void AddMob(BattleNpc mob)
     {
         var rank = GetHuntRank(mob.NameId);
-        _currentMobs.Add(rank,mob);
+        _currentMobs.Add((rank,mob));
 
         //if same rank or higher, make it the priority mob
         if (rank >= _highestRank)
