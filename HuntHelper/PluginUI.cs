@@ -14,6 +14,7 @@ using Dalamud.Logging;
 using Dalamud.Plugin;
 using HuntHelper.MapInfoManager;
 using Lumina.Excel.GeneratedSheets;
+using HuntHelper.Managers.Hunts;
 
 namespace HuntHelper
 {
@@ -39,7 +40,7 @@ namespace HuntHelper
         private uint mobColour = ImGui.ColorConvertFloat4ToU32(new Vector4(0.4f, 1f, 0.567f, 1f));
         private uint playerColour = ImGui.ColorConvertFloat4ToU32(new Vector4(.5f, 0.567f, 1f, 1f));
 
-        private double mouseOverModifier = 2.5;
+        private double mouseOverDistanceModifier = 2.5;
         // this extra bool exists for ImGui, since you can't ref a property
         private bool mainWindowVisible = false;
         private bool showDebug = false;
@@ -217,6 +218,11 @@ namespace HuntHelper
 
                 var drawlist = ImGui.GetWindowDrawList();
                 
+                //=========================================
+                //if using images
+                //draw images first so they are at the bottom.
+                //=========================================
+
                 //show map coordinates when mouse is over gui
                 ShowCoordOnMouseOver();
 
@@ -422,7 +428,7 @@ namespace HuntHelper
                             ConvertPosToCoordinate(mob.Position.Z)));
                         drawlist.AddCircleFilled(mobPos, radius, mobColour);
                         //is mouse is near circle, show popup
-                        if (Vector2.Distance(ImGui.GetMousePos(), mobPos) < radius * mouseOverModifier)
+                        if (Vector2.Distance(ImGui.GetMousePos(), mobPos) < radius * mouseOverDistanceModifier)
                         {
                             var text = new string[]
                             {

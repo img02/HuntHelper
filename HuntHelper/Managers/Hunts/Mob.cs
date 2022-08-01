@@ -3,7 +3,7 @@ using System.Numerics;
 using Dalamud.Game.ClientState.Objects.Types;
 using Newtonsoft.Json;
 
-namespace HuntHelper.HuntInfo;
+namespace HuntHelper.Managers.Hunts;
 
 public class Mob
 {

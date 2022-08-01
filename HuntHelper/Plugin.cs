@@ -10,6 +10,7 @@ using Dalamud.Game.ClientState.Objects;
 using System.Drawing;
 using HuntHelper.MapInfoManager;
 using ImGuiNET;
+using HuntHelper.Managers.Hunts;
 
 namespace HuntHelper
 {

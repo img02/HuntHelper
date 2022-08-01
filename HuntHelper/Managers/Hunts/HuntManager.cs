@@ -4,20 +4,19 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using Dalamud.Plugin;
-using HuntHelper.HuntInfo;
 using ImGuiNET;
 using Newtonsoft.Json;
 
-namespace HuntHelper;
+namespace HuntHelper.Managers.Hunts;
 
 public class HuntManager
 {
-    private Dictionary<HuntRank, List<Mob>> ARRDict;
-    private Dictionary<HuntRank, List<Mob>> HWDict;
-    private Dictionary<HuntRank, List<Mob>> ShBDict;
-    private Dictionary<HuntRank, List<Mob>> SBDict;
-    private Dictionary<HuntRank, List<Mob>> EWDict;
-    private DalamudPluginInterface pluginInterface;
+    private readonly Dictionary<HuntRank, List<Mob>> _arrDict;
+    private readonly Dictionary<HuntRank, List<Mob>> _hwDict;
+    private readonly Dictionary<HuntRank, List<Mob>> _shBDict;
+    private readonly Dictionary<HuntRank, List<Mob>> _sbDict;
+    private readonly Dictionary<HuntRank, List<Mob>> _ewDict;
+    private readonly DalamudPluginInterface _pluginInterface;
 
     public bool ErrorPopUpVisible = false;
     public string ErrorMessage = string.Empty;
@@ -27,16 +26,13 @@ public class HuntManager
 
     public HuntManager(DalamudPluginInterface pluginInterface)
     {
-        ARRDict = new Dictionary<HuntRank, List<Mob>>();
-        HWDict = new Dictionary<HuntRank, List<Mob>>();
-        ShBDict = new Dictionary<HuntRank, List<Mob>>();
-        SBDict = new Dictionary<HuntRank, List<Mob>>();
-        EWDict = new Dictionary<HuntRank, List<Mob>>();
-
-        this.pluginInterface = pluginInterface;
-
+        _arrDict = new Dictionary<HuntRank, List<Mob>>();
+        _hwDict = new Dictionary<HuntRank, List<Mob>>();
+        _shBDict = new Dictionary<HuntRank, List<Mob>>();
+        _sbDict = new Dictionary<HuntRank, List<Mob>>();
+        _ewDict = new Dictionary<HuntRank, List<Mob>>();
+        this._pluginInterface = pluginInterface;
         LoadHuntData();
-
     }
 
 
@@ -78,15 +74,12 @@ public class HuntManager
             "./data/SB-A.json",
             "./data/SB-B.json",
             "./data/SB-S.json",
-
         };
         var ShBJsonFiles = new List<string>
         {
-
             "./data/ShB-A.json",
             "./data/ShB-B.json",
             "./data/ShB-S.json",
-
         };
         var EWJsonFiles = new List<string>
         {
@@ -96,11 +89,11 @@ public class HuntManager
         };
 
         //messy... prob cleaner way
-        LoadFilesIntoDic(ARRDict, ARRJsonFiles);
-        LoadFilesIntoDic(HWDict, HWJsonFiles);
-        LoadFilesIntoDic(SBDict, SBJsonFiles);
-        LoadFilesIntoDic(ShBDict, ShBJsonFiles);
-        LoadFilesIntoDic(EWDict, EWJsonFiles);
+        LoadFilesIntoDic(_arrDict, ARRJsonFiles);
+        LoadFilesIntoDic(_hwDict, HWJsonFiles);
+        LoadFilesIntoDic(_sbDict, SBJsonFiles);
+        LoadFilesIntoDic(_shBDict, ShBJsonFiles);
+        LoadFilesIntoDic(_ewDict, EWJsonFiles);
 
     }
 
@@ -112,23 +105,23 @@ public class HuntManager
     //override tostring?
     public string GetDatabaseAsString()
     {
-        var text = String.Format("{0,-4} | {1,-26} | {2,-5} | {3,5}\n" +
-                   "--------------------------------------------------\n", "Rank","Name"," ID","Enabled");
-        text += DictToString(ARRDict);
-        text += DictToString(HWDict);
-        text += DictToString(SBDict);
-        text += DictToString(ShBDict);
-        text += DictToString(EWDict);
+        var text = string.Format("{0,-4} | {1,-26} | {2,-5} | {3,5}\n" +
+                   "--------------------------------------------------\n", "Rank", "Name", " ID", "Enabled");
+        text += DictToString(_arrDict);
+        text += DictToString(_hwDict);
+        text += DictToString(_sbDict);
+        text += DictToString(_shBDict);
+        text += DictToString(_ewDict);
         return text;
     }
     public bool IsHunt(uint modelID)
     {
         var exists = false;
-        exists = ARRDict.Any(kvp => kvp.Value.Any(m => m.ModelID == modelID));
-        if (!exists) exists = HWDict.Any(kvp => kvp.Value.Any(m => m.ModelID == modelID));
-        if (!exists) exists = SBDict.Any(kvp => kvp.Value.Any(m => m.ModelID == modelID));
-        if (!exists) exists = ShBDict.Any(kvp => kvp.Value.Any(m => m.ModelID == modelID));
-        if (!exists) exists = EWDict.Any(kvp => kvp.Value.Any(m => m.ModelID == modelID));
+        exists = _arrDict.Any(kvp => kvp.Value.Any(m => m.ModelID == modelID));
+        if (!exists) exists = _hwDict.Any(kvp => kvp.Value.Any(m => m.ModelID == modelID));
+        if (!exists) exists = _sbDict.Any(kvp => kvp.Value.Any(m => m.ModelID == modelID));
+        if (!exists) exists = _shBDict.Any(kvp => kvp.Value.Any(m => m.ModelID == modelID));
+        if (!exists) exists = _ewDict.Any(kvp => kvp.Value.Any(m => m.ModelID == modelID));
         return exists;
     }
 
@@ -141,7 +134,7 @@ public class HuntManager
         {
             foreach (var mob in kvp.Value)
             {
-                text += String.Format($"{mob.Rank,-4} | {mob.Name,-26} | {mob.ModelID,5} | {mob.IsEnabled,5}\n");
+                text += string.Format($"{mob.Rank,-4} | {mob.Name,-26} | {mob.ModelID,5} | {mob.IsEnabled,5}\n");
             }
 
             text += "\n";
@@ -154,23 +147,23 @@ public class HuntManager
     {
         foreach (var path in filePaths)
         {
-            if (!File.Exists(Path.Combine(pluginInterface.AssemblyLocation.Directory?.FullName!, path)))
+            if (!File.Exists(Path.Combine(_pluginInterface.AssemblyLocation.Directory?.FullName!, path)))
             {
                 ErrorPopUpVisible = true;
                 ErrorMessage += $"File {path} missing... Please replace missing file(s).\n";
                 return;
             }
         }
-        var A = JsonConvert.DeserializeObject<List<Mob>>(File.ReadAllText(Path.Combine(pluginInterface.AssemblyLocation.Directory?.FullName!, filePaths[0])));
-        var B = JsonConvert.DeserializeObject<List<Mob>>(File.ReadAllText(Path.Combine(pluginInterface.AssemblyLocation.Directory?.FullName!, filePaths[1])));
-        var S = JsonConvert.DeserializeObject<List<Mob>>(File.ReadAllText(Path.Combine(pluginInterface.AssemblyLocation.Directory?.FullName!, filePaths[2])));
+        var A = JsonConvert.DeserializeObject<List<Mob>>(File.ReadAllText(Path.Combine(_pluginInterface.AssemblyLocation.Directory?.FullName!, filePaths[0])));
+        var B = JsonConvert.DeserializeObject<List<Mob>>(File.ReadAllText(Path.Combine(_pluginInterface.AssemblyLocation.Directory?.FullName!, filePaths[1])));
+        var S = JsonConvert.DeserializeObject<List<Mob>>(File.ReadAllText(Path.Combine(_pluginInterface.AssemblyLocation.Directory?.FullName!, filePaths[2])));
 
         if (A != null) dict.Add(HuntRank.A, A);
         if (B != null) dict.Add(HuntRank.B, B);
         if (S != null) dict.Add(HuntRank.S, S);
     }
 
-   
+
 
 
 
