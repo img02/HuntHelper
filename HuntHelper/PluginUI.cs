@@ -57,12 +57,14 @@ namespace HuntHelper
         private bool mainWindowVisible = false;
         private bool ShowDatabaseListWindow = false;
         private bool showDebug = false;
+        private bool _showOptionsWindow = true;
+
         public bool MainWindowVisible
         {
             get { return this.mainWindowVisible; }
             set { this.mainWindowVisible = value; }
         }
-        
+
         private bool testVisible = false;
         public bool TestVisible
         {
@@ -102,8 +104,6 @@ namespace HuntHelper
 
 
         }
-
-
 
         public void Dispose()
         {
@@ -150,8 +150,6 @@ namespace HuntHelper
                 //ImGui.Image(this.goatImage.ImGuiHandle, new Vector2(this.goatImage.Width, this.goatImage.Height));
                 ImGui.Unindent(55);
 
-
-
                 ImGui.Text($"Territory: {TerritoryName}");
                 ImGui.Text($"Territory ID: {ClientState.TerritoryType}");
 
@@ -164,8 +162,7 @@ namespace HuntHelper
                            $"X: {Math.Round(v3.X, 2)} |" +
                            $"Y: {Math.Round(v3.Z, 2)} |");
                 //END
-
-
+                
                 ImGui.Indent(55);
                 ImGui.Text("");
 
@@ -186,7 +183,6 @@ namespace HuntHelper
                             $"X: {ConvertPosToCoordinate(obj.Position.X)};\n" +
                             $"Y: {ConvertPosToCoordinate(obj.Position.Y)}\n" +
                             $"  --------------  \n";
-
                 }
                 ImGui.Text($"Found: {hunt}");
             }
@@ -208,11 +204,11 @@ namespace HuntHelper
                     ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse | ImGuiWindowFlags.NoTitleBar))
             {
                 //if custom size not used, use these default sizes - resize with window size
-                   //radius for mob / spawn point circles - equal to half a map coord size
-                    MobIconRadius = iconRadiusModifier*(0.25f * ImGui.GetWindowSize().X / 41); 
-                    SpawnPointIconRadius = MobIconRadius;
-                    PlayerIconRadius = MobIconRadius / 2; //half of mob icon size
-                
+                //radius for mob / spawn point circles - equal to half a map coord size
+                MobIconRadius = iconRadiusModifier * (0.25f * ImGui.GetWindowSize().X / 41);
+                SpawnPointIconRadius = MobIconRadius;
+                PlayerIconRadius = MobIconRadius / 2; //half of mob icon size
+
 
                 //change height as width changes, to maintain 1:1 ratio. 
                 var width = ImGui.GetWindowSize().X;
@@ -236,38 +232,11 @@ namespace HuntHelper
                 //draw player icon and info
                 UpdatePlayerInfo();
 
-                #region Bottom docking info window
+                //bottom docking window with buttons and options and stuff
+                if (_showOptionsWindow) DrawOptionsWindow();
 
-                //Current mob info 'docking'
-                ImGui.BeginChild(1, new Vector2(ImGui.GetWindowSize().X, 25));
-                ImGui.SetNextWindowSize(new Vector2(ImGui.GetWindowSize().X, bottomPanelHeight), ImGuiCond.None);
-                ImGui.SetNextWindowSizeConstraints(new Vector2(-1, 0), new Vector2(-1, float.MaxValue));
-
-                //hide grip color
-                ImGui.PushStyleColor(ImGuiCol.ResizeGrip, 0);
-
-                ImGui.Begin("test", ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoMove);
-                ImGui.SetWindowPos(bottomDockingPos);
-                //ImGui.Indent(ImGui.GetWindowSize().X / 3);
-
-                ///////////////////////////////////////////////////////////////////////////////////// PLACEHOLDER TEXT DELETE DELETE DELETE LATER
-                ImGui.Columns(2);
-                ImGui.SetColumnWidth(0, ImGui.GetWindowSize().X / 3);
-                ImGui.SetColumnWidth(1, 2 * ImGui.GetWindowSize().X / 3);
-                if (ImGui.Button("Show Debug"))
-                {
-                    showDebug = !showDebug;
-                }
-                DrawDataBaseWindow();
-                ImGui.NextColumn();
-                ImGui.TextUnformatted("HELLO THIS IS TEXT");
-                ImGui.TextUnformatted("FDSFD");
-                ImGui.TextUnformatted("HELLO %%%%%%% TEXT");
-
-                bottomPanelHeight = ImGui.GetWindowSize().Y;
-                ImGui.End();
-                ImGui.EndChildFrame();
-                #endregion
+                //putting this here instead because I want to draw it on this window, not a new one.
+                if (showDebug) ShowDebugInfo();
 
                 if (HuntManager.ErrorPopUpVisible || mapDataManager.ErrorPopUpVisible)
                 {
@@ -277,11 +246,48 @@ namespace HuntHelper
                     ImGui.End();
                 }
 
-                if (showDebug) ShowDebugInfo();
+
+                var cursorPos = new Vector2(8, ImGui.GetWindowSize().Y-30);
+                ImGui.SetCursorPos(cursorPos);
+                if (ImGui.Button(" ö "))//get a cogwheel img or something idk
+                {
+                    _showOptionsWindow = !_showOptionsWindow;
+                } 
             }
             ImGui.End();
         }
 
+        private void DrawOptionsWindow()
+        {
+            #region Bottom docking info window
+            var bottomDockingPos = Vector2.Add(ImGui.GetWindowPos(), new Vector2(0, ImGui.GetWindowSize().Y));
+            //Current mob info 'docking'
+            ImGui.BeginChild(1, new Vector2(ImGui.GetWindowSize().X, 25));
+            ImGui.SetNextWindowSize(new Vector2(ImGui.GetWindowSize().X, bottomPanelHeight), ImGuiCond.None);
+            ImGui.SetNextWindowSizeConstraints(new Vector2(-1, 0), new Vector2(-1, float.MaxValue));
+
+            //hide grip color
+            ImGui.PushStyleColor(ImGuiCol.ResizeGrip, 0);
+
+            ImGui.Begin("Options Window", ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoMove);
+            ImGui.SetWindowPos(bottomDockingPos);
+            ImGui.Spacing();
+            ImGui.Spacing();
+            ImGui.Columns(2);
+            ImGui.SetColumnWidth(0, ImGui.GetWindowSize().X / 3);
+            ImGui.SetColumnWidth(1, 2 * ImGui.GetWindowSize().X / 3);
+            if (ImGui.Button("Show Debug")) showDebug = !showDebug;
+            DrawDataBaseWindow();
+            ImGui.NextColumn();
+            ImGui.TextUnformatted("Add some toggle options and stuff here?");
+            ImGui.TextUnformatted("FDSFD");
+            ImGui.TextUnformatted("HELLO %%%%%%% TEXT");
+
+            bottomPanelHeight = ImGui.GetWindowSize().Y;
+            ImGui.End();
+            ImGui.EndChildFrame();
+            #endregion
+        }
         public void DrawSettingsWindow()
         {
             if (!SettingsVisible)
@@ -320,34 +326,31 @@ namespace HuntHelper
             if (ImGui.Button("Show Loaded Hunt Data"))
             {
                 ShowDatabaseListWindow = !ShowDatabaseListWindow;
-                //open new window
-
             }
 
-            if (ShowDatabaseListWindow) //move this out
-            {
-                ImGui.SetNextWindowSize(new Vector2(450, 800));
-                ImGui.Begin("Loaded Hunt Data", ref ShowDatabaseListWindow);
-                if (ImGui.BeginTabBar("info"))
-                {
-                    if (ImGui.BeginTabItem("database"))
-                    {
-                        ImGui.PushFont(UiBuilder.MonoFont);
-                        ImGui_CentreText(HuntManager.GetDatabaseAsString());
-                        ImGui.PopFont();
-                        ImGui.EndTabItem();
-                    }
+            if (!ShowDatabaseListWindow) return;
 
-                    if (ImGui.BeginTabItem("spawn points"))
-                    {
-                        ImGui.TextUnformatted(mapDataManager.ToString());
-                        ImGui.EndTabItem();
-                    }
-                    ImGui.EndTabBar();
+            ImGui.SetNextWindowSize(new Vector2(450, 800));
+            ImGui.Begin("Loaded Hunt Data", ref ShowDatabaseListWindow);
+            if (ImGui.BeginTabBar("info"))
+            {
+                if (ImGui.BeginTabItem("database"))
+                {
+                    ImGui.PushFont(UiBuilder.MonoFont);
+                    ImGui_CentreText(HuntManager.GetDatabaseAsString());
+                    ImGui.PopFont();
+                    ImGui.EndTabItem();
                 }
 
-                ImGui.End();
+                if (ImGui.BeginTabItem("spawn points"))
+                {
+                    ImGui.TextUnformatted(mapDataManager.ToString());
+                    ImGui.EndTabItem();
+                }
+                ImGui.EndTabBar();
             }
+
+            ImGui.End();
         }
 
         #endregion
@@ -487,7 +490,6 @@ namespace HuntHelper
 
         private void ShowDebugInfo()
         {
-
             ImGui.Spacing();
             ImGui.Spacing();
             ImGui.Spacing();
@@ -520,10 +522,11 @@ namespace HuntHelper
                 {
                     ImGui_RightAlignText($"Rank {HuntManager.GetPriorityMob().Item1} " +
                                          $"{priorityMob.Name} " +
-                                         $"{Math.Round(1.0 * priorityMob.CurrentHp / priorityMob.MaxHp * 100,2):0.00}% | " +
+                                         $"{Math.Round(1.0 * priorityMob.CurrentHp / priorityMob.MaxHp * 100, 2):0.00}% | " +
                                          $"({ConvertPosToCoordinate(priorityMob.Position.X):0.00}, " +
                                          $"{ConvertPosToCoordinate(priorityMob.Position.Z):0.00}) ");
                 }
+
                 var currentMobs = HuntManager.GetAllCurrentMobs();
                 ImGui_RightAlignText("--");
                 ImGui_RightAlignText("Other nearby mobs:");
@@ -541,6 +544,7 @@ namespace HuntHelper
                 ImGui.Text("Can't find local player");
             }
         }
+
         private void ImGui_CentreText(string text)
         {
             var windowWidth = ImGui.GetWindowSize().X;
