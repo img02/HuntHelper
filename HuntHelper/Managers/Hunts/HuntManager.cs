@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using Dalamud.Game.ClientState.Objects.Types;
 using Dalamud.Plugin;
 using ImGuiNET;
 using Newtonsoft.Json;
@@ -13,44 +14,58 @@ public class HuntManager
 {
     private readonly Dictionary<HuntRank, List<Mob>> _arrDict;
     private readonly Dictionary<HuntRank, List<Mob>> _hwDict;
-    private readonly Dictionary<HuntRank, List<Mob>> _shBDict;
+    private readonly Dictionary<HuntRank, List<Mob>> _shbDict;
     private readonly Dictionary<HuntRank, List<Mob>> _sbDict;
     private readonly Dictionary<HuntRank, List<Mob>> _ewDict;
     private readonly DalamudPluginInterface _pluginInterface;
 
+    private readonly Dictionary<HuntRank, BattleNpc> _currentMobs;
+    private BattleNpc? _priorityMob;
+    private HuntRank _highestRank;
+
     public bool ErrorPopUpVisible = false;
     public string ErrorMessage = string.Empty;
-
-    //-contains current status, MobA1,MobB2,MobS,MobSS, MobA2,MobB2 - maybe player,playerpos,map.etc.
-    public Mob PriorityMob;
 
     public HuntManager(DalamudPluginInterface pluginInterface)
     {
         _arrDict = new Dictionary<HuntRank, List<Mob>>();
         _hwDict = new Dictionary<HuntRank, List<Mob>>();
-        _shBDict = new Dictionary<HuntRank, List<Mob>>();
+        _shbDict = new Dictionary<HuntRank, List<Mob>>();
         _sbDict = new Dictionary<HuntRank, List<Mob>>();
         _ewDict = new Dictionary<HuntRank, List<Mob>>();
+        _currentMobs = new Dictionary<HuntRank, BattleNpc>();
         this._pluginInterface = pluginInterface;
         LoadHuntData();
     }
 
-
-    public void GetPriorityMob()
+    public (HuntRank, BattleNpc?) GetPriorityMob()
     {
-
+        return (_highestRank,_priorityMob);
     }
 
-    public void AddMob()
+    private void GetAllCurrentMobs()
     {
-        //add mob when detected
+        //return a string?
+    }
 
-        //set priority mob here SS > S > A > B 
+    public void AddMob(BattleNpc mob)
+    {
+        var rank = GetHuntRank(mob.NameId);
+        _currentMobs.Add(rank,mob);
+
+        //if same rank or higher, make it the priority mob
+        if (rank >= _highestRank)
+        {
+            _highestRank = rank;
+            _priorityMob = mob;
+        }
     }
 
     public void ClearMobs()
     {
-        //clear mobs before every loop
+        _currentMobs.Clear();
+        _highestRank = 0;
+        _priorityMob = null;
     }
 
 
@@ -92,7 +107,7 @@ public class HuntManager
         LoadFilesIntoDic(_arrDict, ARRJsonFiles);
         LoadFilesIntoDic(_hwDict, HWJsonFiles);
         LoadFilesIntoDic(_sbDict, SBJsonFiles);
-        LoadFilesIntoDic(_shBDict, ShBJsonFiles);
+        LoadFilesIntoDic(_shbDict, ShBJsonFiles);
         LoadFilesIntoDic(_ewDict, EWJsonFiles);
 
     }
@@ -110,7 +125,7 @@ public class HuntManager
         text += DictToString(_arrDict);
         text += DictToString(_hwDict);
         text += DictToString(_sbDict);
-        text += DictToString(_shBDict);
+        text += DictToString(_shbDict);
         text += DictToString(_ewDict);
         return text;
     }
@@ -120,11 +135,37 @@ public class HuntManager
         exists = _arrDict.Any(kvp => kvp.Value.Any(m => m.ModelID == modelID));
         if (!exists) exists = _hwDict.Any(kvp => kvp.Value.Any(m => m.ModelID == modelID));
         if (!exists) exists = _sbDict.Any(kvp => kvp.Value.Any(m => m.ModelID == modelID));
-        if (!exists) exists = _shBDict.Any(kvp => kvp.Value.Any(m => m.ModelID == modelID));
+        if (!exists) exists = _shbDict.Any(kvp => kvp.Value.Any(m => m.ModelID == modelID));
         if (!exists) exists = _ewDict.Any(kvp => kvp.Value.Any(m => m.ModelID == modelID));
         return exists;
     }
 
+    private HuntRank GetHuntRank(uint modelID)
+    {
+        //just default to B if for some reason mob can't be found - shouldn't happen tho...
+        var rank = HuntRank.B;
+        var found = false;
+        if (!found)
+        {   //ugly and repetitive
+            var kvp = SearchDictionaryForModelID(_arrDict, modelID);
+            if (!kvp.Equals(default(KeyValuePair<HuntRank, List<Mob>>))) return kvp.Key;
+            kvp = SearchDictionaryForModelID(_hwDict, modelID);
+            if (!kvp.Equals(default(KeyValuePair<HuntRank, List<Mob>>))) return kvp.Key;
+            kvp = SearchDictionaryForModelID(_sbDict, modelID);
+            if (!kvp.Equals(default(KeyValuePair<HuntRank, List<Mob>>))) return kvp.Key;
+            kvp = SearchDictionaryForModelID(_shbDict, modelID);
+            if (!kvp.Equals(default(KeyValuePair<HuntRank, List<Mob>>))) return kvp.Key;
+            kvp = SearchDictionaryForModelID(_ewDict, modelID);
+            if (!kvp.Equals(default(KeyValuePair<HuntRank, List<Mob>>))) return kvp.Key;
+        }
+        return rank;
+    }
+
+    private KeyValuePair<HuntRank, List<Mob>> SearchDictionaryForModelID(Dictionary<HuntRank, List<Mob>> dict,
+        uint modelID)
+    {
+        return dict.FirstOrDefault(kvp => kvp.Value.Any(m => m.ModelID == modelID));
+    }
 
     private string DictToString(Dictionary<HuntRank, List<Mob>> dic)
     {

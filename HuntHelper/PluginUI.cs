@@ -375,15 +375,13 @@ namespace HuntHelper
         private void UpdateMobInfo()
         {
             var drawlist = ImGui.GetWindowDrawList();
+            HuntManager.ClearMobs();
             foreach (var obj in this.ObjectTable)
             {
-                if (obj is BattleNpc mob)
-                {
-                    if (HuntManager.IsHunt(mob.NameId))
-                    {
-                        DrawMobIcon(mob);
-                    }
-                }
+                if (obj is not BattleNpc mob) continue;
+                if (!HuntManager.IsHunt(mob.NameId)) continue;
+                HuntManager.AddMob(mob);
+                DrawMobIcon(mob);
             }
 
         }
@@ -500,6 +498,15 @@ namespace HuntHelper
                 ImGui.Text($"Map: {TerritoryName}");
                 ImGui.Text($"Map ID: {ClientState.TerritoryType}");
                 ImGui.Text($"Map ID: {TerritoryID}");
+
+                //priority mob stuff
+                ImGui.TextUnformatted("Priority Mob Info:");
+                ImGui.Text($"rank: {HuntManager.GetPriorityMob().Item1}");
+                var mob = HuntManager.GetPriorityMob().Item2;
+                ImGui.Text($"mob name: {mob?.Name}");
+                if (mob != null) ImGui.Text($"pos: ({ConvertPosToCoordinate(mob.Position.X)}, {ConvertPosToCoordinate(mob.Position.Z)})");
+                if (mob != null) ImGui.TextUnformatted($"hp%: ({((1.0*mob.CurrentHp)/mob.MaxHp)*100})");
+                ImGui.Text($"mob null?: {HuntManager.GetPriorityMob().Item2 == null}");
             }
             else
             {
