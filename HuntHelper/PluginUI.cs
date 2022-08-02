@@ -42,11 +42,19 @@ namespace HuntHelper
 
         private float detectionRadiusModifier = 1.0f;
         private float mouseOverDistanceModifier = 2.5f;
-        private float iconRadiusModifier = 1.0f; //let user choose custom modifier for icons
+
+        private float iconRadiusModifier = 1.0f; //modifier for all
+        private float mobIconRadiusModifier = 1.5f; 
+        private float spawnIconRadiusModifier = 1.0f; 
+        private float playerIconRadiusModifier = 1.0f; 
+
         //initial window position
         private Vector2 mapWindowPos = new Vector2(25, 25);
 
         private int _mapZoneCoordSize = 41; //default to 41 as thats most common for hunt zones
+        
+        public float SingleCoordSize => ImGui.GetWindowSize().X / _mapZoneCoordSize;
+
         //private uint spawnPointColour = ImGui.ColorConvertFloat4ToU32(new Vector4(0.69f, 0.69f, 0.69f, 1f));
         private uint spawnPointColour = ImGui.ColorConvertFloat4ToU32(new Vector4(0.29f, 0.21f, .2f, 1f));
         private uint mobColour = ImGui.ColorConvertFloat4ToU32(new Vector4(0.4f, 1f, 0.567f, 1f));
@@ -205,12 +213,14 @@ namespace HuntHelper
             if (ImGui.Begin("Test Window!", ref this.testVisible,
                     ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse | ImGuiWindowFlags.NoTitleBar))
             {
+                _mapZoneCoordSize = HuntManager.GetMapZoneCoordSize(TerritoryID);
                 //if custom size not used, use these default sizes - resize with window size
                 //radius for mob / spawn point circles - equal to half a map coord size
-                MobIconRadius = iconRadiusModifier * (0.25f * ImGui.GetWindowSize().X / 41);
-                SpawnPointIconRadius = MobIconRadius;
-                PlayerIconRadius = MobIconRadius / 2; //half of mob icon size
+                SpawnPointIconRadius = iconRadiusModifier * spawnIconRadiusModifier * (0.25f * SingleCoordSize);
+                MobIconRadius = iconRadiusModifier * mobIconRadiusModifier * (0.25f * SingleCoordSize) ;
+                PlayerIconRadius = iconRadiusModifier * playerIconRadiusModifier * (0.125f * SingleCoordSize) / 2; //default half of mob icon size
 
+               
 
                 //change height as width changes, to maintain 1:1 ratio. 
                 var width = ImGui.GetWindowSize().X;
@@ -455,7 +465,7 @@ namespace HuntHelper
                         ConvertPosToCoordinate(ClientState.LocalPlayer.Position.Z)));
 
                 //aoe detection circle = ~2 in-game coords. --DRAWN BELOW
-                var detectionRadius = 2 * (ImGui.GetContentRegionAvail().X / 41) * detectionRadiusModifier;
+                var detectionRadius = 2 * SingleCoordSize * detectionRadiusModifier;
                 var rotation = Math.Abs(ClientState.LocalPlayer.Rotation - Math.PI);
                 var lineEnding =
                     new Vector2(
@@ -617,9 +627,8 @@ namespace HuntHelper
 
         private Vector2 MouseOverPositionToGameCoordinate()
         {
-            var coordinateSize = (ImGui.GetWindowSize().X / 41);
             var mousePos = ImGui.GetMousePos() - ImGui.GetWindowPos();
-            var coord = mousePos / coordinateSize + Vector2.One;
+            var coord = mousePos / SingleCoordSize + Vector2.One;
             return coord;
         }
 

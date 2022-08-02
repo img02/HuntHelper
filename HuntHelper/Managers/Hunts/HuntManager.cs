@@ -52,7 +52,7 @@ public class HuntManager
         return (_highestRank, _priorityMob);
     }
 
-    public new List<(HuntRank, BattleNpc)> GetAllCurrentMobs()
+    public List<(HuntRank, BattleNpc)> GetAllCurrentMobs()
     {
         return _currentMobs;
     }
