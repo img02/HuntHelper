@@ -2,6 +2,7 @@
 using System;
 using System.Drawing;
 using System.IO;
+using System.Net.Http.Headers;
 using System.Numerics;
 using System.Threading;
 using Dalamud.Data;
@@ -40,6 +41,8 @@ namespace HuntHelper
         private float SpawnPointIconRadius;
         private float bottomPanelHeight = 80;
 
+        private float _priorityMobSpacing = 12.0f;
+
         private float detectionRadiusModifier = 1.0f;
         private float mouseOverDistanceModifier = 2.5f;
 
@@ -59,10 +62,13 @@ namespace HuntHelper
         public float SingleCoordSize => ImGui.GetWindowSize().X / _mapZoneMaxCoordSize;
 
         //private uint spawnPointColour = ImGui.ColorConvertFloat4ToU32(new Vector4(0.69f, 0.69f, 0.69f, 1f));
-        private uint spawnPointColour = ImGui.ColorConvertFloat4ToU32(new Vector4(0.29f, 0.21f, .2f, 1f));
-        private uint mobColour = ImGui.ColorConvertFloat4ToU32(new Vector4(0.4f, 1f, 0.567f, 1f));
-        private uint playerColour = ImGui.ColorConvertFloat4ToU32(new Vector4(.5f, 0.567f, 1f, 1f));
-        private uint _playerIconBackgroundColour = ImGui.ColorConvertFloat4ToU32(new Vector4(0.117647f, 0.5647f, 1f, 0.7f));
+        private uint spawnPointColour = ImGui.ColorConvertFloat4ToU32(new Vector4(0.29f, 0.21f, .2f, 1f)); //brownish?
+        private uint mobColour = ImGui.ColorConvertFloat4ToU32(new Vector4(0.4f, 1f, 0.567f, 1f)); //green
+        private uint playerColour = ImGui.ColorConvertFloat4ToU32(new Vector4(.5f, 0.567f, 1f, 1f)); //darkish blue
+        private uint _playerIconBackgroundColour = ImGui.ColorConvertFloat4ToU32(new Vector4(0.117647f, 0.5647f, 1f, 0.7f)); //blue
+
+        private readonly Vector4 _defaultTextColour = new Vector4(1f, 1f, 1f, 1f); //white
+        private readonly Vector4 _priorityMobTextColour = new Vector4(1f, 1f, 1f, 1f); //white
 
 
         //window bools
@@ -227,7 +233,7 @@ namespace HuntHelper
                 //change height as width changes, to maintain 1:1 ratio. 
                 var width = ImGui.GetWindowSize().X;
                 ImGui.SetWindowSize(new Vector2(width));
-
+                
                 var bottomDockingPos = Vector2.Add(ImGui.GetWindowPos(), new Vector2(0, ImGui.GetWindowSize().Y));
                 
                 //=========================================
@@ -264,11 +270,11 @@ namespace HuntHelper
                 //button to toggle bottom panel thing
                 var cursorPos = new Vector2(8, ImGui.GetWindowSize().Y - 30);
                 ImGui.SetCursorPos(cursorPos);
-                if (ImGui.Button(" ö "))//get a cogwheel img or something idk
-                {
-                    _showOptionsWindow = !_showOptionsWindow;
-                }
-
+                //get a cogwheel img or something idk
+                //ImGui.ColorButton("idk", new Vector4(0f, 0f, 0f, 1f));
+                ImGui.PushStyleColor(ImGuiCol.Button, new Vector4(.4f,.4f,.4f,1f));
+                if (ImGui.Button(" ö "))_showOptionsWindow = !_showOptionsWindow;
+                ImGui.PopStyleColor();
                 if (HuntManager.ErrorPopUpVisible || mapDataManager.ErrorPopUpVisible)
                 {
                     ImGui.Begin("Error loading data");
@@ -300,7 +306,7 @@ namespace HuntHelper
             ImGui.Columns(3);
             ImGui.SetColumnWidth(0, ImGui.GetWindowSize().X / 6);
             ImGui.SetColumnWidth(1, ImGui.GetWindowSize().X / 6);
-            if (ImGui.Button("Show Debug")) showDebug = !showDebug;
+            if (ImGui.Checkbox("Show Debug", ref showDebug)) ;
             DrawDataBaseWindow();
             ImGui.NextColumn();
             if (ImGui.Button("Map Image"))_useMapImages = !_useMapImages;
@@ -363,7 +369,7 @@ namespace HuntHelper
                 if (ImGui.BeginTabItem("database"))
                 {
                     ImGui.PushFont(UiBuilder.MonoFont);
-                    ImGui_CentreText(HuntManager.GetDatabaseAsString());
+                    ImGui_CentreText(HuntManager.GetDatabaseAsString(), _defaultTextColour);
                     ImGui.PopFont();
                     ImGui.EndTabItem();
                 }
@@ -443,9 +449,9 @@ namespace HuntHelper
             var (rank, mob) = HuntManager.GetPriorityMob();
             if (mob == null) return;
             ImGui.PushFont(UiBuilder.MonoFont);
-            ImGui.Spacing();
-            ImGui_CentreText($"   {rank}     |  {mob.Name}  |  {Math.Round(((1.0 * mob.CurrentHp) / mob.MaxHp) * 100):0.00}%");
-            ImGui_CentreText($"({ConvertPosToCoordinate(mob.Position.X):0.00}, {ConvertPosToCoordinate(mob.Position.Z):0.00})");
+            ImGui.Dummy(new Vector2(0f,_priorityMobSpacing));
+            ImGui_CentreText($"   {rank}     |  {mob.Name}  |  {Math.Round(((1.0 * mob.CurrentHp) / mob.MaxHp) * 100):0.00}%", _priorityMobTextColour);
+            ImGui_CentreText($"({ConvertPosToCoordinate(mob.Position.X):0.00}, {ConvertPosToCoordinate(mob.Position.Z):0.00})", _priorityMobTextColour);
             ImGui.PopFont();
         }
         #endregion
@@ -577,12 +583,13 @@ namespace HuntHelper
             }
         }
 
-        private void ImGui_CentreText(string text)
+        private void ImGui_CentreText(string text, Vector4 colour)
         {
             var windowWidth = ImGui.GetWindowSize().X;
             var textWidth = ImGui.CalcTextSize(text).X;
             ImGui.SetCursorPosX((windowWidth - textWidth) * 0.5f);
-            ImGui.TextUnformatted(text);
+            ImGui.TextColored(colour, text);
+            //ImGui.TextUnformatted(text);
         }
 
         private void ImGui_RightAlignText(string text)
@@ -610,7 +617,7 @@ namespace HuntHelper
 
             foreach (var s in text)
             {
-                ImGui_CentreText(s);
+                ImGui_CentreText(s, _defaultTextColour);
             }
             ImGui.Separator();
             ImGui.SetCursorPosX(ImGui.GetCursorPosX() + ImGui.GetStyle().IndentSpacing * 0.5f);
