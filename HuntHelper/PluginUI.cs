@@ -39,26 +39,27 @@ namespace HuntHelper
         private float MobIconRadius;
         private float PlayerIconRadius;
         private float SpawnPointIconRadius;
-        private float bottomPanelHeight = 80;
+        private float bottomPanelHeight = 30;
 
         private float _priorityMobSpacing = 12.0f;
 
         private float detectionRadiusModifier = 1.0f;
         private float mouseOverDistanceModifier = 2.5f;
 
-        private float iconRadiusModifier = 1.0f; //modifier for all
-        private float mobIconRadiusModifier = 1.5f; 
-        private float spawnIconRadiusModifier = 1.0f; 
-        private float playerIconRadiusModifier = 0.20f; 
+        private float _allRadiusModifier = 1.0f; //modifier for all
+        private float _mobIconRadiusModifier = 1.5f;
+        private float _spawnPointRadiusModifier = 1.0f;
+        private float _playerIconRadiusModifier = 0.20f;
+        private float _detectionCircleModifier = 1.0f;
 
-        private float _detectionCircleThickness = 2f; 
-        private float _directionLineThickness = 3f; 
+        private float _detectionCircleThickness = 2f;
+        private float _directionLineThickness = 3f;
 
         //initial window position
         private Vector2 mapWindowPos = new Vector2(25, 25);
 
         private float _mapZoneMaxCoordSize = 41; //default to 41 as thats most common for hunt zones
-        
+
         public float SingleCoordSize => ImGui.GetWindowSize().X / _mapZoneMaxCoordSize;
 
         //private uint spawnPointColour = ImGui.ColorConvertFloat4ToU32(new Vector4(0.69f, 0.69f, 0.69f, 1f));
@@ -72,17 +73,20 @@ namespace HuntHelper
 
 
         //window bools
-        private bool mainWindowVisible = false;
-        private bool ShowDatabaseListWindow = false;
-        private bool showDebug = false;
+        private bool _mainWindowVisible = false;
+        private bool _showDatabaseListWindow = false;
+        //checkbox bools
+        private bool _showDebug = false;
         private bool _showOptionsWindow = true;
-
+        private bool _showZoneName = true;
+        private bool _showWorldName = true;
+        private bool _saveSpawnData = true;
         private bool _useMapImages = true;
 
         public bool MainWindowVisible
         {
-            get { return this.mainWindowVisible; }
-            set { this.mainWindowVisible = value; }
+            get { return this._mainWindowVisible; }
+            set { this._mainWindowVisible = value; }
         }
 
         private bool testVisible = false;
@@ -155,7 +159,7 @@ namespace HuntHelper
 
             ImGui.SetNextWindowSize(new Vector2(375, 330), ImGuiCond.FirstUseEver);
             ImGui.SetNextWindowSizeConstraints(new Vector2(375, 330), new Vector2(float.MaxValue, float.MaxValue));
-            if (ImGui.Begin("My Amazing Window!", ref this.mainWindowVisible, ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse))
+            if (ImGui.Begin("My Amazing Window!", ref this._mainWindowVisible, ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse))
             {
                 ImGui.Text($"The random config bool is {this.configuration.SomePropertyToBeSavedAndWithADefault}");
 
@@ -226,16 +230,16 @@ namespace HuntHelper
                 _mapZoneMaxCoordSize = HuntManager.GetMapZoneCoordSize(TerritoryID);
                 //if custom size not used, use these default sizes - resize with window size
                 //radius for mob / spawn point circles - equal to half a map coord size
-                SpawnPointIconRadius = iconRadiusModifier * spawnIconRadiusModifier * (0.25f * SingleCoordSize);
-                MobIconRadius = iconRadiusModifier * mobIconRadiusModifier * (0.25f * SingleCoordSize) ;
-                PlayerIconRadius = iconRadiusModifier * playerIconRadiusModifier * (0.125f * SingleCoordSize); //default half of mob icon size
-                
+                SpawnPointIconRadius = _allRadiusModifier * _spawnPointRadiusModifier * (0.25f * SingleCoordSize);
+                MobIconRadius = _allRadiusModifier * _mobIconRadiusModifier * (0.25f * SingleCoordSize);
+                PlayerIconRadius = _allRadiusModifier * _playerIconRadiusModifier * (0.125f * SingleCoordSize); //default half of mob icon size
+
                 //change height as width changes, to maintain 1:1 ratio. 
                 var width = ImGui.GetWindowSize().X;
                 ImGui.SetWindowSize(new Vector2(width));
-                
+
                 var bottomDockingPos = Vector2.Add(ImGui.GetWindowPos(), new Vector2(0, ImGui.GetWindowSize().Y));
-                
+
                 //=========================================
                 //if using images
                 //draw images first so they are at the bottom.
@@ -265,15 +269,15 @@ namespace HuntHelper
                 if (_showOptionsWindow) DrawOptionsWindow();
 
                 //putting this here instead because I want to draw it on this window, not a new one.
-                if (showDebug) ShowDebugInfo();
+                if (_showDebug) ShowDebugInfo();
 
                 //button to toggle bottom panel thing
                 var cursorPos = new Vector2(8, ImGui.GetWindowSize().Y - 30);
                 ImGui.SetCursorPos(cursorPos);
                 //get a cogwheel img or something idk
                 //ImGui.ColorButton("idk", new Vector4(0f, 0f, 0f, 1f));
-                ImGui.PushStyleColor(ImGuiCol.Button, new Vector4(.4f,.4f,.4f,1f));
-                if (ImGui.Button(" ö "))_showOptionsWindow = !_showOptionsWindow;
+                ImGui.PushStyleColor(ImGuiCol.Button, new Vector4(.4f, .4f, .4f, 1f));
+                if (ImGui.Button(" ö ")) _showOptionsWindow = !_showOptionsWindow;
                 ImGui.PopStyleColor();
                 if (HuntManager.ErrorPopUpVisible || mapDataManager.ErrorPopUpVisible)
                 {
@@ -291,10 +295,10 @@ namespace HuntHelper
         {
             #region Bottom docking info window
             var bottomDockingPos = Vector2.Add(ImGui.GetWindowPos(), new Vector2(0, ImGui.GetWindowSize().Y));
-            //Current mob info 'docking'
-            ImGui.BeginChild(1, new Vector2(ImGui.GetWindowSize().X, 25));
-            ImGui.SetNextWindowSize(new Vector2(ImGui.GetWindowSize().X, bottomPanelHeight), ImGuiCond.None);
-            ImGui.SetNextWindowSizeConstraints(new Vector2(-1, 0), new Vector2(-1, float.MaxValue));
+            
+            //ImGui.BeginChild(1, new Vector2(ImGui.GetWindowSize().X, 25));
+            ImGui.SetNextWindowSize(new Vector2(ImGui.GetWindowSize().X, bottomPanelHeight), ImGuiCond.Always);
+            ImGui.SetNextWindowSizeConstraints(new Vector2(-1, 95), new Vector2(-1, 300));
 
             //hide grip color
             ImGui.PushStyleColor(ImGuiCol.ResizeGrip, 0);
@@ -303,21 +307,179 @@ namespace HuntHelper
             ImGui.SetWindowPos(bottomDockingPos);
             ImGui.Spacing();
             ImGui.Spacing();
-            ImGui.Columns(3);
-            ImGui.SetColumnWidth(0, ImGui.GetWindowSize().X / 6);
-            ImGui.SetColumnWidth(1, ImGui.GetWindowSize().X / 6);
-            if (ImGui.Checkbox("Show Debug", ref showDebug)) ;
-            DrawDataBaseWindow();
-            ImGui.NextColumn();
-            if (ImGui.Button("Map Image"))_useMapImages = !_useMapImages;
-            ImGui.NextColumn();
-            ImGui.TextUnformatted("Add some toggle options and stuff here?");
-            ImGui.TextUnformatted("FDSFD");
-            ImGui.TextUnformatted("HELLO %%%%%%% TEXT");
+            ImGui.Columns(2);
+            /*ImGui.SetColumnWidth(0, ImGui.GetWindowSize().X / 5.5f);
+            ImGui.SetColumnWidth(1, 5.5f * ImGui.GetWindowSize().X / 5.5f);*/
 
-            bottomPanelHeight = ImGui.GetWindowSize().Y;
+            ImGui.Checkbox("Map Image", ref _useMapImages);
+            ImGui.SameLine(); ImGui_HelpMarker("Use a map image instead of blank background (ugly tho)");
+
+            ImGui.Checkbox("Show Debug", ref _showDebug);
+            ImGui.SameLine(); ImGui_HelpMarker("idk shows random debug info");
+
+            //ImGui.Dummy(new Vector2(0, 4f));
+
+            if (ImGui.Button("Loaded Hunt Data")) _showDatabaseListWindow = !_showDatabaseListWindow;
+            ImGui.SameLine(); ImGui_HelpMarker("Show the loaded hunt and spawn point data");
+            DrawDataBaseWindow();
+
+            ImGui.NextColumn();
+            if (ImGui.BeginTabBar("Options", ImGuiTabBarFlags.None))
+            {
+                if (ImGui.BeginTabItem("General"))
+                {
+                    bottomPanelHeight = 95f;
+                    ImGui.SameLine(); ImGui.Text("   \t\t\t  ");
+                    ImGui.SameLine(); ImGui.TextDisabled($"{ImGui.GetWindowSize()}");
+                    ImGui.SameLine(); ImGui.TextDisabled($"{bottomPanelHeight}");
+
+                    ImGui.Dummy(new Vector2(0, 8f));
+                    if (ImGui.BeginTable("General Options table", 4)) {
+                        ImGui.TableNextColumn();
+                        ImGui.Checkbox("Zone Name", ref _showZoneName);
+                        ImGui.SameLine(); ImGui_HelpMarker("Shows Zone Name (ToDo)");
+
+                        ImGui.TableNextColumn();
+                        ImGui.Checkbox("World Name", ref _showWorldName);
+                        ImGui.SameLine(); ImGui_HelpMarker("Shows World Name (ToDo)");
+
+                        ImGui.TableNextColumn();
+                        ImGui.Checkbox("Save Spawn Data", ref _saveSpawnData);
+                        ImGui.SameLine(); ImGui_HelpMarker("Saves S Rank Information to desktop txt (ToDo)");
+                        ImGui.EndTable();
+                    }
+                    ImGui.EndTabItem();
+                }
+                
+                if (ImGui.BeginTabItem("Visuals"))
+                {
+                    ImGui.SameLine(); ImGui.TextDisabled($"{ImGui.GetWindowSize()}");
+                    ImGui.SameLine(); ImGui.TextDisabled($"{bottomPanelHeight}");
+                    bottomPanelHeight = 180f;
+
+                    if (ImGui.BeginTabBar("Visuals sub-bar")){
+                        if (ImGui.BeginTabItem("Sizing"))
+                        {
+                            ImGui.Dummy(new Vector2(0, 2f));
+                            if (ImGui.BeginTable("Sizing Options Table", 3))
+                            {
+                                var widgetWidth = 40f;
+
+                                ImGui.TableNextColumn();
+                                ImGui.PushItemWidth(widgetWidth);
+                                ImGui.InputFloat("Player Modifier", ref _playerIconRadiusModifier);
+                                ImGui.SameLine(); ImGui_HelpMarker("Player Icon Radius Modifier: Default 0.2");
+
+                                ImGui.TableNextColumn();
+                                ImGui.PushItemWidth(widgetWidth);
+                                ImGui.InputFloat("Mob Modifier", ref _mobIconRadiusModifier);
+                                ImGui.SameLine(); ImGui_HelpMarker("Mob Icon Radius Modifier, default: 1.5");
+
+                                ImGui.TableNextColumn();
+                                ImGui.PushItemWidth(widgetWidth);
+                                ImGui.InputFloat("Spawn Point Modifier", ref _spawnPointRadiusModifier);
+                                ImGui.SameLine(); ImGui_HelpMarker("Spawn Point Radius Modifier, default: 1.0");
+
+                                ImGui.TableNextColumn();
+                                ImGui.InputFloat("All Modifier", ref _allRadiusModifier);
+                                ImGui.SameLine(); ImGui_HelpMarker("Increase all icons proportionally, default: 1\nBy Default, A Mob icon is 1.5x a Spawn Point, a Player icon is 0.2x a Spawn Point");
+
+                                ImGui.TableNextColumn();
+                                ImGui.InputFloat("Detection Circle Modifier", ref _detectionCircleModifier);
+                                ImGui.SameLine(); ImGui_HelpMarker("Default represents 2 in-game coordinates. Modify if you feel this is inaccurate, default: 1.0");
+
+                                ImGui.TableNextColumn();
+                                ImGui.Dummy(new Vector2(0, 26f));
+
+                                ImGui.TableNextColumn();
+                                ImGui.Separator();
+                                ImGui.Dummy(new Vector2(0, 1f));
+                                ImGui.InputFloat("Detection Circle Thickness", ref _detectionCircleThickness);
+                                ImGui.SameLine(); ImGui_HelpMarker("default: 2.0");
+
+                                ImGui.TableNextColumn();
+                                ImGui.Separator();
+                                ImGui.Dummy(new Vector2(0, 1f));
+                                ImGui.InputFloat("Direction Line Thickness", ref _directionLineThickness);
+                                ImGui.SameLine(); ImGui_HelpMarker("default: 3.0");
+
+                                ImGui.TableNextColumn();
+                                ImGui.Separator();
+                                ImGui.Dummy(new Vector2(0, 1f));
+                                if (ImGui.Button("Reset"))
+                                {
+                                    //reset values
+                                }
+                                ImGui.SameLine(); ImGui_HelpMarker("Reset all sizes to default.");
+
+                                ImGui.PopItemWidth();
+
+                                ImGui.EndTable();
+                            }
+                            ImGui.EndTabItem();
+                        }
+
+                        if (ImGui.BeginTabItem("Colours"))
+                        {
+                            ImGui.Dummy(new Vector2(0, 2f));
+                            bottomPanelHeight = 180f;
+
+                            if (ImGui.BeginTable("Colour Options Table", 2))
+                            {
+                                ImGui.Dummy(new Vector2(0, 2f));
+
+                                ImGui.TableNextColumn();
+                                var color = new Vector4(1f, 1f, 1f, 1f);
+                                ImGui.ColorEdit4("mob icon", ref color);
+                                ImGui.SameLine(); ImGui_HelpMarker("white colour picker");
+
+                                ImGui.TableNextColumn();
+                                var color1 = new Vector4(1f, 0f, 0f, 1f);
+                                ImGui.ColorEdit4("spawn point", ref color1);
+                                ImGui.SameLine(); ImGui_HelpMarker("red colour picker");
+
+                                ImGui.Dummy(new Vector2(0, 4f));
+
+                                ImGui.TableNextColumn();
+                                var color2 = new Vector4(0f,1f, 0f, 1f);
+                                ImGui.ColorEdit4("player background", ref color2);
+                                ImGui.SameLine(); ImGui_HelpMarker("green colour picker");
+
+                                ImGui.TableNextColumn();
+                                var color3 = new Vector4(0f,0f, 1f, 1f);
+                                ImGui.ColorEdit4("player", ref color3);
+                                ImGui.SameLine(); ImGui_HelpMarker("blue colour picker");
+
+                                ImGui.Dummy(new Vector2(0, 4f));
+
+                                ImGui.TableNextColumn();
+                                var color4 = new Vector4(0f,0f, 1f, 1f);
+                                ImGui.ColorEdit4("direction line", ref color4);
+                                ImGui.SameLine(); ImGui_HelpMarker("blue colour picker");
+                                
+                                ImGui.TableNextColumn();
+                                var color5 = new Vector4(0f,0f, 1f, 1f);
+                                ImGui.ColorEdit4("detection circle", ref color5);
+                                ImGui.SameLine(); ImGui_HelpMarker("blue colour picker");
+
+
+                                ImGui.EndTable();
+                            }
+
+                            ImGui.EndTabItem();
+                        }
+
+                        ImGui.EndTabBar();
+                    }
+                    ImGui.EndTabItem();
+                }
+
+                ImGui.EndTabBar();
+            }
+
+            //bottomPanelHeight = ImGui.GetWindowSize().Y;
             ImGui.End();
-            ImGui.EndChildFrame();
+            //ImGui.EndChildFrame();
             #endregion
         }
         public void DrawSettingsWindow()
@@ -339,6 +501,12 @@ namespace HuntHelper
                     // can save immediately on change, if you don't want to provide a "Save and Close" button
                     this.configuration.Save();
                 }
+
+                if (ImGui.Button("Show Loaded Hunt Data"))
+                {
+                    _showDatabaseListWindow = !_showDatabaseListWindow;
+                }
+
                 DrawDataBaseWindow();
             }
             ImGui.End();
@@ -355,15 +523,10 @@ namespace HuntHelper
 
         private void DrawDataBaseWindow()
         {
-            if (ImGui.Button("Show Loaded Hunt Data"))
-            {
-                ShowDatabaseListWindow = !ShowDatabaseListWindow;
-            }
-
-            if (!ShowDatabaseListWindow) return;
+            if (!_showDatabaseListWindow) return;
 
             ImGui.SetNextWindowSize(new Vector2(450, 800));
-            ImGui.Begin("Loaded Hunt Data", ref ShowDatabaseListWindow);
+            ImGui.Begin("Loaded Hunt Data", ref _showDatabaseListWindow);
             if (ImGui.BeginTabBar("info"))
             {
                 if (ImGui.BeginTabItem("database"))
@@ -449,7 +612,7 @@ namespace HuntHelper
             var (rank, mob) = HuntManager.GetPriorityMob();
             if (mob == null) return;
             ImGui.PushFont(UiBuilder.MonoFont);
-            ImGui.Dummy(new Vector2(0f,_priorityMobSpacing));
+            ImGui.Dummy(new Vector2(0f, _priorityMobSpacing));
             ImGui_CentreText($"   {rank}     |  {mob.Name}  |  {Math.Round(((1.0 * mob.CurrentHp) / mob.MaxHp) * 100):0.00}%", _priorityMobTextColour);
             ImGui_CentreText($"({ConvertPosToCoordinate(mob.Position.X):0.00}, {ConvertPosToCoordinate(mob.Position.Z):0.00})", _priorityMobTextColour);
             ImGui.PopFont();
@@ -625,6 +788,19 @@ namespace HuntHelper
             ImGui.EndTooltip();
         }
 
+        private void ImGui_HelpMarker(string text)
+        {
+            ImGui.TextDisabled("(?)");
+            if (ImGui.IsItemHovered())
+            {
+                ImGui.BeginTooltip();
+                ImGui.PushTextWrapPos(ImGui.GetFontSize() * 35.0f);
+                ImGui.TextUnformatted(text);
+                ImGui.PopTextWrapPos();
+                ImGui.EndTooltip();
+            }
+        }
+
         private void LoadMapImages()
         {
             if (!_useMapImages) return;
@@ -639,7 +815,7 @@ namespace HuntHelper
             var coord = mousePos / SingleCoordSize + Vector2.One;
             return coord;
         }
-        
+
         private float ConvertPosToCoordinate(float pos)
         {
             return Utilities.MapHelpers.ConvertToMapCoordinate(pos, _mapZoneMaxCoordSize);
