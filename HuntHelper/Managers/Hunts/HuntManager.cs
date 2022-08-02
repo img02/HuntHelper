@@ -3,23 +3,30 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using Dalamud.Game.ClientState.Objects.Types;
+using Dalamud.Interface;
 using Dalamud.Plugin;
 using ImGuiNET;
+using ImGuiScene;
+using Lumina.Excel.GeneratedSheets;
 using Newtonsoft.Json;
 
 namespace HuntHelper.Managers.Hunts;
 
 public class HuntManager
 {
+    private readonly string _imageFolderPath;
+
     private readonly Dictionary<HuntRank, List<Mob>> _arrDict;
     private readonly Dictionary<HuntRank, List<Mob>> _hwDict;
     private readonly Dictionary<HuntRank, List<Mob>> _shbDict;
     private readonly Dictionary<HuntRank, List<Mob>> _sbDict;
     private readonly Dictionary<HuntRank, List<Mob>> _ewDict;
+    private readonly Dictionary<String, TextureWrap> _mapImages;
     private readonly DalamudPluginInterface _pluginInterface;
 
-    private readonly new List<(HuntRank, BattleNpc)> _currentMobs;
+    private readonly List<(HuntRank, BattleNpc)> _currentMobs;
     private BattleNpc? _priorityMob;
     private HuntRank _highestRank;
 
@@ -33,14 +40,16 @@ public class HuntManager
         _shbDict = new Dictionary<HuntRank, List<Mob>>();
         _sbDict = new Dictionary<HuntRank, List<Mob>>();
         _ewDict = new Dictionary<HuntRank, List<Mob>>();
+        _mapImages = new Dictionary<string, TextureWrap>();
         _currentMobs = new List<(HuntRank, BattleNpc)>();
         this._pluginInterface = pluginInterface;
+        _imageFolderPath = Path.Combine(_pluginInterface.AssemblyLocation.Directory?.FullName!, "Images/Maps");
         LoadHuntData();
     }
 
     public (HuntRank, BattleNpc?) GetPriorityMob()
     {
-        return (_highestRank,_priorityMob);
+        return (_highestRank, _priorityMob);
     }
 
     public new List<(HuntRank, BattleNpc)> GetAllCurrentMobs()
@@ -51,7 +60,7 @@ public class HuntManager
     public void AddMob(BattleNpc mob)
     {
         var rank = GetHuntRank(mob.NameId);
-        _currentMobs.Add((rank,mob));
+        _currentMobs.Add((rank, mob));
 
         //if same rank or higher, make it the priority mob
         if (rank >= _highestRank)
@@ -67,7 +76,6 @@ public class HuntManager
         _highestRank = 0;
         _priorityMob = null;
     }
-
 
     public void LoadHuntData()
     {
@@ -117,6 +125,12 @@ public class HuntManager
 
     }
 
+    public int GetMapZoneCoordSize(ushort mapID)
+    {
+        //EVERYTHING EXCEPT HEAVENSWARD HAS 41 COORDS, BUT FOR SOME REASON HW HAS 43, WHYYYYYY
+        if (mapID is > 397 and < 402) return 43;
+        return 41;
+    }
     //override tostring?
     public string GetDatabaseAsString()
     {
@@ -138,6 +152,41 @@ public class HuntManager
         if (!exists) exists = _shbDict.Any(kvp => kvp.Value.Any(m => m.ModelID == modelID));
         if (!exists) exists = _ewDict.Any(kvp => kvp.Value.Any(m => m.ModelID == modelID));
         return exists;
+    }
+
+    public bool LoadMapImages()
+    {
+        //DownloadMapImages();
+        if (!Directory.Exists(_imageFolderPath)) return false;
+
+        //change this later for ss folder
+        var paths = Directory.EnumerateFiles(_imageFolderPath, "*", SearchOption.TopDirectoryOnly);
+
+        foreach (var path in paths)
+        {
+            _mapImages.Add(GetMapNameFromPath(path), _pluginInterface.UiBuilder.LoadImage(path));
+        }
+        return true;
+    }
+
+    public TextureWrap? GetMapImage(string mapName)
+    {
+        if (!_mapImages.ContainsKey(mapName)) return null;
+        return _mapImages[mapName];
+    }
+    
+    public void Dispose()
+    {
+        foreach (var kvp in _mapImages)
+        {
+            kvp.Value.Dispose();
+        }
+    }
+
+    private string GetMapNameFromPath(string path)
+    { //all files end with '-data.jpg', img source - http://cablemonkey.us/huntmap2/
+        var pathRemoved = path.Remove(0, _imageFolderPath.Length + 1).Replace("_", " ");
+        return pathRemoved.Remove(pathRemoved.Length - 9);
     }
 
     private HuntRank GetHuntRank(uint modelID)

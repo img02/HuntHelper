@@ -10,6 +10,7 @@ using Dalamud.Game.ClientState.Objects;
 using Dalamud.Game.ClientState.Objects.Enums;
 using Dalamud.Game.ClientState.Objects.Types;
 using Dalamud.Interface;
+using Dalamud.Interface.Colors;
 using Dalamud.Logging;
 using Dalamud.Plugin;
 using HuntHelper.MapInfoManager;
@@ -24,8 +25,6 @@ namespace HuntHelper
     {
         private Configuration configuration;
         private DalamudPluginInterface pluginInterface;
-
-        private ImGuiScene.TextureWrap goatImage;
 
         private ClientState ClientState;
         private ObjectTable ObjectTable;
@@ -47,17 +46,20 @@ namespace HuntHelper
         //initial window position
         private Vector2 mapWindowPos = new Vector2(25, 25);
 
-
-        private uint spawnPointColour = ImGui.ColorConvertFloat4ToU32(new Vector4(0.69f, 0.69f, 0.69f, 1f));
+        private int _mapZoneCoordSize = 41; //default to 41 as thats most common for hunt zones
+        //private uint spawnPointColour = ImGui.ColorConvertFloat4ToU32(new Vector4(0.69f, 0.69f, 0.69f, 1f));
+        private uint spawnPointColour = ImGui.ColorConvertFloat4ToU32(new Vector4(0.29f, 0.21f, .2f, 1f));
         private uint mobColour = ImGui.ColorConvertFloat4ToU32(new Vector4(0.4f, 1f, 0.567f, 1f));
         private uint playerColour = ImGui.ColorConvertFloat4ToU32(new Vector4(.5f, 0.567f, 1f, 1f));
 
 
-        // this extra bool exists for ImGui, since you can't ref a property
+        //window bools
         private bool mainWindowVisible = false;
         private bool ShowDatabaseListWindow = false;
         private bool showDebug = false;
         private bool _showOptionsWindow = true;
+
+        private bool _useMapImages = true;
 
         public bool MainWindowVisible
         {
@@ -102,12 +104,12 @@ namespace HuntHelper
 
             ClientState.TerritoryChanged += ClientState_TerritoryChanged;
 
-
+            LoadMapImages();
         }
 
         public void Dispose()
         {
-            //this.goatImage.Dispose();
+            HuntManager.Dispose();
         }
 
         public void Draw()
@@ -123,7 +125,7 @@ namespace HuntHelper
             DrawSettingsWindow();
 
 
-            DrawTestWindow();
+            DrawHuntMapWindow();
         }
 
         public void DrawMainWindow()
@@ -162,7 +164,7 @@ namespace HuntHelper
                            $"X: {Math.Round(v3.X, 2)} |" +
                            $"Y: {Math.Round(v3.Z, 2)} |");
                 //END
-                
+
                 ImGui.Indent(55);
                 ImGui.Text("");
 
@@ -189,7 +191,7 @@ namespace HuntHelper
             ImGui.End();
         }
 
-        public void DrawTestWindow()
+        public void DrawHuntMapWindow()
         {
             if (!TestVisible)
             {
@@ -220,6 +222,15 @@ namespace HuntHelper
                 //if using images
                 //draw images first so they are at the bottom.
                 //=========================================
+                if (_useMapImages)
+                {
+                    var mapImg = HuntManager.GetMapImage(TerritoryName);
+                    if (mapImg != null)
+                    {
+                        ImGui.Image(mapImg.ImGuiHandle, ImGui.GetWindowSize());
+                        ImGui.SetCursorPos(Vector2.Zero);
+                    }
+                }
 
                 //show map coordinates when mouse is over gui
                 ShowCoordOnMouseOver();
@@ -238,6 +249,18 @@ namespace HuntHelper
                 //putting this here instead because I want to draw it on this window, not a new one.
                 if (showDebug) ShowDebugInfo();
 
+                //button to toggle bottom panel thing
+                var cursorPos = new Vector2(8, ImGui.GetWindowSize().Y - 30);
+                ImGui.SetCursorPos(cursorPos);
+                if (ImGui.Button(" ö "))//get a cogwheel img or something idk
+                {
+                    _showOptionsWindow = !_showOptionsWindow;
+                }
+                if (ImGui.Button("Map Image"))
+                {
+                    _useMapImages = !_useMapImages;
+                }
+
                 if (HuntManager.ErrorPopUpVisible || mapDataManager.ErrorPopUpVisible)
                 {
                     ImGui.Begin("Error loading data");
@@ -246,13 +269,6 @@ namespace HuntHelper
                     ImGui.End();
                 }
 
-
-                var cursorPos = new Vector2(8, ImGui.GetWindowSize().Y-30);
-                ImGui.SetCursorPos(cursorPos);
-                if (ImGui.Button(" ö "))//get a cogwheel img or something idk
-                {
-                    _showOptionsWindow = !_showOptionsWindow;
-                } 
             }
             ImGui.End();
         }
@@ -494,23 +510,27 @@ namespace HuntHelper
             ImGui.Spacing();
             ImGui.Spacing();
             ImGui.Spacing();
-            ImGui.Text("Random Debug Info?!:");
+            ImGui.Spacing();
+            ImGui.Spacing();
+            ImGui.Spacing();
+            ImGui_TextColoured("Random Debug Info?!:");
+            ImGui.BeginChild("debug");
             ImGui.Columns(2);
-            ImGui.Text($"Content1 Region: {ImGui.GetContentRegionAvail()}");
-            ImGui.Text($"Window Size: {ImGui.GetWindowSize()}");
+            ImGui_TextColoured($"Content1 Region: {ImGui.GetContentRegionAvail()}");
+            ImGui_TextColoured($"Window Size: {ImGui.GetWindowSize()}");
 
             if (ClientState?.LocalPlayer?.Position != null)
             {
-                ImGui.Text($"rotation: {ClientState.LocalPlayer.Rotation}");
+                ImGui_TextColoured($"rotation: {ClientState.LocalPlayer.Rotation}");
                 var rotation = Math.Abs(ClientState.LocalPlayer.Rotation - Math.PI);
-                ImGui.Text($"rotation rad.: {Math.Round(rotation, 2):0.00}");
-                ImGui.Text($"rotation sin.: {Math.Round(Math.Sin(rotation), 2):0.00}");
-                ImGui.Text($"rotation cos.: {Math.Round(Math.Cos(rotation), 2):0.00}");
-                ImGui.Text($"Player Pos: (" +
-                           $"{Utilities.MapHelpers.ConvertToMapCoordinate(ClientState.LocalPlayer.Position.X):0.00}" +
-                           $"," +
-                           $" {Utilities.MapHelpers.ConvertToMapCoordinate(ClientState.LocalPlayer.Position.Z):0.00}" +
-                           $")");
+                ImGui_TextColoured($"rotation rad.: {Math.Round(rotation, 2):0.00}");
+                ImGui_TextColoured($"rotation sin.: {Math.Round(Math.Sin(rotation), 2):0.00}");
+                ImGui_TextColoured($"rotation cos.: {Math.Round(Math.Cos(rotation), 2):0.00}");
+                ImGui_TextColoured($"Player Pos: (" +
+                                   $"{Utilities.MapHelpers.ConvertToMapCoordinate(ClientState.LocalPlayer.Position.X):0.00}" +
+                                   $"," +
+                                   $" {Utilities.MapHelpers.ConvertToMapCoordinate(ClientState.LocalPlayer.Position.Z):0.00}" +
+                                   $")");
                 ImGui.NextColumn();
                 ImGui_RightAlignText($"Map: {TerritoryName}");
                 ImGui_RightAlignText($"Map ID: {TerritoryID}");
@@ -538,6 +558,7 @@ namespace HuntHelper
                                          $"({ConvertPosToCoordinate(mob.Position.X):0.00}, " +
                                          $"{ConvertPosToCoordinate(mob.Position.Z):0.00})");
                 }
+                ImGui.EndChild();
             }
             else
             {
@@ -558,7 +579,15 @@ namespace HuntHelper
             var windowWidth = ImGui.GetWindowSize().X;
             var textWidth = ImGui.CalcTextSize(text).X;
             ImGui.SetCursorPosX((windowWidth - textWidth) * .95f);
-            ImGui.TextUnformatted(text);
+            ImGui_TextColoured(text);
+            //ImGui.TextUnformatted(text);
+        }
+
+        private void ImGui_TextColoured(string text)
+        {
+            var colour = new Vector4(1f, 1f, 1f, 1f);
+            if (_useMapImages) colour = new Vector4(0f, 0f, 0f, 1f);
+            ImGui.TextColored(colour, text);
         }
 
         //use list instead? fixed input, so slightly more 'optimized' w/ array i guess...
@@ -576,6 +605,12 @@ namespace HuntHelper
             ImGui.SetCursorPosX(ImGui.GetCursorPosX() + ImGui.GetStyle().IndentSpacing * 0.5f);
             ImGui.PopTextWrapPos();
             ImGui.EndTooltip();
+        }
+
+        private void LoadMapImages()
+        {
+            if (!_useMapImages) return;
+            HuntManager.LoadMapImages();
         }
 
         //=================================================================

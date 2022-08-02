@@ -45,12 +45,12 @@ namespace HuntHelper
             this.ClientState = clientState;
             this.ObjectTable = objectTable;
             this.DataManager = dataManager;
-            
-            this.huntManager = new HuntManager(PluginInterface);
-            this.mapDataManager = new MapDataManager(PluginInterface);
 
             this.Configuration = this.PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
             this.Configuration.Initialize(this.PluginInterface);
+
+            this.huntManager = new HuntManager(PluginInterface);
+            this.mapDataManager = new MapDataManager(PluginInterface);
 
             // you might normally want to embed resources and load them from the manifest stream
             var imagePath = Path.Combine(PluginInterface.AssemblyLocation.Directory?.FullName!, "goat.png");
@@ -74,9 +74,6 @@ namespace HuntHelper
 
             this.PluginInterface.UiBuilder.Draw += DrawUI;
             this.PluginInterface.UiBuilder.OpenConfigUi += DrawConfigUI;
-
-
-
         }
 
         public void Dispose()
@@ -106,26 +103,6 @@ namespace HuntHelper
         private void DrawConfigUI()
         {
             this.PluginUi.SettingsVisible = true;
-        }
-
-
-        private void LoadHuntData()
-        {
-            //load hunt data from jsons / factories into dictionaries
-
-            //reuse logic from ufht
-            /*
-             * load data into dictionaries
-             *
-             * also later, move logic into own class... HuntStatus -contains current status, MobA1,MobB2,MobS,MobSS, MobA2,Mobb2 - maybe player,playerpos,map.etc.
-             *
-             * scan against dictionary based on map location
-             *
-             */
-
-
-
-            //ToDo
         }
     }
 }
