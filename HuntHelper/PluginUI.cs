@@ -46,14 +46,14 @@ namespace HuntHelper
         private float iconRadiusModifier = 1.0f; //modifier for all
         private float mobIconRadiusModifier = 1.5f; 
         private float spawnIconRadiusModifier = 1.0f; 
-        private float playerIconRadiusModifier = 1.0f; 
+        private float playerIconRadiusModifier = 0.20f; 
 
         //initial window position
         private Vector2 mapWindowPos = new Vector2(25, 25);
 
-        private int _mapZoneCoordSize = 41; //default to 41 as thats most common for hunt zones
+        private float _mapZoneMaxCoordSize = 41; //default to 41 as thats most common for hunt zones
         
-        public float SingleCoordSize => ImGui.GetWindowSize().X / _mapZoneCoordSize;
+        public float SingleCoordSize => ImGui.GetWindowSize().X / _mapZoneMaxCoordSize;
 
         //private uint spawnPointColour = ImGui.ColorConvertFloat4ToU32(new Vector4(0.69f, 0.69f, 0.69f, 1f));
         private uint spawnPointColour = ImGui.ColorConvertFloat4ToU32(new Vector4(0.29f, 0.21f, .2f, 1f));
@@ -213,21 +213,19 @@ namespace HuntHelper
             if (ImGui.Begin("Test Window!", ref this.testVisible,
                     ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse | ImGuiWindowFlags.NoTitleBar))
             {
-                _mapZoneCoordSize = HuntManager.GetMapZoneCoordSize(TerritoryID);
+                _mapZoneMaxCoordSize = HuntManager.GetMapZoneCoordSize(TerritoryID);
                 //if custom size not used, use these default sizes - resize with window size
                 //radius for mob / spawn point circles - equal to half a map coord size
                 SpawnPointIconRadius = iconRadiusModifier * spawnIconRadiusModifier * (0.25f * SingleCoordSize);
                 MobIconRadius = iconRadiusModifier * mobIconRadiusModifier * (0.25f * SingleCoordSize) ;
-                PlayerIconRadius = iconRadiusModifier * playerIconRadiusModifier * (0.125f * SingleCoordSize) / 2; //default half of mob icon size
-
-               
-
+                PlayerIconRadius = iconRadiusModifier * playerIconRadiusModifier * (0.125f * SingleCoordSize); //default half of mob icon size
+                
                 //change height as width changes, to maintain 1:1 ratio. 
                 var width = ImGui.GetWindowSize().X;
                 ImGui.SetWindowSize(new Vector2(width));
 
                 var bottomDockingPos = Vector2.Add(ImGui.GetWindowPos(), new Vector2(0, ImGui.GetWindowSize().Y));
-
+                
                 //=========================================
                 //if using images
                 //draw images first so they are at the bottom.
@@ -386,10 +384,7 @@ namespace HuntHelper
         {
             var spawnPoints = mapDataManager.GetSpawnPoints(mapID);
             if (spawnPoints.Count == 0) return;
-
             var drawList = ImGui.GetWindowDrawList();
-            var windowPos = ImGui.GetWindowPos();
-            var windowSize = ImGui.GetWindowSize();
 
             foreach (var sp in spawnPoints)
             {
@@ -464,7 +459,6 @@ namespace HuntHelper
                     new Vector2(ConvertPosToCoordinate(ClientState.LocalPlayer.Position.X),
                         ConvertPosToCoordinate(ClientState.LocalPlayer.Position.Z)));
 
-                //aoe detection circle = ~2 in-game coords. --DRAWN BELOW
                 var detectionRadius = 2 * SingleCoordSize * detectionRadiusModifier;
                 var rotation = Math.Abs(ClientState.LocalPlayer.Rotation - Math.PI);
                 var lineEnding =
@@ -492,6 +486,28 @@ namespace HuntHelper
             //detection circle
             drawlist.AddCircle(playerPos, detectionRadius,
                 ImGui.ColorConvertFloat4ToU32(new Vector4(1f, 1f, 0f, 1f)), 0, 1f);
+            ImGui.Spacing();
+            ImGui.Spacing();
+            ImGui.Spacing(); ImGui.Spacing();
+            ImGui.Spacing();
+            ImGui.Spacing();
+            ImGui.Spacing(); ImGui.Spacing();
+            ImGui.Spacing();
+            ImGui.Spacing();
+            ImGui.Spacing();
+            ImGui.Spacing(); ImGui.Spacing();
+            ImGui.Spacing();
+            ImGui.Spacing();
+            ImGui.Spacing();
+            ImGui.TextUnformatted($"{ImGui.GetWindowSize()}");
+            ImGui.TextUnformatted($"{ImGui.GetWindowPos()}");
+            
+            ImGui_TextColoured($"Player Pos: (" +
+                               $"{Utilities.MapHelpers.ConvertToMapCoordinate(ClientState.LocalPlayer.Position.X, _mapZoneMaxCoordSize):0.00}" +
+                               $"," +
+                               $" {Utilities.MapHelpers.ConvertToMapCoordinate(ClientState.LocalPlayer.Position.Z, _mapZoneMaxCoordSize):0.00}" +
+                               $")");
+            ImGui_TextColoured($"Player Pos: {playerPos}");
 
         }
         #endregion
@@ -509,7 +525,7 @@ namespace HuntHelper
                 Vector2.Subtract(mousePos, Vector2.Add(winPos, winSize)).X < 0 && Vector2.Subtract(mousePos, Vector2.Add(winPos, winSize)).Y < 0)
             {
                 var coord = MouseOverPositionToGameCoordinate();
-                var text = new string[] { $"({Math.Round(coord.X, 2)}, {Math.Round(coord.Y, 2)})" };
+                var text = new string[] { $"({Math.Round(coord.X, 2):0.0}, {Math.Round(coord.Y, 2):0.0})" };
                 Imgui_ToolTip(text);
             }
         }
@@ -528,6 +544,7 @@ namespace HuntHelper
             ImGui.Columns(2);
             ImGui_TextColoured($"Content1 Region: {ImGui.GetContentRegionAvail()}");
             ImGui_TextColoured($"Window Size: {ImGui.GetWindowSize()}");
+            ImGui_TextColoured($"Window  Pos: {ImGui.GetWindowPos()}");
 
             if (ClientState?.LocalPlayer?.Position != null)
             {
@@ -537,13 +554,17 @@ namespace HuntHelper
                 ImGui_TextColoured($"rotation sin.: {Math.Round(Math.Sin(rotation), 2):0.00}");
                 ImGui_TextColoured($"rotation cos.: {Math.Round(Math.Cos(rotation), 2):0.00}");
                 ImGui_TextColoured($"Player Pos: (" +
-                                   $"{Utilities.MapHelpers.ConvertToMapCoordinate(ClientState.LocalPlayer.Position.X):0.00}" +
+                                   $"{Utilities.MapHelpers.ConvertToMapCoordinate(ClientState.LocalPlayer.Position.X, _mapZoneMaxCoordSize):0.00}" +
                                    $"," +
-                                   $" {Utilities.MapHelpers.ConvertToMapCoordinate(ClientState.LocalPlayer.Position.Z):0.00}" +
+                                   $" {Utilities.MapHelpers.ConvertToMapCoordinate(ClientState.LocalPlayer.Position.Z, _mapZoneMaxCoordSize):0.00}" +
                                    $")");
+                var playerPos = CoordinateToPositionInWindow(
+                    new Vector2(ConvertPosToCoordinate(ClientState.LocalPlayer.Position.X),
+                        ConvertPosToCoordinate(ClientState.LocalPlayer.Position.Z)));
+                ImGui_TextColoured($"Player Pos: {playerPos}");
                 ImGui.NextColumn();
-                ImGui_RightAlignText($"Map: {TerritoryName}");
-                ImGui_RightAlignText($"Map ID: {TerritoryID}");
+                ImGui_RightAlignText($"Map: {TerritoryName} - {TerritoryID}");
+                ImGui_RightAlignText($"Coord size: {_mapZoneMaxCoordSize} ");
 
                 //priority mob stuff
                 ImGui_RightAlignText("Priority Mob:");
@@ -631,21 +652,16 @@ namespace HuntHelper
             var coord = mousePos / SingleCoordSize + Vector2.One;
             return coord;
         }
-
-        //redundant...
+        
         private float ConvertPosToCoordinate(float pos)
         {
-            return Utilities.MapHelpers.ConvertToMapCoordinate(pos);
+            return Utilities.MapHelpers.ConvertToMapCoordinate(pos, _mapZoneMaxCoordSize);
         }
 
         private Vector2 CoordinateToPositionInWindow(Vector2 pos)
         {
-            var ratio = ImGui.GetWindowSize().X / 41;
-            var winPos = ImGui.GetWindowPos();
-
-            var x = (pos.X - 1) * ratio + winPos.X;
-            var y = (pos.Y - 1) * ratio + winPos.Y;
-
+            var x = (pos.X - 1) * SingleCoordSize + ImGui.GetWindowPos().X;
+            var y = (pos.Y - 1) * SingleCoordSize + ImGui.GetWindowPos().Y;
             return new Vector2(x, y);
         }
 

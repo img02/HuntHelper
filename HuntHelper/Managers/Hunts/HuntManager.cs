@@ -125,11 +125,11 @@ public class HuntManager
 
     }
 
-    public int GetMapZoneCoordSize(ushort mapID)
+    public float GetMapZoneCoordSize(ushort mapID)
     {
         //EVERYTHING EXCEPT HEAVENSWARD HAS 41 COORDS, BUT FOR SOME REASON HW HAS 43, WHYYYYYY
-        if (mapID is > 397 and < 402) return 43;
-        return 41;
+        if (mapID is >= 397 and <= 402) return 43.1f;
+        return 41f;
     }
     //override tostring?
     public string GetDatabaseAsString()

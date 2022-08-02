@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection.Metadata;
 using Dalamud.Data;
 using Dalamud.Game.ClientState;
 using Lumina.Excel.GeneratedSheets;
@@ -12,10 +13,8 @@ public class MapHelpers
         return dataManager.Excel.GetSheet<TerritoryType>()?.GetRow(mapID)?.PlaceName?.Value?.Name.ToString() ?? "location not found";
     }
 
-    public static float ConvertToMapCoordinate(float pos)
-    {
-        return (float)(Math.Floor((21.48 + (pos / 50)) * 100)) / 100;
+    public static float ConvertToMapCoordinate(float pos, float zoneMaxCoordSize)
+    {   
+        return (float)Math.Floor(((zoneMaxCoordSize + 1.96) / 2 + (pos / 50)) * 100) / 100;
     }
-
-
 }
