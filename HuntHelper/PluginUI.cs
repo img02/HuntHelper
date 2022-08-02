@@ -247,13 +247,13 @@ namespace HuntHelper
                 //show map coordinates when mouse is over gui
                 ShowCoordOnMouseOver();
 
+                //draw player icon and info
+                UpdatePlayerInfo();
+
                 //draw spawn points for the current map, if applicable.
                 DrawSpawnPoints(TerritoryID);
 
                 UpdateMobInfo();
-
-                //draw player icon and info
-                UpdatePlayerInfo();
 
                 //bottom docking window with buttons and options and stuff
                 if (_showOptionsWindow) DrawOptionsWindow();
