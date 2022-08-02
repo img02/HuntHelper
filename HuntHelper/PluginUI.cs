@@ -48,6 +48,9 @@ namespace HuntHelper
         private float spawnIconRadiusModifier = 1.0f; 
         private float playerIconRadiusModifier = 0.20f; 
 
+        private float _detectionCircleThickness = 2f; 
+        private float _directionLineThickness = 3f; 
+
         //initial window position
         private Vector2 mapWindowPos = new Vector2(25, 25);
 
@@ -59,6 +62,7 @@ namespace HuntHelper
         private uint spawnPointColour = ImGui.ColorConvertFloat4ToU32(new Vector4(0.29f, 0.21f, .2f, 1f));
         private uint mobColour = ImGui.ColorConvertFloat4ToU32(new Vector4(0.4f, 1f, 0.567f, 1f));
         private uint playerColour = ImGui.ColorConvertFloat4ToU32(new Vector4(.5f, 0.567f, 1f, 1f));
+        private uint _playerIconBackgroundColour = ImGui.ColorConvertFloat4ToU32(new Vector4(0.117647f, 0.5647f, 1f, 0.7f));
 
 
         //window bools
@@ -264,10 +268,6 @@ namespace HuntHelper
                 {
                     _showOptionsWindow = !_showOptionsWindow;
                 }
-                if (ImGui.Button("Map Image"))
-                {
-                    _useMapImages = !_useMapImages;
-                }
 
                 if (HuntManager.ErrorPopUpVisible || mapDataManager.ErrorPopUpVisible)
                 {
@@ -297,11 +297,13 @@ namespace HuntHelper
             ImGui.SetWindowPos(bottomDockingPos);
             ImGui.Spacing();
             ImGui.Spacing();
-            ImGui.Columns(2);
-            ImGui.SetColumnWidth(0, ImGui.GetWindowSize().X / 3);
-            ImGui.SetColumnWidth(1, 2 * ImGui.GetWindowSize().X / 3);
+            ImGui.Columns(3);
+            ImGui.SetColumnWidth(0, ImGui.GetWindowSize().X / 6);
+            ImGui.SetColumnWidth(1, ImGui.GetWindowSize().X / 6);
             if (ImGui.Button("Show Debug")) showDebug = !showDebug;
             DrawDataBaseWindow();
+            ImGui.NextColumn();
+            if (ImGui.Button("Map Image"))_useMapImages = !_useMapImages;
             ImGui.NextColumn();
             ImGui.TextUnformatted("Add some toggle options and stuff here?");
             ImGui.TextUnformatted("FDSFD");
@@ -433,7 +435,7 @@ namespace HuntHelper
                 $"({ConvertPosToCoordinate(mob.Position.X)}, {ConvertPosToCoordinate(mob.Position.Z)})",
                 $"{Math.Round((mob.CurrentHp * 1.0) / mob.MaxHp * 100, 2)}%"
             };
-            Imgui_ToolTip(text);
+            ImGui_ToolTip(text);
         }
 
         private void DrawPriorityMobInfo()
@@ -442,7 +444,7 @@ namespace HuntHelper
             if (mob == null) return;
             ImGui.PushFont(UiBuilder.MonoFont);
             ImGui.Spacing();
-            ImGui_CentreText($"   A     |  {mob.Name}  |  {Math.Round(((1.0 * mob.CurrentHp) / mob.MaxHp) * 100):0.00}%");
+            ImGui_CentreText($"   {rank}     |  {mob.Name}  |  {Math.Round(((1.0 * mob.CurrentHp) / mob.MaxHp) * 100):0.00}%");
             ImGui_CentreText($"({ConvertPosToCoordinate(mob.Position.X):0.00}, {ConvertPosToCoordinate(mob.Position.Z):0.00})");
             ImGui.PopFont();
         }
@@ -454,7 +456,6 @@ namespace HuntHelper
             //if this stuff ain't null, draw player position
             if (ClientState?.LocalPlayer?.Position != null)
             {
-                //Todo - make these easier to read...
                 var playerPos = CoordinateToPositionInWindow(
                     new Vector2(ConvertPosToCoordinate(ClientState.LocalPlayer.Position.X),
                         ConvertPosToCoordinate(ClientState.LocalPlayer.Position.Z)));
@@ -478,37 +479,16 @@ namespace HuntHelper
 
         private void DrawPlayerIcon(ImDrawListPtr drawlist, Vector2 playerPos, float detectionRadius, Vector2 lineEnding)
         {
+            //player icon background circle
+            drawlist.AddCircleFilled(playerPos, detectionRadius, _playerIconBackgroundColour);
             //direction line
-            drawlist.AddLine(playerPos, lineEnding, ImGui.ColorConvertFloat4ToU32(new Vector4(1f, 0.3f, 0.3f, 1f)), 2);
+            drawlist.AddLine(playerPos, lineEnding, ImGui.ColorConvertFloat4ToU32(new Vector4(1f, 0.3f, 0.3f, 1f)), _directionLineThickness);
             //player filled circle
             drawlist.AddCircleFilled(playerPos, PlayerIconRadius,
                 playerColour);
             //detection circle
             drawlist.AddCircle(playerPos, detectionRadius,
-                ImGui.ColorConvertFloat4ToU32(new Vector4(1f, 1f, 0f, 1f)), 0, 1f);
-            ImGui.Spacing();
-            ImGui.Spacing();
-            ImGui.Spacing(); ImGui.Spacing();
-            ImGui.Spacing();
-            ImGui.Spacing();
-            ImGui.Spacing(); ImGui.Spacing();
-            ImGui.Spacing();
-            ImGui.Spacing();
-            ImGui.Spacing();
-            ImGui.Spacing(); ImGui.Spacing();
-            ImGui.Spacing();
-            ImGui.Spacing();
-            ImGui.Spacing();
-            ImGui.TextUnformatted($"{ImGui.GetWindowSize()}");
-            ImGui.TextUnformatted($"{ImGui.GetWindowPos()}");
-            
-            ImGui_TextColoured($"Player Pos: (" +
-                               $"{Utilities.MapHelpers.ConvertToMapCoordinate(ClientState.LocalPlayer.Position.X, _mapZoneMaxCoordSize):0.00}" +
-                               $"," +
-                               $" {Utilities.MapHelpers.ConvertToMapCoordinate(ClientState.LocalPlayer.Position.Z, _mapZoneMaxCoordSize):0.00}" +
-                               $")");
-            ImGui_TextColoured($"Player Pos: {playerPos}");
-
+                ImGui.ColorConvertFloat4ToU32(new Vector4(1f, 1f, 0f, 1f)), 0, _detectionCircleThickness);
         }
         #endregion
 
@@ -526,7 +506,7 @@ namespace HuntHelper
             {
                 var coord = MouseOverPositionToGameCoordinate();
                 var text = new string[] { $"({Math.Round(coord.X, 2):0.0}, {Math.Round(coord.Y, 2):0.0})" };
-                Imgui_ToolTip(text);
+                ImGui_ToolTip(text);
             }
         }
 
@@ -622,7 +602,7 @@ namespace HuntHelper
         }
 
         //use list instead? fixed input, so slightly more 'optimized' w/ array i guess...
-        private void Imgui_ToolTip(string[] text)
+        private void ImGui_ToolTip(string[] text)
         {
             ImGui.BeginTooltip();
             ImGui.PushTextWrapPos(ImGui.GetFontSize() * 50.0f);

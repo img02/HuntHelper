@@ -47,7 +47,7 @@ public class HuntManager
         LoadHuntData();
     }
 
-    public (HuntRank, BattleNpc?) GetPriorityMob()
+    public (HuntRank Rank, BattleNpc? Mob) GetPriorityMob()
     {
         return (_highestRank, _priorityMob);
     }
