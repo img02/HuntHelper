@@ -17,6 +17,7 @@ using Dalamud.Plugin;
 using HuntHelper.MapInfoManager;
 using Lumina.Excel.GeneratedSheets;
 using HuntHelper.Managers.Hunts;
+using Action = System.Action;
 
 namespace HuntHelper
 {
@@ -34,6 +35,7 @@ namespace HuntHelper
         private MapDataManager mapDataManager;
 
         private String TerritoryName;
+        private String WorldName;
         private ushort TerritoryID;
 
         private float MobIconRadius;
@@ -55,6 +57,16 @@ namespace HuntHelper
         private float _detectionCircleThickness = 2f;
         private float _directionLineThickness = 3f;
 
+        private float _zoneInfoPosX = 20f;
+        private float _zoneInfoPosY = 0f;
+        private float _worldInfoPosX = 0f;
+        private float _worldInfoPosY = 0f;
+        private float _priorityMobInfoPosX = 0f;
+        private float _priorityMobInfoPosY = 0f;
+        private Vector4 _zoneTextColour = Vector4.One;
+        private Vector4 _worldTextColour = Vector4.One;
+        private Vector4 _priorityMobTextColour = Vector4.One;
+
         //initial window position
         private Vector2 mapWindowPos = new Vector2(25, 25);
 
@@ -69,14 +81,21 @@ namespace HuntHelper
         private uint _playerIconBackgroundColour = ImGui.ColorConvertFloat4ToU32(new Vector4(0.117647f, 0.5647f, 1f, 0.7f)); //blue
         private uint _test => ImGui.ColorConvertFloat4ToU32(Vector4.One);
 
+        //message input lengths
         private uint _intputTextMaxLength = 50;
+
+        //window sizes
+        private int _currentWindowSize = 512;
+        private int _presetOneWindowSize = 512;
+        private int _presetTwoWindowSize = 1024;
+        //Hunt Window Flag - used for toggling title bar
+        private int _huntWindowFlag = 1;
 
         //refactor to this:
         private uint _spawnPointColourAsUint => ImGui.ColorConvertFloat4ToU32(_spawnPointColour);
         private Vector4 _spawnPointColour = new Vector4(0.29f, 0.21f, .2f, 1f);
 
-        private readonly Vector4 _defaultTextColour = new Vector4(1f, 1f, 1f, 1f); //white
-        private readonly Vector4 _priorityMobTextColour = new Vector4(1f, 1f, 1f, 1f); //white
+        private readonly Vector4 _defaultTextColour = Vector4.One; //white
 
 
         //window bools
@@ -116,11 +135,8 @@ namespace HuntHelper
             ClientState clientState, ObjectTable objectTable, DataManager dataManager,
             HuntManager huntManager, MapDataManager mapDataManager)
         {
-            //add hunt manager to this class
-
             this.configuration = configuration;
             this.pluginInterface = pluginInterface; //not using atm...
-            //this.goatImage = goatImage;
 
             this.ClientState = clientState;
             this.ObjectTable = objectTable;
@@ -220,20 +236,24 @@ namespace HuntHelper
             ImGui.End();
         }
 
+
+
         public void DrawHuntMapWindow()
         {
             if (!TestVisible)
             {
                 return;
             }
-            ImGui.SetNextWindowSize(new Vector2(512, 512), ImGuiCond.FirstUseEver);
+
+
+            ImGui.SetNextWindowSize(new Vector2(_currentWindowSize, _currentWindowSize), ImGuiCond.Always);
             ImGui.SetNextWindowSizeConstraints(new Vector2(512, -1), new Vector2(float.MaxValue, -1)); //disable manual resize vertical
             ImGui.SetNextWindowPos(mapWindowPos, ImGuiCond.FirstUseEver);
             ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, new Vector2(0, 0));
             ImGui.PushStyleVar(ImGuiStyleVar.WindowBorderSize, 0f);
-            if (ImGui.Begin("Test Window!", ref this.testVisible,
-                    ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse | ImGuiWindowFlags.NoTitleBar))
+            if (ImGui.Begin("Hunt Helper", ref this.testVisible, (ImGuiWindowFlags)_huntWindowFlag))
             {
+                _currentWindowSize = (int)ImGui.GetWindowSize().X;
                 _mapZoneMaxCoordSize = HuntManager.GetMapZoneCoordSize(TerritoryID);
                 //if custom size not used, use these default sizes - resize with window size
                 //radius for mob / spawn point circles - equal to half a map coord size
@@ -256,6 +276,7 @@ namespace HuntHelper
                     var mapImg = HuntManager.GetMapImage(TerritoryName);
                     if (mapImg != null)
                     {
+                        ImGui.SetCursorPos(Vector2.Zero);
                         ImGui.Image(mapImg.ImGuiHandle, ImGui.GetWindowSize());
                         ImGui.SetCursorPos(Vector2.Zero);
                     }
@@ -273,7 +294,10 @@ namespace HuntHelper
                 UpdateMobInfo();
 
                 //bottom docking window with buttons and options and stuff
-                if (_showOptionsWindow) DrawOptionsWindow();
+                if (_showOptionsWindow)
+                {
+                    DrawOptionsWindow();
+                }
 
                 //putting this here instead because I want to draw it on this window, not a new one.
                 if (_showDebug) ShowDebugInfo();
@@ -294,6 +318,26 @@ namespace HuntHelper
                     ImGui.End();
                 }
 
+                //optional togglable stuff 
+
+                //zone name
+                if (_showZoneName)
+                {
+                    DoStuffWithMonoFont(() =>
+                    {
+                        ImGui.SetCursorPos(new Vector2(_zoneInfoPosY, _zoneInfoPosX));
+                        ImGui.TextUnformatted($"{TerritoryName}");
+                    });
+
+                }
+                if (_showWorldName)
+                {
+                    DoStuffWithMonoFont(() =>
+                    {
+                        ImGui.SetCursorPos(new Vector2(_worldInfoPosX, _worldInfoPosY));
+                        ImGui.TextUnformatted($"{WorldName}");
+                    });
+                }
             }
             ImGui.End();
         }
@@ -302,7 +346,7 @@ namespace HuntHelper
         {
             #region Bottom docking info window
             var bottomDockingPos = Vector2.Add(ImGui.GetWindowPos(), new Vector2(0, ImGui.GetWindowSize().Y));
-            
+
             //ImGui.BeginChild(1, new Vector2(ImGui.GetWindowSize().X, 25));
             ImGui.SetNextWindowSize(new Vector2(ImGui.GetWindowSize().X, bottomPanelHeight), ImGuiCond.Always);
             ImGui.SetNextWindowSizeConstraints(new Vector2(-1, 95), new Vector2(-1, 300));
@@ -316,11 +360,19 @@ namespace HuntHelper
             ImGui.Spacing();
             ImGui.Spacing();
             ImGui.Columns(2);
+            ImGui.SetColumnWidth(0, ImGui.GetWindowSize().X / 5);
+            ImGui.SetColumnWidth(1, ImGui.GetWindowSize().X);
             ImGui.Checkbox("Map Image", ref _useMapImages);
             ImGui.SameLine(); ImGui_HelpMarker("Use a map image instead of blank background (ugly tho)");
 
+            ImGui.CheckboxFlags("Hide Title Bar", ref _huntWindowFlag, 1);
+            ImGui.SameLine(); ImGui_HelpMarker("Wasn't initially designed to have a title bar, things might need adjusting -->");
+
             ImGui.Checkbox("Show Debug", ref _showDebug);
             ImGui.SameLine(); ImGui_HelpMarker("idk shows random debug info");
+
+            ImGui.Checkbox("Save Spawn Data", ref _saveSpawnData);
+            ImGui.SameLine(); ImGui_HelpMarker("Saves S Rank Information to desktop txt (ToDo)");
 
             //ImGui.Dummy(new Vector2(0, 4f));
 
@@ -333,35 +385,124 @@ namespace HuntHelper
             {
                 if (ImGui.BeginTabItem("General"))
                 {
-                    bottomPanelHeight = 95f;
+                    bottomPanelHeight = 185f;
+                    var widgetWidth = 69f;
 
                     Debug_OptionsWindowTable_ShowWindowSize();
 
+                    var tableSizeX = ImGui.GetContentRegionAvail().X;
+                    var tableSizeY = ImGui.GetContentRegionAvail().Y;
+
                     ImGui.Dummy(new Vector2(0, 8f));
-                    if (ImGui.BeginTable("General Options table", 4)) {
+
+                    ImGui.BeginChild("general left side", new Vector2(1.2f * tableSizeX / 3, 0f));
+                    if (ImGui.BeginTable("General Options table", 2))
+                    {
                         ImGui.TableNextColumn();
                         ImGui.Checkbox("Zone Name", ref _showZoneName);
-                        ImGui.SameLine(); ImGui_HelpMarker("Shows Zone Name (ToDo)");
+                        ImGui.SameLine(); ImGui_HelpMarker("Shows Zone Name\nAdjust position below\nDrag the slider or ctrl-click to enter manually");
+                        ImGui.PushItemWidth(widgetWidth);
+                        ImGui.DragFloat("Zone X", ref _zoneInfoPosX);
+                        ImGui.DragFloat("Zone Y", ref _zoneInfoPosY);
+
+                        ImGui.SetColorEditOptions(ImGuiColorEditFlags.NoInputs);
+                        ImGui.ColorEdit4("Colour", ref _zoneTextColour);
+                        ImGui.PopID();
 
                         ImGui.TableNextColumn();
                         ImGui.Checkbox("World Name", ref _showWorldName);
-                        ImGui.SameLine(); ImGui_HelpMarker("Shows World Name (ToDo)");
-
-                        ImGui.TableNextColumn();
-                        ImGui.Checkbox("Save Spawn Data", ref _saveSpawnData);
-                        ImGui.SameLine(); ImGui_HelpMarker("Saves S Rank Information to desktop txt (ToDo)");
+                        ImGui.SameLine(); ImGui_HelpMarker("Shows World Name\nAdjust position below\nDrag the slider or ctrl-click to enter manually");
+                        ImGui.PushItemWidth(widgetWidth);
+                        ImGui.DragFloat("World X", ref _worldInfoPosX);
+                        ImGui.DragFloat("World Y", ref _worldInfoPosY);
+                        
+                        ImGui.ColorEdit4("Colour", ref _worldTextColour);
+                        ImGui.PopID();
+                        ImGui.SetColorEditOptions(ImGuiColorEditFlags.OptionsDefault);
                         ImGui.EndTable();
                     }
+                    ImGui.EndChild();
+
+                    ImGui.SameLine(); ImGui.BeginChild("general right side resize section", new Vector2((1.8f * tableSizeX / 3) - 8f, tableSizeY - 24f), true);
+                    if (ImGui.BeginTable("right side table", 4))
+                    {
+                        ImGui.TableSetupColumn("test", ImGuiTableColumnFlags.WidthFixed | ImGuiTableColumnFlags.NoResize);
+
+                        var intWidgetWidth = 36;
+
+                        // Current Window Size
+                        ImGui.TableNextColumn();
+                        ImGui.Dummy(new Vector2(0f, 0f));
+                        ImGui.Dummy(new Vector2(0f, 0f));
+                        ImGui.SameLine(); ImGui.Text("Window Size");
+                        ImGui.SameLine(); ImGui_HelpMarker("Current Window Size");
+
+                        ImGui.TableNextColumn();
+                        ImGui.Dummy(new Vector2(0f, 0f));
+                        ImGui.PushItemWidth(intWidgetWidth);
+                        ImGui.InputInt("", ref _currentWindowSize, 0);
+                        ImGui.PopID(); //popid so it can be used by another element
+
+                        ImGui.TableNextColumn();
+                        ImGui.Dummy(new Vector2(0f, 0f));
+                        
+                        ImGui.TableNextColumn();
+
+
+                        // Window Size Preset 1
+                        ImGui.TableNextColumn();
+                        ImGui.Dummy(new Vector2(0f, 0f));
+                        ImGui.Dummy(new Vector2(0f, 0f));
+                        ImGui.SameLine(); ImGui.Text("Preset 1");
+                        ImGui.SameLine(); ImGui_HelpMarker("Save a preset for quick switching");
+
+                        ImGui.TableNextColumn();
+                        ImGui.Dummy(new Vector2(0f, 0f));
+                        ImGui.PushItemWidth(intWidgetWidth);
+                        ImGui.InputInt("", ref _presetOneWindowSize, 0);
+                        ImGui.PopID();
+
+                        ImGui.TableNextColumn();
+                        ImGui.Dummy(new Vector2(0f, 0f));
+                        if (ImGui.Button("Apply")) _currentWindowSize = _presetOneWindowSize;
+                        ImGui.PopID();
+                        
+                        ImGui.TableNextColumn();
+
+
+                        // Window Size Preset 2
+                        ImGui.TableNextColumn();
+                        ImGui.Dummy(new Vector2(0f, 0f));
+                        ImGui.Dummy(new Vector2(0f, 0f));
+                        ImGui.SameLine(); ImGui.Text("Preset 2");
+                        ImGui.SameLine(); ImGui_HelpMarker("Save a preset for quick switching");
+
+                        ImGui.TableNextColumn();
+                        ImGui.Dummy(new Vector2(0f, 0f));
+                        ImGui.PushItemWidth(intWidgetWidth);
+                        ImGui.InputInt("", ref _presetTwoWindowSize, 0);
+                        ImGui.PopID();
+
+                        ImGui.TableNextColumn();
+                        ImGui.Dummy(new Vector2(0f, 0f));
+                        if (ImGui.Button("Apply")) _currentWindowSize = _presetTwoWindowSize;
+                        ImGui.SameLine(); ImGui_HelpMarker("why button go right :(");
+                        ImGui.PopID();
+                        ImGui.EndTable();
+                    }
+                    ImGui.EndChild();
+
                     ImGui.EndTabItem();
                 }
-                
+
                 if (ImGui.BeginTabItem("Visuals"))
                 {
                     Debug_OptionsWindowTable_ShowWindowSize();
 
                     bottomPanelHeight = 180f;
 
-                    if (ImGui.BeginTabBar("Visuals sub-bar")){
+                    if (ImGui.BeginTabBar("Visuals sub-bar"))
+                    {
                         if (ImGui.BeginTabItem("Sizing"))
                         {
                             ImGui.Dummy(new Vector2(0, 2f));
@@ -444,24 +585,24 @@ namespace HuntHelper
                                 ImGui.Dummy(new Vector2(0, 4f));
 
                                 ImGui.TableNextColumn();
-                                var color2 = new Vector4(0f,1f, 0f, 1f);
+                                var color2 = new Vector4(0f, 1f, 0f, 1f);
                                 ImGui.ColorEdit4("player background", ref color2);
                                 ImGui.SameLine(); ImGui_HelpMarker("green colour picker");
 
                                 ImGui.TableNextColumn();
-                                var color3 = new Vector4(0f,0f, 1f, 1f);
+                                var color3 = new Vector4(0f, 0f, 1f, 1f);
                                 ImGui.ColorEdit4("player", ref color3);
                                 ImGui.SameLine(); ImGui_HelpMarker("blue colour picker");
 
                                 ImGui.Dummy(new Vector2(0, 4f));
 
                                 ImGui.TableNextColumn();
-                                var color4 = new Vector4(0f,0f, 1f, 1f);
+                                var color4 = new Vector4(0f, 0f, 1f, 1f);
                                 ImGui.ColorEdit4("direction line", ref color4);
                                 ImGui.SameLine(); ImGui_HelpMarker("blue colour picker");
-                                
+
                                 ImGui.TableNextColumn();
-                                var color5 = new Vector4(0f,0f, 1f, 1f);
+                                var color5 = new Vector4(0f, 0f, 1f, 1f);
                                 ImGui.ColorEdit4("detection circle", ref color5);
                                 ImGui.SameLine(); ImGui_HelpMarker("blue colour picker");
 
@@ -495,7 +636,7 @@ namespace HuntHelper
                             ImGui.SameLine(); ImGui.InputText("", ref tempMsg, _intputTextMaxLength);
                             var tempBool = true;
                             ImGui.SameLine(); ImGui.Checkbox("", ref tempBool);
-                            ImGui.SameLine(); ImGui_HelpMarker("Message to send to chat, usable tags: <pos> <name> <rank> <hpp>.");
+                            ImGui.SameLine(); ImGui_HelpMarker("Message to send to chat using /echo, usable tags: <pos> <name> <rank> <hpp>.");
 
                             ImGui.Dummy(new Vector2(0, 2f));
                             ImGui.TextUnformatted("TTS   Message");
@@ -514,7 +655,7 @@ namespace HuntHelper
                             ImGui.InputText("", ref tempMsg, _intputTextMaxLength);
                             var tempBool = true;
                             ImGui.SameLine(); ImGui.Checkbox("", ref tempBool);
-                            ImGui.SameLine(); ImGui_HelpMarker("Message to send to chat, usable tags: <pos> <name> <rank> <hpp>.");
+                            ImGui.SameLine(); ImGui_HelpMarker("Message to send to chat using /echo, usable tags: <pos> <name> <rank> <hpp>.");
 
                             ImGui.Dummy(new Vector2(0, 2f));
                             ImGui.TextUnformatted("TTS   Message");
@@ -533,7 +674,7 @@ namespace HuntHelper
                             ImGui.InputText("", ref tempMsg, _intputTextMaxLength);
                             var tempBool = true;
                             ImGui.SameLine(); ImGui.Checkbox("", ref tempBool);
-                            ImGui.SameLine(); ImGui_HelpMarker("Message to send to chat, usable tags: <pos> <name> <rank> <hpp>.");
+                            ImGui.SameLine(); ImGui_HelpMarker("Message to send to chat using /echo, usable tags: <pos> <name> <rank> <hpp>.");
 
                             ImGui.Dummy(new Vector2(0, 2f));
                             ImGui.TextUnformatted("TTS   Message");
@@ -590,6 +731,7 @@ namespace HuntHelper
         private void ClientState_TerritoryChanged(object? sender, ushort e)
         {
             TerritoryName = Utilities.MapHelpers.GetMapName(DataManager, this.ClientState.TerritoryType);
+            WorldName = ClientState.LocalPlayer?.CurrentWorld?.GameData?.Name.ToString() ?? "Not Found";
             TerritoryID = ClientState.TerritoryType;
         }
 
@@ -605,9 +747,7 @@ namespace HuntHelper
             {
                 if (ImGui.BeginTabItem("database"))
                 {
-                    ImGui.PushFont(UiBuilder.MonoFont);
-                    ImGui_CentreText(HuntManager.GetDatabaseAsString(), _defaultTextColour);
-                    ImGui.PopFont();
+                    DoStuffWithMonoFont(() => ImGui_CentreText(HuntManager.GetDatabaseAsString(), _defaultTextColour));
                     ImGui.EndTabItem();
                 }
 
@@ -686,11 +826,18 @@ namespace HuntHelper
         {
             var (rank, mob) = HuntManager.GetPriorityMob();
             if (mob == null) return;
-            ImGui.PushFont(UiBuilder.MonoFont);
-            ImGui.Dummy(new Vector2(0f, _priorityMobSpacing));
-            ImGui_CentreText($"   {rank}     |  {mob.Name}  |  {Math.Round(((1.0 * mob.CurrentHp) / mob.MaxHp) * 100):0.00}%", _priorityMobTextColour);
-            ImGui_CentreText($"({ConvertPosToCoordinate(mob.Position.X):0.00}, {ConvertPosToCoordinate(mob.Position.Z):0.00})", _priorityMobTextColour);
-            ImGui.PopFont();
+            //ImGui.PushFont(UiBuilder.MonoFont);
+            DoStuffWithMonoFont(() =>
+            {
+                ImGui.Dummy(new Vector2(0f, _priorityMobSpacing));
+                ImGui_CentreText(
+                    $"   {rank}     |  {mob.Name}  |  {Math.Round(((1.0 * mob.CurrentHp) / mob.MaxHp) * 100):0.00}%",
+                    _priorityMobTextColour);
+                ImGui_CentreText(
+                    $"({ConvertPosToCoordinate(mob.Position.X):0.00}, {ConvertPosToCoordinate(mob.Position.Z):0.00})",
+                    _priorityMobTextColour);
+            });
+            //ImGui.PopFont();
         }
         #endregion
 
@@ -874,6 +1021,13 @@ namespace HuntHelper
                 ImGui.PopTextWrapPos();
                 ImGui.EndTooltip();
             }
+        }
+
+        private void DoStuffWithMonoFont(Action function)
+        {
+            ImGui.PushFont(UiBuilder.MonoFont);
+            function();
+            ImGui.PopFont();
         }
 
         private void LoadMapImages()
