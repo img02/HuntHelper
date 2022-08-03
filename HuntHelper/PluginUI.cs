@@ -67,6 +67,13 @@ namespace HuntHelper
         private uint mobColour = ImGui.ColorConvertFloat4ToU32(new Vector4(0.4f, 1f, 0.567f, 1f)); //green
         private uint playerColour = ImGui.ColorConvertFloat4ToU32(new Vector4(.5f, 0.567f, 1f, 1f)); //darkish blue
         private uint _playerIconBackgroundColour = ImGui.ColorConvertFloat4ToU32(new Vector4(0.117647f, 0.5647f, 1f, 0.7f)); //blue
+        private uint _test => ImGui.ColorConvertFloat4ToU32(Vector4.One);
+
+        private uint _intputTextMaxLength = 50;
+
+        //refactor to this:
+        private uint _spawnPointColourAsUint => ImGui.ColorConvertFloat4ToU32(_spawnPointColour);
+        private Vector4 _spawnPointColour = new Vector4(0.29f, 0.21f, .2f, 1f);
 
         private readonly Vector4 _defaultTextColour = new Vector4(1f, 1f, 1f, 1f); //white
         private readonly Vector4 _priorityMobTextColour = new Vector4(1f, 1f, 1f, 1f); //white
@@ -304,13 +311,11 @@ namespace HuntHelper
             ImGui.PushStyleColor(ImGuiCol.ResizeGrip, 0);
 
             ImGui.Begin("Options Window", ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoMove);
+            //ImGui.PushFont(UiBuilder.MonoFont);
             ImGui.SetWindowPos(bottomDockingPos);
             ImGui.Spacing();
             ImGui.Spacing();
             ImGui.Columns(2);
-            /*ImGui.SetColumnWidth(0, ImGui.GetWindowSize().X / 5.5f);
-            ImGui.SetColumnWidth(1, 5.5f * ImGui.GetWindowSize().X / 5.5f);*/
-
             ImGui.Checkbox("Map Image", ref _useMapImages);
             ImGui.SameLine(); ImGui_HelpMarker("Use a map image instead of blank background (ugly tho)");
 
@@ -329,9 +334,8 @@ namespace HuntHelper
                 if (ImGui.BeginTabItem("General"))
                 {
                     bottomPanelHeight = 95f;
-                    ImGui.SameLine(); ImGui.Text("   \t\t\t  ");
-                    ImGui.SameLine(); ImGui.TextDisabled($"{ImGui.GetWindowSize()}");
-                    ImGui.SameLine(); ImGui.TextDisabled($"{bottomPanelHeight}");
+
+                    Debug_OptionsWindowTable_ShowWindowSize();
 
                     ImGui.Dummy(new Vector2(0, 8f));
                     if (ImGui.BeginTable("General Options table", 4)) {
@@ -353,8 +357,8 @@ namespace HuntHelper
                 
                 if (ImGui.BeginTabItem("Visuals"))
                 {
-                    ImGui.SameLine(); ImGui.TextDisabled($"{ImGui.GetWindowSize()}");
-                    ImGui.SameLine(); ImGui.TextDisabled($"{bottomPanelHeight}");
+                    Debug_OptionsWindowTable_ShowWindowSize();
+
                     bottomPanelHeight = 180f;
 
                     if (ImGui.BeginTabBar("Visuals sub-bar")){
@@ -419,7 +423,7 @@ namespace HuntHelper
                             ImGui.EndTabItem();
                         }
 
-                        if (ImGui.BeginTabItem("Colours"))
+                        if (ImGui.BeginTabItem("Colours (TODO)"))
                         {
                             ImGui.Dummy(new Vector2(0, 2f));
                             bottomPanelHeight = 180f;
@@ -434,9 +438,8 @@ namespace HuntHelper
                                 ImGui.SameLine(); ImGui_HelpMarker("white colour picker");
 
                                 ImGui.TableNextColumn();
-                                var color1 = new Vector4(1f, 0f, 0f, 1f);
-                                ImGui.ColorEdit4("spawn point", ref color1);
-                                ImGui.SameLine(); ImGui_HelpMarker("red colour picker");
+                                ImGui.ColorEdit4("spawn point", ref _spawnPointColour);
+                                ImGui.SameLine(); ImGui_HelpMarker("Spawn Point Colour");
 
                                 ImGui.Dummy(new Vector2(0, 4f));
 
@@ -474,10 +477,81 @@ namespace HuntHelper
                     ImGui.EndTabItem();
                 }
 
+
+                if (ImGui.BeginTabItem("Notifications TODO"))
+                {
+                    Debug_OptionsWindowTable_ShowWindowSize();
+
+                    bottomPanelHeight = 135f;
+
+                    if (ImGui.BeginTabBar("Notifications sub-bar"))
+                    {
+                        //ImGui.PushFont(UiBuilder.MonoFont); //aligns things, but then looks ugly so idk.. table?
+                        if (ImGui.BeginTabItem(" A "))
+                        {
+                            ImGui.Dummy(new Vector2(0, 2f));
+                            var tempMsg = "Hello, this is a temp string";
+                            ImGui.TextUnformatted("Chat Message");
+                            ImGui.SameLine(); ImGui.InputText("", ref tempMsg, _intputTextMaxLength);
+                            var tempBool = true;
+                            ImGui.SameLine(); ImGui.Checkbox("", ref tempBool);
+                            ImGui.SameLine(); ImGui_HelpMarker("Message to send to chat, usable tags: <pos> <name> <rank> <hpp>.");
+
+                            ImGui.Dummy(new Vector2(0, 2f));
+                            ImGui.TextUnformatted("TTS   Message");
+                            ImGui.SameLine(); ImGui.InputText("", ref tempMsg, _intputTextMaxLength);
+                            ImGui.SameLine(); ImGui.Checkbox("", ref tempBool);
+                            ImGui.SameLine(); ImGui_HelpMarker("Message to use with Text-to-Speech, usable tags: <name> <rank>");
+
+                            ImGui.EndTabItem();
+                        }
+                        if (ImGui.BeginTabItem(" B "))
+                        {
+                            ImGui.Dummy(new Vector2(0, 2f));
+                            var tempMsg = "Hello, this is a temp string";
+                            ImGui.TextUnformatted("Chat Message");
+                            ImGui.SameLine();
+                            ImGui.InputText("", ref tempMsg, _intputTextMaxLength);
+                            var tempBool = true;
+                            ImGui.SameLine(); ImGui.Checkbox("", ref tempBool);
+                            ImGui.SameLine(); ImGui_HelpMarker("Message to send to chat, usable tags: <pos> <name> <rank> <hpp>.");
+
+                            ImGui.Dummy(new Vector2(0, 2f));
+                            ImGui.TextUnformatted("TTS   Message");
+                            ImGui.SameLine(); ImGui.InputText("", ref tempMsg, _intputTextMaxLength);
+                            ImGui.SameLine(); ImGui.Checkbox("", ref tempBool);
+                            ImGui.SameLine(); ImGui_HelpMarker("Message to use with Text-to-Speech, usable tags: <name> <rank>");
+
+                            ImGui.EndTabItem();
+                        }
+                        if (ImGui.BeginTabItem(" S "))
+                        {
+                            ImGui.Dummy(new Vector2(0, 2f));
+                            var tempMsg = "Hello, this is a temp string";
+                            ImGui.TextUnformatted("Chat Message");
+                            ImGui.SameLine();
+                            ImGui.InputText("", ref tempMsg, _intputTextMaxLength);
+                            var tempBool = true;
+                            ImGui.SameLine(); ImGui.Checkbox("", ref tempBool);
+                            ImGui.SameLine(); ImGui_HelpMarker("Message to send to chat, usable tags: <pos> <name> <rank> <hpp>.");
+
+                            ImGui.Dummy(new Vector2(0, 2f));
+                            ImGui.TextUnformatted("TTS   Message");
+                            ImGui.SameLine(); ImGui.InputText("", ref tempMsg, _intputTextMaxLength);
+                            ImGui.SameLine(); ImGui.Checkbox("", ref tempBool);
+                            ImGui.SameLine(); ImGui_HelpMarker("Message to use with Text-to-Speech, usable tags: <name> <rank>");
+
+                            ImGui.EndTabItem();
+                        }
+
+                        ImGui.EndTabBar();
+                    }
+                    ImGui.EndTabItem();
+                }
+
                 ImGui.EndTabBar();
             }
-
-            //bottomPanelHeight = ImGui.GetWindowSize().Y;
+            //ImGui.PopFont();
             ImGui.End();
             //ImGui.EndChildFrame();
             #endregion
@@ -540,6 +614,7 @@ namespace HuntHelper
                 if (ImGui.BeginTabItem("spawn points"))
                 {
                     ImGui.TextUnformatted(mapDataManager.ToString());
+                    ImGui.TextUnformatted("ik it's ugly, i'm sorry");
                     ImGui.EndTabItem();
                 }
                 ImGui.EndTabBar();
@@ -836,6 +911,13 @@ namespace HuntHelper
 
             //return Math.Floor(((pos - 12) / 100.0) * 100) / 100; //western than
             return Math.Floor(((pos + 1) / 100.0) * 100) / 100; //middle la noscea 
+        }
+
+        private void Debug_OptionsWindowTable_ShowWindowSize()
+        {
+            ImGui.SameLine(); ImGui.Dummy(new Vector2(300, 0f));
+            ImGui.SameLine(); ImGui.TextDisabled($"{ImGui.GetWindowSize()}");
+            ImGui.SameLine(); ImGui.TextDisabled($"{bottomPanelHeight}");
         }
     }
 }

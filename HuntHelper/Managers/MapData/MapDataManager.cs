@@ -24,8 +24,7 @@ public class MapDataManager
         SpawnPointsList = new List<MapSpawnPoints>();
         LoadSpawnPointData();
     }
-
-
+    
     public void LoadSpawnPointData()
     {
         ErrorMessage = string.Empty;

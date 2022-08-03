@@ -26,7 +26,9 @@ public class HuntManager
     private readonly Dictionary<String, TextureWrap> _mapImages;
     private readonly DalamudPluginInterface _pluginInterface;
 
-    private readonly List<(HuntRank, BattleNpc)> _currentMobs;
+    private readonly List<(HuntRank Rank, BattleNpc Mob)> _currentMobs;
+    private readonly List<uint> _previousMobs;
+
     private BattleNpc? _priorityMob;
     private HuntRank _highestRank;
 
@@ -42,6 +44,7 @@ public class HuntManager
         _ewDict = new Dictionary<HuntRank, List<Mob>>();
         _mapImages = new Dictionary<string, TextureWrap>();
         _currentMobs = new List<(HuntRank, BattleNpc)>();
+        _previousMobs = new List<uint>();
         this._pluginInterface = pluginInterface;
         _imageFolderPath = Path.Combine(_pluginInterface.AssemblyLocation.Directory?.FullName!, "Images/Maps");
         LoadHuntData();
@@ -61,17 +64,27 @@ public class HuntManager
     {
         var rank = GetHuntRank(mob.NameId);
         _currentMobs.Add((rank, mob));
-
         //if same rank or higher, make it the priority mob
         if (rank >= _highestRank)
         {
             _highestRank = rank;
             _priorityMob = mob;
         }
+
+        if (_previousMobs.Contains(mob.NameId))
+        {
+            //if 'new' mob, do tts stuff
+            //create tts class and add to this ctor?
+
+            //if 'new' mob do optional flag / pos stuff
+            //create map flag type class w/
+            //static methods? takes in pos and msg?
+        };
     }
 
     public void ClearMobs()
     {
+        _currentMobs.ForEach(rankMob => _previousMobs.Add(rankMob.Mob.NameId));
         _currentMobs.Clear();
         _highestRank = 0;
         _priorityMob = null;
@@ -174,13 +187,20 @@ public class HuntManager
         if (!_mapImages.ContainsKey(mapName)) return null;
         return _mapImages[mapName];
     }
-    
+
     public void Dispose()
     {
         foreach (var kvp in _mapImages)
         {
             kvp.Value.Dispose();
         }
+    }
+
+    public void SetTTSText(string text, HuntRank rank)
+    {
+        //set specific for each rank?
+        //call tts class object
+        //ToDo
     }
 
     private string GetMapNameFromPath(string path)
