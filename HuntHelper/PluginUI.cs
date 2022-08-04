@@ -25,38 +25,49 @@ namespace HuntHelper
     // to do any cleanup
     class PluginUI : IDisposable
     {
-        private Configuration configuration;
-        private DalamudPluginInterface pluginInterface;
+        private readonly Configuration _configuration;
+        private readonly DalamudPluginInterface _pluginInterface;
 
-        private ClientState ClientState;
-        private ObjectTable ObjectTable;
-        private DataManager DataManager;
-        private HuntManager HuntManager;
-        private MapDataManager mapDataManager;
+        private readonly ClientState _clientState;
+        private readonly ObjectTable _objectTable;
+        private readonly DataManager _dataManager;
+        private readonly HuntManager _huntManager;
+        private readonly MapDataManager _mapDataManager;
 
-        private String TerritoryName;
-        private String WorldName;
-        private ushort TerritoryID;
+        private String _territoryName;
+        private String _worldName;
+        private ushort _territoryId;
 
-        private float MobIconRadius;
-        private float PlayerIconRadius;
-        private float SpawnPointIconRadius;
-        private float bottomPanelHeight = 30;
+        private float _bottomPanelHeight = 30;
 
+        #region  User Customizable stuff - load and save to config
+        //base icon sizes - based on coord size? - not customizable
+        private float _mobIconRadius;
+        private float _playerIconRadius;
+        private float _spawnPointIconRadius;
+
+        //spacing from top for priority mob text -- prob not needed
         private float _priorityMobSpacing = 12.0f;
 
-        private float detectionRadiusModifier = 1.0f;
-        private float mouseOverDistanceModifier = 2.5f;
-
+        // icon colours
+        private uint spawnPointColour = ImGui.ColorConvertFloat4ToU32(new Vector4(0.29f, 0.21f, .2f, 1f)); //brownish?
+        private uint mobColour = ImGui.ColorConvertFloat4ToU32(new Vector4(0.4f, 1f, 0.567f, 1f)); //green
+        private uint playerColour = ImGui.ColorConvertFloat4ToU32(new Vector4(.5f, 0.567f, 1f, 1f)); //darkish blue
+        private uint _playerIconBackgroundColour = ImGui.ColorConvertFloat4ToU32(new Vector4(0.117647f, 0.5647f, 1f, 0.7f)); //blue
+        // icon radius sizes
         private float _allRadiusModifier = 1.0f; //modifier for all
         private float _mobIconRadiusModifier = 1.5f;
         private float _spawnPointRadiusModifier = 1.0f;
         private float _playerIconRadiusModifier = 0.20f;
         private float _detectionCircleModifier = 1.0f;
-
+        // detection circle radius modifider and mouseover distance modifier for mob icon tooltips
+        private float detectionRadiusModifier = 1.0f;
+        private float mouseOverDistanceModifier = 2.5f;
+        // icon-related thickness
         private float _detectionCircleThickness = 2f;
         private float _directionLineThickness = 3f;
 
+        // on-screen text and positions
         private float _zoneInfoPosX = 20f;
         private float _zoneInfoPosY = 0f;
         private float _worldInfoPosX = 0f;
@@ -64,25 +75,23 @@ namespace HuntHelper
         private float _priorityMobInfoPosX = 0f;
         private float _priorityMobInfoPosY = 0f;
         private Vector4 _zoneTextColour = Vector4.One;
+        private Vector4 _zoneTextAltColour = Vector4.One;
         private Vector4 _worldTextColour = Vector4.One;
+        private Vector4 _worldTextAltColour = Vector4.One;
         private Vector4 _priorityMobTextColour = Vector4.One;
+        private Vector4 _priorityMobTextAltColour = Vector4.One;
+
+        #endregion
 
         //initial window position
-        private Vector2 mapWindowPos = new Vector2(25, 25);
+        private Vector2 _mapWindowPos = new Vector2(25, 25);
 
         private float _mapZoneMaxCoordSize = 41; //default to 41 as thats most common for hunt zones
 
         public float SingleCoordSize => ImGui.GetWindowSize().X / _mapZoneMaxCoordSize;
-
-        //private uint spawnPointColour = ImGui.ColorConvertFloat4ToU32(new Vector4(0.69f, 0.69f, 0.69f, 1f));
-        private uint spawnPointColour = ImGui.ColorConvertFloat4ToU32(new Vector4(0.29f, 0.21f, .2f, 1f)); //brownish?
-        private uint mobColour = ImGui.ColorConvertFloat4ToU32(new Vector4(0.4f, 1f, 0.567f, 1f)); //green
-        private uint playerColour = ImGui.ColorConvertFloat4ToU32(new Vector4(.5f, 0.567f, 1f, 1f)); //darkish blue
-        private uint _playerIconBackgroundColour = ImGui.ColorConvertFloat4ToU32(new Vector4(0.117647f, 0.5647f, 1f, 0.7f)); //blue
-        private uint _test => ImGui.ColorConvertFloat4ToU32(Vector4.One);
-
+        
         //message input lengths
-        private uint _intputTextMaxLength = 50;
+        private uint _inputTextMaxLength = 50;
 
         //window sizes
         private int _currentWindowSize = 512;
@@ -135,26 +144,26 @@ namespace HuntHelper
             ClientState clientState, ObjectTable objectTable, DataManager dataManager,
             HuntManager huntManager, MapDataManager mapDataManager)
         {
-            this.configuration = configuration;
-            this.pluginInterface = pluginInterface; //not using atm...
+            this._configuration = configuration;
+            this._pluginInterface = pluginInterface; //not using atm...
 
-            this.ClientState = clientState;
-            this.ObjectTable = objectTable;
-            this.DataManager = dataManager;
-            this.HuntManager = huntManager;
-            this.mapDataManager = mapDataManager;
+            this._clientState = clientState;
+            this._objectTable = objectTable;
+            this._dataManager = dataManager;
+            this._huntManager = huntManager;
+            this._mapDataManager = mapDataManager;
 
-            TerritoryName = String.Empty;
+            _territoryName = String.Empty;
             ClientState_TerritoryChanged(null, 0);
 
-            ClientState.TerritoryChanged += ClientState_TerritoryChanged;
+            _clientState.TerritoryChanged += ClientState_TerritoryChanged;
 
             LoadMapImages();
         }
 
         public void Dispose()
         {
-            HuntManager.Dispose();
+            _huntManager.Dispose();
         }
 
         public void Draw()
@@ -184,7 +193,7 @@ namespace HuntHelper
             ImGui.SetNextWindowSizeConstraints(new Vector2(375, 330), new Vector2(float.MaxValue, float.MaxValue));
             if (ImGui.Begin("My Amazing Window!", ref this._mainWindowVisible, ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse))
             {
-                ImGui.Text($"The random config bool is {this.configuration.SomePropertyToBeSavedAndWithADefault}");
+                ImGui.Text($"The random config bool is {this._configuration.SomePropertyToBeSavedAndWithADefault}");
 
                 if (ImGui.Button("Settings"))
                 {
@@ -197,11 +206,11 @@ namespace HuntHelper
                 //ImGui.Image(this.goatImage.ImGuiHandle, new Vector2(this.goatImage.Width, this.goatImage.Height));
                 ImGui.Unindent(55);
 
-                ImGui.Text($"Territory: {TerritoryName}");
-                ImGui.Text($"Territory ID: {ClientState.TerritoryType}");
+                ImGui.Text($"Territory: {_territoryName}");
+                ImGui.Text($"Territory ID: {_clientState.TerritoryType}");
 
                 //PLAYER POS
-                var v3 = ClientState.LocalPlayer?.Position ?? new Vector3(0, 0, 0);
+                var v3 = _clientState.LocalPlayer?.Position ?? new Vector3(0, 0, 0);
                 ImGui.Text($"v3: -----\n" +
                            $"X: {ConvertPosToCoordinate(v3.X)} |" +
                            $"Y: {ConvertPosToCoordinate(v3.Z)} |\n" +
@@ -214,7 +223,7 @@ namespace HuntHelper
                 ImGui.Text("");
 
                 var hunt = "";
-                foreach (var obj in this.ObjectTable)
+                foreach (var obj in this._objectTable)
                 {
                     if (obj is not BattleNpc bobj) continue;
                     if (bobj.MaxHp < 10000) continue; //not really needed if subkind is enemy, once matching to id / name
@@ -248,18 +257,18 @@ namespace HuntHelper
 
             ImGui.SetNextWindowSize(new Vector2(_currentWindowSize, _currentWindowSize), ImGuiCond.Always);
             ImGui.SetNextWindowSizeConstraints(new Vector2(512, -1), new Vector2(float.MaxValue, -1)); //disable manual resize vertical
-            ImGui.SetNextWindowPos(mapWindowPos, ImGuiCond.FirstUseEver);
+            ImGui.SetNextWindowPos(_mapWindowPos, ImGuiCond.FirstUseEver);
             ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, new Vector2(0, 0));
             ImGui.PushStyleVar(ImGuiStyleVar.WindowBorderSize, 0f);
             if (ImGui.Begin("Hunt Helper", ref this.testVisible, (ImGuiWindowFlags)_huntWindowFlag))
             {
                 _currentWindowSize = (int)ImGui.GetWindowSize().X;
-                _mapZoneMaxCoordSize = HuntManager.GetMapZoneCoordSize(TerritoryID);
+                _mapZoneMaxCoordSize = _huntManager.GetMapZoneCoordSize(_territoryId);
                 //if custom size not used, use these default sizes - resize with window size
                 //radius for mob / spawn point circles - equal to half a map coord size
-                SpawnPointIconRadius = _allRadiusModifier * _spawnPointRadiusModifier * (0.25f * SingleCoordSize);
-                MobIconRadius = _allRadiusModifier * _mobIconRadiusModifier * (0.25f * SingleCoordSize);
-                PlayerIconRadius = _allRadiusModifier * _playerIconRadiusModifier * (0.125f * SingleCoordSize); //default half of mob icon size
+                _spawnPointIconRadius = _allRadiusModifier * _spawnPointRadiusModifier * (0.25f * SingleCoordSize);
+                _mobIconRadius = _allRadiusModifier * _mobIconRadiusModifier * (0.25f * SingleCoordSize);
+                _playerIconRadius = _allRadiusModifier * _playerIconRadiusModifier * (0.125f * SingleCoordSize); //default half of mob icon size
 
                 //change height as width changes, to maintain 1:1 ratio. 
                 var width = ImGui.GetWindowSize().X;
@@ -273,7 +282,7 @@ namespace HuntHelper
                 //=========================================
                 if (_useMapImages)
                 {
-                    var mapImg = HuntManager.GetMapImage(TerritoryName);
+                    var mapImg = _huntManager.GetMapImage(_territoryName);
                     if (mapImg != null)
                     {
                         ImGui.SetCursorPos(Vector2.Zero);
@@ -289,7 +298,7 @@ namespace HuntHelper
                 UpdatePlayerInfo();
 
                 //draw spawn points for the current map, if applicable.
-                DrawSpawnPoints(TerritoryID);
+                DrawSpawnPoints(_territoryId);
 
                 UpdateMobInfo();
 
@@ -310,11 +319,11 @@ namespace HuntHelper
                 ImGui.PushStyleColor(ImGuiCol.Button, new Vector4(.4f, .4f, .4f, 1f));
                 if (ImGui.Button(" ö ")) _showOptionsWindow = !_showOptionsWindow;
                 ImGui.PopStyleColor();
-                if (HuntManager.ErrorPopUpVisible || mapDataManager.ErrorPopUpVisible)
+                if (_huntManager.ErrorPopUpVisible || _mapDataManager.ErrorPopUpVisible)
                 {
                     ImGui.Begin("Error loading data");
-                    ImGui.Text(HuntManager.ErrorMessage);
-                    ImGui.Text(mapDataManager.ErrorMessage);
+                    ImGui.Text(_huntManager.ErrorMessage);
+                    ImGui.Text(_mapDataManager.ErrorMessage);
                     ImGui.End();
                 }
 
@@ -326,7 +335,8 @@ namespace HuntHelper
                     DoStuffWithMonoFont(() =>
                     {
                         ImGui.SetCursorPos(new Vector2(_zoneInfoPosY, _zoneInfoPosX));
-                        ImGui.TextUnformatted($"{TerritoryName}");
+                        if ( !_useMapImages) ImGui.TextColored(_zoneTextColour, $"{_territoryName}");
+                        if (_useMapImages) ImGui.TextColored(_zoneTextAltColour, $"{_territoryName}");
                     });
 
                 }
@@ -335,7 +345,8 @@ namespace HuntHelper
                     DoStuffWithMonoFont(() =>
                     {
                         ImGui.SetCursorPos(new Vector2(_worldInfoPosX, _worldInfoPosY));
-                        ImGui.TextUnformatted($"{WorldName}");
+                        if (!_useMapImages) ImGui.TextColored(_worldTextColour, $"{_worldName}");
+                        if (_useMapImages) ImGui.TextColored(_worldTextAltColour, $"{_worldName}");
                     });
                 }
             }
@@ -348,7 +359,7 @@ namespace HuntHelper
             var bottomDockingPos = Vector2.Add(ImGui.GetWindowPos(), new Vector2(0, ImGui.GetWindowSize().Y));
 
             //ImGui.BeginChild(1, new Vector2(ImGui.GetWindowSize().X, 25));
-            ImGui.SetNextWindowSize(new Vector2(ImGui.GetWindowSize().X, bottomPanelHeight), ImGuiCond.Always);
+            ImGui.SetNextWindowSize(new Vector2(ImGui.GetWindowSize().X, _bottomPanelHeight), ImGuiCond.Always);
             ImGui.SetNextWindowSizeConstraints(new Vector2(-1, 95), new Vector2(-1, 300));
 
             //hide grip color
@@ -385,7 +396,7 @@ namespace HuntHelper
             {
                 if (ImGui.BeginTabItem("General"))
                 {
-                    bottomPanelHeight = 185f;
+                    _bottomPanelHeight = 185f;
                     var widgetWidth = 69f;
 
                     Debug_OptionsWindowTable_ShowWindowSize();
@@ -408,6 +419,9 @@ namespace HuntHelper
                         ImGui.SetColorEditOptions(ImGuiColorEditFlags.NoInputs);
                         ImGui.ColorEdit4("Colour", ref _zoneTextColour);
                         ImGui.PopID();
+                        ImGui.ColorEdit4("Alt", ref _zoneTextAltColour);
+                        ImGui.SameLine(); ImGui_HelpMarker("Alternate colour for when map image is used.");
+                        ImGui.PopID();
 
                         ImGui.TableNextColumn();
                         ImGui.Checkbox("World Name", ref _showWorldName);
@@ -418,8 +432,17 @@ namespace HuntHelper
                         
                         ImGui.ColorEdit4("Colour", ref _worldTextColour);
                         ImGui.PopID();
+                        ImGui.ColorEdit4("Alt", ref _worldTextAltColour);
+                        ImGui.SameLine(); ImGui_HelpMarker("Alternate colour for when map image is used.");
+                        ImGui.PopID();
                         ImGui.SetColorEditOptions(ImGuiColorEditFlags.OptionsDefault);
                         ImGui.EndTable();
+
+                        /*
+                         * ADD A THIRD COLUMN FOR PRIORITY MOB POSITION AND COLOUR
+                         *
+                         * THEN APPLY THE COLOUR CHANGES TO THE SPECIFIED TEXTS USING imgui.tEXTcOLORED INSTEAD.
+                         */
                     }
                     ImGui.EndChild();
 
@@ -499,7 +522,7 @@ namespace HuntHelper
                 {
                     Debug_OptionsWindowTable_ShowWindowSize();
 
-                    bottomPanelHeight = 180f;
+                    _bottomPanelHeight = 180f;
 
                     if (ImGui.BeginTabBar("Visuals sub-bar"))
                     {
@@ -567,7 +590,7 @@ namespace HuntHelper
                         if (ImGui.BeginTabItem("Colours (TODO)"))
                         {
                             ImGui.Dummy(new Vector2(0, 2f));
-                            bottomPanelHeight = 180f;
+                            _bottomPanelHeight = 180f;
 
                             if (ImGui.BeginTable("Colour Options Table", 2))
                             {
@@ -623,7 +646,7 @@ namespace HuntHelper
                 {
                     Debug_OptionsWindowTable_ShowWindowSize();
 
-                    bottomPanelHeight = 135f;
+                    _bottomPanelHeight = 135f;
 
                     if (ImGui.BeginTabBar("Notifications sub-bar"))
                     {
@@ -633,14 +656,14 @@ namespace HuntHelper
                             ImGui.Dummy(new Vector2(0, 2f));
                             var tempMsg = "Hello, this is a temp string";
                             ImGui.TextUnformatted("Chat Message");
-                            ImGui.SameLine(); ImGui.InputText("", ref tempMsg, _intputTextMaxLength);
+                            ImGui.SameLine(); ImGui.InputText("", ref tempMsg, _inputTextMaxLength);
                             var tempBool = true;
                             ImGui.SameLine(); ImGui.Checkbox("", ref tempBool);
                             ImGui.SameLine(); ImGui_HelpMarker("Message to send to chat using /echo, usable tags: <pos> <name> <rank> <hpp>.");
 
                             ImGui.Dummy(new Vector2(0, 2f));
                             ImGui.TextUnformatted("TTS   Message");
-                            ImGui.SameLine(); ImGui.InputText("", ref tempMsg, _intputTextMaxLength);
+                            ImGui.SameLine(); ImGui.InputText("", ref tempMsg, _inputTextMaxLength);
                             ImGui.SameLine(); ImGui.Checkbox("", ref tempBool);
                             ImGui.SameLine(); ImGui_HelpMarker("Message to use with Text-to-Speech, usable tags: <name> <rank>");
 
@@ -652,14 +675,14 @@ namespace HuntHelper
                             var tempMsg = "Hello, this is a temp string";
                             ImGui.TextUnformatted("Chat Message");
                             ImGui.SameLine();
-                            ImGui.InputText("", ref tempMsg, _intputTextMaxLength);
+                            ImGui.InputText("", ref tempMsg, _inputTextMaxLength);
                             var tempBool = true;
                             ImGui.SameLine(); ImGui.Checkbox("", ref tempBool);
                             ImGui.SameLine(); ImGui_HelpMarker("Message to send to chat using /echo, usable tags: <pos> <name> <rank> <hpp>.");
 
                             ImGui.Dummy(new Vector2(0, 2f));
                             ImGui.TextUnformatted("TTS   Message");
-                            ImGui.SameLine(); ImGui.InputText("", ref tempMsg, _intputTextMaxLength);
+                            ImGui.SameLine(); ImGui.InputText("", ref tempMsg, _inputTextMaxLength);
                             ImGui.SameLine(); ImGui.Checkbox("", ref tempBool);
                             ImGui.SameLine(); ImGui_HelpMarker("Message to use with Text-to-Speech, usable tags: <name> <rank>");
 
@@ -671,14 +694,14 @@ namespace HuntHelper
                             var tempMsg = "Hello, this is a temp string";
                             ImGui.TextUnformatted("Chat Message");
                             ImGui.SameLine();
-                            ImGui.InputText("", ref tempMsg, _intputTextMaxLength);
+                            ImGui.InputText("", ref tempMsg, _inputTextMaxLength);
                             var tempBool = true;
                             ImGui.SameLine(); ImGui.Checkbox("", ref tempBool);
                             ImGui.SameLine(); ImGui_HelpMarker("Message to send to chat using /echo, usable tags: <pos> <name> <rank> <hpp>.");
 
                             ImGui.Dummy(new Vector2(0, 2f));
                             ImGui.TextUnformatted("TTS   Message");
-                            ImGui.SameLine(); ImGui.InputText("", ref tempMsg, _intputTextMaxLength);
+                            ImGui.SameLine(); ImGui.InputText("", ref tempMsg, _inputTextMaxLength);
                             ImGui.SameLine(); ImGui.Checkbox("", ref tempBool);
                             ImGui.SameLine(); ImGui_HelpMarker("Message to use with Text-to-Speech, usable tags: <name> <rank>");
 
@@ -709,12 +732,12 @@ namespace HuntHelper
                 ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse))
             {
                 // can't ref a property, so use a local copy
-                var configValue = this.configuration.SomePropertyToBeSavedAndWithADefault;
+                var configValue = this._configuration.SomePropertyToBeSavedAndWithADefault;
                 if (ImGui.Checkbox("Random Config Bool", ref configValue))
                 {
-                    this.configuration.SomePropertyToBeSavedAndWithADefault = configValue;
+                    this._configuration.SomePropertyToBeSavedAndWithADefault = configValue;
                     // can save immediately on change, if you don't want to provide a "Save and Close" button
-                    this.configuration.Save();
+                    this._configuration.Save();
                 }
 
                 if (ImGui.Button("Show Loaded Hunt Data"))
@@ -730,9 +753,9 @@ namespace HuntHelper
 
         private void ClientState_TerritoryChanged(object? sender, ushort e)
         {
-            TerritoryName = Utilities.MapHelpers.GetMapName(DataManager, this.ClientState.TerritoryType);
-            WorldName = ClientState.LocalPlayer?.CurrentWorld?.GameData?.Name.ToString() ?? "Not Found";
-            TerritoryID = ClientState.TerritoryType;
+            _territoryName = Utilities.MapHelpers.GetMapName(_dataManager, this._clientState.TerritoryType);
+            _worldName = _clientState.LocalPlayer?.CurrentWorld?.GameData?.Name.ToString() ?? "Not Found";
+            _territoryId = _clientState.TerritoryType;
         }
 
         #region Draw Sub Windows
@@ -747,13 +770,13 @@ namespace HuntHelper
             {
                 if (ImGui.BeginTabItem("database"))
                 {
-                    DoStuffWithMonoFont(() => ImGui_CentreText(HuntManager.GetDatabaseAsString(), _defaultTextColour));
+                    DoStuffWithMonoFont(() => ImGui_CentreText(_huntManager.GetDatabaseAsString(), _defaultTextColour));
                     ImGui.EndTabItem();
                 }
 
                 if (ImGui.BeginTabItem("spawn points"))
                 {
-                    ImGui.TextUnformatted(mapDataManager.ToString());
+                    ImGui.TextUnformatted(_mapDataManager.ToString());
                     ImGui.TextUnformatted("ik it's ugly, i'm sorry");
                     ImGui.EndTabItem();
                 }
@@ -768,14 +791,14 @@ namespace HuntHelper
         #region DrawList Stuff - Mob Icon, Player Icon
         public void DrawSpawnPoints(ushort mapID)
         {
-            var spawnPoints = mapDataManager.GetSpawnPoints(mapID);
+            var spawnPoints = _mapDataManager.GetSpawnPoints(mapID);
             if (spawnPoints.Count == 0) return;
             var drawList = ImGui.GetWindowDrawList();
 
             foreach (var sp in spawnPoints)
             {
                 var drawPos = CoordinateToPositionInWindow(sp);
-                drawList.AddCircleFilled(drawPos, SpawnPointIconRadius, spawnPointColour);
+                drawList.AddCircleFilled(drawPos, _spawnPointIconRadius, spawnPointColour);
             }
         }
 
@@ -785,12 +808,12 @@ namespace HuntHelper
         private void UpdateMobInfo()
         {
             var drawlist = ImGui.GetWindowDrawList();
-            HuntManager.ClearMobs();
-            foreach (var obj in this.ObjectTable)
+            _huntManager.ClearMobs();
+            foreach (var obj in this._objectTable)
             {
                 if (obj is not BattleNpc mob) continue;
-                if (!HuntManager.IsHunt(mob.NameId)) continue;
-                HuntManager.AddMob(mob);
+                if (!_huntManager.IsHunt(mob.NameId)) continue;
+                _huntManager.AddMob(mob);
                 DrawMobIcon(mob);
             }
 
@@ -802,10 +825,10 @@ namespace HuntHelper
             var mobPos = CoordinateToPositionInWindow(new Vector2(ConvertPosToCoordinate(mob.Position.X),
                 ConvertPosToCoordinate(mob.Position.Z)));
             var drawlist = ImGui.GetWindowDrawList();
-            drawlist.AddCircleFilled(mobPos, MobIconRadius, mobColour);
+            drawlist.AddCircleFilled(mobPos, _mobIconRadius, mobColour);
 
             //draw mob icon tooltip
-            if (Vector2.Distance(ImGui.GetMousePos(), mobPos) < MobIconRadius * mouseOverDistanceModifier)
+            if (Vector2.Distance(ImGui.GetMousePos(), mobPos) < _mobIconRadius * mouseOverDistanceModifier)
             {
                 DrawMobIconToolTip(mob);
             }
@@ -824,7 +847,7 @@ namespace HuntHelper
 
         private void DrawPriorityMobInfo()
         {
-            var (rank, mob) = HuntManager.GetPriorityMob();
+            var (rank, mob) = _huntManager.GetPriorityMob();
             if (mob == null) return;
             //ImGui.PushFont(UiBuilder.MonoFont);
             DoStuffWithMonoFont(() =>
@@ -845,14 +868,14 @@ namespace HuntHelper
         private void UpdatePlayerInfo()
         {
             //if this stuff ain't null, draw player position
-            if (ClientState?.LocalPlayer?.Position != null)
+            if (_clientState?.LocalPlayer?.Position != null)
             {
                 var playerPos = CoordinateToPositionInWindow(
-                    new Vector2(ConvertPosToCoordinate(ClientState.LocalPlayer.Position.X),
-                        ConvertPosToCoordinate(ClientState.LocalPlayer.Position.Z)));
+                    new Vector2(ConvertPosToCoordinate(_clientState.LocalPlayer.Position.X),
+                        ConvertPosToCoordinate(_clientState.LocalPlayer.Position.Z)));
 
                 var detectionRadius = 2 * SingleCoordSize * detectionRadiusModifier;
-                var rotation = Math.Abs(ClientState.LocalPlayer.Rotation - Math.PI);
+                var rotation = Math.Abs(_clientState.LocalPlayer.Rotation - Math.PI);
                 var lineEnding =
                     new Vector2(
                         playerPos.X + (float)(detectionRadius * Math.Sin(rotation)),
@@ -875,7 +898,7 @@ namespace HuntHelper
             //direction line
             drawlist.AddLine(playerPos, lineEnding, ImGui.ColorConvertFloat4ToU32(new Vector4(1f, 0.3f, 0.3f, 1f)), _directionLineThickness);
             //player filled circle
-            drawlist.AddCircleFilled(playerPos, PlayerIconRadius,
+            drawlist.AddCircleFilled(playerPos, _playerIconRadius,
                 playerColour);
             //detection circle
             drawlist.AddCircle(playerPos, detectionRadius,
@@ -910,46 +933,46 @@ namespace HuntHelper
             ImGui.Spacing();
             ImGui.Spacing();
             ImGui.Spacing();
-            ImGui_TextColoured("Random Debug Info?!:");
+            ImGui_TextColourSwapWhenUsingMapImage("Random Debug Info?!:");
             ImGui.BeginChild("debug");
             ImGui.Columns(2);
-            ImGui_TextColoured($"Content1 Region: {ImGui.GetContentRegionAvail()}");
-            ImGui_TextColoured($"Window Size: {ImGui.GetWindowSize()}");
-            ImGui_TextColoured($"Window  Pos: {ImGui.GetWindowPos()}");
+            ImGui_TextColourSwapWhenUsingMapImage($"Content1 Region: {ImGui.GetContentRegionAvail()}");
+            ImGui_TextColourSwapWhenUsingMapImage($"Window Size: {ImGui.GetWindowSize()}");
+            ImGui_TextColourSwapWhenUsingMapImage($"Window  Pos: {ImGui.GetWindowPos()}");
 
-            if (ClientState?.LocalPlayer?.Position != null)
+            if (_clientState?.LocalPlayer?.Position != null)
             {
-                ImGui_TextColoured($"rotation: {ClientState.LocalPlayer.Rotation}");
-                var rotation = Math.Abs(ClientState.LocalPlayer.Rotation - Math.PI);
-                ImGui_TextColoured($"rotation rad.: {Math.Round(rotation, 2):0.00}");
-                ImGui_TextColoured($"rotation sin.: {Math.Round(Math.Sin(rotation), 2):0.00}");
-                ImGui_TextColoured($"rotation cos.: {Math.Round(Math.Cos(rotation), 2):0.00}");
-                ImGui_TextColoured($"Player Pos: (" +
-                                   $"{Utilities.MapHelpers.ConvertToMapCoordinate(ClientState.LocalPlayer.Position.X, _mapZoneMaxCoordSize):0.00}" +
+                ImGui_TextColourSwapWhenUsingMapImage($"rotation: {_clientState.LocalPlayer.Rotation}");
+                var rotation = Math.Abs(_clientState.LocalPlayer.Rotation - Math.PI);
+                ImGui_TextColourSwapWhenUsingMapImage($"rotation rad.: {Math.Round(rotation, 2):0.00}");
+                ImGui_TextColourSwapWhenUsingMapImage($"rotation sin.: {Math.Round(Math.Sin(rotation), 2):0.00}");
+                ImGui_TextColourSwapWhenUsingMapImage($"rotation cos.: {Math.Round(Math.Cos(rotation), 2):0.00}");
+                ImGui_TextColourSwapWhenUsingMapImage($"Player Pos: (" +
+                                   $"{Utilities.MapHelpers.ConvertToMapCoordinate(_clientState.LocalPlayer.Position.X, _mapZoneMaxCoordSize):0.00}" +
                                    $"," +
-                                   $" {Utilities.MapHelpers.ConvertToMapCoordinate(ClientState.LocalPlayer.Position.Z, _mapZoneMaxCoordSize):0.00}" +
+                                   $" {Utilities.MapHelpers.ConvertToMapCoordinate(_clientState.LocalPlayer.Position.Z, _mapZoneMaxCoordSize):0.00}" +
                                    $")");
                 var playerPos = CoordinateToPositionInWindow(
-                    new Vector2(ConvertPosToCoordinate(ClientState.LocalPlayer.Position.X),
-                        ConvertPosToCoordinate(ClientState.LocalPlayer.Position.Z)));
-                ImGui_TextColoured($"Player Pos: {playerPos}");
+                    new Vector2(ConvertPosToCoordinate(_clientState.LocalPlayer.Position.X),
+                        ConvertPosToCoordinate(_clientState.LocalPlayer.Position.Z)));
+                ImGui_TextColourSwapWhenUsingMapImage($"Player Pos: {playerPos}");
                 ImGui.NextColumn();
-                ImGui_RightAlignText($"Map: {TerritoryName} - {TerritoryID}");
+                ImGui_RightAlignText($"Map: {_territoryName} - {_territoryId}");
                 ImGui_RightAlignText($"Coord size: {_mapZoneMaxCoordSize} ");
 
                 //priority mob stuff
                 ImGui_RightAlignText("Priority Mob:");
-                var priorityMob = HuntManager.GetPriorityMob().Item2;
+                var priorityMob = _huntManager.GetPriorityMob().Item2;
                 if (priorityMob != null)
                 {
-                    ImGui_RightAlignText($"Rank {HuntManager.GetPriorityMob().Item1} " +
+                    ImGui_RightAlignText($"Rank {_huntManager.GetPriorityMob().Item1} " +
                                          $"{priorityMob.Name} " +
                                          $"{Math.Round(1.0 * priorityMob.CurrentHp / priorityMob.MaxHp * 100, 2):0.00}% | " +
                                          $"({ConvertPosToCoordinate(priorityMob.Position.X):0.00}, " +
                                          $"{ConvertPosToCoordinate(priorityMob.Position.Z):0.00}) ");
                 }
 
-                var currentMobs = HuntManager.GetAllCurrentMobs();
+                var currentMobs = _huntManager.GetAllCurrentMobs();
                 ImGui_RightAlignText("--");
                 ImGui_RightAlignText("Other nearby mobs:");
                 foreach (var (rank, mob) in currentMobs)
@@ -982,11 +1005,11 @@ namespace HuntHelper
             var windowWidth = ImGui.GetWindowSize().X;
             var textWidth = ImGui.CalcTextSize(text).X;
             ImGui.SetCursorPosX((windowWidth - textWidth) * .95f);
-            ImGui_TextColoured(text);
+            ImGui_TextColourSwapWhenUsingMapImage(text);
             //ImGui.TextUnformatted(text);
         }
 
-        private void ImGui_TextColoured(string text)
+        private void ImGui_TextColourSwapWhenUsingMapImage(string text)
         {
             var colour = new Vector4(1f, 1f, 1f, 1f);
             if (_useMapImages) colour = new Vector4(0f, 0f, 0f, 1f);
@@ -1033,7 +1056,7 @@ namespace HuntHelper
         private void LoadMapImages()
         {
             if (!_useMapImages) return;
-            HuntManager.LoadMapImages();
+            _huntManager.LoadMapImages();
         }
 
         //=================================================================
@@ -1071,7 +1094,7 @@ namespace HuntHelper
         {
             ImGui.SameLine(); ImGui.Dummy(new Vector2(300, 0f));
             ImGui.SameLine(); ImGui.TextDisabled($"{ImGui.GetWindowSize()}");
-            ImGui.SameLine(); ImGui.TextDisabled($"{bottomPanelHeight}");
+            ImGui.SameLine(); ImGui.TextDisabled($"{_bottomPanelHeight}");
         }
     }
 }
