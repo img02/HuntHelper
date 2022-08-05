@@ -42,6 +42,7 @@ namespace HuntHelper
         private float _bottomPanelHeight = 30;
 
         #region  User Customizable stuff - load and save to config
+
         //map opacity - should be between 0-1f;
         private float _mapImageOpacityAsPercentage = 100f;
 
@@ -49,7 +50,7 @@ namespace HuntHelper
         private float _mobIconRadius;
         private float _playerIconRadius;
         private float _spawnPointIconRadius;
-        
+
         //spacing from top for priority mob text -- prob not needed
         private float _priorityMobSpacing = 12.0f;
 
@@ -57,10 +58,9 @@ namespace HuntHelper
         private Vector4 _spawnPointColour = new Vector4(0.29f, 0.21f, .2f, 1f); //brownish?
         private Vector4 _mobColour = new Vector4(0.4f, 1f, 0.567f, 1f); //green
         private Vector4 _playerIconColour = new Vector4(.5f, 0.567f, 1f, 1f); //darkish blue
-        private Vector4 _playerIconBackgroundColour =new Vector4(0.117647f, 0.5647f, 1f, 0.7f); //blue
+        private Vector4 _playerIconBackgroundColour = new Vector4(0.117647f, 0.5647f, 1f, 0.7f); //blue
         private Vector4 _directionLineColour = new Vector4(1f, 0.3f, 0.3f, 1f); //redish
         private Vector4 _detectionCircleColour = new Vector4(1f, 1f, 0f, 1f); //goldish
-
         // icon radius sizes
         private float _allRadiusModifier = 1.0f;
         private float _mobIconRadiusModifier = 1.5f;
@@ -78,8 +78,8 @@ namespace HuntHelper
         private float _zoneInfoPosYPercentage = 2f;
         private float _worldInfoPosXPercentage = 0f;
         private float _worldInfoPosYPercentage = 0f;
-        private float _priorityMobInfoPosXPercentage = 0f;
-        private float _priorityMobInfoPosYPercentage = 0f;
+        private float _priorityMobInfoPosXPercentage = 35f;
+        private float _priorityMobInfoPosYPercentage = 2.5f;
         // text colour
         private Vector4 _zoneTextColour = Vector4.One;
         private Vector4 _zoneTextAltColour = Vector4.One;
@@ -87,6 +87,17 @@ namespace HuntHelper
         private Vector4 _worldTextAltColour = Vector4.One;
         private Vector4 _priorityMobTextColour = Vector4.One;
         private Vector4 _priorityMobTextAltColour = Vector4.One;
+        private Vector4 _priorityMobBackgroundColour = new Vector4(1f, 0.43529411764705883f, 0.5137254901960784f, 0f); //nicely pink :D
+
+        //checkbox bools
+        private bool _priorityMobEnabled = true;
+        private bool _showDebug = false;
+        private bool _showOptionsWindow = true;
+        private bool _showZoneName = true;
+        private bool _showWorldName = true;
+        private bool _saveSpawnData = true;
+        private bool _useMapImages = true;
+
 
         #endregion
 
@@ -105,7 +116,7 @@ namespace HuntHelper
         private int _presetOneWindowSize = 512;
         private int _presetTwoWindowSize = 1024;
         //Hunt Window Flag - used for toggling title bar
-        private int _huntWindowFlag = 1;
+        private int _huntWindowFlag = (int)(ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoTitleBar);
 
 
         private readonly Vector4 _defaultTextColour = Vector4.One; //white
@@ -114,13 +125,6 @@ namespace HuntHelper
         //window bools
         private bool _mainWindowVisible = false;
         private bool _showDatabaseListWindow = false;
-        //checkbox bools
-        private bool _showDebug = false;
-        private bool _showOptionsWindow = true;
-        private bool _showZoneName = true;
-        private bool _showWorldName = true;
-        private bool _saveSpawnData = true;
-        private bool _useMapImages = true;
 
         public bool MainWindowVisible
         {
@@ -335,10 +339,7 @@ namespace HuntHelper
                 {
                     DoStuffWithMonoFont(() =>
                     {
-                        var winSize = ImGui.GetWindowSize();
-                        var textHeight = ImGui.GetTextLineHeight();
-                        //cant' easily get width and idc to try
-                        ImGui.SetCursorPos(new Vector2(winSize.X * _zoneInfoPosXPercentage /100, winSize.Y * _zoneInfoPosYPercentage / 100 - textHeight));
+                        SetCursorPosByPercentage(_zoneInfoPosXPercentage, _zoneInfoPosYPercentage);
                         if (!_useMapImages) ImGui.TextColored(_zoneTextColour, $"{_territoryName}");
                         if (_useMapImages) ImGui.TextColored(_zoneTextAltColour, $"{_territoryName}");
                     });
@@ -348,9 +349,7 @@ namespace HuntHelper
                 {
                     DoStuffWithMonoFont(() =>
                     {
-                        var winSize = ImGui.GetWindowSize();
-                        var textHeight = ImGui.GetTextLineHeight();
-                        ImGui.SetCursorPos(new Vector2(winSize.X * _worldInfoPosXPercentage / 100, winSize.Y * _worldInfoPosYPercentage / 100 - textHeight));
+                        SetCursorPosByPercentage(_worldInfoPosXPercentage, _worldInfoPosYPercentage);
                         if (!_useMapImages) ImGui.TextColored(_worldTextColour, $"{_worldName}");
                         if (_useMapImages) ImGui.TextColored(_worldTextAltColour, $"{_worldName}");
                     });
@@ -392,7 +391,7 @@ namespace HuntHelper
 
         }
 
-        //break this down? lazyu-
+        //break this down? lazyu- could def make functions for repeat gui element sets...
         private void DrawOptionsWindow()
         {
             #region Bottom docking info window
@@ -413,7 +412,12 @@ namespace HuntHelper
             ImGui.SetColumnWidth(0, ImGui.GetWindowSize().X / 5);
             ImGui.SetColumnWidth(1, ImGui.GetWindowSize().X);
             ImGui.Checkbox("Map Image", ref _useMapImages);
-            ImGui.SameLine(); ImGui_HelpMarker("Use a map image instead of blank background (ugly tho)");
+            ImGui.SameLine(); ImGui_HelpMarker("Use a map image instead of blank background (ugly tho)\n\n" +
+                                               "\t\t=======================================\n" +
+                                               "\t\tMap Images Created By Cable Monkey of Goblin\n" +
+                                               "         \t\t   http://cablemonkey.us/huntmap2/\n" +
+                                               "         \t\t   Same thing for spawn point data :D\n" +
+                                               "\t\t=======================================");
 
             ImGui.CheckboxFlags("Hide Title Bar", ref _huntWindowFlag, 1);
             ImGui.SameLine(); ImGui_HelpMarker("Wasn't initially designed to have a title bar, things might need adjusting -->");
@@ -670,7 +674,7 @@ namespace HuntHelper
                             if (ImGui.BeginTable("Colour Options Table", 3))
                             {
                                 ImGui.Dummy(new Vector2(0, 2f));
-                                
+
                                 ImGui.TableNextColumn();
                                 var color3 = new Vector4(0f, 0f, 1f, 1f);
                                 ImGui.ColorEdit4("Player Icon", ref _playerIconColour, ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
@@ -713,7 +717,7 @@ namespace HuntHelper
 
                 if (ImGui.BeginTabItem("Notifications TODO"))
                 {
-                    _bottomPanelHeight = 135f;
+                    _bottomPanelHeight = 145f;
 
                     if (ImGui.BeginTabBar("Notifications sub-bar"))
                     {
@@ -787,11 +791,15 @@ namespace HuntHelper
                     if (ImGui.BeginTable("Priority Mob Table", 2))
                     {
                         ImGui.TableNextColumn();
-                        ImGui.TextUnformatted("priority mob");
-                        ImGui.TextUnformatted("priority X");
-                        ImGui.TextUnformatted("priority Y");
-                        ImGui.TextUnformatted("priority colour");
-                        ImGui.TextUnformatted("priority colour alt");
+                        ImGui.Checkbox("Priority Mob", ref _priorityMobEnabled);
+                        ImGui.SameLine(); ImGui_HelpMarker("The big thing that labels highest rank mob in zone, S/SS > A > B\n\n" +
+                                                           "Ctrl+Click to enter manually, Shift+Click for fast drag.");
+                        ImGui.DragFloat("X##Priority Mob", ref _priorityMobInfoPosXPercentage, 0.05f, 0, 100, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
+                        ImGui.DragFloat("Y##Priority Mob", ref _priorityMobInfoPosYPercentage, 0.05f, 0, 100, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
+                        ImGui.ColorEdit4("Main##PriorityMain", ref _priorityMobTextColour, ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
+                        ImGui.SameLine(); ImGui.ColorEdit4("Alt##PriorityAlt", ref _priorityMobTextAltColour, ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
+                        ImGui.SameLine(); ImGui.ColorEdit4("Background##PriorityAlt", ref _priorityMobBackgroundColour, ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
+                        ImGui.SameLine(); ImGui_HelpMarker("Main = without map, Alt = with map images, Background = background duh \n\n- Turn up Alpha A: for solid colour.");
 
                         ImGui.TableNextColumn();
                         ImGui.TextUnformatted("Nearby mob list");
@@ -910,6 +918,7 @@ namespace HuntHelper
             }
 
             DrawPriorityMobInfo();
+            DrawNearbyMobInfo();
         }
 
         private void DrawMobIcon(BattleNpc mob)
@@ -939,21 +948,38 @@ namespace HuntHelper
 
         private void DrawPriorityMobInfo()
         {
+            if (!_priorityMobEnabled) return;
+
             var (rank, mob) = _huntManager.GetPriorityMob();
             if (mob == null) return;
-            //ImGui.PushFont(UiBuilder.MonoFont);
-            DoStuffWithMonoFont(() =>
+
+            DoStuffWithMonoFont(() => 
             {
-                ImGui.Dummy(new Vector2(0f, _priorityMobSpacing));
+                SetCursorPosByPercentage(_priorityMobInfoPosXPercentage, _priorityMobInfoPosYPercentage);
+
+                ImGui.PushStyleColor(ImGuiCol.Border, _priorityMobBackgroundColour);
+                ImGui.PushStyleColor(ImGuiCol.ChildBg, _priorityMobBackgroundColour);
+                ImGui.BeginChild("Priorty Mob Label", new Vector2(240f,40f), true, ImGuiWindowFlags.NoScrollbar);
+                var colour = _useMapImages ? _priorityMobTextAltColour : _priorityMobTextColour; //if using map image, use alt colour.
                 ImGui_CentreText(
-                    $"   {rank}     |  {mob.Name}  |  {Math.Round(((1.0 * mob.CurrentHp) / mob.MaxHp) * 100, 2):0.00}%%",
-                    _priorityMobTextColour);
+                     $" {rank}  |  {mob.Name}  |  {Math.Round(((1.0 * mob.CurrentHp) / mob.MaxHp) * 100, 2):0.00}%%",
+                     colour);
                 ImGui_CentreText(
                     $"({ConvertPosToCoordinate(mob.Position.X):0.00}, {ConvertPosToCoordinate(mob.Position.Z):0.00})",
-                    _priorityMobTextColour);
+                    colour);
+                ImGui.EndChild();
+                ImGui.PopStyleColor(2);
             });
-            //ImGui.PopFont();
         }
+
+        private void DrawNearbyMobInfo()
+        {
+            if (!_nearbyMobInfoEnabled) return;
+
+
+
+        }
+
         #endregion
 
         #region Player
@@ -1081,11 +1107,11 @@ namespace HuntHelper
             }
         }
 
-        private void ImGui_CentreText(string text, Vector4 colour)
+        private void ImGui_CentreText(string text, Vector4 colour, float offset = 1f)
         {
             var windowWidth = ImGui.GetWindowSize().X;
             var textWidth = ImGui.CalcTextSize(text).X;
-            ImGui.SetCursorPosX((windowWidth - textWidth) * 0.5f);
+            ImGui.SetCursorPosX((windowWidth - textWidth) * 0.5f * offset);
             ImGui.TextColored(colour, text);
             //ImGui.TextUnformatted(text);
         }
@@ -1170,21 +1196,19 @@ namespace HuntHelper
             return new Vector2(x, y);
         }
 
-        //z pos offset seems diff for every map, idk idc...
-        private double ConvertARR_Z_ToCoordinate(float pos)
-        {
-            // arr z index seems to be 0 == 12. since: 1.0 == 112 and 0.5 == 62. 
-            // not exactly super thorough testing tbh
-
-            //return Math.Floor(((pos - 12) / 100.0) * 100) / 100; //western than
-            return Math.Floor(((pos + 1) / 100.0) * 100) / 100; //middle la noscea 
-        }
-
         private void Debug_OptionsWindowTable_ShowWindowSize()
         {
             ImGui.TextDisabled($"{ImGui.GetWindowSize()}");
             //ImGui.TextDisabled($"{_bottomPanelHeight}");
 
+        }
+
+        private void SetCursorPosByPercentage(float percentX, float percentY)
+        {
+            var winSize = ImGui.GetWindowSize();
+            var textHeight = ImGui.GetTextLineHeight();
+            //cant' easily get width and idc to try
+            ImGui.SetCursorPos(new Vector2(winSize.X * percentX / 100, winSize.Y * percentY / 100 - textHeight));
         }
     }
 }
