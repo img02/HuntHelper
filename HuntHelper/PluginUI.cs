@@ -790,11 +790,11 @@ namespace HuntHelper
                     ImGui.EndTabItem();
                 }
 
-                if (ImGui.BeginTabItem("Priority Mob")) //what do i call this, mob context, mob text, hunt info data text idk
+                if (ImGui.BeginTabItem("Onscreen Mob Info")) //what do i call this, mob context, mob text, hunt info data text idk
                 {
                     _bottomPanelHeight = 185f;
 
-                    if (ImGui.BeginTable("Priority Mob Table", 2))
+                    if (ImGui.BeginTable("Mob info Table", 2))
                     {
                         ImGui.TableNextColumn();
                         ImGui.Checkbox("Priority Mob", ref _priorityMobEnabled);
@@ -808,8 +808,8 @@ namespace HuntHelper
                         ImGui.SameLine(); ImGui_HelpMarker("Main = without map, Alt = with map images, Background = background duh \n\n- Turn up Alpha A: for solid colour.");
 
                         ImGui.TableNextColumn();
-                        ImGui.Checkbox("Priority Mob", ref _nearbyMobListEnabled);
-                        ImGui.SameLine(); ImGui_HelpMarker("The big thing that labels highest rank mob in zone, S/SS > A > B\n\n" +
+                        ImGui.Checkbox("Nearby Mob List", ref _nearbyMobListEnabled);
+                        ImGui.SameLine(); ImGui_HelpMarker("A list of all nearby mobs.\n\n" +
                                                            "Ctrl+Click to enter manually, Shift+Click for fast drag.");
                         ImGui.DragFloat("X##Nearby Mobs", ref _nearbyMobListPosXPercentage, 0.05f, 0, 100, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
                         ImGui.DragFloat("Y##Nearby Mobs", ref _nearbyMobListPosYPercentage, 0.05f, 0, 100, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
