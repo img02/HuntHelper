@@ -18,7 +18,7 @@ namespace HuntHelper
     {
         public string Name => "Hunt Helper";
 
-        private const string commandName = "/pmycommand";
+        private const string commandName = "/hh1";
 
         private DalamudPluginInterface PluginInterface { get; init; }
         private CommandManager CommandManager { get; init; }
@@ -51,11 +51,6 @@ namespace HuntHelper
 
             this.huntManager = new HuntManager(PluginInterface);
             this.mapDataManager = new MapDataManager(PluginInterface);
-
-            // you might normally want to embed resources and load them from the manifest stream
-            var imagePath = Path.Combine(PluginInterface.AssemblyLocation.Directory?.FullName!, "goat.png");
-
-            //var goatImage = this.PluginInterface.UiBuilder.LoadImage(imagePath);
 
             #region idk
             #endregion

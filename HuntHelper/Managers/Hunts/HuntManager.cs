@@ -32,6 +32,8 @@ public class HuntManager
     private BattleNpc? _priorityMob;
     private HuntRank _highestRank;
 
+    public bool ImagesLoaded = false;
+
     public bool ErrorPopUpVisible = false;
     public string ErrorMessage = string.Empty;
 
@@ -169,6 +171,8 @@ public class HuntManager
 
     public bool LoadMapImages()
     {
+        if (ImagesLoaded) return false;
+
         //DownloadMapImages();
         if (!Directory.Exists(_imageFolderPath)) return false;
 
@@ -179,6 +183,8 @@ public class HuntManager
         {
             _mapImages.Add(GetMapNameFromPath(path), _pluginInterface.UiBuilder.LoadImage(path));
         }
+
+        ImagesLoaded = true;
         return true;
     }
 
