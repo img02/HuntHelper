@@ -80,17 +80,23 @@ namespace HuntHelper
         private float _worldInfoPosYPercentage = 0f;
         private float _priorityMobInfoPosXPercentage = 35f;
         private float _priorityMobInfoPosYPercentage = 2.5f;
+        private float _nearbyMobListPosXPercentage = 2.5f;
+        private float _nearbyMobListPosYPercentage = 2.5f;
         // text colour
         private Vector4 _zoneTextColour = Vector4.One;
-        private Vector4 _zoneTextAltColour = Vector4.One;
+        private Vector4 _zoneTextColourAlt = Vector4.One;
         private Vector4 _worldTextColour = Vector4.One;
-        private Vector4 _worldTextAltColour = Vector4.One;
+        private Vector4 _worldTextColourAlt = Vector4.One;
         private Vector4 _priorityMobTextColour = Vector4.One;
-        private Vector4 _priorityMobTextAltColour = Vector4.One;
-        private Vector4 _priorityMobBackgroundColour = new Vector4(1f, 0.43529411764705883f, 0.5137254901960784f, 0f); //nicely pink :D
+        private Vector4 _priorityMobTextColourAlt = Vector4.One;
+        private Vector4 _nearbyMobListColour = Vector4.One;
+        private Vector4 _nearbyMobListColourAlt = Vector4.One;
+        private Vector4 _priorityMobColourBackground = new Vector4(1f, 0.43529411764705883f, 0.5137254901960784f, 0f); //nicely pink :D
+        private Vector4 _nearbyMobLisColourBackground = new Vector4(1f, 0.43529411764705883f, 0.5137254901960784f, 0f); //nicely pink :D
 
         //checkbox bools
         private bool _priorityMobEnabled = true;
+        private bool _nearbyMobListEnabled = true;
         private bool _showDebug = false;
         private bool _showOptionsWindow = true;
         private bool _showZoneName = true;
@@ -195,7 +201,7 @@ namespace HuntHelper
 
             ImGui.SetNextWindowSize(new Vector2(375, 330), ImGuiCond.FirstUseEver);
             ImGui.SetNextWindowSizeConstraints(new Vector2(375, 330), new Vector2(float.MaxValue, float.MaxValue));
-            if (ImGui.Begin("My Amazing Window!", ref this._mainWindowVisible, ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse))
+            if (ImGui.Begin("Debug stuff", ref this._mainWindowVisible))
             {
                 ImGui.Text($"The random config bool is {this._configuration.SomePropertyToBeSavedAndWithADefault}");
 
@@ -341,7 +347,7 @@ namespace HuntHelper
                     {
                         SetCursorPosByPercentage(_zoneInfoPosXPercentage, _zoneInfoPosYPercentage);
                         if (!_useMapImages) ImGui.TextColored(_zoneTextColour, $"{_territoryName}");
-                        if (_useMapImages) ImGui.TextColored(_zoneTextAltColour, $"{_territoryName}");
+                        if (_useMapImages) ImGui.TextColored(_zoneTextColourAlt, $"{_territoryName}");
                     });
 
                 }
@@ -351,7 +357,7 @@ namespace HuntHelper
                     {
                         SetCursorPosByPercentage(_worldInfoPosXPercentage, _worldInfoPosYPercentage);
                         if (!_useMapImages) ImGui.TextColored(_worldTextColour, $"{_worldName}");
-                        if (_useMapImages) ImGui.TextColored(_worldTextAltColour, $"{_worldName}");
+                        if (_useMapImages) ImGui.TextColored(_worldTextColourAlt, $"{_worldName}");
                     });
                 }
             }
@@ -474,7 +480,7 @@ namespace HuntHelper
                             ImGui.DragFloat("Zone Y", ref _zoneInfoPosYPercentage, 0.05f, 0, 100, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
 
                             ImGui.ColorEdit4("Colour##Zone", ref _zoneTextColour, ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
-                            ImGui.ColorEdit4("Alt##Zone", ref _zoneTextAltColour, ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
+                            ImGui.ColorEdit4("Alt##Zone", ref _zoneTextColourAlt, ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
 
                             ImGui.SameLine();
                             ImGui_HelpMarker("Alternate colour for when map image is used.");
@@ -489,7 +495,7 @@ namespace HuntHelper
                             ImGui.DragFloat("World Y", ref _worldInfoPosYPercentage, 0.05f, 0, 100f, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
 
                             ImGui.ColorEdit4("Colour##World", ref _worldTextColour, ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
-                            ImGui.ColorEdit4("Alt##World", ref _worldTextAltColour, ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
+                            ImGui.ColorEdit4("Alt##World", ref _worldTextColourAlt, ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
                             ImGui.SameLine();
                             ImGui_HelpMarker("Alternate colour for when map image is used.");
 
@@ -797,16 +803,20 @@ namespace HuntHelper
                         ImGui.DragFloat("X##Priority Mob", ref _priorityMobInfoPosXPercentage, 0.05f, 0, 100, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
                         ImGui.DragFloat("Y##Priority Mob", ref _priorityMobInfoPosYPercentage, 0.05f, 0, 100, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
                         ImGui.ColorEdit4("Main##PriorityMain", ref _priorityMobTextColour, ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
-                        ImGui.SameLine(); ImGui.ColorEdit4("Alt##PriorityAlt", ref _priorityMobTextAltColour, ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
-                        ImGui.SameLine(); ImGui.ColorEdit4("Background##PriorityAlt", ref _priorityMobBackgroundColour, ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
+                        ImGui.SameLine(); ImGui.ColorEdit4("Alt##PriorityAlt", ref _priorityMobTextColourAlt, ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
+                        ImGui.SameLine(); ImGui.ColorEdit4("Background##PriorityAlt", ref _priorityMobColourBackground, ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
                         ImGui.SameLine(); ImGui_HelpMarker("Main = without map, Alt = with map images, Background = background duh \n\n- Turn up Alpha A: for solid colour.");
 
                         ImGui.TableNextColumn();
-                        ImGui.TextUnformatted("Nearby mob list");
-                        ImGui.TextUnformatted("Nearby X");
-                        ImGui.TextUnformatted("Nearby Y");
-                        ImGui.TextUnformatted("Nearby colour");
-                        ImGui.TextUnformatted("Nearby colour alt");
+                        ImGui.Checkbox("Priority Mob", ref _nearbyMobListEnabled);
+                        ImGui.SameLine(); ImGui_HelpMarker("The big thing that labels highest rank mob in zone, S/SS > A > B\n\n" +
+                                                           "Ctrl+Click to enter manually, Shift+Click for fast drag.");
+                        ImGui.DragFloat("X##Nearby Mobs", ref _nearbyMobListPosXPercentage, 0.05f, 0, 100, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
+                        ImGui.DragFloat("Y##Nearby Mobs", ref _nearbyMobListPosYPercentage, 0.05f, 0, 100, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
+                        ImGui.ColorEdit4("Main##Nearby Mobs", ref _nearbyMobListColour, ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
+                        ImGui.SameLine(); ImGui.ColorEdit4("Alt##Nearby Alt", ref _nearbyMobListColourAlt, ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
+                        ImGui.SameLine(); ImGui.ColorEdit4("Background##Nearby Mobs", ref _nearbyMobLisColourBackground, ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
+                        ImGui.SameLine(); ImGui_HelpMarker("Main = without map, Alt = with map images, Background = background duh \n\n- Turn up Alpha A: for solid colour.");
 
                         ImGui.EndTable();
                     }
@@ -953,14 +963,13 @@ namespace HuntHelper
             var (rank, mob) = _huntManager.GetPriorityMob();
             if (mob == null) return;
 
-            DoStuffWithMonoFont(() => 
+            DoStuffWithMonoFont(() =>
             {
                 SetCursorPosByPercentage(_priorityMobInfoPosXPercentage, _priorityMobInfoPosYPercentage);
-
-                ImGui.PushStyleColor(ImGuiCol.Border, _priorityMobBackgroundColour);
-                ImGui.PushStyleColor(ImGuiCol.ChildBg, _priorityMobBackgroundColour);
-                ImGui.BeginChild("Priorty Mob Label", new Vector2(240f,40f), true, ImGuiWindowFlags.NoScrollbar);
-                var colour = _useMapImages ? _priorityMobTextAltColour : _priorityMobTextColour; //if using map image, use alt colour.
+                ImGui.PushStyleColor(ImGuiCol.Border, _priorityMobColourBackground);
+                ImGui.PushStyleColor(ImGuiCol.ChildBg, _priorityMobColourBackground);
+                ImGui.BeginChild("Priorty Mob Label", new Vector2(240f, 40f), true, ImGuiWindowFlags.NoScrollbar);
+                var colour = _useMapImages ? _priorityMobTextColourAlt : _priorityMobTextColour; //if using map image, use alt colour.
                 ImGui_CentreText(
                      $" {rank}  |  {mob.Name}  |  {Math.Round(((1.0 * mob.CurrentHp) / mob.MaxHp) * 100, 2):0.00}%%",
                      colour);
@@ -974,8 +983,32 @@ namespace HuntHelper
 
         private void DrawNearbyMobInfo()
         {
-            if (!_nearbyMobInfoEnabled) return;
+            if (!_nearbyMobListEnabled) return;
+            var nearbyMobs = _huntManager.CurrentMobs;
+            if (nearbyMobs.Count == 0) return;
 
+            var size = new Vector2(200f, 40f * nearbyMobs.Count);
+
+
+            DoStuffWithMonoFont(() =>
+            {
+                SetCursorPosByPercentage(_nearbyMobListPosXPercentage, _nearbyMobListPosYPercentage);
+                ImGui.PushStyleColor(ImGuiCol.Border, _nearbyMobLisColourBackground);
+                ImGui.PushStyleColor(ImGuiCol.ChildBg, _nearbyMobLisColourBackground);
+                ImGui.BeginChild("Nearby Mob List Info", size, true, ImGuiWindowFlags.NoScrollbar);
+                var colour = _useMapImages ? _nearbyMobListColourAlt : _nearbyMobListColour; //if using map image, use alt colour.
+                ImGui.Separator();
+                foreach (var hunt in nearbyMobs)
+                {
+                    var mob = hunt.Mob;
+                    ImGui_CentreText($"{hunt.Rank} | {mob.Name} | " +
+                                     $"{Math.Round((mob.CurrentHp * 1.0 / mob.MaxHp) * 100, 2)}" +
+                                     $"({ConvertPosToCoordinate(mob.Position.X)}, {ConvertPosToCoordinate(mob.Position.Y)})", colour);
+                    ImGui.Separator();
+                }
+                ImGui.EndChild();
+                ImGui.PopStyleColor(2);
+            });
 
 
         }

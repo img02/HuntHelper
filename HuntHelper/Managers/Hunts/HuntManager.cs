@@ -37,6 +37,8 @@ public class HuntManager
     public bool ErrorPopUpVisible = false;
     public string ErrorMessage = string.Empty;
 
+    public List<(HuntRank Rank, BattleNpc Mob)> CurrentMobs => _currentMobs;
+
     public HuntManager(DalamudPluginInterface pluginInterface)
     {
         _arrDict = new Dictionary<HuntRank, List<Mob>>();
