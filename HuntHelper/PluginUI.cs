@@ -55,38 +55,38 @@ namespace HuntHelper
         private float _priorityMobSpacing = 12.0f;
 
         // icon colours
-        private Vector4 _spawnPointColour = new Vector4(0.29f, 0.21f, .2f, 1f); //brownish?
+        private Vector4 _spawnPointColour = new Vector4(0.24706f, 0.309804f, 0.741176f, 1); //purty blue
         private Vector4 _mobColour = new Vector4(0.4f, 1f, 0.567f, 1f); //green
-        private Vector4 _playerIconColour = new Vector4(.5f, 0.567f, 1f, 1f); //darkish blue
+        private Vector4 _playerIconColour = new Vector4(0f, 0f, 0f, 1f); //black
         private Vector4 _playerIconBackgroundColour = new Vector4(0.117647f, 0.5647f, 1f, 0.7f); //blue
         private Vector4 _directionLineColour = new Vector4(1f, 0.3f, 0.3f, 1f); //redish
         private Vector4 _detectionCircleColour = new Vector4(1f, 1f, 0f, 1f); //goldish
         // icon radius sizes
         private float _allRadiusModifier = 1.0f;
-        private float _mobIconRadiusModifier = 1.5f;
+        private float _mobIconRadiusModifier = 2f;
         private float _spawnPointRadiusModifier = 1.0f;
-        private float _playerIconRadiusModifier = 0.20f;
+        private float _playerIconRadiusModifier = 1f;
         private float _detectionCircleModifier = 1.0f;
         // mouseover distance modifier for mob icon tooltips
         private float mouseOverDistanceModifier = 2.5f;
         // icon-related thickness
-        private float _detectionCircleThickness = 2f;
+        private float _detectionCircleThickness = 3f;
         private float _directionLineThickness = 3f;
 
         // on-screen text positions and colours
-        private float _zoneInfoPosXPercentage = 0f;
-        private float _zoneInfoPosYPercentage = 2f;
-        private float _worldInfoPosXPercentage = 0f;
-        private float _worldInfoPosYPercentage = 0f;
+        private float _zoneInfoPosXPercentage = 3.5f;
+        private float _zoneInfoPosYPercentage = 11.1f;
+        private float _worldInfoPosXPercentage = 0.45f;
+        private float _worldInfoPosYPercentage = 8.3f;
         private float _priorityMobInfoPosXPercentage = 35f;
         private float _priorityMobInfoPosYPercentage = 2.5f;
-        private float _nearbyMobListPosXPercentage = 2.5f;
-        private float _nearbyMobListPosYPercentage = 2.5f;
+        private float _nearbyMobListPosXPercentage = .42f;
+        private float _nearbyMobListPosYPercentage = 69f;
         // text colour
-        private Vector4 _zoneTextColour = Vector4.One;
-        private Vector4 _zoneTextColourAlt = Vector4.One;
-        private Vector4 _worldTextColour = Vector4.One;
-        private Vector4 _worldTextColourAlt = Vector4.One;
+        private Vector4 _zoneTextColour = new Vector4(0.282353f, 0.76863f, 0.69412f, 1f); //blue-greenish
+        private Vector4 _zoneTextColourAlt = new Vector4(0, 0.4353f, 0.36863f, 1f); //same but darker
+        private Vector4 _worldTextColour = new Vector4(0.77255f,0.3412f,0.612f,1f); //purply
+        private Vector4 _worldTextColourAlt = new Vector4(0.51765f, 0, 0.3294f, 1f); //same but darker
         private Vector4 _priorityMobTextColour = Vector4.One;
         private Vector4 _priorityMobTextColourAlt = Vector4.One;
         private Vector4 _nearbyMobListColour = Vector4.One;
@@ -362,6 +362,7 @@ namespace HuntHelper
                 }
             }
             ImGui.End();
+            ImGui.PopStyleVar(2);
         }
 
         //move this
@@ -616,12 +617,12 @@ namespace HuntHelper
                                 ImGui.TableNextColumn();
                                 ImGui.PushItemWidth(widgetWidth);
                                 ImGui.InputFloat("Player Modifier", ref _playerIconRadiusModifier, 0, 0, "%.2f");
-                                ImGui.SameLine(); ImGui_HelpMarker("Player Icon Radius Modifier: Default 0.2");
+                                ImGui.SameLine(); ImGui_HelpMarker("Player Icon Radius Modifier: Default 1");
 
                                 ImGui.TableNextColumn();
                                 ImGui.PushItemWidth(widgetWidth);
                                 ImGui.InputFloat("Mob Modifier", ref _mobIconRadiusModifier, 0, 0, "%.2f");
-                                ImGui.SameLine(); ImGui_HelpMarker("Mob Icon Radius Modifier, default: 1.5");
+                                ImGui.SameLine(); ImGui_HelpMarker("Mob Icon Radius Modifier, default: 2");
 
                                 ImGui.TableNextColumn();
                                 ImGui.PushItemWidth(widgetWidth);
@@ -643,7 +644,7 @@ namespace HuntHelper
                                 ImGui.Separator();
                                 ImGui.Dummy(new Vector2(0, 1f));
                                 ImGui.InputFloat("Detection Circle Thickness", ref _detectionCircleThickness, 0, 0, "%.2f");
-                                ImGui.SameLine(); ImGui_HelpMarker("default: 2.0");
+                                ImGui.SameLine(); ImGui_HelpMarker("default: 3.0");
 
                                 ImGui.TableNextColumn();
                                 ImGui.Separator();
@@ -657,11 +658,11 @@ namespace HuntHelper
                                 if (ImGui.Button("Reset"))
                                 {
                                     _allRadiusModifier = 1.0f;
-                                    _mobIconRadiusModifier = 1.5f;
+                                    _mobIconRadiusModifier = 2f;
                                     _spawnPointRadiusModifier = 1.0f;
-                                    _playerIconRadiusModifier = 0.20f;
+                                    _playerIconRadiusModifier = 1f;
                                     _detectionCircleModifier = 1.0f;
-                                    _detectionCircleThickness = 2f;
+                                    _detectionCircleThickness = 3f;
                                     _directionLineThickness = 3f;
                                 }
                                 ImGui.SameLine(); ImGui_HelpMarker("Reset all sizes to default.");
@@ -731,7 +732,7 @@ namespace HuntHelper
                         if (ImGui.BeginTabItem(" A "))
                         {
                             ImGui.Dummy(new Vector2(0, 2f));
-                            var tempMsg = "Hello, this is a temp string";
+                            var tempMsg = "Hello, this feature has not been implemented yet.";
                             ImGui.TextUnformatted("Chat Message");
                             ImGui.SameLine(); ImGui.InputText("", ref tempMsg, _inputTextMaxLength);
                             var tempBool = true;
@@ -749,7 +750,7 @@ namespace HuntHelper
                         if (ImGui.BeginTabItem(" B "))
                         {
                             ImGui.Dummy(new Vector2(0, 2f));
-                            var tempMsg = "Hello, this is a temp string";
+                            var tempMsg = "Hello, this feature has not been implemented yet.";
                             ImGui.TextUnformatted("Chat Message");
                             ImGui.SameLine();
                             ImGui.InputText("", ref tempMsg, _inputTextMaxLength);
@@ -768,7 +769,7 @@ namespace HuntHelper
                         if (ImGui.BeginTabItem(" S "))
                         {
                             ImGui.Dummy(new Vector2(0, 2f));
-                            var tempMsg = "Hello, this is a temp string";
+                            var tempMsg = "Hello, this feature has not been implemented yet.";
                             ImGui.TextUnformatted("Chat Message");
                             ImGui.SameLine();
                             ImGui.InputText("", ref tempMsg, _inputTextMaxLength);
@@ -1001,8 +1002,8 @@ namespace HuntHelper
                 foreach (var hunt in nearbyMobs)
                 {
                     var mob = hunt.Mob;
-                    ImGui_CentreText($"{hunt.Rank} | {mob.Name} | " +
-                                     $"{Math.Round((mob.CurrentHp * 1.0 / mob.MaxHp) * 100, 2)}" +
+                    ImGui_CentreText($"{hunt.Rank} | {mob.Name} \n " +
+                                     $"{Math.Round((mob.CurrentHp * 1.0 / mob.MaxHp) * 100, 2)}%% | " +
                                      $"({ConvertPosToCoordinate(mob.Position.X)}, {ConvertPosToCoordinate(mob.Position.Y)})", colour);
                     ImGui.Separator();
                 }
