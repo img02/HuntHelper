@@ -319,6 +319,7 @@ namespace HuntHelper
                 _currentWindowSize = (int)ImGui.GetWindowSize().X;
                 _mapWindowPos = ImGui.GetWindowPos();
                 _mapZoneMaxCoordSize = _huntManager.GetMapZoneCoordSize(_territoryId);
+
                 //if custom size not used, use these default sizes - resize with window size
                 //radius for mob / spawn point circles - equal to half a map coord size
                 _spawnPointIconRadius = _allRadiusModifier * _spawnPointRadiusModifier * (0.25f * SingleCoordSize);
@@ -337,7 +338,7 @@ namespace HuntHelper
                 //=========================================
                 if (_useMapImages)
                 {
-                    if (!_huntManager.ImagesLoaded) LoadMapImages(); //better way to do this...
+                    if (!_huntManager.ImagesLoaded) LoadMapImages(); 
 
                     var mapImg = _huntManager.GetMapImage(_territoryName);
                     if (mapImg != null)
@@ -1557,7 +1558,7 @@ namespace HuntHelper
         private void LoadMapImages()
         {
             if (!_useMapImages) return;
-            _huntManager.LoadMapImages();
+            Task.Run(() => _huntManager.LoadMapImages());
         }
 
         //=================================================================

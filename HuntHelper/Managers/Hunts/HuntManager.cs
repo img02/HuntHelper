@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection.Metadata.Ecma335;
 using System.Speech.Synthesis;
+using System.Threading.Tasks;
 using Dalamud.Game.ClientState.Objects.Types;
 using Dalamud.Interface;
 using Dalamud.Plugin;
@@ -206,10 +207,15 @@ public class HuntManager
     {
         if (ImagesLoaded) return false;
 
-        //DownloadMapImages();
-        if (!Directory.Exists(_imageFolderPath)) return false;
+        if (!Directory.Exists(_imageFolderPath))
+        {
+            //if dir doesn't exist, try downloading images
+            //then if still doesn't exist, return false
+            //DownloadMapImages();
+            return false;
+        }
 
-        //change this later for ss folder
+        //change this later for ss folder? or just draw ss on screen - have to update spawn point drawing and jsons
         var paths = Directory.EnumerateFiles(_imageFolderPath, "*", SearchOption.TopDirectoryOnly);
 
         foreach (var path in paths)
