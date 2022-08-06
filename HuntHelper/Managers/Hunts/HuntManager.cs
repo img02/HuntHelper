@@ -29,8 +29,7 @@ public class HuntManager
     private readonly DalamudPluginInterface _pluginInterface;
 
     private readonly List<(HuntRank Rank, BattleNpc Mob)> _currentMobs;
-    private List<(HuntRank Rank, BattleNpc Mob)> _previousMobs1;
-    private readonly List<uint> _previousMobs;
+    private readonly List<(HuntRank Rank, BattleNpc Mob)> _previousMobs;
 
     private BattleNpc? _priorityMob;
     private HuntRank _highestRank;
@@ -52,8 +51,7 @@ public class HuntManager
         _ewDict = new Dictionary<HuntRank, List<Mob>>();
         _mapImages = new Dictionary<string, TextureWrap>();
         _currentMobs = new List<(HuntRank, BattleNpc)>();
-        _previousMobs1 = new List<(HuntRank, BattleNpc)>();
-        _previousMobs = new List<uint>();
+        _previousMobs = new List<(HuntRank, BattleNpc)>();
         this._pluginInterface = pluginInterface;
         _imageFolderPath = Path.Combine(_pluginInterface.AssemblyLocation.Directory?.FullName!, "Images/Maps");
         TTS = new SpeechSynthesizer();
@@ -73,8 +71,8 @@ public class HuntManager
     public void AddNearbyMobs(List<BattleNpc> nearbyMobs, bool a, bool b, bool s, string aMsg, string bMsg, string sMsg)
     {
         //compare with old list,
-        _previousMobs1.Clear();
-        _previousMobs1.AddRange(_currentMobs);
+        _previousMobs.Clear();
+        _previousMobs.AddRange(_currentMobs);
         _currentMobs.Clear();
 
         foreach (var mob in nearbyMobs)
@@ -86,9 +84,9 @@ public class HuntManager
                 _highestRank = rank;
                 _priorityMob = mob;
             }
-            //if already exists, skip tts
-            if (_previousMobs1.Any(hunt => hunt.Mob.NameId == mob.NameId)) continue;
-            //Do tts stuff
+            //if already exists, skip tts + chat
+            if (_previousMobs.Any(hunt => hunt.Mob.NameId == mob.NameId)) continue;
+            //Do tts and chat stuff
             switch (GetHuntRank(mob.NameId))
             {
                 case HuntRank.A:
@@ -224,20 +222,6 @@ public class HuntManager
         foreach (var kvp in _mapImages)
         {
             kvp.Value.Dispose();
-        }
-    }
-
-    public bool IsMobInCurrentMobList(uint mobID)
-    {
-        return _currentMobs.Any(hunt => hunt.Mob.NameId == mobID);
-    }
-
-    public void RemoveFromCurrentMobsList(List<uint> removalList)
-    {
-        foreach (var mobID in removalList)
-        {
-            var toRemove = _currentMobs.First(hunt => hunt.Mob.NameId == mobID);
-            _currentMobs.Remove(toRemove);
         }
     }
 

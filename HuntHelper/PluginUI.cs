@@ -921,7 +921,7 @@ namespace HuntHelper
                     }
 
                     if (ImGui.BeginTabItem(
-                            "Onscreen Mob Info")) //what do i call this, mob context, mob text, hunt info data text idk
+                            "On-screen Mob Info")) //what do i call this, mob context, mob text, hunt info data text idk
                     {
                         _bottomPanelHeight = 185f;
 
@@ -1203,24 +1203,8 @@ namespace HuntHelper
 
 
         private void UpdateMobInfo()
-        {//logic is -> if mob doesn't exist in current list, add it -> if it does, add to removal list - > after processing all obj, remove from current any in removal
+        {
             var drawlist = ImGui.GetWindowDrawList();
-            
-            /*_huntManager.ClearMobs();
-            var mobRemovalList = new List<uint>();
-            foreach (var obj in this._objectTable)
-            {
-                if (obj is not BattleNpc mob) continue;
-                if (!_huntManager.IsHunt(mob.NameId)) continue;
-                if (!_huntManager.IsMobInCurrentMobList(mob.NameId)) 
-                {   //add to list it not preexisting
-                    _huntManager.AddMob(mob, _ttsAEnabled, _ttsBEnabled, _ttsSEnabled, _ttsAMessage, _ttsBMessage, _ttsSMessage);
-                    continue;
-                }
-                DrawMobIcon(mob); 
-            }
-            _huntManager.RemoveFromCurrentMobsList(mobRemovalList);*/
-
 
             var nearbyMobs = new List<BattleNpc>();
             //sift through and add any hunt mobs to new list
@@ -1235,10 +1219,7 @@ namespace HuntHelper
             if (nearbyMobs.Count == 0) return;
 
             var mobs = _huntManager.GetCurrentMobs();
-            foreach (var mob in mobs)
-            {
-                DrawMobIcon(mob);
-            }
+            foreach (var mob in mobs) DrawMobIcon(mob);
 
             DrawPriorityMobInfo();
             DrawNearbyMobInfo();
