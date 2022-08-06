@@ -38,7 +38,8 @@ public class HuntManager
     public bool ErrorPopUpVisible = false;
     public string ErrorMessage = string.Empty;
 
-    public SpeechSynthesizer TTS { get; init; }
+    public SpeechSynthesizer TTS { get; init; } //aint really used anymore except for setting default voice on load
+    public string TTSName { get; set; }
 
     public List<(HuntRank Rank, BattleNpc Mob)> CurrentMobs => _currentMobs;
 
@@ -55,6 +56,7 @@ public class HuntManager
         this._pluginInterface = pluginInterface;
         _imageFolderPath = Path.Combine(_pluginInterface.AssemblyLocation.Directory?.FullName!, "Images/Maps");
         TTS = new SpeechSynthesizer();
+        TTSName = TTS.Voice.Name;
         LoadHuntData();
     }
 
@@ -111,7 +113,11 @@ public class HuntManager
     {
         msg = msg.Replace("<rank>", $"{rank}-Rank", true, CultureInfo.InvariantCulture);
         msg = msg.Replace("<name>", $"{mob.Name}", true, CultureInfo.InvariantCulture);
-        TTS.SpeakAsync(msg);
+        //changed to creating a new tts each time because SpeakAsync just queues up to play...
+        var tts = new SpeechSynthesizer(); 
+        tts.SelectVoice(TTSName);
+        tts.SpeakAsync(msg);
+        //TTS.SpeakAsync(msg);
     }
 
     public List<BattleNpc> GetCurrentMobs()

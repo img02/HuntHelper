@@ -8,6 +8,7 @@ using System.Linq;
 using System.Net.Http.Headers;
 using System.Numerics;
 using System.Reflection.Metadata.Ecma335;
+using System.Speech.Synthesis;
 using System.Threading;
 using System.Threading.Tasks;
 using Dalamud.Data;
@@ -131,33 +132,29 @@ namespace HuntHelper
         private bool _chatBEnabled = false;
         private bool _chatSEnabled = false;
 
+        private bool _enableTTSBackground = false;
 
         #endregion
 
-
         private bool _showDebug = false;
         private bool _showOptionsWindow = true;
-
         private float _mapZoneMaxCoordSize = 41; //default to 41 as thats most common for hunt zones
 
         public float SingleCoordSize => ImGui.GetWindowSize().X / _mapZoneMaxCoordSize;
-
         //message input lengths
         private uint _inputTextMaxLength = 50;
-
-
-
         private readonly Vector4 _defaultTextColour = Vector4.One; //white
-
 
         //window bools
         private bool _mainWindowVisible = false;
         private bool _showDatabaseListWindow = false;
 
+        private Task _ttsLoop;
+        private CancellationTokenSource _ttsLoopCancelTokenSource;
         public bool MainWindowVisible
         {
-            get { return this._mainWindowVisible; }
-            set { this._mainWindowVisible = value; }
+            get => this._mainWindowVisible;
+            set { _mainWindowVisible = value; }
         }
 
         private bool _mapVisible = false;
@@ -171,8 +168,8 @@ namespace HuntHelper
 
         public bool SettingsVisible
         {
-            get { return this.settingsVisible; }
-            set { this.settingsVisible = value; }
+            get => this.settingsVisible;
+            set => this.settingsVisible = value;
         }
 
 
@@ -197,26 +194,36 @@ namespace HuntHelper
             LoadSettings();
             LoadMapImages();
 
-            //Task.Run(() => loop()); //for tts in background?
+            _ttsLoopCancelTokenSource = new CancellationTokenSource();
+            _ttsLoop = Task.Run(() => TTSLoop(), _ttsLoopCancelTokenSource.Token); //for tts in background?
         }
 
-        private int testCount = 0;
-        private bool count = true;
 
-        private async void loop()
+        private async void TTSLoop()
         {
-            while (count)
+            while (true)
             {
-                testCount++;
-                Thread.Sleep(500);
+                if (_ttsLoopCancelTokenSource.Token.IsCancellationRequested) return;
+                while (_enableTTSBackground && !MapVisible)
+                {
+                    if (_ttsLoopCancelTokenSource.Token.IsCancellationRequested) return;
+                    UpdateMobInfo();
+                    //_huntManager.TTS.SpeakAsync($"loop");
+                    Thread.Sleep(1000);
+                }
+                Thread.Sleep(1000);
             }
         }
 
 
         public void Dispose()
         {
+            _ttsLoopCancelTokenSource.Cancel();
+            while (!_ttsLoop.IsCompleted);
+            _ttsLoopCancelTokenSource.Dispose();
             _huntManager.Dispose();
             SaveSettings();
+
         }
 
         public void Draw()
@@ -905,10 +912,18 @@ namespace HuntHelper
                                 if (ImGui.Combo("##TTS Voice Combo", ref itemPos, listOfVoiceNames, listOfVoiceNames.Length))
                                 {
                                     tts.SelectVoice(listOfVoiceNames[itemPos]);
-                                    _ttsVoiceName = listOfVoiceNames[itemPos]; ;
-                                    tts.SpeakAsync($"BOO! {tts.Voice.Name} Selected");
+                                    _ttsVoiceName = listOfVoiceNames[itemPos];
+                                    _huntManager.TTSName = _ttsVoiceName;
+
+                                    //creating new speechsynthesizer because it does not play audio asynchronously
+                                    var tempTTS = new SpeechSynthesizer();
+                                    tempTTS.SelectVoice(_ttsVoiceName);
+                                    tempTTS.SpeakAsync($"BOO! {tts.Voice.Name} Selected");
                                 }
 
+                                ImGui.Checkbox("Background TTS", ref _enableTTSBackground);
+                                ImGui.SameLine(); ImGui_HelpMarker("Enabling this allows Hunt Helper to scan and send TTS notifications whilst the GUI is inactive.\n" +
+                                                                   "Which ");
 
                                 ImGui.EndTabItem();
                             }
@@ -1071,6 +1086,7 @@ namespace HuntHelper
             _configuration.ChatAEnabled = _chatAEnabled;
             _configuration.ChatBEnabled = _chatBEnabled;
             _configuration.ChatSEnabled = _chatSEnabled;
+            _configuration.EnableTTSBackground = _enableTTSBackground;
 
             this._configuration.Save();
         }
@@ -1135,6 +1151,7 @@ namespace HuntHelper
             _chatAEnabled = _configuration.ChatAEnabled;
             _chatBEnabled = _configuration.ChatBEnabled;
             _chatSEnabled = _configuration.ChatSEnabled;
+            _enableTTSBackground = _configuration.EnableTTSBackground;
 
 
 
@@ -1143,6 +1160,7 @@ namespace HuntHelper
             {
                 _ttsVoiceName = _configuration.TTSVoiceName;
                 _huntManager.TTS.SelectVoice(_ttsVoiceName);
+                _huntManager.TTSName = _ttsVoiceName;
             }
         }
 
@@ -1203,8 +1221,6 @@ namespace HuntHelper
 
         private void UpdateMobInfo()
         {
-            var drawlist = ImGui.GetWindowDrawList();
-
             var nearbyMobs = new List<BattleNpc>();
             //sift through and add any hunt mobs to new list
             foreach (var obj in _objectTable)
@@ -1216,6 +1232,7 @@ namespace HuntHelper
             _huntManager.AddNearbyMobs(nearbyMobs, _ttsAEnabled, _ttsBEnabled, _ttsSEnabled, _ttsAMessage, _ttsBMessage, _ttsSMessage);
 
             if (nearbyMobs.Count == 0) return;
+            if (!MapVisible) return;
 
             var mobs = _huntManager.GetCurrentMobs();
             foreach (var mob in mobs) DrawMobIcon(mob);
