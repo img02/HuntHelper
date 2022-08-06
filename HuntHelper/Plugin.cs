@@ -87,7 +87,7 @@ namespace HuntHelper
         {
             //this.PluginUi.TestVisible = true;
 
-            PluginUi.TestVisible = !PluginUi.TestVisible;
+            PluginUi.MapVisible = !PluginUi.MapVisible;
         }
 
         private void DrawUI()

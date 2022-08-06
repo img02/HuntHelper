@@ -41,18 +41,15 @@ namespace HuntHelper
 
         private float _bottomPanelHeight = 30;
 
-        #region  User Customizable stuff - load and save to config
-
-        //map opacity - should be between 0-1f;
-        private float _mapImageOpacityAsPercentage = 100f;
-
         //base icon sizes - based on coord size? - not customizable
         private float _mobIconRadius;
         private float _playerIconRadius;
         private float _spawnPointIconRadius;
 
-        //spacing from top for priority mob text -- prob not needed
-        private float _priorityMobSpacing = 12.0f;
+        #region  User Customizable stuff - load and save to config
+
+        //map opacity - should be between 0-1f;
+        private float _mapImageOpacityAsPercentage = 100f;
 
         // icon colours
         private Vector4 _spawnPointColour = new Vector4(0.24706f, 0.309804f, 0.741176f, 1); //purty blue
@@ -68,7 +65,7 @@ namespace HuntHelper
         private float _playerIconRadiusModifier = 1f;
         private float _detectionCircleModifier = 1.0f;
         // mouseover distance modifier for mob icon tooltips
-        private float mouseOverDistanceModifier = 2.5f;
+        private float _mouseOverDistanceModifier = 2.5f;
         // icon-related thickness
         private float _detectionCircleThickness = 3f;
         private float _directionLineThickness = 3f;
@@ -85,30 +82,38 @@ namespace HuntHelper
         // text colour
         private Vector4 _zoneTextColour = new Vector4(0.282353f, 0.76863f, 0.69412f, 1f); //blue-greenish
         private Vector4 _zoneTextColourAlt = new Vector4(0, 0.4353f, 0.36863f, 1f); //same but darker
-        private Vector4 _worldTextColour = new Vector4(0.77255f,0.3412f,0.612f,1f); //purply
+        private Vector4 _worldTextColour = new Vector4(0.77255f, 0.3412f, 0.612f, 1f); //purply
         private Vector4 _worldTextColourAlt = new Vector4(0.51765f, 0, 0.3294f, 1f); //same but darker
         private Vector4 _priorityMobTextColour = Vector4.One;
         private Vector4 _priorityMobTextColourAlt = Vector4.One;
         private Vector4 _nearbyMobListColour = Vector4.One;
         private Vector4 _nearbyMobListColourAlt = Vector4.One;
         private Vector4 _priorityMobColourBackground = new Vector4(1f, 0.43529411764705883f, 0.5137254901960784f, 0f); //nicely pink :D
-        private Vector4 _nearbyMobLisColourBackground = new Vector4(1f, 0.43529411764705883f, 0.5137254901960784f, 0f); //nicely pink :D
+        private Vector4 _nearbyMobListColourBackground = new Vector4(1f, 0.43529411764705883f, 0.5137254901960784f, 0f); //nicely pink :D
 
         //checkbox bools
         private bool _priorityMobEnabled = true;
         private bool _nearbyMobListEnabled = true;
-        private bool _showDebug = false;
-        private bool _showOptionsWindow = true;
         private bool _showZoneName = true;
         private bool _showWorldName = true;
         private bool _saveSpawnData = true;
-        private bool _useMapImages = true;
-
-
-        #endregion
+        private bool _useMapImages = false;
 
         //initial window position
         private Vector2 _mapWindowPos = new Vector2(25, 25);
+        //window sizes
+        private int _currentWindowSize = 512;
+        private int _presetOneWindowSize = 512;
+        private int _presetTwoWindowSize = 1024;
+
+        //Hunt Window Flag - used for toggling title bar
+        private int _huntWindowFlag = (int)(ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoTitleBar);
+
+        #endregion
+
+
+        private bool _showDebug = false;
+        private bool _showOptionsWindow = true;
 
         private float _mapZoneMaxCoordSize = 41; //default to 41 as thats most common for hunt zones
 
@@ -117,12 +122,6 @@ namespace HuntHelper
         //message input lengths
         private uint _inputTextMaxLength = 50;
 
-        //window sizes
-        private int _currentWindowSize = 512;
-        private int _presetOneWindowSize = 512;
-        private int _presetTwoWindowSize = 1024;
-        //Hunt Window Flag - used for toggling title bar
-        private int _huntWindowFlag = (int)(ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoTitleBar);
 
 
         private readonly Vector4 _defaultTextColour = Vector4.One; //white
@@ -138,11 +137,11 @@ namespace HuntHelper
             set { this._mainWindowVisible = value; }
         }
 
-        private bool testVisible = false;
-        public bool TestVisible
+        private bool _mapVisible = false;
+        public bool MapVisible
         {
-            get => testVisible;
-            set => testVisible = value;
+            get => _mapVisible;
+            set => _mapVisible = value;
         }
 
         private bool settingsVisible = false;
@@ -172,12 +171,15 @@ namespace HuntHelper
 
             _clientState.TerritoryChanged += ClientState_TerritoryChanged;
 
+            LoadSettings();
             LoadMapImages();
+
         }
 
         public void Dispose()
         {
             _huntManager.Dispose();
+            SaveSettings();
         }
 
         public void Draw()
@@ -203,7 +205,6 @@ namespace HuntHelper
             ImGui.SetNextWindowSizeConstraints(new Vector2(375, 330), new Vector2(float.MaxValue, float.MaxValue));
             if (ImGui.Begin("Debug stuff", ref this._mainWindowVisible))
             {
-                ImGui.Text($"The random config bool is {this._configuration.SomePropertyToBeSavedAndWithADefault}");
 
                 if (ImGui.Button("Settings"))
                 {
@@ -257,7 +258,7 @@ namespace HuntHelper
 
         public void DrawHuntMapWindow()
         {
-            if (!TestVisible)
+            if (!MapVisible)
             {
                 return;
             }
@@ -268,9 +269,11 @@ namespace HuntHelper
             ImGui.SetNextWindowPos(_mapWindowPos, ImGuiCond.FirstUseEver);
             ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, new Vector2(0, 0));
             ImGui.PushStyleVar(ImGuiStyleVar.WindowBorderSize, 0f);
-            if (ImGui.Begin("Hunt Helper", ref this.testVisible, (ImGuiWindowFlags)_huntWindowFlag))
+            ImGui.PushStyleColor(ImGuiCol.WindowBg, new Vector4(1f,1f,1f,0.2f));
+            if (ImGui.Begin("Hunt Helper", ref this._mapVisible, (ImGuiWindowFlags)_huntWindowFlag))
             {
                 _currentWindowSize = (int)ImGui.GetWindowSize().X;
+                _mapWindowPos = ImGui.GetWindowPos();
                 _mapZoneMaxCoordSize = _huntManager.GetMapZoneCoordSize(_territoryId);
                 //if custom size not used, use these default sizes - resize with window size
                 //radius for mob / spawn point circles - equal to half a map coord size
@@ -326,7 +329,6 @@ namespace HuntHelper
                 var cursorPos = new Vector2(8, ImGui.GetWindowSize().Y - 30);
                 ImGui.SetCursorPos(cursorPos);
                 //get a cogwheel img or something idk
-                //ImGui.ColorButton("idk", new Vector4(0f, 0f, 0f, 1f));
                 ImGui.PushStyleColor(ImGuiCol.Button, new Vector4(.4f, .4f, .4f, 1f));
                 if (ImGui.Button(" ö ")) _showOptionsWindow = !_showOptionsWindow;
                 ImGui.PopStyleColor();
@@ -361,6 +363,7 @@ namespace HuntHelper
                     });
                 }
             }
+            ImGui.PopStyleColor();
             ImGui.End();
             ImGui.PopStyleVar(2);
         }
@@ -369,7 +372,7 @@ namespace HuntHelper
         public string text = "";
         private void DrawTriangleButtonForSidePanel()
         {
-            /*
+            /* ToDO
             * DRAW TRIANGLE !!
             */
 
@@ -401,435 +404,518 @@ namespace HuntHelper
         //break this down? lazyu- could def make functions for repeat gui element sets...
         private void DrawOptionsWindow()
         {
-            #region Bottom docking info window
             var bottomDockingPos = Vector2.Add(ImGui.GetWindowPos(), new Vector2(0, ImGui.GetWindowSize().Y));
-
-            //ImGui.BeginChild(1, new Vector2(ImGui.GetWindowSize().X, 25));
+            
             ImGui.SetNextWindowSize(new Vector2(ImGui.GetWindowSize().X, _bottomPanelHeight), ImGuiCond.Always);
             ImGui.SetNextWindowSizeConstraints(new Vector2(-1, 95), new Vector2(-1, 300));
 
             //hide grip color
             ImGui.PushStyleColor(ImGuiCol.ResizeGrip, 0);
-
-            ImGui.Begin("Options Window", ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoMove);
-            //ImGui.PushFont(UiBuilder.MonoFont);
-            ImGui.SetWindowPos(bottomDockingPos);
-            ImGui.Dummy(new Vector2(0, 2f));
-            ImGui.Columns(2);
-            ImGui.SetColumnWidth(0, ImGui.GetWindowSize().X / 5);
-            ImGui.SetColumnWidth(1, ImGui.GetWindowSize().X);
-            ImGui.Checkbox("Map Image", ref _useMapImages);
-            ImGui.SameLine(); ImGui_HelpMarker("Use a map image instead of blank background (ugly tho)\n\n" +
-                                               "\t\t=======================================\n" +
-                                               "\t\tMap Images Created By Cable Monkey of Goblin\n" +
-                                               "         \t\t   http://cablemonkey.us/huntmap2/\n" +
-                                               "         \t\t   Same thing for spawn point data :D\n" +
-                                               "\t\t=======================================");
-
-            ImGui.CheckboxFlags("Hide Title Bar", ref _huntWindowFlag, 1);
-            ImGui.SameLine(); ImGui_HelpMarker("Wasn't initially designed to have a title bar, things might need adjusting -->");
-
-            ImGui.Checkbox("Show Debug", ref _showDebug);
-            ImGui.SameLine(); ImGui_HelpMarker("idk shows random debug info i used");
-
-            ImGui.Checkbox("Save Spawn Data", ref _saveSpawnData);
-            ImGui.SameLine(); ImGui_HelpMarker("Saves S Rank Information to desktop txt (ToDo)");
-
-            //ImGui.Dummy(new Vector2(0, 4f));
-
-            if (ImGui.Button("Loaded Hunt Data")) _showDatabaseListWindow = !_showDatabaseListWindow;
-            ImGui.SameLine(); ImGui_HelpMarker("Show the loaded hunt and spawn point data");
-            DrawDataBaseWindow();
-
-
-
-
-            Debug_OptionsWindowTable_ShowWindowSize();
-
-
-
-            ImGui.NextColumn();
-            if (ImGui.BeginTabBar("Options", ImGuiTabBarFlags.None))
+            if (ImGui.Begin("Options Window", ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoMove))
             {
-                if (ImGui.BeginTabItem("General"))
+                ImGui.SetWindowPos(bottomDockingPos);
+                ImGui.Dummy(new Vector2(0, 2f));
+                ImGui.Columns(2);
+                ImGui.SetColumnWidth(0, ImGui.GetWindowSize().X / 5);
+                ImGui.SetColumnWidth(1, ImGui.GetWindowSize().X);
+                ImGui.Checkbox("Map Image", ref _useMapImages);
+                ImGui.SameLine();
+                ImGui_HelpMarker("Use a map image instead of blank background (ugly tho)\n\n" +
+                                 "\t\t=======================================\n" +
+                                 "\t\tMap Images Created By Cable Monkey of Goblin\n" +
+                                 "         \t\t   http://cablemonkey.us/huntmap2/\n" +
+                                 "         \t\t   Same thing for spawn point data :D\n" +
+                                 "\t\t=======================================");
+
+                ImGui.CheckboxFlags("Hide Title Bar", ref _huntWindowFlag, 1);
+                ImGui.SameLine();
+                ImGui_HelpMarker("Wasn't initially designed to have a title bar, things might need adjusting -->");
+
+                ImGui.Checkbox("Show Debug", ref _showDebug);
+                ImGui.SameLine();
+                ImGui_HelpMarker("idk shows random debug info i used");
+
+                ImGui.Checkbox("Save Spawn Data", ref _saveSpawnData);
+                ImGui.SameLine();
+                ImGui_HelpMarker("Saves S Rank Information to desktop txt (ToDo)");
+
+                //ImGui.Dummy(new Vector2(0, 4f));
+
+                if (ImGui.Button("Loaded Hunt Data")) _showDatabaseListWindow = !_showDatabaseListWindow;
+                ImGui.SameLine();
+                ImGui_HelpMarker("Show the loaded hunt and spawn point data");
+                DrawDataBaseWindow();
+
+
+
+
+                Debug_OptionsWindowTable_ShowWindowSize();
+
+
+
+                ImGui.NextColumn();
+                if (ImGui.BeginTabBar("Options", ImGuiTabBarFlags.None))
                 {
-                    _bottomPanelHeight = 210f;
-                    var widgetWidth = 69f;
-
-                    var tableSizeX = ImGui.GetContentRegionAvail().X;
-                    var tableSizeY = ImGui.GetContentRegionAvail().Y;
-
-                    ImGui.Dummy(new Vector2(0, 8f));
-
-
-
-                    if (ImGui.BeginChild("general left side", new Vector2(1.2f * tableSizeX / 3, 0f)))
+                    if (ImGui.BeginTabItem("General"))
                     {
-                        if (ImGui.BeginTable("General Options table", 2))
+                        _bottomPanelHeight = 210f;
+                        var widgetWidth = 69f;
+
+                        var tableSizeX = ImGui.GetContentRegionAvail().X;
+                        var tableSizeY = ImGui.GetContentRegionAvail().Y;
+
+                        ImGui.Dummy(new Vector2(0, 8f));
+
+
+
+                        if (ImGui.BeginChild("general left side", new Vector2(1.2f * tableSizeX / 3, 0f)))
                         {
-                            /*
-                             *  CHANGE THESE TO PERCENTAGE OF SCREEN SIZE
-                             * OR THEY'LL CLIP OFF SCREEN WHEN RESIZED
-                             */
-
-                            ImGui.TableNextColumn();
-                            ImGui.Checkbox("Zone Name", ref _showZoneName);
-                            ImGui.SameLine(); ImGui_HelpMarker("Shows Zone Name\nAdjust position below as % of window.");
-                            ImGui.PushItemWidth(widgetWidth);
-                            ImGui.DragFloat("Zone X", ref _zoneInfoPosXPercentage, 0.05f, 0, 100, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
-                            ImGui.SameLine(); ImGui_HelpMarker("Ctrl+Click to enter manually, Shift+Drag to speed up.");
-                            ImGui.DragFloat("Zone Y", ref _zoneInfoPosYPercentage, 0.05f, 0, 100, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
-
-                            ImGui.ColorEdit4("Colour##Zone", ref _zoneTextColour, ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
-                            ImGui.ColorEdit4("Alt##Zone", ref _zoneTextColourAlt, ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
-
-                            ImGui.SameLine();
-                            ImGui_HelpMarker("Alternate colour for when map image is used.");
-
-                            ImGui.TableNextColumn();
-                            ImGui.Checkbox("World Name", ref _showWorldName);
-                            ImGui.SameLine();
-                            ImGui_HelpMarker(
-                                "Shows World Name\nAdjust position below as % of window");
-                            ImGui.PushItemWidth(widgetWidth);
-                            ImGui.DragFloat("World X", ref _worldInfoPosXPercentage, 0.05f, 0, 100f, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
-                            ImGui.DragFloat("World Y", ref _worldInfoPosYPercentage, 0.05f, 0, 100f, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
-
-                            ImGui.ColorEdit4("Colour##World", ref _worldTextColour, ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
-                            ImGui.ColorEdit4("Alt##World", ref _worldTextColourAlt, ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
-                            ImGui.SameLine();
-                            ImGui_HelpMarker("Alternate colour for when map image is used.");
-
-                            ImGui.EndTable();
-                        }
-                        ImGui.EndChild();
-                    }
-
-
-                    ImGui.SameLine();
-                    if (ImGui.BeginChild("general right side resize section",
-                            new Vector2((1.8f * tableSizeX / 3) - 8f, tableSizeY - 24f), true))
-                    {
-                        if (ImGui.BeginTable("right side table", 4))
-                        {
-                            ImGui.TableSetupColumn("test",
-                                ImGuiTableColumnFlags.WidthFixed | ImGuiTableColumnFlags.NoResize);
-
-                            var intWidgetWidth = 36;
-
-                            // Current Window Size
-                            ImGui.TableNextColumn();
-                            ImGui.Dummy(new Vector2(0f, 0f));
-                            ImGui.Dummy(new Vector2(0f, 0f));
-                            ImGui.SameLine();
-                            ImGui.Text("Window Size");
-                            ImGui.SameLine();
-                            ImGui_HelpMarker("Current Window Size");
-
-                            ImGui.TableNextColumn();
-                            ImGui.TableSetupColumn("test", ImGuiTableColumnFlags.WidthFixed, 5f);
-                            ImGui.Dummy(new Vector2(0f, 0f));
-                            ImGui.PushItemWidth(intWidgetWidth);
-                            ImGui.InputInt("", ref _currentWindowSize, 0);
-                            ImGui.PopID(); //popid so it can be used by another element
-
-                            ImGui.TableNextColumn();
-                            ImGui.Dummy(new Vector2(0f, 0f));
-
-                            ImGui.TableNextColumn();
-
-
-                            // Window Size Preset 1
-                            ImGui.TableNextColumn();
-                            ImGui.Dummy(new Vector2(0f, 0f));
-                            ImGui.Dummy(new Vector2(0f, 0f));
-                            ImGui.SameLine();
-                            ImGui.Text("Preset 1");
-                            ImGui.SameLine();
-                            ImGui_HelpMarker(
-                                "Save a preset for quick switching\nOnly need to type it in.\nPress Apply to change to this size");
-
-                            ImGui.TableNextColumn();
-                            ImGui.Dummy(new Vector2(0f, 0f));
-                            ImGui.PushItemWidth(intWidgetWidth);
-                            ImGui.InputInt("", ref _presetOneWindowSize, 0);
-                            ImGui.PopID();
-
-                            ImGui.TableNextColumn();
-                            ImGui.Dummy(new Vector2(0f, 0f));
-                            if (ImGui.Button("Apply")) _currentWindowSize = _presetOneWindowSize;
-                            ImGui.PopID();
-
-                            ImGui.TableNextColumn();
-
-
-                            // Window Size Preset 2
-                            ImGui.TableNextColumn();
-                            ImGui.Dummy(new Vector2(0f, 0f));
-                            ImGui.Dummy(new Vector2(0f, 0f));
-                            ImGui.SameLine();
-                            ImGui.Text("Preset 2");
-                            ImGui.SameLine();
-                            ImGui_HelpMarker(
-                                "Save a preset for quick switching\nOnly need to type it in.\nPress Apply to change to this size");
-
-                            ImGui.TableNextColumn();
-                            ImGui.Dummy(new Vector2(0f, 0f));
-                            ImGui.PushItemWidth(intWidgetWidth);
-                            ImGui.InputInt("", ref _presetTwoWindowSize, 0);
-                            ImGui.PopID();
-
-                            ImGui.TableNextColumn();
-                            ImGui.Dummy(new Vector2(0f, 0f));
-                            if (ImGui.Button("Apply")) _currentWindowSize = _presetTwoWindowSize;
-                            ImGui.SameLine();
-                            ImGui_HelpMarker("why button go right :(");
-                            ImGui.PopID();
-                            ImGui.EndTable();
-
-                            //Opacity Slider
-                            ImGui.Separator();
-                            ImGui_CentreText("Map Opacity", Vector4.One);
-                            ImGui.Dummy(new Vector2(0, 0));
-                            ImGui.PushItemWidth(ImGui.GetContentRegionAvail().X - 16f);
-                            ImGui.SameLine(); ImGui.DragFloat("##Map Opacity", ref _mapImageOpacityAsPercentage, .2f, 0f, 100f, "%.0f");
-                        }
-
-                        ImGui.EndChild();
-                    }
-
-                    ImGui.EndTabItem();
-                }
-
-                if (ImGui.BeginTabItem("Visuals"))
-                {
-                    _bottomPanelHeight = 165f;
-
-                    if (ImGui.BeginTabBar("Visuals sub-bar"))
-                    {
-                        if (ImGui.BeginTabItem("Sizing"))
-                        {
-                            ImGui.Dummy(new Vector2(0, 2f));
-                            if (ImGui.BeginTable("Sizing Options Table", 3))
+                            if (ImGui.BeginTable("General Options table", 2))
                             {
-                                var widgetWidth = 40f;
+                                /*
+                                 *  CHANGE THESE TO PERCENTAGE OF SCREEN SIZE
+                                 * OR THEY'LL CLIP OFF SCREEN WHEN RESIZED
+                                 */
 
                                 ImGui.TableNextColumn();
+                                ImGui.Checkbox("Zone Name", ref _showZoneName);
+                                ImGui.SameLine();
+                                ImGui_HelpMarker("Shows Zone Name\nAdjust position below as % of window.");
                                 ImGui.PushItemWidth(widgetWidth);
-                                ImGui.InputFloat("Player Modifier", ref _playerIconRadiusModifier, 0, 0, "%.2f");
-                                ImGui.SameLine(); ImGui_HelpMarker("Player Icon Radius Modifier: Default 1");
+                                ImGui.DragFloat("Zone X", ref _zoneInfoPosXPercentage, 0.05f, 0, 100, "%.2f",
+                                    ImGuiSliderFlags.NoRoundToFormat);
+                                ImGui.SameLine();
+                                ImGui_HelpMarker("Ctrl+Click to enter manually, Shift+Drag to speed up.");
+                                ImGui.DragFloat("Zone Y", ref _zoneInfoPosYPercentage, 0.05f, 0, 100, "%.2f",
+                                    ImGuiSliderFlags.NoRoundToFormat);
+
+                                ImGui.ColorEdit4("Colour##Zone", ref _zoneTextColour,
+                                    ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
+                                ImGui.ColorEdit4("Alt##Zone", ref _zoneTextColourAlt,
+                                    ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
+
+                                ImGui.SameLine();
+                                ImGui_HelpMarker("Alternate colour for when map image is used.");
 
                                 ImGui.TableNextColumn();
+                                ImGui.Checkbox("World Name", ref _showWorldName);
+                                ImGui.SameLine();
+                                ImGui_HelpMarker(
+                                    "Shows World Name\nAdjust position below as % of window");
                                 ImGui.PushItemWidth(widgetWidth);
-                                ImGui.InputFloat("Mob Modifier", ref _mobIconRadiusModifier, 0, 0, "%.2f");
-                                ImGui.SameLine(); ImGui_HelpMarker("Mob Icon Radius Modifier, default: 2");
+                                ImGui.DragFloat("World X", ref _worldInfoPosXPercentage, 0.05f, 0, 100f, "%.2f",
+                                    ImGuiSliderFlags.NoRoundToFormat);
+                                ImGui.DragFloat("World Y", ref _worldInfoPosYPercentage, 0.05f, 0, 100f, "%.2f",
+                                    ImGuiSliderFlags.NoRoundToFormat);
 
-                                ImGui.TableNextColumn();
-                                ImGui.PushItemWidth(widgetWidth);
-                                ImGui.InputFloat("Spawn Point Modifier", ref _spawnPointRadiusModifier, 0, 0, "%.2f");
-                                ImGui.SameLine(); ImGui_HelpMarker("Spawn Point Radius Modifier, default: 1.0");
-
-                                ImGui.TableNextColumn();
-                                ImGui.InputFloat("All Modifier", ref _allRadiusModifier, 0, 0, "%.2f");
-                                ImGui.SameLine(); ImGui_HelpMarker("Increase all icons proportionally, default: 1\nBy Default, A Mob icon is 1.5x a Spawn Point, a Player icon is 0.2x a Spawn Point");
-
-                                ImGui.TableNextColumn();
-                                ImGui.InputFloat("Detection Circle Modifier", ref _detectionCircleModifier, 0, 0, "%.2f");
-                                ImGui.SameLine(); ImGui_HelpMarker("Default represents 2 in-game coordinates. Modify if you feel this is inaccurate, default: 1.0");
-
-                                ImGui.TableNextColumn();
-                                ImGui.Dummy(new Vector2(0, 26f));
-
-                                ImGui.TableNextColumn();
-                                ImGui.Separator();
-                                ImGui.Dummy(new Vector2(0, 1f));
-                                ImGui.InputFloat("Detection Circle Thickness", ref _detectionCircleThickness, 0, 0, "%.2f");
-                                ImGui.SameLine(); ImGui_HelpMarker("default: 3.0");
-
-                                ImGui.TableNextColumn();
-                                ImGui.Separator();
-                                ImGui.Dummy(new Vector2(0, 1f));
-                                ImGui.InputFloat("Direction Line Thickness", ref _directionLineThickness, 0, 0, "%.2f");
-                                ImGui.SameLine(); ImGui_HelpMarker("default: 3.0");
-
-                                ImGui.TableNextColumn();
-                                ImGui.Separator();
-                                ImGui.Dummy(new Vector2(0, 1f));
-                                if (ImGui.Button("Reset"))
-                                {
-                                    _allRadiusModifier = 1.0f;
-                                    _mobIconRadiusModifier = 2f;
-                                    _spawnPointRadiusModifier = 1.0f;
-                                    _playerIconRadiusModifier = 1f;
-                                    _detectionCircleModifier = 1.0f;
-                                    _detectionCircleThickness = 3f;
-                                    _directionLineThickness = 3f;
-                                }
-                                ImGui.SameLine(); ImGui_HelpMarker("Reset all sizes to default.");
-
-                                ImGui.PopItemWidth();
+                                ImGui.ColorEdit4("Colour##World", ref _worldTextColour,
+                                    ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
+                                ImGui.ColorEdit4("Alt##World", ref _worldTextColourAlt,
+                                    ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
+                                ImGui.SameLine();
+                                ImGui_HelpMarker("Alternate colour for when map image is used.");
 
                                 ImGui.EndTable();
                             }
-                            ImGui.EndTabItem();
+
+                            ImGui.EndChild();
                         }
 
-                        if (ImGui.BeginTabItem("Colours"))
-                        {
-                            ImGui.Dummy(new Vector2(0, 2f));
 
-                            if (ImGui.BeginTable("Colour Options Table", 3))
+                        ImGui.SameLine();
+                        if (ImGui.BeginChild("general right side resize section",
+                                new Vector2((1.8f * tableSizeX / 3) - 8f, tableSizeY - 24f), true))
+                        {
+                            if (ImGui.BeginTable("right side table", 4))
+                            {
+                                ImGui.TableSetupColumn("test",
+                                    ImGuiTableColumnFlags.WidthFixed | ImGuiTableColumnFlags.NoResize);
+
+                                var intWidgetWidth = 36;
+
+                                // Current Window Size
+                                ImGui.TableNextColumn();
+                                ImGui.Dummy(new Vector2(0f, 0f));
+                                ImGui.Dummy(new Vector2(0f, 0f));
+                                ImGui.SameLine();
+                                ImGui.Text("Window Size");
+                                ImGui.SameLine();
+                                ImGui_HelpMarker("Current Window Size");
+
+                                ImGui.TableNextColumn();
+                                ImGui.TableSetupColumn("test", ImGuiTableColumnFlags.WidthFixed, 5f);
+                                ImGui.Dummy(new Vector2(0f, 0f));
+                                ImGui.PushItemWidth(intWidgetWidth);
+                                ImGui.InputInt("", ref _currentWindowSize, 0);
+                                ImGui.PopID(); //popid so it can be used by another element
+
+                                ImGui.TableNextColumn();
+                                ImGui.Dummy(new Vector2(0f, 0f));
+
+                                ImGui.TableNextColumn();
+
+
+                                // Window Size Preset 1
+                                ImGui.TableNextColumn();
+                                ImGui.Dummy(new Vector2(0f, 0f));
+                                ImGui.Dummy(new Vector2(0f, 0f));
+                                ImGui.SameLine();
+                                ImGui.Text("Preset 1");
+                                ImGui.SameLine();
+                                ImGui_HelpMarker(
+                                    "Save a preset for quick switching\nOnly need to type it in.\nPress Apply to change to this size");
+
+                                ImGui.TableNextColumn();
+                                ImGui.Dummy(new Vector2(0f, 0f));
+                                ImGui.PushItemWidth(intWidgetWidth);
+                                ImGui.InputInt("", ref _presetOneWindowSize, 0);
+                                ImGui.PopID();
+
+                                ImGui.TableNextColumn();
+                                ImGui.Dummy(new Vector2(0f, 0f));
+                                if (ImGui.Button("Apply")) _currentWindowSize = _presetOneWindowSize;
+                                ImGui.PopID();
+
+                                ImGui.TableNextColumn();
+
+
+                                // Window Size Preset 2
+                                ImGui.TableNextColumn();
+                                ImGui.Dummy(new Vector2(0f, 0f));
+                                ImGui.Dummy(new Vector2(0f, 0f));
+                                ImGui.SameLine();
+                                ImGui.Text("Preset 2");
+                                ImGui.SameLine();
+                                ImGui_HelpMarker(
+                                    "Save a preset for quick switching\nOnly need to type it in.\nPress Apply to change to this size");
+
+                                ImGui.TableNextColumn();
+                                ImGui.Dummy(new Vector2(0f, 0f));
+                                ImGui.PushItemWidth(intWidgetWidth);
+                                ImGui.InputInt("", ref _presetTwoWindowSize, 0);
+                                ImGui.PopID();
+
+                                ImGui.TableNextColumn();
+                                ImGui.Dummy(new Vector2(0f, 0f));
+                                if (ImGui.Button("Apply")) _currentWindowSize = _presetTwoWindowSize;
+                                ImGui.SameLine();
+                                ImGui_HelpMarker("why button go right :(");
+                                ImGui.PopID();
+                                ImGui.EndTable();
+
+                                //Opacity Slider
+                                ImGui.Separator();
+                                ImGui_CentreText("Map Opacity", Vector4.One);
+                                ImGui.Dummy(new Vector2(0, 0));
+                                ImGui.PushItemWidth(ImGui.GetContentRegionAvail().X - 16f);
+                                ImGui.SameLine();
+                                ImGui.DragFloat("##Map Opacity", ref _mapImageOpacityAsPercentage, .2f, 0f, 100f,
+                                    "%.0f");
+                            }
+
+                            ImGui.EndChild();
+                        }
+
+                        ImGui.EndTabItem();
+                    }
+
+                    if (ImGui.BeginTabItem("Visuals"))
+                    {
+                        _bottomPanelHeight = 165f;
+
+                        if (ImGui.BeginTabBar("Visuals sub-bar"))
+                        {
+                            if (ImGui.BeginTabItem("Sizing"))
+                            {
+                                ImGui.Dummy(new Vector2(0, 2f));
+                                if (ImGui.BeginTable("Sizing Options Table", 3))
+                                {
+                                    var widgetWidth = 40f;
+
+                                    ImGui.TableNextColumn();
+                                    ImGui.PushItemWidth(widgetWidth);
+                                    ImGui.InputFloat("Player Modifier", ref _playerIconRadiusModifier, 0, 0, "%.2f");
+                                    ImGui.SameLine();
+                                    ImGui_HelpMarker("Player Icon Radius Modifier: Default 1");
+
+                                    ImGui.TableNextColumn();
+                                    ImGui.PushItemWidth(widgetWidth);
+                                    ImGui.InputFloat("Mob Modifier", ref _mobIconRadiusModifier, 0, 0, "%.2f");
+                                    ImGui.SameLine();
+                                    ImGui_HelpMarker("Mob Icon Radius Modifier, default: 2");
+
+                                    ImGui.TableNextColumn();
+                                    ImGui.PushItemWidth(widgetWidth);
+                                    ImGui.InputFloat("Spawn Point Modifier", ref _spawnPointRadiusModifier, 0, 0,
+                                        "%.2f");
+                                    ImGui.SameLine();
+                                    ImGui_HelpMarker("Spawn Point Radius Modifier, default: 1.0");
+
+                                    ImGui.TableNextColumn();
+                                    ImGui.InputFloat("All Modifier", ref _allRadiusModifier, 0, 0, "%.2f");
+                                    ImGui.SameLine();
+                                    ImGui_HelpMarker(
+                                        "Increase all icons proportionally, default: 1\nBy Default, A Mob icon is 1.5x a Spawn Point, a Player icon is 0.2x a Spawn Point");
+
+                                    ImGui.TableNextColumn();
+                                    ImGui.InputFloat("Detection Circle Modifier", ref _detectionCircleModifier, 0, 0,
+                                        "%.2f");
+                                    ImGui.SameLine();
+                                    ImGui_HelpMarker(
+                                        "Default represents 2 in-game coordinates. Modify if you feel this is inaccurate, default: 1.0");
+
+                                    ImGui.TableNextColumn();
+                                    ImGui.Dummy(new Vector2(0, 26f));
+
+                                    ImGui.TableNextColumn();
+                                    ImGui.Separator();
+                                    ImGui.Dummy(new Vector2(0, 1f));
+                                    ImGui.InputFloat("Detection Circle Thickness", ref _detectionCircleThickness, 0, 0,
+                                        "%.2f");
+                                    ImGui.SameLine();
+                                    ImGui_HelpMarker("default: 3.0");
+
+                                    ImGui.TableNextColumn();
+                                    ImGui.Separator();
+                                    ImGui.Dummy(new Vector2(0, 1f));
+                                    ImGui.InputFloat("Direction Line Thickness", ref _directionLineThickness, 0, 0,
+                                        "%.2f");
+                                    ImGui.SameLine();
+                                    ImGui_HelpMarker("default: 3.0");
+
+                                    ImGui.TableNextColumn();
+                                    ImGui.Separator();
+                                    ImGui.Dummy(new Vector2(0, 1f));
+                                    if (ImGui.Button("Reset"))
+                                    {
+                                        _allRadiusModifier = 1.0f;
+                                        _mobIconRadiusModifier = 2f;
+                                        _spawnPointRadiusModifier = 1.0f;
+                                        _playerIconRadiusModifier = 1f;
+                                        _detectionCircleModifier = 1.0f;
+                                        _detectionCircleThickness = 3f;
+                                        _directionLineThickness = 3f;
+                                    }
+
+                                    ImGui.SameLine();
+                                    ImGui_HelpMarker("Reset all sizes to default.");
+
+                                    ImGui.PopItemWidth();
+
+                                    ImGui.EndTable();
+                                }
+
+                                ImGui.EndTabItem();
+                            }
+
+                            if (ImGui.BeginTabItem("Colours"))
                             {
                                 ImGui.Dummy(new Vector2(0, 2f));
 
-                                ImGui.TableNextColumn();
-                                var color3 = new Vector4(0f, 0f, 1f, 1f);
-                                ImGui.ColorEdit4("Player Icon", ref _playerIconColour, ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
+                                if (ImGui.BeginTable("Colour Options Table", 3))
+                                {
+                                    ImGui.Dummy(new Vector2(0, 2f));
 
-                                ImGui.TableNextColumn();
-                                var color = new Vector4(1f, 1f, 1f, 1f);
-                                ImGui.ColorEdit4("Mob Icon", ref _mobColour, ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
+                                    ImGui.TableNextColumn();
+                                    var color3 = new Vector4(0f, 0f, 1f, 1f);
+                                    ImGui.ColorEdit4("Player Icon", ref _playerIconColour,
+                                        ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
 
-                                ImGui.TableNextColumn();
-                                ImGui.ColorEdit4("Spawn Point", ref _spawnPointColour, ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
+                                    ImGui.TableNextColumn();
+                                    var color = new Vector4(1f, 1f, 1f, 1f);
+                                    ImGui.ColorEdit4("Mob Icon", ref _mobColour,
+                                        ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
 
-                                ImGui.Dummy(new Vector2(0, 4f));
+                                    ImGui.TableNextColumn();
+                                    ImGui.ColorEdit4("Spawn Point", ref _spawnPointColour,
+                                        ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
 
-                                ImGui.TableNextColumn();
-                                var color2 = new Vector4(0f, 1f, 0f, 1f);
-                                ImGui.ColorEdit4("Player Background", ref _playerIconBackgroundColour, ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
-                                ImGui.SameLine(); ImGui_HelpMarker("Background of the player / detection circle.\nChange the Alpha A: for opacity.");
+                                    ImGui.Dummy(new Vector2(0, 4f));
+
+                                    ImGui.TableNextColumn();
+                                    var color2 = new Vector4(0f, 1f, 0f, 1f);
+                                    ImGui.ColorEdit4("Player Background", ref _playerIconBackgroundColour,
+                                        ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
+                                    ImGui.SameLine();
+                                    ImGui_HelpMarker(
+                                        "Background of the player / detection circle.\nChange the Alpha A: for opacity.");
 
 
-                                ImGui.Dummy(new Vector2(0, 4f));
+                                    ImGui.Dummy(new Vector2(0, 4f));
 
-                                ImGui.TableNextColumn();
-                                var color4 = new Vector4(0f, 0f, 1f, 1f);
-                                ImGui.ColorEdit4("Direction Line", ref _directionLineColour, ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
+                                    ImGui.TableNextColumn();
+                                    var color4 = new Vector4(0f, 0f, 1f, 1f);
+                                    ImGui.ColorEdit4("Direction Line", ref _directionLineColour,
+                                        ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
 
-                                ImGui.TableNextColumn();
-                                var color5 = new Vector4(0f, 0f, 1f, 1f);
-                                ImGui.ColorEdit4("Detection Circle", ref _detectionCircleColour, ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
+                                    ImGui.TableNextColumn();
+                                    var color5 = new Vector4(0f, 0f, 1f, 1f);
+                                    ImGui.ColorEdit4("Detection Circle", ref _detectionCircleColour,
+                                        ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
 
-                                ImGui.EndTable();
+                                    ImGui.EndTable();
+                                }
+
+                                ImGui.EndTabItem();
                             }
 
-                            ImGui.EndTabItem();
+                            ImGui.EndTabBar();
                         }
 
-                        ImGui.EndTabBar();
+                        ImGui.EndTabItem();
                     }
-                    ImGui.EndTabItem();
-                }
 
-                if (ImGui.BeginTabItem("Notifications TODO"))
-                {
-                    _bottomPanelHeight = 145f;
-
-                    if (ImGui.BeginTabBar("Notifications sub-bar"))
+                    if (ImGui.BeginTabItem("Notifications TODO"))
                     {
-                        //ImGui.PushFont(UiBuilder.MonoFont); //aligns things, but then looks ugly so idk.. table?
-                        if (ImGui.BeginTabItem(" A "))
+                        _bottomPanelHeight = 145f;
+
+                        if (ImGui.BeginTabBar("Notifications sub-bar"))
                         {
-                            ImGui.Dummy(new Vector2(0, 2f));
-                            var tempMsg = "Hello, this feature has not been implemented yet.";
-                            ImGui.TextUnformatted("Chat Message");
-                            ImGui.SameLine(); ImGui.InputText("", ref tempMsg, _inputTextMaxLength);
-                            var tempBool = true;
-                            ImGui.SameLine(); ImGui.Checkbox("", ref tempBool);
-                            ImGui.SameLine(); ImGui_HelpMarker("Message to send to chat using /echo, usable tags: <pos> <name> <rank> <hpp>.");
+                            //ImGui.PushFont(UiBuilder.MonoFont); //aligns things, but then looks ugly so idk.. table?
+                            if (ImGui.BeginTabItem(" A "))
+                            {
+                                ImGui.Dummy(new Vector2(0, 2f));
+                                var tempMsg = "Hello, this feature has not been implemented yet.";
+                                ImGui.TextUnformatted("Chat Message");
+                                ImGui.SameLine();
+                                ImGui.InputText("", ref tempMsg, _inputTextMaxLength);
+                                var tempBool = true;
+                                ImGui.SameLine();
+                                ImGui.Checkbox("", ref tempBool);
+                                ImGui.SameLine();
+                                ImGui_HelpMarker(
+                                    "Message to send to chat using /echo, usable tags: <pos> <name> <rank> <hpp>.");
 
-                            ImGui.Dummy(new Vector2(0, 2f));
-                            ImGui.TextUnformatted("TTS   Message");
-                            ImGui.SameLine(); ImGui.InputText("", ref tempMsg, _inputTextMaxLength);
-                            ImGui.SameLine(); ImGui.Checkbox("", ref tempBool);
-                            ImGui.SameLine(); ImGui_HelpMarker("Message to use with Text-to-Speech, usable tags: <name> <rank>");
+                                ImGui.Dummy(new Vector2(0, 2f));
+                                ImGui.TextUnformatted("TTS   Message");
+                                ImGui.SameLine();
+                                ImGui.InputText("", ref tempMsg, _inputTextMaxLength);
+                                ImGui.SameLine();
+                                ImGui.Checkbox("", ref tempBool);
+                                ImGui.SameLine();
+                                ImGui_HelpMarker("Message to use with Text-to-Speech, usable tags: <name> <rank>");
 
-                            ImGui.EndTabItem();
+                                ImGui.EndTabItem();
+                            }
+
+                            if (ImGui.BeginTabItem(" B "))
+                            {
+                                ImGui.Dummy(new Vector2(0, 2f));
+                                var tempMsg = "Hello, this feature has not been implemented yet.";
+                                ImGui.TextUnformatted("Chat Message");
+                                ImGui.SameLine();
+                                ImGui.InputText("", ref tempMsg, _inputTextMaxLength);
+                                var tempBool = true;
+                                ImGui.SameLine();
+                                ImGui.Checkbox("", ref tempBool);
+                                ImGui.SameLine();
+                                ImGui_HelpMarker(
+                                    "Message to send to chat using /echo, usable tags: <pos> <name> <rank> <hpp>.");
+
+                                ImGui.Dummy(new Vector2(0, 2f));
+                                ImGui.TextUnformatted("TTS   Message");
+                                ImGui.SameLine();
+                                ImGui.InputText("", ref tempMsg, _inputTextMaxLength);
+                                ImGui.SameLine();
+                                ImGui.Checkbox("", ref tempBool);
+                                ImGui.SameLine();
+                                ImGui_HelpMarker("Message to use with Text-to-Speech, usable tags: <name> <rank>");
+
+                                ImGui.EndTabItem();
+                            }
+
+                            if (ImGui.BeginTabItem(" S "))
+                            {
+                                ImGui.Dummy(new Vector2(0, 2f));
+                                var tempMsg = "Hello, this feature has not been implemented yet.";
+                                ImGui.TextUnformatted("Chat Message");
+                                ImGui.SameLine();
+                                ImGui.InputText("", ref tempMsg, _inputTextMaxLength);
+                                var tempBool = true;
+                                ImGui.SameLine();
+                                ImGui.Checkbox("", ref tempBool);
+                                ImGui.SameLine();
+                                ImGui_HelpMarker(
+                                    "Message to send to chat using /echo, usable tags: <pos> <name> <rank> <hpp>.");
+
+                                ImGui.Dummy(new Vector2(0, 2f));
+                                ImGui.TextUnformatted("TTS   Message");
+                                ImGui.SameLine();
+                                ImGui.InputText("", ref tempMsg, _inputTextMaxLength);
+                                ImGui.SameLine();
+                                ImGui.Checkbox("", ref tempBool);
+                                ImGui.SameLine();
+                                ImGui_HelpMarker("Message to use with Text-to-Speech, usable tags: <name> <rank>");
+
+                                ImGui.EndTabItem();
+                            }
+
+                            ImGui.EndTabBar();
                         }
-                        if (ImGui.BeginTabItem(" B "))
-                        {
-                            ImGui.Dummy(new Vector2(0, 2f));
-                            var tempMsg = "Hello, this feature has not been implemented yet.";
-                            ImGui.TextUnformatted("Chat Message");
-                            ImGui.SameLine();
-                            ImGui.InputText("", ref tempMsg, _inputTextMaxLength);
-                            var tempBool = true;
-                            ImGui.SameLine(); ImGui.Checkbox("", ref tempBool);
-                            ImGui.SameLine(); ImGui_HelpMarker("Message to send to chat using /echo, usable tags: <pos> <name> <rank> <hpp>.");
 
-                            ImGui.Dummy(new Vector2(0, 2f));
-                            ImGui.TextUnformatted("TTS   Message");
-                            ImGui.SameLine(); ImGui.InputText("", ref tempMsg, _inputTextMaxLength);
-                            ImGui.SameLine(); ImGui.Checkbox("", ref tempBool);
-                            ImGui.SameLine(); ImGui_HelpMarker("Message to use with Text-to-Speech, usable tags: <name> <rank>");
-
-                            ImGui.EndTabItem();
-                        }
-                        if (ImGui.BeginTabItem(" S "))
-                        {
-                            ImGui.Dummy(new Vector2(0, 2f));
-                            var tempMsg = "Hello, this feature has not been implemented yet.";
-                            ImGui.TextUnformatted("Chat Message");
-                            ImGui.SameLine();
-                            ImGui.InputText("", ref tempMsg, _inputTextMaxLength);
-                            var tempBool = true;
-                            ImGui.SameLine(); ImGui.Checkbox("", ref tempBool);
-                            ImGui.SameLine(); ImGui_HelpMarker("Message to send to chat using /echo, usable tags: <pos> <name> <rank> <hpp>.");
-
-                            ImGui.Dummy(new Vector2(0, 2f));
-                            ImGui.TextUnformatted("TTS   Message");
-                            ImGui.SameLine(); ImGui.InputText("", ref tempMsg, _inputTextMaxLength);
-                            ImGui.SameLine(); ImGui.Checkbox("", ref tempBool);
-                            ImGui.SameLine(); ImGui_HelpMarker("Message to use with Text-to-Speech, usable tags: <name> <rank>");
-
-                            ImGui.EndTabItem();
-                        }
-
-                        ImGui.EndTabBar();
+                        ImGui.EndTabItem();
                     }
-                    ImGui.EndTabItem();
-                }
 
-                if (ImGui.BeginTabItem("Onscreen Mob Info")) //what do i call this, mob context, mob text, hunt info data text idk
-                {
-                    _bottomPanelHeight = 185f;
-
-                    if (ImGui.BeginTable("Mob info Table", 2))
+                    if (ImGui.BeginTabItem(
+                            "Onscreen Mob Info")) //what do i call this, mob context, mob text, hunt info data text idk
                     {
-                        ImGui.TableNextColumn();
-                        ImGui.Checkbox("Priority Mob", ref _priorityMobEnabled);
-                        ImGui.SameLine(); ImGui_HelpMarker("The big thing that labels highest rank mob in zone, S/SS > A > B\n\n" +
-                                                           "Ctrl+Click to enter manually, Shift+Click for fast drag.");
-                        ImGui.DragFloat("X##Priority Mob", ref _priorityMobInfoPosXPercentage, 0.05f, 0, 100, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
-                        ImGui.DragFloat("Y##Priority Mob", ref _priorityMobInfoPosYPercentage, 0.05f, 0, 100, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
-                        ImGui.ColorEdit4("Main##PriorityMain", ref _priorityMobTextColour, ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
-                        ImGui.SameLine(); ImGui.ColorEdit4("Alt##PriorityAlt", ref _priorityMobTextColourAlt, ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
-                        ImGui.SameLine(); ImGui.ColorEdit4("Background##PriorityAlt", ref _priorityMobColourBackground, ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
-                        ImGui.SameLine(); ImGui_HelpMarker("Main = without map, Alt = with map images, Background = background duh \n\n- Turn up Alpha A: for solid colour.");
+                        _bottomPanelHeight = 185f;
 
-                        ImGui.TableNextColumn();
-                        ImGui.Checkbox("Nearby Mob List", ref _nearbyMobListEnabled);
-                        ImGui.SameLine(); ImGui_HelpMarker("A list of all nearby mobs.\n\n" +
-                                                           "Ctrl+Click to enter manually, Shift+Click for fast drag.");
-                        ImGui.DragFloat("X##Nearby Mobs", ref _nearbyMobListPosXPercentage, 0.05f, 0, 100, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
-                        ImGui.DragFloat("Y##Nearby Mobs", ref _nearbyMobListPosYPercentage, 0.05f, 0, 100, "%.2f", ImGuiSliderFlags.NoRoundToFormat);
-                        ImGui.ColorEdit4("Main##Nearby Mobs", ref _nearbyMobListColour, ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
-                        ImGui.SameLine(); ImGui.ColorEdit4("Alt##Nearby Alt", ref _nearbyMobListColourAlt, ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
-                        ImGui.SameLine(); ImGui.ColorEdit4("Background##Nearby Mobs", ref _nearbyMobLisColourBackground, ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
-                        ImGui.SameLine(); ImGui_HelpMarker("Main = without map, Alt = with map images, Background = background duh \n\n- Turn up Alpha A: for solid colour.");
+                        if (ImGui.BeginTable("Mob info Table", 2))
+                        {
+                            ImGui.TableNextColumn();
+                            ImGui.Checkbox("Priority Mob", ref _priorityMobEnabled);
+                            ImGui.SameLine();
+                            ImGui_HelpMarker("The big thing that labels highest rank mob in zone, S/SS > A > B\n\n" +
+                                             "Ctrl+Click to enter manually, Shift+Click for fast drag.");
+                            ImGui.DragFloat("X##Priority Mob", ref _priorityMobInfoPosXPercentage, 0.05f, 0, 100,
+                                "%.2f", ImGuiSliderFlags.NoRoundToFormat);
+                            ImGui.DragFloat("Y##Priority Mob", ref _priorityMobInfoPosYPercentage, 0.05f, 0, 100,
+                                "%.2f", ImGuiSliderFlags.NoRoundToFormat);
+                            ImGui.ColorEdit4("Main##PriorityMain", ref _priorityMobTextColour,
+                                ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
+                            ImGui.SameLine();
+                            ImGui.ColorEdit4("Alt##PriorityAlt", ref _priorityMobTextColourAlt,
+                                ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
+                            ImGui.SameLine();
+                            ImGui.ColorEdit4("Background##PriorityAlt", ref _priorityMobColourBackground,
+                                ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
+                            ImGui.SameLine();
+                            ImGui_HelpMarker(
+                                "Main = without map, Alt = with map images, Background = background duh \n\n- Turn up Alpha A: for solid colour.");
 
-                        ImGui.EndTable();
+                            ImGui.TableNextColumn();
+                            ImGui.Checkbox("Nearby Mob List", ref _nearbyMobListEnabled);
+                            ImGui.SameLine();
+                            ImGui_HelpMarker("A list of all nearby mobs.\n\n" +
+                                             "Ctrl+Click to enter manually, Shift+Click for fast drag.");
+                            ImGui.DragFloat("X##Nearby Mobs", ref _nearbyMobListPosXPercentage, 0.05f, 0, 100, "%.2f",
+                                ImGuiSliderFlags.NoRoundToFormat);
+                            ImGui.DragFloat("Y##Nearby Mobs", ref _nearbyMobListPosYPercentage, 0.05f, 0, 100, "%.2f",
+                                ImGuiSliderFlags.NoRoundToFormat);
+                            ImGui.ColorEdit4("Main##Nearby Mobs", ref _nearbyMobListColour,
+                                ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
+                            ImGui.SameLine();
+                            ImGui.ColorEdit4("Alt##Nearby Alt", ref _nearbyMobListColourAlt,
+                                ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
+                            ImGui.SameLine();
+                            ImGui.ColorEdit4("Background##Nearby Mobs", ref _nearbyMobListColourBackground,
+                                ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
+                            ImGui.SameLine();
+                            ImGui_HelpMarker(
+                                "Main = without map, Alt = with map images, Background = background duh \n\n- Turn up Alpha A: for solid colour.");
+
+                            ImGui.EndTable();
+                        }
+
+                        ImGui.EndTabItem();
                     }
-                    ImGui.EndTabItem();
-                }
 
-                ImGui.EndTabBar();
+                    ImGui.EndTabBar();
+                }
             }
-            //ImGui.PopFont();
+            ImGui.PopStyleColor();
             ImGui.End();
-            //ImGui.EndChildFrame();
-            #endregion
         }
         public void DrawSettingsWindow()
         {
@@ -843,12 +929,12 @@ namespace HuntHelper
                 ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse))
             {
                 // can't ref a property, so use a local copy
-                var configValue = this._configuration.SomePropertyToBeSavedAndWithADefault;
-                if (ImGui.Checkbox("Random Config Bool", ref configValue))
+                var configValue = this._configuration.UseMapImages;
+                if (ImGui.Checkbox("Use Map Image Bool", ref configValue))
                 {
-                    this._configuration.SomePropertyToBeSavedAndWithADefault = configValue;
+                    this._configuration.UseMapImages = configValue;
                     // can save immediately on change, if you don't want to provide a "Save and Close" button
-                    this._configuration.Save();
+                    //this._configuration.Save();
                 }
 
                 if (ImGui.Button("Show Loaded Hunt Data"))
@@ -859,6 +945,103 @@ namespace HuntHelper
                 DrawDataBaseWindow();
             }
             ImGui.End();
+        }
+
+        private void SaveSettings()
+        {
+            _configuration.PriorityMobEnabled = _priorityMobEnabled;
+            _configuration.NearbyMobListEnabled = _nearbyMobListEnabled;
+            _configuration.ShowZoneName = _showZoneName;
+            _configuration.ShowWorldName = _showWorldName;
+            _configuration.SaveSpawnData = _saveSpawnData;
+            _configuration.UseMapImages = _useMapImages;
+            _configuration.MapWindowPos = _mapWindowPos;
+            _configuration.CurrentWindowSize = _currentWindowSize;
+            _configuration.PresetOneWindowSize = _presetOneWindowSize;
+            _configuration.PresetTwoWindowSize = _presetTwoWindowSize;
+            _configuration.MapImageOpacityAsPercentage = _mapImageOpacityAsPercentage;
+            _configuration.SpawnPointColour = _spawnPointColour;
+            _configuration.MobColour = _mobColour;
+            _configuration.PlayerIconColour = _playerIconColour;
+            _configuration.PlayerIconBackgroundColour = _playerIconBackgroundColour;
+            _configuration.DirectionLineColour = _directionLineColour;
+            _configuration.DetectionCircleColour = _detectionCircleColour;
+            _configuration.AllRadiusModifier = _allRadiusModifier;
+            _configuration.MobIconRadiusModifier = _mobIconRadiusModifier;
+            _configuration.SpawnPointRadiusModifier = _spawnPointRadiusModifier;
+            _configuration.PlayerIconRadiusModifier = _playerIconRadiusModifier;
+            _configuration.DetectionCircleModifier = _detectionCircleModifier;
+            _configuration.MouseOverDistanceModifier = _mouseOverDistanceModifier;
+            _configuration.DetectionCircleThickness = _detectionCircleThickness;
+            _configuration.DirectionLineThickness = _directionLineThickness;
+            _configuration.ZoneInfoPosXPercentage = _zoneInfoPosXPercentage;
+            _configuration.ZoneInfoPosYPercentage = _zoneInfoPosYPercentage;
+            _configuration.WorldInfoPosXPercentage = _worldInfoPosXPercentage;
+            _configuration.WorldInfoPosYPercentage = _worldInfoPosYPercentage;
+            _configuration.PriorityMobInfoPosXPercentage = _priorityMobInfoPosXPercentage;
+            _configuration.PriorityMobInfoPosYPercentage = _priorityMobInfoPosYPercentage;
+            _configuration.NearbyMobListPosXPercentage = _nearbyMobListPosXPercentage;
+            _configuration.NearbyMobListPosYPercentage = _nearbyMobListPosYPercentage;
+            _configuration.ZoneTextColour = _zoneTextColour;
+            _configuration.ZoneTextColourAlt = _zoneTextColourAlt;
+            _configuration.WorldTextColour = _worldTextColour;
+            _configuration.WorldTextColourAlt = _worldTextColourAlt;
+            _configuration.PriorityMobTextColour = _priorityMobTextColour;
+            _configuration.PriorityMobTextColourAlt = _priorityMobTextColourAlt;
+            _configuration.NearbyMobListColour = _nearbyMobListColour;
+            _configuration.NearbyMobListColourAlt = _nearbyMobListColourAlt;
+            _configuration.PriorityMobColourBackground = _priorityMobColourBackground;
+            _configuration.NearbyMobListColourBackground = _nearbyMobListColourBackground;
+            _configuration.HuntWindowFlag = _huntWindowFlag;
+            this._configuration.Save();
+        }
+
+        private void LoadSettings()
+        {
+            _priorityMobEnabled = _configuration.PriorityMobEnabled;
+            _nearbyMobListEnabled = _configuration.NearbyMobListEnabled;
+            _showZoneName = _configuration.ShowZoneName;
+            _showWorldName = _configuration.ShowWorldName;
+            _saveSpawnData = _configuration.SaveSpawnData;
+            _useMapImages = _configuration.UseMapImages;
+            _mapWindowPos = _configuration.MapWindowPos;
+            _currentWindowSize = _configuration.CurrentWindowSize;
+            _presetOneWindowSize = _configuration.PresetOneWindowSize;
+            _presetTwoWindowSize = _configuration.PresetTwoWindowSize;
+            _mapImageOpacityAsPercentage = _configuration.MapImageOpacityAsPercentage;
+            _spawnPointColour = _configuration.SpawnPointColour;
+            _mobColour = _configuration.MobColour;
+            _playerIconColour = _configuration.PlayerIconColour;
+            _playerIconBackgroundColour = _configuration.PlayerIconBackgroundColour;
+            _directionLineColour = _configuration.DirectionLineColour;
+            _detectionCircleColour = _configuration.DetectionCircleColour;
+            _allRadiusModifier = _configuration.AllRadiusModifier;
+            _mobIconRadiusModifier = _configuration.MobIconRadiusModifier;
+            _spawnPointRadiusModifier = _configuration.SpawnPointRadiusModifier;
+            _playerIconRadiusModifier = _configuration.PlayerIconRadiusModifier;
+            _detectionCircleModifier = _configuration.DetectionCircleModifier;
+            _mouseOverDistanceModifier = _configuration.MouseOverDistanceModifier;
+            _detectionCircleThickness = _configuration.DetectionCircleThickness;
+            _directionLineThickness = _configuration.DirectionLineThickness;
+            _zoneInfoPosXPercentage = _configuration.ZoneInfoPosXPercentage;
+            _zoneInfoPosYPercentage = _configuration.ZoneInfoPosYPercentage;
+            _worldInfoPosXPercentage = _configuration.WorldInfoPosXPercentage;
+            _worldInfoPosYPercentage = _configuration.WorldInfoPosYPercentage;
+            _priorityMobInfoPosXPercentage = _configuration.PriorityMobInfoPosXPercentage;
+            _priorityMobInfoPosYPercentage = _configuration.PriorityMobInfoPosYPercentage;
+            _nearbyMobListPosXPercentage = _configuration.NearbyMobListPosXPercentage;
+            _nearbyMobListPosYPercentage = _configuration.NearbyMobListPosYPercentage;
+            _zoneTextColour = _configuration.ZoneTextColour;
+            _zoneTextColourAlt = _configuration.ZoneTextColourAlt;
+            _worldTextColour = _configuration.WorldTextColour;
+            _worldTextColourAlt = _configuration.WorldTextColourAlt;
+            _priorityMobTextColour = _configuration.PriorityMobTextColour;
+            _priorityMobTextColourAlt = _configuration.PriorityMobTextColourAlt;
+            _nearbyMobListColour = _configuration.NearbyMobListColour;
+            _nearbyMobListColourAlt = _configuration.NearbyMobListColourAlt;
+            _priorityMobColourBackground = _configuration.PriorityMobColourBackground;
+            _nearbyMobListColourBackground = _configuration.NearbyMobListColourBackground;
+            _huntWindowFlag = _configuration.HuntWindowFlag;
         }
 
 
@@ -940,7 +1123,7 @@ namespace HuntHelper
             drawlist.AddCircleFilled(mobPos, _mobIconRadius, ImGui.ColorConvertFloat4ToU32(_mobColour));
 
             //draw mob icon tooltip
-            if (Vector2.Distance(ImGui.GetMousePos(), mobPos) < _mobIconRadius * mouseOverDistanceModifier)
+            if (Vector2.Distance(ImGui.GetMousePos(), mobPos) < _mobIconRadius * _mouseOverDistanceModifier)
             {
                 DrawMobIconToolTip(mob);
             }
@@ -994,8 +1177,8 @@ namespace HuntHelper
             DoStuffWithMonoFont(() =>
             {
                 SetCursorPosByPercentage(_nearbyMobListPosXPercentage, _nearbyMobListPosYPercentage);
-                ImGui.PushStyleColor(ImGuiCol.Border, _nearbyMobLisColourBackground);
-                ImGui.PushStyleColor(ImGuiCol.ChildBg, _nearbyMobLisColourBackground);
+                ImGui.PushStyleColor(ImGuiCol.Border, _nearbyMobListColourBackground);
+                ImGui.PushStyleColor(ImGuiCol.ChildBg, _nearbyMobListColourBackground);
                 ImGui.BeginChild("Nearby Mob List Info", size, true, ImGuiWindowFlags.NoScrollbar);
                 var colour = _useMapImages ? _nearbyMobListColourAlt : _nearbyMobListColour; //if using map image, use alt colour.
                 ImGui.Separator();
