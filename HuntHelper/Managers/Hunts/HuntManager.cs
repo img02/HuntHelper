@@ -29,6 +29,7 @@ public class HuntManager
     private readonly DalamudPluginInterface _pluginInterface;
 
     private readonly List<(HuntRank Rank, BattleNpc Mob)> _currentMobs;
+    private List<(HuntRank Rank, BattleNpc Mob)> _previousMobs1;
     private readonly List<uint> _previousMobs;
 
     private BattleNpc? _priorityMob;
@@ -37,10 +38,8 @@ public class HuntManager
     public bool ImagesLoaded = false;
     public bool ErrorPopUpVisible = false;
     public string ErrorMessage = string.Empty;
-    
-    public SpeechSynthesizer TTS { get; init; }
 
-    
+    public SpeechSynthesizer TTS { get; init; }
 
     public List<(HuntRank Rank, BattleNpc Mob)> CurrentMobs => _currentMobs;
 
@@ -53,6 +52,7 @@ public class HuntManager
         _ewDict = new Dictionary<HuntRank, List<Mob>>();
         _mapImages = new Dictionary<string, TextureWrap>();
         _currentMobs = new List<(HuntRank, BattleNpc)>();
+        _previousMobs1 = new List<(HuntRank, BattleNpc)>();
         _previousMobs = new List<uint>();
         this._pluginInterface = pluginInterface;
         _imageFolderPath = Path.Combine(_pluginInterface.AssemblyLocation.Directory?.FullName!, "Images/Maps");
@@ -65,62 +65,50 @@ public class HuntManager
         return (_highestRank, _priorityMob);
     }
 
-    public List<(HuntRank, BattleNpc)> GetAllCurrentMobs()
+    public List<(HuntRank, BattleNpc)> GetAllCurrentMobsWithRank()
     {
         return _currentMobs;
     }
+    
+    public void AddNearbyMobs(List<BattleNpc> nearbyMobs, bool a, bool b, bool s, string aMsg, string bMsg, string sMsg)
+    {
+        //compare with old list,
+        _previousMobs1.Clear();
+        _previousMobs1.AddRange(_currentMobs);
+        _currentMobs.Clear();
 
-    public void AddMob(BattleNpc mob, bool a, bool b, bool s, string aMsg, string bMsg, string sMsg)
-    { //not great
-        var rank = GetHuntRank(mob.NameId);
-        _currentMobs.Add((rank, mob));
-        //if same rank or higher, make it the priority mob
-        if (rank >= _highestRank)
+        foreach (var mob in nearbyMobs)
         {
-            _highestRank = rank;
-            _priorityMob = mob;
-        }
-
-        if (!_previousMobs.Contains(mob.NameId))
-        {
-            //if 'new' mob, do tts stuff
-            //gotta do the string extrapolation for tags
-            switch (rank)
+            _currentMobs.Add((GetHuntRank(mob.NameId), mob));
+            //if already exists, skip tts
+            if (_previousMobs1.Any(hunt => hunt.Mob.NameId == mob.NameId)) continue;
+            //Do tts stuff
+            switch (_highestRank)
             {
                 case HuntRank.A:
-                    if (!a) break;
-                    aMsg = aMsg.Replace("<rank>", "A Rank", true, CultureInfo.InvariantCulture);
-                    aMsg = aMsg.Replace("<name>", $"{mob.Name}", true, CultureInfo.InvariantCulture);
-                    TTS.SpeakAsync(aMsg);
+                    NewMobFoundTTS(GetHuntRank(mob.NameId), mob, a, aMsg);
                     break;
-
                 case HuntRank.B:
-                    if (!b) break;
-                    bMsg = bMsg.Replace("<rank>", "B Rank", true, CultureInfo.InvariantCulture);
-                    bMsg = bMsg.Replace("<name>", $"{mob.Name}", true, CultureInfo.InvariantCulture);
-                    TTS.SpeakAsync(bMsg);
+                    NewMobFoundTTS(GetHuntRank(mob.NameId), mob, b, bMsg);
                     break;
                 case HuntRank.S:
                 case HuntRank.SS:
-                    if (!s) break;
-                    sMsg = sMsg.Replace("<rank>", "S Rank", true, CultureInfo.InvariantCulture);
-                    sMsg = sMsg.Replace("<name>", $"{mob.Name}", true, CultureInfo.InvariantCulture);
-                    TTS.SpeakAsync(sMsg);
+                    NewMobFoundTTS(GetHuntRank(mob.NameId), mob, s, sMsg);
                     break;
             }
-
-            //if 'new' mob do optional flag / pos stuff
-            //create map flag type class w/
-            //static methods? takes in pos and msg?
-        };
+        }
     }
 
-    public void ClearMobs()
+    private void NewMobFoundTTS(HuntRank rank, BattleNpc mob, bool enabled, string msg)
     {
-        _currentMobs.ForEach(rankMob => _previousMobs.Add(rankMob.Mob.NameId));
-        _currentMobs.Clear();
-        _highestRank = 0;
-        _priorityMob = null;
+        msg = msg.Replace("<rank>", $"{rank}-Rank", true, CultureInfo.InvariantCulture);
+        msg = msg.Replace("<name>", $"{mob.Name}", true, CultureInfo.InvariantCulture);
+        TTS.SpeakAsync(msg);
+    }
+
+    public List<BattleNpc> GetCurrentMobs()
+    {
+        return _currentMobs.Select(hunt => hunt.Mob).ToList();
     }
 
     public void LoadHuntData()
@@ -233,11 +221,18 @@ public class HuntManager
         }
     }
 
-    public void SetTTSText(string text, HuntRank rank)
+    public bool IsMobInCurrentMobList(uint mobID)
     {
-        //set specific for each rank?
-        //call tts class object
-        //ToDo
+        return _currentMobs.Any(hunt => hunt.Mob.NameId == mobID);
+    }
+
+    public void RemoveFromCurrentMobsList(List<uint> removalList)
+    {
+        foreach (var mobID in removalList)
+        {
+            var toRemove = _currentMobs.First(hunt => hunt.Mob.NameId == mobID);
+            _currentMobs.Remove(toRemove);
+        }
     }
 
     private string GetMapNameFromPath(string path)

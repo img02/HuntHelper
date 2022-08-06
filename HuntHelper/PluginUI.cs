@@ -1,5 +1,6 @@
 ﻿using ImGuiNET;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Drawing;
 using System.IO;
@@ -1202,14 +1203,38 @@ namespace HuntHelper
 
 
         private void UpdateMobInfo()
-        {
+        {//logic is -> if mob doesn't exist in current list, add it -> if it does, add to removal list - > after processing all obj, remove from current any in removal
             var drawlist = ImGui.GetWindowDrawList();
-            _huntManager.ClearMobs();
+            
+            /*_huntManager.ClearMobs();
+            var mobRemovalList = new List<uint>();
             foreach (var obj in this._objectTable)
             {
                 if (obj is not BattleNpc mob) continue;
                 if (!_huntManager.IsHunt(mob.NameId)) continue;
-                _huntManager.AddMob(mob, _ttsAEnabled, _ttsBEnabled, _ttsSEnabled, _ttsAMessage, _ttsBMessage, _ttsSMessage);
+                if (!_huntManager.IsMobInCurrentMobList(mob.NameId)) 
+                {   //add to list it not preexisting
+                    _huntManager.AddMob(mob, _ttsAEnabled, _ttsBEnabled, _ttsSEnabled, _ttsAMessage, _ttsBMessage, _ttsSMessage);
+                    continue;
+                }
+                DrawMobIcon(mob); 
+            }
+            _huntManager.RemoveFromCurrentMobsList(mobRemovalList);*/
+
+
+            var nearbyMobs = new List<BattleNpc>();
+            //sift through and add any hunt mobs to new list
+            foreach (var obj in _objectTable)
+            {
+                if (obj is not BattleNpc mob) continue;
+                if (!_huntManager.IsHunt(mob.NameId)) continue;
+                nearbyMobs.Add(mob);
+            }
+            _huntManager.AddNearbyMobs(nearbyMobs, _ttsAEnabled, _ttsBEnabled, _ttsSEnabled, _ttsAMessage, _ttsBMessage, _ttsSMessage);
+
+            var mobs = _huntManager.GetCurrentMobs();
+            foreach (var mob in mobs)
+            {
                 DrawMobIcon(mob);
             }
 
@@ -1407,7 +1432,7 @@ namespace HuntHelper
                                          $"{ConvertPosToCoordinate(priorityMob.Position.Z):0.00}) ");
                 }
 
-                var currentMobs = _huntManager.GetAllCurrentMobs();
+                var currentMobs = _huntManager.GetAllCurrentMobsWithRank();
                 ImGui_RightAlignText("--");
                 ImGui_RightAlignText("Other nearby mobs:");
                 foreach (var (rank, mob) in currentMobs)
