@@ -60,9 +60,15 @@ public class HuntManager
 
     public (HuntRank Rank, BattleNpc? Mob) GetPriorityMob()
     {
+        if (_priorityMob == null) return (_highestRank, null);
+        if (_currentMobs.Count == 0) return (_highestRank, null);
+        if (!IsHunt(_priorityMob.NameId))
+        {   
+            _highestRank = HuntRank.B;
+            foreach (var hunt in _currentMobs) PriorityCheck(hunt.Mob);
+        }
         return (_highestRank, _priorityMob);
     }
-
     public List<(HuntRank, BattleNpc)> GetAllCurrentMobsWithRank()
     {
         return _currentMobs;
@@ -70,21 +76,19 @@ public class HuntManager
     
     public void AddNearbyMobs(List<BattleNpc> nearbyMobs, bool a, bool b, bool s, string aMsg, string bMsg, string sMsg)
     {
-        //compare with old list,
+        //compare with old list
+        //move old mob set out
         _previousMobs.Clear();
         _previousMobs.AddRange(_currentMobs);
         _currentMobs.Clear();
 
         foreach (var mob in nearbyMobs)
-        {
+        {   //add in new mobs to current list. 
             _currentMobs.Add((GetHuntRank(mob.NameId), mob));
-            var rank = GetHuntRank(mob.NameId);
-            if (rank >= _highestRank)
-            {
-                _highestRank = rank;
-                _priorityMob = mob;
-            }
-            //if already exists, skip tts + chat
+
+            PriorityCheck(mob);
+
+            //if exists in old mob set, skip tts + chat
             if (_previousMobs.Any(hunt => hunt.Mob.NameId == mob.NameId)) continue;
             //Do tts and chat stuff
             switch (GetHuntRank(mob.NameId))
@@ -222,6 +226,16 @@ public class HuntManager
         foreach (var kvp in _mapImages)
         {
             kvp.Value.Dispose();
+        }
+    }
+
+    private void PriorityCheck(BattleNpc mob)
+    {
+        var rank = GetHuntRank(mob.NameId);
+        if (rank >= _highestRank)
+        {
+            _highestRank = rank;
+            _priorityMob = mob;
         }
     }
 

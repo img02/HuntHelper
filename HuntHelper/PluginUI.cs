@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Http.Headers;
 using System.Numerics;
+using System.Reflection.Metadata.Ecma335;
 using System.Threading;
 using System.Threading.Tasks;
 using Dalamud.Data;
@@ -905,9 +906,7 @@ namespace HuntHelper
                                 {
                                     tts.SelectVoice(listOfVoiceNames[itemPos]);
                                     _ttsVoiceName = listOfVoiceNames[itemPos]; ;
-                                    tts.SpeakAsync($"{_ttsAMessage}");
-                                    tts.SpeakAsync($"{_ttsBMessage}");
-                                    tts.SpeakAsync($"{_ttsSMessage}");
+                                    tts.SpeakAsync($"BOO! - {tts.Voice.Name} Selected");
                                 }
 
 
