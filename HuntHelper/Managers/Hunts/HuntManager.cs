@@ -80,10 +80,16 @@ public class HuntManager
         foreach (var mob in nearbyMobs)
         {
             _currentMobs.Add((GetHuntRank(mob.NameId), mob));
+            var rank = GetHuntRank(mob.NameId);
+            if (rank >= _highestRank)
+            {
+                _highestRank = rank;
+                _priorityMob = mob;
+            }
             //if already exists, skip tts
             if (_previousMobs1.Any(hunt => hunt.Mob.NameId == mob.NameId)) continue;
             //Do tts stuff
-            switch (_highestRank)
+            switch (GetHuntRank(mob.NameId))
             {
                 case HuntRank.A:
                     NewMobFoundTTS(GetHuntRank(mob.NameId), mob, a, aMsg);

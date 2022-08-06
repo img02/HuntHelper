@@ -811,7 +811,7 @@ namespace HuntHelper
                         ImGui.EndTabItem();
                     }
 
-                    if (ImGui.BeginTabItem("Notifications TODO"))
+                    if (ImGui.BeginTabItem("Notifications"))
                     {
                         _bottomPanelHeight = 145f;
 
