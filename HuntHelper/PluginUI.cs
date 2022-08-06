@@ -1277,9 +1277,23 @@ namespace HuntHelper
             DoStuffWithMonoFont(() =>
             {
                 SetCursorPosByPercentage(_priorityMobInfoPosXPercentage, _priorityMobInfoPosYPercentage);
+                var info = new string[]
+                {
+                    $" {rank}  |  {mob.Name}  |  {Math.Round(((1.0 * mob.CurrentHp) / mob.MaxHp) * 100, 2):0.00}%%",
+                    $"({ConvertPosToCoordinate(mob.Position.X):0.00}, {ConvertPosToCoordinate(mob.Position.Z):0.00})"
+                };
+
+                //SetCursorPosByPercentage has moved the cursor (where next element will be drawn)
+                //now before drawing child, work out position based on cursor pos, window pos (top left) and mouse pos
+                //to have detection for mouseover tooltip
+                var labelVector = ImGui.GetCursorPos() + ImGui.GetWindowPos() + new Vector2(140,20);//adding half of child x,y size to get middle of element
+                //fixed sizing.... mouse over tooltip in case long-ass mob name clips 
+                if (ImGui.GetMousePos().X - labelVector.X is < 140 and > -140 &&
+                    ImGui.GetMousePos().Y - labelVector.Y is < 20 and > -20)  ImGui_ToolTip(info);
+
                 ImGui.PushStyleColor(ImGuiCol.Border, _priorityMobColourBackground);
                 ImGui.PushStyleColor(ImGuiCol.ChildBg, _priorityMobColourBackground);
-                ImGui.BeginChild("Priorty Mob Label", new Vector2(240f, 40f), true, ImGuiWindowFlags.NoScrollbar);
+                ImGui.BeginChild("Priorty Mob Label", new Vector2(280f, 40f), true, ImGuiWindowFlags.NoScrollbar);
                 var colour = _useMapImages ? _priorityMobTextColourAlt : _priorityMobTextColour; //if using map image, use alt colour.
                 ImGui_CentreText(
                      $" {rank}  |  {mob.Name}  |  {Math.Round(((1.0 * mob.CurrentHp) / mob.MaxHp) * 100, 2):0.00}%%",
@@ -1475,8 +1489,7 @@ namespace HuntHelper
             if (_useMapImages) colour = new Vector4(0f, 0f, 0f, 1f);
             ImGui.TextColored(colour, text);
         }
-
-        //use list instead? fixed input, so slightly more 'optimized' w/ array i guess...
+        
         private void ImGui_ToolTip(string[] text)
         {
             ImGui.BeginTooltip();
