@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection.Metadata.Ecma335;
 using System.Speech.Synthesis;
+using System.Threading.Tasks;
 using Dalamud.Game.ClientState.Objects.Types;
 using Dalamud.Interface;
 using Dalamud.Plugin;
@@ -38,7 +39,8 @@ public class HuntManager
     public bool ErrorPopUpVisible = false;
     public string ErrorMessage = string.Empty;
 
-    public SpeechSynthesizer TTS { get; init; }
+    public SpeechSynthesizer TTS { get; init; } //aint really used anymore except for setting default voice on load
+    public string TTSName { get; set; }
 
     public List<(HuntRank Rank, BattleNpc Mob)> CurrentMobs => _currentMobs;
 
@@ -55,6 +57,7 @@ public class HuntManager
         this._pluginInterface = pluginInterface;
         _imageFolderPath = Path.Combine(_pluginInterface.AssemblyLocation.Directory?.FullName!, "Images/Maps");
         TTS = new SpeechSynthesizer();
+        TTSName = TTS.Voice.Name;
         LoadHuntData();
     }
 
@@ -111,7 +114,11 @@ public class HuntManager
     {
         msg = msg.Replace("<rank>", $"{rank}-Rank", true, CultureInfo.InvariantCulture);
         msg = msg.Replace("<name>", $"{mob.Name}", true, CultureInfo.InvariantCulture);
-        TTS.SpeakAsync(msg);
+        //changed to creating a new tts each time because SpeakAsync just queues up to play...
+        var tts = new SpeechSynthesizer(); 
+        tts.SelectVoice(TTSName);
+        tts.SpeakAsync(msg);
+        //TTS.SpeakAsync(msg);
     }
 
     public List<BattleNpc> GetCurrentMobs()
@@ -200,10 +207,15 @@ public class HuntManager
     {
         if (ImagesLoaded) return false;
 
-        //DownloadMapImages();
-        if (!Directory.Exists(_imageFolderPath)) return false;
+        if (!Directory.Exists(_imageFolderPath))
+        {
+            //if dir doesn't exist, try downloading images
+            //then if still doesn't exist, return false
+            //DownloadMapImages();
+            return false;
+        }
 
-        //change this later for ss folder
+        //change this later for ss folder? or just draw ss on screen - have to update spawn point drawing and jsons
         var paths = Directory.EnumerateFiles(_imageFolderPath, "*", SearchOption.TopDirectoryOnly);
 
         foreach (var path in paths)

@@ -83,6 +83,8 @@ namespace HuntHelper
         public bool ChatAEnabled {get; set;} = false;
         public bool ChatBEnabled {get; set;} = false;
         public bool ChatSEnabled { get; set; } = false;
+        public bool EnableTTSBackground { get; set; } = false;
+
 
 
         //Hunt Window Flag - used for toggling title bar
