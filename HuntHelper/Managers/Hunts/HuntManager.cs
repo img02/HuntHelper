@@ -229,6 +229,11 @@ public class HuntManager
         }
     }
 
+    public double GetHPP(BattleNpc mob)
+    {
+        return Math.Round(((1.0 * mob.CurrentHp) / mob.MaxHp) * 100, 2);
+    }
+
     private void PriorityCheck(BattleNpc mob)
     {
         var rank = GetHuntRank(mob.NameId);

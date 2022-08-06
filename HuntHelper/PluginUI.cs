@@ -118,15 +118,15 @@ namespace HuntHelper
 
         //notification stuff
         private string _ttsVoiceName;
-        private string _ttsAMessage = string.Empty;
-        private string _ttsBMessage = string.Empty;
-        private string _ttsSMessage = string.Empty;
+        private string _ttsAMessage = "<rank> Nearby";
+        private string _ttsBMessage = "<rank> Nearby";
+        private string _ttsSMessage = "<rank> in zone";
         private string _chatAMessage = string.Empty;
         private string _chatBMessage = string.Empty;
         private string _chatSMessage = string.Empty;
         private bool _ttsAEnabled = false;
         private bool _ttsBEnabled = false;
-        private bool _ttsSEnabled = false;
+        private bool _ttsSEnabled = true;
         private bool _chatAEnabled = false;
         private bool _chatBEnabled = false;
         private bool _chatSEnabled = false;
@@ -1261,7 +1261,7 @@ namespace HuntHelper
                 SetCursorPosByPercentage(_priorityMobInfoPosXPercentage, _priorityMobInfoPosYPercentage);
                 var info = new string[]
                 {
-                    $" {rank}  |  {mob.Name}  |  {Math.Round(((1.0 * mob.CurrentHp) / mob.MaxHp) * 100, 2):0.00}%%",
+                    $"   {rank}  |  {mob.Name}  |  {_huntManager.GetHPP(mob):0.00}%%  ",
                     $"({ConvertPosToCoordinate(mob.Position.X):0.00}, {ConvertPosToCoordinate(mob.Position.Z):0.00})"
                 };
 
@@ -1284,7 +1284,7 @@ namespace HuntHelper
                 ImGui.BeginChild("Priorty Mob Label", new Vector2(280f, 40f), true, ImGuiWindowFlags.NoScrollbar);
                 var colour = _useMapImages ? _priorityMobTextColourAlt : _priorityMobTextColour; //if using map image, use alt colour.
                 ImGui_CentreText(
-                     $" {rank}  |  {mob.Name}  |  {Math.Round(((1.0 * mob.CurrentHp) / mob.MaxHp) * 100, 2):0.00}%%",
+                     $" {rank}  |  {mob.Name}  |  {_huntManager.GetHPP(mob):0.00}%%",
                      colour);
                 ImGui_CentreText(
                     $"({ConvertPosToCoordinate(mob.Position.X):0.00}, {ConvertPosToCoordinate(mob.Position.Z):0.00})",
@@ -1302,7 +1302,6 @@ namespace HuntHelper
 
             var size = new Vector2(200f, 40f * nearbyMobs.Count);
 
-
             DoStuffWithMonoFont(() =>
             {
                 SetCursorPosByPercentage(_nearbyMobListPosXPercentage, _nearbyMobListPosYPercentage);
@@ -1311,27 +1310,37 @@ namespace HuntHelper
                 ImGui.BeginChild("Nearby Mob List Info", size, true, ImGuiWindowFlags.NoScrollbar);
                 var colour = _useMapImages ? _nearbyMobListColourAlt : _nearbyMobListColour; //if using map image, use alt colour.
                 ImGui.Separator();
-                var numberDrawn = 1;
                 foreach (var hunt in nearbyMobs)
                 {
+                    var mob = hunt.Mob;
                     var labelVector = ImGui.GetCursorPos() + ImGui.GetWindowPos() + new Vector2(size.X / 2, size.Y / nearbyMobs.Count / 2);
 
+                    //MOUSE OVER TOOLTIP
                     if (ImGui.GetMousePos().X - labelVector.X is < 100 and > -100 && //this is a mess, but it works.
                         ImGui.GetMousePos().Y - labelVector.Y < (size.Y / nearbyMobs.Count / 2) - 4f && ImGui.GetMousePos().Y - labelVector.Y > -(size.Y / nearbyMobs.Count / 2) - 5f)
                     {
-                        ImGui_ToolTip(new string[] { $"{hunt.Mob.Name}" });
+                        ImGui_ToolTip(new string[]
+                        {
+                            $"   {hunt.Rank} Rank | {_huntManager.GetHPP(mob):0.00}%%  ",
+                            $"{mob.Name}",
+                            "----------------------",
+                            $"Click to send flag" //todo
+                        });
 
                         /*
                          *  CAN ADD CLICK DETECTION STUFF HERE FOR CHAT / FLAGS - TODO
                          */
                     }
 
-                    //ImGui.TextUnformatted($"{ImGui.GetMousePos().X - labelVector.X}, {ImGui.GetMousePos().Y - labelVector.Y}");
-                    //ImGui.Text($"{ImGui.GetCursorPos()} | {ImGui.GetMousePos()}");
-                    var mob = hunt.Mob;
-                    ImGui_CentreText($"{hunt.Rank} | {mob.Name} \n " +
-                                     $"{Math.Round((mob.CurrentHp * 1.0 / mob.MaxHp) * 100, 2)}%% | " +
-                                     $"({ConvertPosToCoordinate(mob.Position.X)}, {ConvertPosToCoordinate(mob.Position.Y)})", colour);
+                    //ACTUAL LABEL SHOWN ON SCREEN - how to format, so ugly - how to change font size? :(
+                    ImGui.SetCursorPosY(ImGui.GetCursorPosY() - 2.5f);
+                    ImGui_CentreText($"{hunt.Rank} | {mob.Name} | {_huntManager.GetHPP(mob):0}%% \n", colour);
+                    ImGui.SetCursorPosY(ImGui.GetCursorPosY() - 2.5f);
+                    ImGui_CentreText($"({ConvertPosToCoordinate(mob.Position.X):0.0}, {ConvertPosToCoordinate(mob.Position.Y):0.0})", colour);
+                    ImGui.SetCursorPosY(ImGui.GetCursorPosY() + 5f);
+
+                    /*ImGui.TextColored(colour, $"{hunt.Rank} Rank - {mob.Name}\n" +
+                                              $" ({ConvertPosToCoordinate(mob.Position.X):0.0}, {ConvertPosToCoordinate(mob.Position.Y):0.0})");*/
                     ImGui.Separator();
                 }
                 ImGui.EndChild();
@@ -1474,7 +1483,6 @@ namespace HuntHelper
             var textWidth = ImGui.CalcTextSize(text).X;
             ImGui.SetCursorPosX((windowWidth - textWidth) * 0.5f * offset);
             ImGui.TextColored(colour, text);
-            //ImGui.TextUnformatted(text);
         }
 
         private void ImGui_RightAlignText(string text)

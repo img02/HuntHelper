@@ -71,15 +71,15 @@ namespace HuntHelper
         public bool UseMapImages { get; set; } = false;
         //tts
         public string TTSVoiceName { get; set; } = string.Empty;
-        public string TTSAMessage { get; set; } = string.Empty;
-        public string TTSBMessage { get; set; } = string.Empty;
-        public string TTSSMessage { get; set; } = string.Empty;
+        public string TTSAMessage { get; set; } = "<rank> Nearby";
+        public string TTSBMessage { get; set; } = "<rank> Nearby";
+        public string TTSSMessage { get; set; } = "<rank> in zone";
         public string ChatAMessage{get; set;} = string.Empty;
         public string ChatBMessage{get; set;} = string.Empty;
         public string ChatSMessage{get; set;} = string.Empty;
         public bool TTSAEnabled {get; set;} = false;
         public bool TTSBEnabled {get; set;} = false;
-        public bool TTSSEnabled {get; set;} = false;
+        public bool TTSSEnabled {get; set;} = true;
         public bool ChatAEnabled {get; set;} = false;
         public bool ChatBEnabled {get; set;} = false;
         public bool ChatSEnabled { get; set; } = false;
