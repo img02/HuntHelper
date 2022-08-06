@@ -69,6 +69,21 @@ namespace HuntHelper
         public bool ShowWorldName { get; set; } = true;
         public bool SaveSpawnData { get; set; } = true;
         public bool UseMapImages { get; set; } = false;
+        //tts
+        public string TTSVoiceName { get; set; } = string.Empty;
+        public string TTSAMessage { get; set; } = string.Empty;
+        public string TTSBMessage { get; set; } = string.Empty;
+        public string TTSSMessage { get; set; } = string.Empty;
+        public string ChatAMessage{get; set;} = string.Empty;
+        public string ChatBMessage{get; set;} = string.Empty;
+        public string ChatSMessage{get; set;} = string.Empty;
+        public bool TTSAEnabled {get; set;} = false;
+        public bool TTSBEnabled {get; set;} = false;
+        public bool TTSSEnabled {get; set;} = false;
+        public bool ChatAEnabled {get; set;} = false;
+        public bool ChatBEnabled {get; set;} = false;
+        public bool ChatSEnabled { get; set; } = false;
+
 
         //Hunt Window Flag - used for toggling title bar
         public int HuntWindowFlag { get; set; } = (int)(ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoTitleBar);

@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection.Metadata.Ecma335;
+using System.Speech.Synthesis;
 using Dalamud.Game.ClientState.Objects.Types;
 using Dalamud.Interface;
 using Dalamud.Plugin;
@@ -33,9 +35,12 @@ public class HuntManager
     private HuntRank _highestRank;
 
     public bool ImagesLoaded = false;
-
     public bool ErrorPopUpVisible = false;
     public string ErrorMessage = string.Empty;
+    
+    public SpeechSynthesizer TTS { get; init; }
+
+    
 
     public List<(HuntRank Rank, BattleNpc Mob)> CurrentMobs => _currentMobs;
 
@@ -51,6 +56,7 @@ public class HuntManager
         _previousMobs = new List<uint>();
         this._pluginInterface = pluginInterface;
         _imageFolderPath = Path.Combine(_pluginInterface.AssemblyLocation.Directory?.FullName!, "Images/Maps");
+        TTS = new SpeechSynthesizer();
         LoadHuntData();
     }
 
@@ -64,8 +70,8 @@ public class HuntManager
         return _currentMobs;
     }
 
-    public void AddMob(BattleNpc mob)
-    {
+    public void AddMob(BattleNpc mob, bool a, bool b, bool s, string aMsg, string bMsg, string sMsg)
+    { //not great
         var rank = GetHuntRank(mob.NameId);
         _currentMobs.Add((rank, mob));
         //if same rank or higher, make it the priority mob
@@ -75,10 +81,33 @@ public class HuntManager
             _priorityMob = mob;
         }
 
-        if (_previousMobs.Contains(mob.NameId))
+        if (!_previousMobs.Contains(mob.NameId))
         {
             //if 'new' mob, do tts stuff
-            //create tts class and add to this ctor?
+            //gotta do the string extrapolation for tags
+            switch (rank)
+            {
+                case HuntRank.A:
+                    if (!a) break;
+                    aMsg = aMsg.Replace("<rank>", "A Rank", true, CultureInfo.InvariantCulture);
+                    aMsg = aMsg.Replace("<name>", $"{mob.Name}", true, CultureInfo.InvariantCulture);
+                    TTS.SpeakAsync(aMsg);
+                    break;
+
+                case HuntRank.B:
+                    if (!b) break;
+                    bMsg = bMsg.Replace("<rank>", "B Rank", true, CultureInfo.InvariantCulture);
+                    bMsg = bMsg.Replace("<name>", $"{mob.Name}", true, CultureInfo.InvariantCulture);
+                    TTS.SpeakAsync(bMsg);
+                    break;
+                case HuntRank.S:
+                case HuntRank.SS:
+                    if (!s) break;
+                    sMsg = sMsg.Replace("<rank>", "S Rank", true, CultureInfo.InvariantCulture);
+                    sMsg = sMsg.Replace("<name>", $"{mob.Name}", true, CultureInfo.InvariantCulture);
+                    TTS.SpeakAsync(sMsg);
+                    break;
+            }
 
             //if 'new' mob do optional flag / pos stuff
             //create map flag type class w/

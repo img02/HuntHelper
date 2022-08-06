@@ -1,10 +1,13 @@
 ﻿using ImGuiNET;
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Net.Http.Headers;
 using System.Numerics;
 using System.Threading;
+using System.Threading.Tasks;
 using Dalamud.Data;
 using Dalamud.Game.ClientState;
 using Dalamud.Game.ClientState.Objects;
@@ -111,6 +114,22 @@ namespace HuntHelper
         //Hunt Window Flag - used for toggling title bar
         private int _huntWindowFlag = (int)(ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoTitleBar);
 
+        //notification stuff
+        private string _ttsVoiceName;
+        private string _ttsAMessage = string.Empty;
+        private string _ttsBMessage = string.Empty;
+        private string _ttsSMessage = string.Empty;
+        private string _chatAMessage = string.Empty;
+        private string _chatBMessage = string.Empty;
+        private string _chatSMessage = string.Empty;
+        private bool _ttsAEnabled = false;
+        private bool _ttsBEnabled = false;
+        private bool _ttsSEnabled = false;
+        private bool _chatAEnabled = false;
+        private bool _chatBEnabled = false;
+        private bool _chatSEnabled = false;
+
+
         #endregion
 
 
@@ -167,16 +186,30 @@ namespace HuntHelper
             this._dataManager = dataManager;
             this._huntManager = huntManager;
             this._mapDataManager = mapDataManager;
-
+            _ttsVoiceName = huntManager.TTS.Voice.Name; // load default voice first, then from settings if avail.
             _territoryName = String.Empty;
-            ClientState_TerritoryChanged(null, 0);
 
+            ClientState_TerritoryChanged(null, 0);
             _clientState.TerritoryChanged += ClientState_TerritoryChanged;
 
             LoadSettings();
             LoadMapImages();
 
+            //Task.Run(() => loop()); //for tts in background?
         }
+
+        private int testCount = 0;
+        private bool count = true;
+
+        private async void loop()
+        {
+            while (count)
+            {
+                testCount++;
+                Thread.Sleep(500);
+            }
+        }
+
 
         public void Dispose()
         {
@@ -196,6 +229,7 @@ namespace HuntHelper
             DrawSettingsWindow();
             DrawHuntMapWindow();
         }
+
         public void DrawMainWindow()
         {
             if (!MainWindowVisible)
@@ -216,7 +250,6 @@ namespace HuntHelper
                 ImGui.Spacing();
 
                 ImGui.Indent(55);
-                //ImGui.Image(this.goatImage.ImGuiHandle, new Vector2(this.goatImage.Width, this.goatImage.Height));
                 ImGui.Unindent(55);
 
                 ImGui.Text($"Territory: {_territoryName}");
@@ -271,7 +304,7 @@ namespace HuntHelper
             ImGui.SetNextWindowPos(_mapWindowPos, ImGuiCond.FirstUseEver);
             ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, new Vector2(0, 0));
             ImGui.PushStyleVar(ImGuiStyleVar.WindowBorderSize, 0f);
-            ImGui.PushStyleColor(ImGuiCol.WindowBg, new Vector4(_mapWindowColour.X, _mapWindowColour.Y, _mapWindowColour.Z, _mapWindowOpacityAsPercentage/100f));
+            ImGui.PushStyleColor(ImGuiCol.WindowBg, new Vector4(_mapWindowColour.X, _mapWindowColour.Y, _mapWindowColour.Z, _mapWindowOpacityAsPercentage / 100f));
             if (ImGui.Begin("Hunt Helper", ref this._mapVisible, (ImGuiWindowFlags)_huntWindowFlag))
             {
                 _currentWindowSize = (int)ImGui.GetWindowSize().X;
@@ -407,7 +440,7 @@ namespace HuntHelper
         private void DrawOptionsWindow()
         {
             var bottomDockingPos = Vector2.Add(ImGui.GetWindowPos(), new Vector2(0, ImGui.GetWindowSize().Y));
-            
+
             ImGui.SetNextWindowSize(new Vector2(ImGui.GetWindowSize().X, _bottomPanelHeight), ImGuiCond.Always);
             ImGui.SetNextWindowSizeConstraints(new Vector2(-1, 95), new Vector2(-1, 300));
 
@@ -557,7 +590,7 @@ namespace HuntHelper
                                 ImGui.SameLine(); ImGui_HelpMarker("Window Colour - Opacity can be changed down below.");
 
                                 ImGui.TableNextColumn();
-                                
+
                                 // Window Size Preset 1
                                 ImGui.TableNextColumn();
                                 ImGui.Dummy(new Vector2(0f, 0f));
@@ -787,23 +820,20 @@ namespace HuntHelper
                             if (ImGui.BeginTabItem(" A "))
                             {
                                 ImGui.Dummy(new Vector2(0, 2f));
-                                var tempMsg = "Hello, this feature has not been implemented yet.";
                                 ImGui.TextUnformatted("Chat Message");
                                 ImGui.SameLine();
-                                ImGui.InputText("", ref tempMsg, _inputTextMaxLength);
-                                var tempBool = true;
+                                ImGui.InputText("##A Rank A Chat Msg", ref _chatAMessage, _inputTextMaxLength);
                                 ImGui.SameLine();
-                                ImGui.Checkbox("", ref tempBool);
+                                ImGui.Checkbox("##A Rank A Chat Checkbox", ref _chatAEnabled);
                                 ImGui.SameLine();
-                                ImGui_HelpMarker(
-                                    "Message to send to chat using /echo, usable tags: <pos> <name> <rank> <hpp>.");
+                                ImGui_HelpMarker("Message to send to chat using /echo, usable tags: <pos> <name> <rank> <hpp>.");
 
                                 ImGui.Dummy(new Vector2(0, 2f));
                                 ImGui.TextUnformatted("TTS   Message");
                                 ImGui.SameLine();
-                                ImGui.InputText("", ref tempMsg, _inputTextMaxLength);
+                                ImGui.InputText("##A Rank A TTS Msg", ref _ttsAMessage, _inputTextMaxLength);
                                 ImGui.SameLine();
-                                ImGui.Checkbox("", ref tempBool);
+                                ImGui.Checkbox("##A Rank A TTS Checkbox", ref _ttsAEnabled);
                                 ImGui.SameLine();
                                 ImGui_HelpMarker("Message to use with Text-to-Speech, usable tags: <name> <rank>");
 
@@ -813,13 +843,11 @@ namespace HuntHelper
                             if (ImGui.BeginTabItem(" B "))
                             {
                                 ImGui.Dummy(new Vector2(0, 2f));
-                                var tempMsg = "Hello, this feature has not been implemented yet.";
                                 ImGui.TextUnformatted("Chat Message");
                                 ImGui.SameLine();
-                                ImGui.InputText("", ref tempMsg, _inputTextMaxLength);
-                                var tempBool = true;
+                                ImGui.InputText("##A Rank B Chat Msg", ref _chatBMessage, _inputTextMaxLength);
                                 ImGui.SameLine();
-                                ImGui.Checkbox("", ref tempBool);
+                                ImGui.Checkbox("##A Rank B Chat Checkbox", ref _chatBEnabled);
                                 ImGui.SameLine();
                                 ImGui_HelpMarker(
                                     "Message to send to chat using /echo, usable tags: <pos> <name> <rank> <hpp>.");
@@ -827,9 +855,9 @@ namespace HuntHelper
                                 ImGui.Dummy(new Vector2(0, 2f));
                                 ImGui.TextUnformatted("TTS   Message");
                                 ImGui.SameLine();
-                                ImGui.InputText("", ref tempMsg, _inputTextMaxLength);
+                                ImGui.InputText("##A Rank B TTS Msg", ref _ttsBMessage, _inputTextMaxLength);
                                 ImGui.SameLine();
-                                ImGui.Checkbox("", ref tempBool);
+                                ImGui.Checkbox("##A Rank B TTS Checkbox", ref _ttsBEnabled);
                                 ImGui.SameLine();
                                 ImGui_HelpMarker("Message to use with Text-to-Speech, usable tags: <name> <rank>");
 
@@ -839,13 +867,11 @@ namespace HuntHelper
                             if (ImGui.BeginTabItem(" S "))
                             {
                                 ImGui.Dummy(new Vector2(0, 2f));
-                                var tempMsg = "Hello, this feature has not been implemented yet.";
                                 ImGui.TextUnformatted("Chat Message");
                                 ImGui.SameLine();
-                                ImGui.InputText("", ref tempMsg, _inputTextMaxLength);
-                                var tempBool = true;
+                                ImGui.InputText("##A Rank S Chat Msg", ref _chatSMessage, _inputTextMaxLength);
                                 ImGui.SameLine();
-                                ImGui.Checkbox("", ref tempBool);
+                                ImGui.Checkbox("##A Rank S Chat Checkbox", ref _chatSEnabled);
                                 ImGui.SameLine();
                                 ImGui_HelpMarker(
                                     "Message to send to chat using /echo, usable tags: <pos> <name> <rank> <hpp>.");
@@ -853,11 +879,36 @@ namespace HuntHelper
                                 ImGui.Dummy(new Vector2(0, 2f));
                                 ImGui.TextUnformatted("TTS   Message");
                                 ImGui.SameLine();
-                                ImGui.InputText("", ref tempMsg, _inputTextMaxLength);
+                                ImGui.InputText("##A Rank S TTS Msg", ref _ttsSMessage, _inputTextMaxLength);
                                 ImGui.SameLine();
-                                ImGui.Checkbox("", ref tempBool);
+                                ImGui.Checkbox("##A Rank S TTS Checkbox", ref _ttsSEnabled);
                                 ImGui.SameLine();
                                 ImGui_HelpMarker("Message to use with Text-to-Speech, usable tags: <name> <rank>");
+
+                                ImGui.EndTabItem();
+                            }
+
+                            if (ImGui.BeginTabItem(" TTS Settings "))
+                            {
+                                var tts = _huntManager.TTS;
+                                var voiceList = tts.GetInstalledVoices();
+                                var listOfVoiceNames = new string[voiceList.Count];
+                                for (int i = 0; i < voiceList.Count; i++)
+                                {
+                                    listOfVoiceNames[i] = voiceList[i].VoiceInfo.Name;
+                                }
+                                var itemPos = Array.IndexOf(listOfVoiceNames, _ttsVoiceName);
+                                ImGui.Dummy(new Vector2(0f, 5f));
+                                ImGui.Text("Select Voice:"); ImGui.SameLine();
+                                if (ImGui.Combo("##TTS Voice Combo", ref itemPos, listOfVoiceNames, listOfVoiceNames.Length))
+                                {
+                                    tts.SelectVoice(listOfVoiceNames[itemPos]);
+                                    _ttsVoiceName = listOfVoiceNames[itemPos]; ;
+                                    tts.SpeakAsync($"{_ttsAMessage}");
+                                    tts.SpeakAsync($"{_ttsBMessage}");
+                                    tts.SpeakAsync($"{_ttsSMessage}");
+                                }
+
 
                                 ImGui.EndTabItem();
                             }
@@ -1007,6 +1058,20 @@ namespace HuntHelper
             _configuration.HuntWindowFlag = _huntWindowFlag;
             _configuration.MapWindowColour = _mapWindowColour;
             _configuration.MapWindowOpacityAsPercentage = _mapWindowOpacityAsPercentage;
+            _configuration.TTSVoiceName = _ttsVoiceName;
+            _configuration.TTSAMessage = _ttsAMessage;
+            _configuration.TTSBMessage = _ttsBMessage;
+            _configuration.TTSSMessage = _ttsSMessage;
+            _configuration.ChatAMessage = _chatAMessage;
+            _configuration.ChatBMessage = _chatBMessage;
+            _configuration.ChatSMessage = _chatSMessage;
+            _configuration.TTSAEnabled = _ttsAEnabled;
+            _configuration.TTSBEnabled = _ttsBEnabled;
+            _configuration.TTSSEnabled = _ttsSEnabled;
+            _configuration.ChatAEnabled = _chatAEnabled;
+            _configuration.ChatBEnabled = _chatBEnabled;
+            _configuration.ChatSEnabled = _chatSEnabled;
+
             this._configuration.Save();
         }
 
@@ -1058,6 +1123,27 @@ namespace HuntHelper
             _huntWindowFlag = _configuration.HuntWindowFlag;
             _mapWindowColour = _configuration.MapWindowColour;
             _mapWindowOpacityAsPercentage = _configuration.MapWindowOpacityAsPercentage;
+            _ttsAMessage = _configuration.TTSAMessage;
+            _ttsBMessage = _configuration.TTSBMessage;
+            _ttsSMessage = _configuration.TTSSMessage; 
+            _chatAMessage = _configuration.ChatAMessage;
+            _chatBMessage = _configuration.ChatBMessage;
+            _chatSMessage = _configuration.ChatSMessage;
+            _ttsAEnabled = _configuration.TTSAEnabled;
+            _ttsBEnabled = _configuration.TTSBEnabled;
+            _ttsSEnabled = _configuration.TTSSEnabled;
+            _chatAEnabled = _configuration.ChatAEnabled;
+            _chatBEnabled = _configuration.ChatBEnabled;
+            _chatSEnabled = _configuration.ChatSEnabled;
+
+
+
+            //if voice name available on user's pc, set as tts voice. --else default already set.
+            if (_huntManager.TTS.GetInstalledVoices().Any(v => v.VoiceInfo.Name == _configuration.TTSVoiceName))
+            {
+                _ttsVoiceName = _configuration.TTSVoiceName;
+                _huntManager.TTS.SelectVoice(_ttsVoiceName);
+            }
         }
 
 
@@ -1123,7 +1209,7 @@ namespace HuntHelper
             {
                 if (obj is not BattleNpc mob) continue;
                 if (!_huntManager.IsHunt(mob.NameId)) continue;
-                _huntManager.AddMob(mob);
+                _huntManager.AddMob(mob, _ttsAEnabled, _ttsBEnabled, _ttsSEnabled, _ttsAMessage, _ttsBMessage, _ttsSMessage);
                 DrawMobIcon(mob);
             }
 
