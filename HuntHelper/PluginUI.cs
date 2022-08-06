@@ -1232,6 +1232,8 @@ namespace HuntHelper
             }
             _huntManager.AddNearbyMobs(nearbyMobs, _ttsAEnabled, _ttsBEnabled, _ttsSEnabled, _ttsAMessage, _ttsBMessage, _ttsSMessage);
 
+            if (nearbyMobs.Count == 0) return;
+
             var mobs = _huntManager.GetCurrentMobs();
             foreach (var mob in mobs)
             {
