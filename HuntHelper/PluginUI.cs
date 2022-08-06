@@ -906,7 +906,7 @@ namespace HuntHelper
                                 {
                                     tts.SelectVoice(listOfVoiceNames[itemPos]);
                                     _ttsVoiceName = listOfVoiceNames[itemPos]; ;
-                                    tts.SpeakAsync($"BOO! - {tts.Voice.Name} Selected");
+                                    tts.SpeakAsync($"BOO! {tts.Voice.Name} Selected");
                                 }
 
 
@@ -1125,7 +1125,7 @@ namespace HuntHelper
             _mapWindowOpacityAsPercentage = _configuration.MapWindowOpacityAsPercentage;
             _ttsAMessage = _configuration.TTSAMessage;
             _ttsBMessage = _configuration.TTSBMessage;
-            _ttsSMessage = _configuration.TTSSMessage; 
+            _ttsSMessage = _configuration.TTSSMessage;
             _chatAMessage = _configuration.ChatAMessage;
             _chatBMessage = _configuration.ChatBMessage;
             _chatSMessage = _configuration.ChatSMessage;
@@ -1268,10 +1268,16 @@ namespace HuntHelper
                 //SetCursorPosByPercentage has moved the cursor (where next element will be drawn)
                 //now before drawing child, work out position based on cursor pos, window pos (top left) and mouse pos
                 //to have detection for mouseover tooltip
-                var labelVector = ImGui.GetCursorPos() + ImGui.GetWindowPos() + new Vector2(140,20);//adding half of child x,y size to get middle of element
+                var labelVector = ImGui.GetCursorPos() + ImGui.GetWindowPos() + new Vector2(140, 20);//adding half of child x,y size to get middle of element
                 //fixed sizing.... mouse over tooltip in case long-ass mob name clips 
                 if (ImGui.GetMousePos().X - labelVector.X is < 140 and > -140 &&
-                    ImGui.GetMousePos().Y - labelVector.Y is < 20 and > -20)  ImGui_ToolTip(info);
+                    ImGui.GetMousePos().Y - labelVector.Y is < 20 and > -20)
+                {
+                    ImGui_ToolTip(info);
+                    /*
+                     *  CAN ADD CLICK DETECTION STUFF HERE FOR CHAT / FLAGS - TODO
+                     */
+                }
 
                 ImGui.PushStyleColor(ImGuiCol.Border, _priorityMobColourBackground);
                 ImGui.PushStyleColor(ImGuiCol.ChildBg, _priorityMobColourBackground);
@@ -1305,8 +1311,23 @@ namespace HuntHelper
                 ImGui.BeginChild("Nearby Mob List Info", size, true, ImGuiWindowFlags.NoScrollbar);
                 var colour = _useMapImages ? _nearbyMobListColourAlt : _nearbyMobListColour; //if using map image, use alt colour.
                 ImGui.Separator();
+                var numberDrawn = 1;
                 foreach (var hunt in nearbyMobs)
                 {
+                    var labelVector = ImGui.GetCursorPos() + ImGui.GetWindowPos() + new Vector2(size.X / 2, size.Y / nearbyMobs.Count / 2);
+
+                    if (ImGui.GetMousePos().X - labelVector.X is < 100 and > -100 && //this is a mess, but it works.
+                        ImGui.GetMousePos().Y - labelVector.Y < (size.Y / nearbyMobs.Count / 2) - 4f && ImGui.GetMousePos().Y - labelVector.Y > -(size.Y / nearbyMobs.Count / 2) - 5f)
+                    {
+                        ImGui_ToolTip(new string[] { $"{hunt.Mob.Name}" });
+
+                        /*
+                         *  CAN ADD CLICK DETECTION STUFF HERE FOR CHAT / FLAGS - TODO
+                         */
+                    }
+
+                    //ImGui.TextUnformatted($"{ImGui.GetMousePos().X - labelVector.X}, {ImGui.GetMousePos().Y - labelVector.Y}");
+                    //ImGui.Text($"{ImGui.GetCursorPos()} | {ImGui.GetMousePos()}");
                     var mob = hunt.Mob;
                     ImGui_CentreText($"{hunt.Rank} | {mob.Name} \n " +
                                      $"{Math.Round((mob.CurrentHp * 1.0 / mob.MaxHp) * 100, 2)}%% | " +
@@ -1471,7 +1492,7 @@ namespace HuntHelper
             if (_useMapImages) colour = new Vector4(0f, 0f, 0f, 1f);
             ImGui.TextColored(colour, text);
         }
-        
+
         private void ImGui_ToolTip(string[] text)
         {
             ImGui.BeginTooltip();
