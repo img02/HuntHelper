@@ -59,6 +59,9 @@ namespace HuntHelper
         public Vector4 PriorityMobColourBackground { get; set; } = new Vector4(1f, 0.43529411764705883f, 0.5137254901960784f, 0f); //nicely pink :D
         public Vector4 NearbyMobListColourBackground { get; set; } = new Vector4(1f, 0.43529411764705883f, 0.5137254901960784f, 0f); //nicely pink :D
 
+        public Vector4 MapWindowColour { get; set; }= new Vector4(0f, 0f, 0f, .2f); //alpha / w value isn't used
+        public float MapWindowOpacityAsPercentage { get; set; } = 20f;
+
         //checkbox bools
         public bool PriorityMobEnabled { get; set; } = true;
         public bool NearbyMobListEnabled { get; set; } = true;

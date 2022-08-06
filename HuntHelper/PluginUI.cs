@@ -101,6 +101,8 @@ namespace HuntHelper
 
         //initial window position
         private Vector2 _mapWindowPos = new Vector2(25, 25);
+        private Vector4 _mapWindowColour = new Vector4(0f, 0f, 0f, 0.2f); //alpha / w value isn't used
+        private float _mapWindowOpacityAsPercentage = 20f;
         //window sizes
         private int _currentWindowSize = 512;
         private int _presetOneWindowSize = 512;
@@ -269,7 +271,7 @@ namespace HuntHelper
             ImGui.SetNextWindowPos(_mapWindowPos, ImGuiCond.FirstUseEver);
             ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, new Vector2(0, 0));
             ImGui.PushStyleVar(ImGuiStyleVar.WindowBorderSize, 0f);
-            ImGui.PushStyleColor(ImGuiCol.WindowBg, new Vector4(1f,1f,1f,0.2f));
+            ImGui.PushStyleColor(ImGuiCol.WindowBg, new Vector4(_mapWindowColour.X, _mapWindowColour.Y, _mapWindowColour.Z, _mapWindowOpacityAsPercentage/100f));
             if (ImGui.Begin("Hunt Helper", ref this._mapVisible, (ImGuiWindowFlags)_huntWindowFlag))
             {
                 _currentWindowSize = (int)ImGui.GetWindowSize().X;
@@ -420,7 +422,7 @@ namespace HuntHelper
                 ImGui.SetColumnWidth(1, ImGui.GetWindowSize().X);
                 ImGui.Checkbox("Map Image", ref _useMapImages);
                 ImGui.SameLine();
-                ImGui_HelpMarker("Use a map image instead of blank background (ugly tho)\n\n" +
+                ImGui_HelpMarker("Use a map image instead of blank background\n\n" +
                                  "\t\t=======================================\n" +
                                  "\t\tMap Images Created By Cable Monkey of Goblin\n" +
                                  "         \t\t   http://cablemonkey.us/huntmap2/\n" +
@@ -458,7 +460,7 @@ namespace HuntHelper
                 {
                     if (ImGui.BeginTabItem("General"))
                     {
-                        _bottomPanelHeight = 210f;
+                        _bottomPanelHeight = 212f;
                         var widgetWidth = 69f;
 
                         var tableSizeX = ImGui.GetContentRegionAvail().X;
@@ -551,10 +553,11 @@ namespace HuntHelper
 
                                 ImGui.TableNextColumn();
                                 ImGui.Dummy(new Vector2(0f, 0f));
+                                ImGui.ColorEdit4("##Window Colour", ref _mapWindowColour, ImGuiColorEditFlags.PickerHueWheel | ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.NoAlpha);
+                                ImGui.SameLine(); ImGui_HelpMarker("Window Colour - Opacity can be changed down below.");
 
                                 ImGui.TableNextColumn();
-
-
+                                
                                 // Window Size Preset 1
                                 ImGui.TableNextColumn();
                                 ImGui.Dummy(new Vector2(0f, 0f));
@@ -603,14 +606,23 @@ namespace HuntHelper
                                 ImGui.PopID();
                                 ImGui.EndTable();
 
-                                //Opacity Slider
+                                //Map Image Opacity Slider
                                 ImGui.Separator();
-                                ImGui_CentreText("Map Opacity", Vector4.One);
+                                //ImGui_CentreText("Map Opacity", Vector4.One);
                                 ImGui.Dummy(new Vector2(0, 0));
                                 ImGui.PushItemWidth(ImGui.GetContentRegionAvail().X - 16f);
                                 ImGui.SameLine();
                                 ImGui.DragFloat("##Map Opacity", ref _mapImageOpacityAsPercentage, .2f, 0f, 100f,
-                                    "%.0f");
+                                    "Map Opacity - %.0f");
+
+                                //Map Window Opacity Slider
+                                //ImGui.Separator();
+                                //ImGui_CentreText("Window Opacity", Vector4.One);
+                                ImGui.Dummy(new Vector2(0, 0));
+                                ImGui.PushItemWidth(ImGui.GetContentRegionAvail().X - 16f);
+                                ImGui.SameLine();
+                                ImGui.DragFloat("##Map Window Opacity", ref _mapWindowOpacityAsPercentage, .2f, 0f, 100f,
+                                    "Window Opacity - %.0f");
                             }
 
                             ImGui.EndChild();
@@ -993,6 +1005,8 @@ namespace HuntHelper
             _configuration.PriorityMobColourBackground = _priorityMobColourBackground;
             _configuration.NearbyMobListColourBackground = _nearbyMobListColourBackground;
             _configuration.HuntWindowFlag = _huntWindowFlag;
+            _configuration.MapWindowColour = _mapWindowColour;
+            _configuration.MapWindowOpacityAsPercentage = _mapWindowOpacityAsPercentage;
             this._configuration.Save();
         }
 
@@ -1042,6 +1056,8 @@ namespace HuntHelper
             _priorityMobColourBackground = _configuration.PriorityMobColourBackground;
             _nearbyMobListColourBackground = _configuration.NearbyMobListColourBackground;
             _huntWindowFlag = _configuration.HuntWindowFlag;
+            _mapWindowColour = _configuration.MapWindowColour;
+            _mapWindowOpacityAsPercentage = _configuration.MapWindowOpacityAsPercentage;
         }
 
 
