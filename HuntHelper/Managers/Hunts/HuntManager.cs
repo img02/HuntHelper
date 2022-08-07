@@ -6,10 +6,15 @@ using System.IO;
 using System.Linq;
 using System.Reflection.Metadata.Ecma335;
 using System.Speech.Synthesis;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Dalamud.Game.ClientState.Objects.Types;
+using Dalamud.Game.Gui;
+using Dalamud.Game.Text.SeStringHandling;
+using Dalamud.Game.Text.SeStringHandling.Payloads;
 using Dalamud.Interface;
 using Dalamud.Plugin;
+using HuntHelper.Utilities;
 using ImGuiNET;
 using ImGuiScene;
 using Lumina.Excel.GeneratedSheets;
@@ -28,6 +33,7 @@ public class HuntManager
     private readonly Dictionary<HuntRank, List<Mob>> _ewDict;
     private readonly Dictionary<String, TextureWrap> _mapImages;
     private readonly DalamudPluginInterface _pluginInterface;
+    private readonly ChatGui _chatGui;
 
     private readonly List<(HuntRank Rank, BattleNpc Mob)> _currentMobs;
     private readonly List<(HuntRank Rank, BattleNpc Mob)> _previousMobs;
@@ -44,7 +50,7 @@ public class HuntManager
 
     public List<(HuntRank Rank, BattleNpc Mob)> CurrentMobs => _currentMobs;
 
-    public HuntManager(DalamudPluginInterface pluginInterface)
+    public HuntManager(DalamudPluginInterface pluginInterface, ChatGui chatGui)
     {
         _arrDict = new Dictionary<HuntRank, List<Mob>>();
         _hwDict = new Dictionary<HuntRank, List<Mob>>();
@@ -54,7 +60,9 @@ public class HuntManager
         _mapImages = new Dictionary<string, TextureWrap>();
         _currentMobs = new List<(HuntRank, BattleNpc)>();
         _previousMobs = new List<(HuntRank, BattleNpc)>();
-        this._pluginInterface = pluginInterface;
+        _pluginInterface = pluginInterface;
+        _chatGui = chatGui;
+
         _imageFolderPath = Path.Combine(_pluginInterface.AssemblyLocation.Directory?.FullName!, "Images/Maps");
         TTS = new SpeechSynthesizer();
         TTSName = TTS.Voice.Name;
@@ -66,7 +74,7 @@ public class HuntManager
         if (_priorityMob == null) return (_highestRank, null);
         if (_currentMobs.Count == 0) return (_highestRank, null);
         if (!IsHunt(_priorityMob.NameId))
-        {   
+        {
             _highestRank = HuntRank.B;
             foreach (var hunt in _currentMobs) PriorityCheck(hunt.Mob);
         }
@@ -76,8 +84,11 @@ public class HuntManager
     {
         return _currentMobs;
     }
-    
-    public void AddNearbyMobs(List<BattleNpc> nearbyMobs, bool a, bool b, bool s, string aMsg, string bMsg, string sMsg)
+
+    //bit much, grew big because I don't plan
+    public void AddNearbyMobs(List<BattleNpc> nearbyMobs, float zoneMapCoordSize,
+        bool aTTS, bool bTTS, bool sTTS, string aTTSmsg, string bTTSmsg, string sTTSmsg,
+        bool chatA, bool chatB, bool chatS, string chatAmsg, string chatBmsg, string chatSmsg, string placeName)
     {
         //compare with old list
         //move old mob set out
@@ -93,33 +104,140 @@ public class HuntManager
 
             //if exists in old mob set, skip tts + chat
             if (_previousMobs.Any(hunt => hunt.Mob.NameId == mob.NameId)) continue;
+
             //Do tts and chat stuff
             switch (GetHuntRank(mob.NameId))
             {
                 case HuntRank.A:
-                    NewMobFoundTTS(GetHuntRank(mob.NameId), mob, a, aMsg);
+                    NewMobFoundTTS(aTTS, aTTSmsg, mob);
+                    SendChatMessage(chatA, chatAmsg, placeName, mob, zoneMapCoordSize);
                     break;
                 case HuntRank.B:
-                    NewMobFoundTTS(GetHuntRank(mob.NameId), mob, b, bMsg);
+                    NewMobFoundTTS(bTTS, bTTSmsg, mob);
+                    SendChatMessage(chatB, chatBmsg, placeName, mob, zoneMapCoordSize);
                     break;
                 case HuntRank.S:
                 case HuntRank.SS:
-                    NewMobFoundTTS(GetHuntRank(mob.NameId), mob, s, sMsg);
+                    NewMobFoundTTS(sTTS, sTTSmsg, mob);
+                    SendChatMessage(chatS, chatSmsg, placeName, mob, zoneMapCoordSize);
                     break;
             }
         }
     }
 
-    private void NewMobFoundTTS(HuntRank rank, BattleNpc mob, bool enabled, string msg)
+    #region rework later?
+
+    private void SendChatMessage(bool enabled, string msg, string placeName, BattleNpc mob, float zoneCoordSize)
     {
-        msg = msg.Replace("<rank>", $"{rank}-Rank", true, CultureInfo.InvariantCulture);
-        msg = msg.Replace("<name>", $"{mob.Name}", true, CultureInfo.InvariantCulture);
-        //changed to creating a new tts each time because SpeakAsync just queues up to play...
-        var tts = new SpeechSynthesizer(); 
-        tts.SelectVoice(TTSName);
-        tts.SpeakAsync(msg);
-        //TTS.SpeakAsync(msg);
+        if (!enabled) return;
+
+        var rank = GetHuntRank(mob.NameId);
+        var hpp = GetHPP(mob);
+
+        //pattern for matching, (?i) = case insensitive
+        string pattern = "(?i)(<flag>|<rank>|<name>|<hpp>" +
+                         "|<goldstar>|<silverstar>|<warning>|<nocircle>" +
+                         "|<controllerbutton0>|<controllerbutton1>" +
+                         "|<priorityworld>|<elementallevel>" +
+                         "|<exclamationrectangle>|<notoriousmonster>" +
+                         "|<alarm>|<fanfestival>)"; 
+        //splits the string based on above 
+        var splitMsg = Regex.Split(msg, pattern);
+
+        var sb = new SeStringBuilder();
+        foreach (var s in splitMsg)
+        {
+            switch (s)
+            {
+                case "<flag>": //Why doesn't SeStringBuilder.AddMapLink have an overload that takes in placename, while SeString.CreateMapLink does? :( cause null possible?
+                    var maplink = SeString.CreateMapLink(placeName, MapHelpers.ConvertToMapCoordinate(mob.Position.X, zoneCoordSize),
+                        MapHelpers.ConvertToMapCoordinate(mob.Position.Z, zoneCoordSize));
+                    sb.AddUiForeground(64); //white
+                    sb.Append(maplink ??
+                              new SeString(new TextPayload(
+                                      $"|Error: couldn't create map link for: {placeName} - Please report what zone this occurred in.|"))
+                                  .Append(new IconPayload(BitmapFontIcon.NoCircle)));
+                    sb.AddUiForegroundOff();
+                    break;
+                case "<rank>":
+                    //idk just test random numbers lmao
+                    if (rank == HuntRank.A) sb.AddUiForeground("A-Rank", 12); //red / pinkish
+                    if (rank == HuntRank.B) sb.AddUiForeground("B-Rank", 34); //blue
+                    if (rank == HuntRank.S) sb.AddUiForeground("S-Rank", 506); //gold 
+                    break;
+                case "<name>":
+                    if (rank == HuntRank.A) sb.AddUiForeground($"{mob.Name}", 12); //red / pinkish
+                    if (rank == HuntRank.B) sb.AddUiForeground($"{mob.Name}", 34); //blue
+                    if (rank == HuntRank.S) sb.AddUiForeground($"{mob.Name}", 506); //gold 
+                    break;
+                case "<hpp>": //change colour based on initial hp? meh
+                    if (Math.Abs(hpp - 100) < 1) sb.AddUiForeground($"{hpp:0}%", 67); //green
+                    if (Math.Abs(hpp - 100) is <= 30 and >= 1) sb.AddUiForeground($"{hpp:0}%", 573); //yellow
+                    if (Math.Abs(hpp - 100) is > 30) sb.AddUiForeground($"{hpp:0}%", 531); //red
+                    break;
+                case "<goldstar>":
+                    sb.AddIcon(BitmapFontIcon.GoldStar); //think i went a bit overboard lmao
+                    break;
+                case "<silverstar>":
+                    sb.AddIcon(BitmapFontIcon.SilverStar);
+                    break;
+                case "<warning>":
+                    sb.AddIcon(BitmapFontIcon.Warning);
+                    break;
+                case "<nocircle>":
+                    sb.AddIcon(BitmapFontIcon.NoCircle);
+                    break;
+                case "<controllerbutton0>":
+                    sb.AddIcon(BitmapFontIcon.ControllerButton0);
+                    break;
+                case "<controllerbutton1>":
+                    sb.AddIcon(BitmapFontIcon.ControllerButton1);
+                    break;
+                case "<priorityworld>":
+                    sb.AddIcon(BitmapFontIcon.PriorityWorld);
+                    break;
+                case "<elementallevel>":
+                    sb.AddIcon(BitmapFontIcon.ElementalLevel);
+                    break;
+                case "<exclamationrectangle>":
+                    sb.AddIcon(BitmapFontIcon.ExclamationRectangle);
+                    break;
+                case "<notoriousmonster>":
+                    sb.AddIcon(BitmapFontIcon.NotoriousMonster);
+                    break;
+                case "<alarm>":
+                    sb.AddIcon(BitmapFontIcon.Alarm);
+                    break;
+                case "<fanfestival>":
+                    sb.AddIcon(BitmapFontIcon.FanFestival);
+                    break;
+                default:
+                    sb.AddText(s);
+                    break;
+            }
+        }
+        _chatGui.Print(sb.BuiltString);
     }
+
+    private void NewMobFoundTTS(bool enabled, string msg, BattleNpc mob)
+    {
+        if (!enabled) return;
+        var message = FormatMessageFlags(msg, mob);
+        //changed to creating a new tts each time because SpeakAsync just queues up to play...
+        var tts = new SpeechSynthesizer();
+        tts.SelectVoice(TTSName);
+        tts.SpeakAsync(message);
+    }
+
+    private string FormatMessageFlags(string msg, BattleNpc mob)
+    {
+        msg = msg.Replace("<rank>", $"{GetHuntRank(mob.NameId)}-Rank", true, CultureInfo.InvariantCulture);
+        msg = msg.Replace("<name>", $"{mob.Name}", true, CultureInfo.InvariantCulture);
+        msg = msg.Replace("<hpp>", $"{GetHPP(mob):0}", true, CultureInfo.InvariantCulture);
+        return msg;
+    }
+
+    #endregion
 
     public List<BattleNpc> GetCurrentMobs()
     {
@@ -325,13 +443,5 @@ public class HuntManager
         if (B != null) dict.Add(HuntRank.B, B);
         if (S != null) dict.Add(HuntRank.S, S);
     }
-
-
-
-
-
-
-
-
 
 }

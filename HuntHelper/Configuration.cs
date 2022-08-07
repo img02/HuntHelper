@@ -74,15 +74,15 @@ namespace HuntHelper
         public string TTSAMessage { get; set; } = "<rank> Nearby";
         public string TTSBMessage { get; set; } = "<rank> Nearby";
         public string TTSSMessage { get; set; } = "<rank> in zone";
-        public string ChatAMessage{get; set;} = string.Empty;
-        public string ChatBMessage{get; set;} = string.Empty;
-        public string ChatSMessage{get; set;} = string.Empty;
+        public string ChatAMessage{get; set;} = "FOUND: <name> @ <flag> ---  <rank>  --  <hpp>";
+        public string ChatBMessage{get; set;} = "FOUND: <name> @ <flag> ---  <rank>  --  <hpp>";
+        public string ChatSMessage{get; set;} = "FOUND: <name> @ <flag> ---  <rank>  --  <hpp>";
         public bool TTSAEnabled {get; set;} = false;
         public bool TTSBEnabled {get; set;} = false;
         public bool TTSSEnabled {get; set;} = true;
         public bool ChatAEnabled {get; set;} = false;
         public bool ChatBEnabled {get; set;} = false;
-        public bool ChatSEnabled { get; set; } = false;
+        public bool ChatSEnabled { get; set; } = true;
         public bool EnableTTSBackground { get; set; } = false;
 
 

@@ -122,15 +122,15 @@ namespace HuntHelper
         private string _ttsAMessage = "<rank> Nearby";
         private string _ttsBMessage = "<rank> Nearby";
         private string _ttsSMessage = "<rank> in zone";
-        private string _chatAMessage = string.Empty;
-        private string _chatBMessage = string.Empty;
-        private string _chatSMessage = string.Empty;
+        private string _chatAMessage = "FOUND: <name> @ <flag> ---  <rank>  --  <hpp>";
+        private string _chatBMessage = "FOUND: <name> @ <flag> ---  <rank>  --  <hpp>";
+        private string _chatSMessage = "FOUND: <name> @ <flag> ---  <rank>  --  <hpp>";
         private bool _ttsAEnabled = false;
         private bool _ttsBEnabled = false;
         private bool _ttsSEnabled = true;
         private bool _chatAEnabled = false;
         private bool _chatBEnabled = false;
-        private bool _chatSEnabled = false;
+        private bool _chatSEnabled = true;
 
         private bool _enableTTSBackground = false;
 
@@ -142,7 +142,7 @@ namespace HuntHelper
 
         public float SingleCoordSize => ImGui.GetWindowSize().X / _mapZoneMaxCoordSize;
         //message input lengths
-        private uint _inputTextMaxLength = 50;
+        private uint _inputTextMaxLength = 250;
         private readonly Vector4 _defaultTextColour = Vector4.One; //white
 
         //window bools
@@ -197,8 +197,7 @@ namespace HuntHelper
             _ttsLoopCancelTokenSource = new CancellationTokenSource();
             _ttsLoop = Task.Run(() => TTSLoop(), _ttsLoopCancelTokenSource.Token); //for tts in background?
         }
-
-
+        
         private async void TTSLoop()
         {
             while (true)
@@ -214,7 +213,6 @@ namespace HuntHelper
                 Thread.Sleep(1000);
             }
         }
-
 
         public void Dispose()
         {
@@ -822,13 +820,13 @@ namespace HuntHelper
 
                     if (ImGui.BeginTabItem("Notifications"))
                     {
-                        _bottomPanelHeight = 145f;
-
                         if (ImGui.BeginTabBar("Notifications sub-bar"))
                         {
                             //ImGui.PushFont(UiBuilder.MonoFont); //aligns things, but then looks ugly so idk.. table?
                             if (ImGui.BeginTabItem(" A "))
                             {
+                                _bottomPanelHeight = 145f;
+
                                 ImGui.Dummy(new Vector2(0, 2f));
                                 ImGui.TextUnformatted("Chat Message");
                                 ImGui.SameLine();
@@ -836,7 +834,7 @@ namespace HuntHelper
                                 ImGui.SameLine();
                                 ImGui.Checkbox("##A Rank A Chat Checkbox", ref _chatAEnabled);
                                 ImGui.SameLine();
-                                ImGui_HelpMarker("Message to send to chat using /echo, usable tags: <pos> <name> <rank> <hpp>.");
+                                ImGui_HelpMarker("Message to send to chat using /echo, usable tags: <flag> <name> <rank> <hpp>\n" );
 
                                 ImGui.Dummy(new Vector2(0, 2f));
                                 ImGui.TextUnformatted("TTS   Message");
@@ -852,6 +850,8 @@ namespace HuntHelper
 
                             if (ImGui.BeginTabItem(" B "))
                             {
+                                _bottomPanelHeight = 145f;
+
                                 ImGui.Dummy(new Vector2(0, 2f));
                                 ImGui.TextUnformatted("Chat Message");
                                 ImGui.SameLine();
@@ -860,7 +860,7 @@ namespace HuntHelper
                                 ImGui.Checkbox("##A Rank B Chat Checkbox", ref _chatBEnabled);
                                 ImGui.SameLine();
                                 ImGui_HelpMarker(
-                                    "Message to send to chat using /echo, usable tags: <pos> <name> <rank> <hpp>.");
+                                    "Message to send to chat using /echo, usable tags: <flag> <name> <rank> <hpp>.");
 
                                 ImGui.Dummy(new Vector2(0, 2f));
                                 ImGui.TextUnformatted("TTS   Message");
@@ -876,6 +876,8 @@ namespace HuntHelper
 
                             if (ImGui.BeginTabItem(" S "))
                             {
+                                _bottomPanelHeight = 145f;
+
                                 ImGui.Dummy(new Vector2(0, 2f));
                                 ImGui.TextUnformatted("Chat Message");
                                 ImGui.SameLine();
@@ -884,7 +886,7 @@ namespace HuntHelper
                                 ImGui.Checkbox("##A Rank S Chat Checkbox", ref _chatSEnabled);
                                 ImGui.SameLine();
                                 ImGui_HelpMarker(
-                                    "Message to send to chat using /echo, usable tags: <pos> <name> <rank> <hpp>.");
+                                    "Message to send to chat using /echo, usable tags: <flag> <name> <rank> <hpp>.");
 
                                 ImGui.Dummy(new Vector2(0, 2f));
                                 ImGui.TextUnformatted("TTS   Message");
@@ -898,8 +900,9 @@ namespace HuntHelper
                                 ImGui.EndTabItem();
                             }
 
-                            if (ImGui.BeginTabItem(" TTS Settings "))
+                            if (ImGui.BeginTabItem("Settings"))
                             {
+                                _bottomPanelHeight = 145f;
                                 var tts = _huntManager.TTS;
                                 var voiceList = tts.GetInstalledVoices();
                                 var listOfVoiceNames = new string[voiceList.Count];
@@ -922,10 +925,25 @@ namespace HuntHelper
                                     tempTTS.SpeakAsync($"BOO! {tts.Voice.Name} Selected");
                                 }
 
-                                ImGui.Checkbox("Background TTS", ref _enableTTSBackground);
-                                ImGui.SameLine(); ImGui_HelpMarker("Enabling this allows Hunt Helper to scan and send TTS notifications whilst the GUI is inactive.\n" +
-                                                                   "Which ");
+                                ImGui.Checkbox("Background Notifications", ref _enableTTSBackground);
+                                ImGui.SameLine(); ImGui_HelpMarker("Enabling this allows Hunt Helper to scan and send Chat and TTS notifications whilst the GUI is inactive.");
 
+                                ImGui.EndTabItem();
+                            }
+
+                            if (ImGui.BeginTabItem("Available Flags"))
+                            {
+                                _bottomPanelHeight = 170f;
+
+                                ImGui.TextUnformatted("Available Flags:"); 
+                                ImGui.SameLine(); ImGui_HelpMarker("DOUBLE CLICK to easily highlight a flag option for copy and paste.  \n-- ONLY <name> and <rank> work with TTS");
+                                var flags =
+                                    "Hunt: <flag> <name> <rank> <hpp>\n\n" +
+                                    "Cosmetic: <goldstar> <silverstar> <warning> <nocircle> <controllerbutton0> <controllerbutton1>\n" +
+                                    " <priorityworld> <elementallevel> <exclamationrectangle> <notoriousmonster> <alarm> <fanfestival>";
+
+                                var contentRegion = ImGui.GetContentRegionAvail();
+                                ImGui.InputTextMultiline("##cosmetic flag info", ref flags, 500, new Vector2(contentRegion.X - 10, 80), ImGuiInputTextFlags.ReadOnly);
                                 ImGui.EndTabItem();
                             }
 
@@ -1007,21 +1025,7 @@ namespace HuntHelper
             if (ImGui.Begin("A Wonderful Configuration Window", ref this.settingsVisible,
                 ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse))
             {
-                // can't ref a property, so use a local copy
-                var configValue = this._configuration.UseMapImages;
-                if (ImGui.Checkbox("Use Map Image Bool", ref configValue))
-                {
-                    this._configuration.UseMapImages = configValue;
-                    // can save immediately on change, if you don't want to provide a "Save and Close" button
-                    //this._configuration.Save();
-                }
-
-                if (ImGui.Button("Show Loaded Hunt Data"))
-                {
-                    _showDatabaseListWindow = !_showDatabaseListWindow;
-                }
-
-                DrawDataBaseWindow();
+                ImGui_CentreText("There's nothing here", _defaultTextColour);
             }
             ImGui.End();
         }
@@ -1230,7 +1234,9 @@ namespace HuntHelper
                 if (!_huntManager.IsHunt(mob.NameId)) continue;
                 nearbyMobs.Add(mob);
             }
-            _huntManager.AddNearbyMobs(nearbyMobs, _ttsAEnabled, _ttsBEnabled, _ttsSEnabled, _ttsAMessage, _ttsBMessage, _ttsSMessage);
+            _huntManager.AddNearbyMobs(nearbyMobs, _mapZoneMaxCoordSize, 
+                _ttsAEnabled, _ttsBEnabled, _ttsSEnabled, _ttsAMessage, _ttsBMessage, _ttsSMessage, 
+                _chatAEnabled, _chatBEnabled, _chatSEnabled, _chatAMessage, _chatBMessage, _chatSMessage, _territoryName);
 
             if (nearbyMobs.Count == 0) return;
             if (!MapVisible) return;

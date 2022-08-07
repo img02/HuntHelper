@@ -8,9 +8,9 @@ namespace HuntHelper.Utilities;
 
 public class MapHelpers
 {
-    public static string GetMapName(DataManager dataManager, uint mapID)
+    public static string GetMapName(DataManager dataManager, uint territoryID) //map id... territory id... confusing ...
     {
-        return dataManager.Excel.GetSheet<TerritoryType>()?.GetRow(mapID)?.PlaceName?.Value?.Name.ToString() ?? "location not found";
+        return dataManager.Excel.GetSheet<TerritoryType>()?.GetRow(territoryID)?.PlaceName?.Value?.Name.ToString() ?? "location not found";
     }
 
     public static float ConvertToMapCoordinate(float pos, float zoneMaxCoordSize)
