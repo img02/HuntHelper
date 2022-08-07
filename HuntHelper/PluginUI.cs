@@ -1376,7 +1376,7 @@ namespace HuntHelper
                 ImGui.IsMouseClicked(ImGuiMouseButton.Right))
             {
                 _huntManager.SendChatMessage(true,
-                    "<exclamationrectangle> <name> <flag> <exclamationrectangle>", _territoryName, mob,
+                    "<exclamationrectangle> <name> <flag> -- <rank> <exclamationrectangle>", _territoryName, mob,
                     _mapZoneMaxCoordSize);
             }
         }
