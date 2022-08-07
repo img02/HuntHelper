@@ -127,7 +127,7 @@ public class HuntManager
 
     #region rework later?
 
-    private void SendChatMessage(bool enabled, string msg, string placeName, BattleNpc mob, float zoneCoordSize)
+    public void SendChatMessage(bool enabled, string msg, string placeName, BattleNpc mob, float zoneCoordSize)
     {
         if (!enabled) return;
 
@@ -380,7 +380,7 @@ public class HuntManager
         return pathRemoved.Remove(pathRemoved.Length - 9);
     }
 
-    private HuntRank GetHuntRank(uint modelID)
+    public HuntRank GetHuntRank(uint modelID)
     {
         //just default to B if for some reason mob can't be found - shouldn't happen tho...
         var rank = HuntRank.B;

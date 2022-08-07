@@ -197,7 +197,7 @@ namespace HuntHelper
             _ttsLoopCancelTokenSource = new CancellationTokenSource();
             _ttsLoop = Task.Run(() => TTSLoop(), _ttsLoopCancelTokenSource.Token); //for tts in background?
         }
-        
+
         private async void TTSLoop()
         {
             while (true)
@@ -217,7 +217,7 @@ namespace HuntHelper
         public void Dispose()
         {
             _ttsLoopCancelTokenSource.Cancel();
-            while (!_ttsLoop.IsCompleted);
+            while (!_ttsLoop.IsCompleted) ;
             _ttsLoopCancelTokenSource.Dispose();
             _huntManager.Dispose();
             SaveSettings();
@@ -336,7 +336,7 @@ namespace HuntHelper
                 //=========================================
                 if (_useMapImages)
                 {
-                    if (!_huntManager.ImagesLoaded) LoadMapImages(); 
+                    if (!_huntManager.ImagesLoaded) LoadMapImages();
 
                     var mapImg = _huntManager.GetMapImage(_territoryName);
                     if (mapImg != null)
@@ -834,7 +834,7 @@ namespace HuntHelper
                                 ImGui.SameLine();
                                 ImGui.Checkbox("##A Rank A Chat Checkbox", ref _chatAEnabled);
                                 ImGui.SameLine();
-                                ImGui_HelpMarker("Message to send to chat using /echo, usable tags: <flag> <name> <rank> <hpp>\n" );
+                                ImGui_HelpMarker("Message to send to chat using /echo, usable tags: <flag> <name> <rank> <hpp>\n");
 
                                 ImGui.Dummy(new Vector2(0, 2f));
                                 ImGui.TextUnformatted("TTS   Message");
@@ -935,7 +935,7 @@ namespace HuntHelper
                             {
                                 _bottomPanelHeight = 170f;
 
-                                ImGui.TextUnformatted("Available Flags:"); 
+                                ImGui.TextUnformatted("Available Flags:");
                                 ImGui.SameLine(); ImGui_HelpMarker("DOUBLE CLICK to easily highlight a flag option for copy and paste.  \n-- ONLY <name> and <rank> work with TTS");
                                 var flags =
                                     "Hunt: <flag> <name> <rank> <hpp>\n\n" +
@@ -1234,8 +1234,8 @@ namespace HuntHelper
                 if (!_huntManager.IsHunt(mob.NameId)) continue;
                 nearbyMobs.Add(mob);
             }
-            _huntManager.AddNearbyMobs(nearbyMobs, _mapZoneMaxCoordSize, 
-                _ttsAEnabled, _ttsBEnabled, _ttsSEnabled, _ttsAMessage, _ttsBMessage, _ttsSMessage, 
+            _huntManager.AddNearbyMobs(nearbyMobs, _mapZoneMaxCoordSize,
+                _ttsAEnabled, _ttsBEnabled, _ttsSEnabled, _ttsAMessage, _ttsBMessage, _ttsSMessage,
                 _chatAEnabled, _chatBEnabled, _chatSEnabled, _chatAMessage, _chatBMessage, _chatSMessage, _territoryName);
 
             if (nearbyMobs.Count == 0) return;
@@ -1298,9 +1298,7 @@ namespace HuntHelper
                     ImGui.GetMousePos().Y - labelVector.Y is < 20 and > -20)
                 {
                     ImGui_ToolTip(info);
-                    /*
-                     *  CAN ADD CLICK DETECTION STUFF HERE FOR CHAT / FLAGS - TODO
-                     */
+                    MouseClickToSendChatFlag(mob);
                 }
 
                 ImGui.PushStyleColor(ImGuiCol.Border, _priorityMobColourBackground);
@@ -1351,9 +1349,7 @@ namespace HuntHelper
                             $"Click to send flag" //todo
                         });
 
-                        /*
-                         *  CAN ADD CLICK DETECTION STUFF HERE FOR CHAT / FLAGS - TODO
-                         */
+                        MouseClickToSendChatFlag(mob);
                     }
 
                     //ACTUAL LABEL SHOWN ON SCREEN - how to format, so ugly - how to change font size? :(
@@ -1373,8 +1369,20 @@ namespace HuntHelper
 
 
         }
-
+        private void MouseClickToSendChatFlag(BattleNpc mob)
+        {
+            if (ImGui.IsMouseClicked(ImGuiMouseButton.Left) ||
+                ImGui.IsMouseClicked(ImGuiMouseButton.Middle) ||
+                ImGui.IsMouseClicked(ImGuiMouseButton.Right))
+            {
+                _huntManager.SendChatMessage(true,
+                    "<exclamationrectangle> <name> <flag> <exclamationrectangle>", _territoryName, mob,
+                    _mapZoneMaxCoordSize);
+            }
+        }
         #endregion
+
+
 
         #region Player
         private void UpdatePlayerInfo()
