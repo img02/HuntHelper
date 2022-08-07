@@ -122,9 +122,9 @@ namespace HuntHelper
         private string _ttsAMessage = "<rank> Nearby";
         private string _ttsBMessage = "<rank> Nearby";
         private string _ttsSMessage = "<rank> in zone";
-        private string _chatAMessage = "FOUND: <name> @ <flag> ---  <rank>";
-        private string _chatBMessage = "FOUND: <name> @ <flag> ---  <rank>";
-        private string _chatSMessage = "FOUND: <name> @ <flag> ---  <rank>";
+        private string _chatAMessage = "FOUND: <name> @ <flag> ---  <rank>  --  <hpp>";
+        private string _chatBMessage = "FOUND: <name> @ <flag> ---  <rank>  --  <hpp>";
+        private string _chatSMessage = "FOUND: <name> @ <flag> ---  <rank>  --  <hpp>";
         private bool _ttsAEnabled = false;
         private bool _ttsBEnabled = false;
         private bool _ttsSEnabled = true;

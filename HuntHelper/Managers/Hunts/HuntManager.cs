@@ -6,13 +6,14 @@ using System.IO;
 using System.Linq;
 using System.Reflection.Metadata.Ecma335;
 using System.Speech.Synthesis;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Dalamud.Game.ClientState.Objects.Types;
 using Dalamud.Game.Gui;
 using Dalamud.Game.Text.SeStringHandling;
+using Dalamud.Game.Text.SeStringHandling.Payloads;
 using Dalamud.Interface;
 using Dalamud.Plugin;
-using HuntHelper.Chat;
 using HuntHelper.Utilities;
 using ImGuiNET;
 using ImGuiScene;
@@ -124,46 +125,70 @@ public class HuntManager
         }
     }
 
-    #region rework later
+    #region rework later?
 
-    //this works but i want to rework this (se)string formatting thing, chat and tts 
     private void SendChatMessage(bool enabled, string msg, string placeName, BattleNpc mob, float zoneCoordSize)
     {
         if (!enabled) return;
-        var message = FormatMessage(msg, mob);
-        var first = String.Empty;
-        var second = string.Empty;
-        var chatmsg = new ChatMessage();
 
-        if (message.Contains("<flag>",StringComparison.InvariantCultureIgnoreCase))
+        var rank = GetHuntRank(mob.NameId);
+        var hpp = GetHPP(mob);
+
+        //pattern for matching, (?i) = case insensitive
+        string pattern = "(?i)(<flag>|<rank>|<name>|<hpp>)";
+        //splits the string based on above 
+        var splitMsg = Regex.Split(msg, pattern);
+
+        var sb = new SeStringBuilder();
+        foreach (var s in splitMsg)
         {
-            var index = message.IndexOf("<flag>", StringComparison.InvariantCultureIgnoreCase);
-            if (index != 0) first = message.Substring(0, index); //if <flag> tag not at beginning
-            if (index + 6 < message.Length) second = message.Substring(index + 6, message.Length - 1-(index+5)); //if <flag> tag not at end
-            chatmsg.Append(first);
-            chatmsg.AddFlag(placeName,
-                MapHelpers.ConvertToMapCoordinate(mob.Position.X, zoneCoordSize),
-                MapHelpers.ConvertToMapCoordinate(mob.Position.Z, zoneCoordSize));
-            chatmsg.Append(second);
+            switch (s)
+            {
+                case "<flag>": //Why doesn't SeStringBuilder.AddMapLink have an overload that takes in placename, while SeString.CreateMapLink does? :( cause null possible?
+                    var maplink = SeString.CreateMapLink(placeName, MapHelpers.ConvertToMapCoordinate(mob.Position.X, zoneCoordSize),
+                        MapHelpers.ConvertToMapCoordinate(mob.Position.Z, zoneCoordSize));
+                    sb.AddUiForeground(64); //white
+                    sb.Append(maplink ??
+                              new SeString(new TextPayload(
+                                      $"|Error: couldn't create map link for: {placeName} - Please report what zone this occurred in.|"))
+                                  .Append(new IconPayload(BitmapFontIcon.NoCircle)));
+                    sb.AddUiForegroundOff();
+                    break;
+                case "<rank>":
+                    //idk just test random numbers lmao
+                    if (rank == HuntRank.A) sb.AddUiForeground("A-Rank", 12); //red / pinkish
+                    if (rank == HuntRank.B) sb.AddUiForeground("B-Rank", 34); //blue
+                    if (rank == HuntRank.S) sb.AddUiForeground("S-Rank", 506); //gold 
+                    break;
+                case "<name>":
+                    if (rank == HuntRank.A) sb.AddUiForeground($"{mob.Name}", 12); //red / pinkish
+                    if (rank == HuntRank.B) sb.AddUiForeground($"{mob.Name}", 34); //blue
+                    if (rank == HuntRank.S) sb.AddUiForeground($"{mob.Name}", 506); //gold 
+                    break;
+                case "<hpp>": //change colour based on initial hp? meh
+                    if (Math.Abs(hpp - 100) < 1) sb.AddUiForeground($"{hpp:0}%", 67); //green
+                    if (Math.Abs(hpp - 100) is <= 30 and >= 1) sb.AddUiForeground($"{hpp:0}%", 573); //yellow
+                    if (Math.Abs(hpp - 100) is > 30) sb.AddUiForeground($"{hpp:0}%", 531); //red
+                    break;
+                default:
+                    sb.AddText(s);
+                    break;
+            }
         }
-        else
-        {
-            chatmsg.Append(message);
-        }
-        _chatGui.Print(chatmsg.Message);
+        _chatGui.Print(sb.BuiltString);
     }
 
     private void NewMobFoundTTS(bool enabled, string msg, BattleNpc mob)
     {
         if (!enabled) return;
-        var message = FormatMessage(msg, mob);
+        var message = FormatMessageFlags(msg, mob);
         //changed to creating a new tts each time because SpeakAsync just queues up to play...
         var tts = new SpeechSynthesizer();
         tts.SelectVoice(TTSName);
         tts.SpeakAsync(message);
     }
 
-    private string FormatMessage(string msg, BattleNpc mob)
+    private string FormatMessageFlags(string msg, BattleNpc mob)
     {
         msg = msg.Replace("<rank>", $"{GetHuntRank(mob.NameId)}-Rank", true, CultureInfo.InvariantCulture);
         msg = msg.Replace("<name>", $"{mob.Name}", true, CultureInfo.InvariantCulture);
