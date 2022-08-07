@@ -135,7 +135,12 @@ public class HuntManager
         var hpp = GetHPP(mob);
 
         //pattern for matching, (?i) = case insensitive
-        string pattern = "(?i)(<flag>|<rank>|<name>|<hpp>)";
+        string pattern = "(?i)(<flag>|<rank>|<name>|<hpp>" +
+                         "|<goldstar>|<silverstar>|<warning>|<nocircle>" +
+                         "|<controllerbutton0>|<controllerbutton1>" +
+                         "|<priorityworld>|<elementallevel>" +
+                         "|<exclamationrectangle>|<notoriousmonster>" +
+                         "|<alarm>|<fanfestival>)"; 
         //splits the string based on above 
         var splitMsg = Regex.Split(msg, pattern);
 
@@ -169,6 +174,42 @@ public class HuntManager
                     if (Math.Abs(hpp - 100) < 1) sb.AddUiForeground($"{hpp:0}%", 67); //green
                     if (Math.Abs(hpp - 100) is <= 30 and >= 1) sb.AddUiForeground($"{hpp:0}%", 573); //yellow
                     if (Math.Abs(hpp - 100) is > 30) sb.AddUiForeground($"{hpp:0}%", 531); //red
+                    break;
+                case "<goldstar>":
+                    sb.AddIcon(BitmapFontIcon.GoldStar); //think i went a bit overboard lmao
+                    break;
+                case "<silverstar>":
+                    sb.AddIcon(BitmapFontIcon.SilverStar);
+                    break;
+                case "<warning>":
+                    sb.AddIcon(BitmapFontIcon.Warning);
+                    break;
+                case "<nocircle>":
+                    sb.AddIcon(BitmapFontIcon.NoCircle);
+                    break;
+                case "<controllerbutton0>":
+                    sb.AddIcon(BitmapFontIcon.ControllerButton0);
+                    break;
+                case "<controllerbutton1>":
+                    sb.AddIcon(BitmapFontIcon.ControllerButton1);
+                    break;
+                case "<priorityworld>":
+                    sb.AddIcon(BitmapFontIcon.PriorityWorld);
+                    break;
+                case "<elementallevel>":
+                    sb.AddIcon(BitmapFontIcon.ElementalLevel);
+                    break;
+                case "<exclamationrectangle>":
+                    sb.AddIcon(BitmapFontIcon.ExclamationRectangle);
+                    break;
+                case "<notoriousmonster>":
+                    sb.AddIcon(BitmapFontIcon.NotoriousMonster);
+                    break;
+                case "<alarm>":
+                    sb.AddIcon(BitmapFontIcon.Alarm);
+                    break;
+                case "<fanfestival>":
+                    sb.AddIcon(BitmapFontIcon.FanFestival);
                     break;
                 default:
                     sb.AddText(s);

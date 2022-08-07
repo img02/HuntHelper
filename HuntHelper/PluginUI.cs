@@ -142,7 +142,7 @@ namespace HuntHelper
 
         public float SingleCoordSize => ImGui.GetWindowSize().X / _mapZoneMaxCoordSize;
         //message input lengths
-        private uint _inputTextMaxLength = 50;
+        private uint _inputTextMaxLength = 250;
         private readonly Vector4 _defaultTextColour = Vector4.One; //white
 
         //window bools
@@ -820,13 +820,13 @@ namespace HuntHelper
 
                     if (ImGui.BeginTabItem("Notifications"))
                     {
-                        _bottomPanelHeight = 145f;
-
                         if (ImGui.BeginTabBar("Notifications sub-bar"))
                         {
                             //ImGui.PushFont(UiBuilder.MonoFont); //aligns things, but then looks ugly so idk.. table?
                             if (ImGui.BeginTabItem(" A "))
                             {
+                                _bottomPanelHeight = 145f;
+
                                 ImGui.Dummy(new Vector2(0, 2f));
                                 ImGui.TextUnformatted("Chat Message");
                                 ImGui.SameLine();
@@ -834,7 +834,7 @@ namespace HuntHelper
                                 ImGui.SameLine();
                                 ImGui.Checkbox("##A Rank A Chat Checkbox", ref _chatAEnabled);
                                 ImGui.SameLine();
-                                ImGui_HelpMarker("Message to send to chat using /echo, usable tags: <pos> <name> <rank> <hpp>.");
+                                ImGui_HelpMarker("Message to send to chat using /echo, usable tags: <flag> <name> <rank> <hpp>\n" );
 
                                 ImGui.Dummy(new Vector2(0, 2f));
                                 ImGui.TextUnformatted("TTS   Message");
@@ -850,6 +850,8 @@ namespace HuntHelper
 
                             if (ImGui.BeginTabItem(" B "))
                             {
+                                _bottomPanelHeight = 145f;
+
                                 ImGui.Dummy(new Vector2(0, 2f));
                                 ImGui.TextUnformatted("Chat Message");
                                 ImGui.SameLine();
@@ -858,7 +860,7 @@ namespace HuntHelper
                                 ImGui.Checkbox("##A Rank B Chat Checkbox", ref _chatBEnabled);
                                 ImGui.SameLine();
                                 ImGui_HelpMarker(
-                                    "Message to send to chat using /echo, usable tags: <pos> <name> <rank> <hpp>.");
+                                    "Message to send to chat using /echo, usable tags: <flag> <name> <rank> <hpp>.");
 
                                 ImGui.Dummy(new Vector2(0, 2f));
                                 ImGui.TextUnformatted("TTS   Message");
@@ -874,6 +876,8 @@ namespace HuntHelper
 
                             if (ImGui.BeginTabItem(" S "))
                             {
+                                _bottomPanelHeight = 145f;
+
                                 ImGui.Dummy(new Vector2(0, 2f));
                                 ImGui.TextUnformatted("Chat Message");
                                 ImGui.SameLine();
@@ -882,7 +886,7 @@ namespace HuntHelper
                                 ImGui.Checkbox("##A Rank S Chat Checkbox", ref _chatSEnabled);
                                 ImGui.SameLine();
                                 ImGui_HelpMarker(
-                                    "Message to send to chat using /echo, usable tags: <pos> <name> <rank> <hpp>.");
+                                    "Message to send to chat using /echo, usable tags: <flag> <name> <rank> <hpp>.");
 
                                 ImGui.Dummy(new Vector2(0, 2f));
                                 ImGui.TextUnformatted("TTS   Message");
@@ -898,6 +902,7 @@ namespace HuntHelper
 
                             if (ImGui.BeginTabItem("Settings"))
                             {
+                                _bottomPanelHeight = 145f;
                                 var tts = _huntManager.TTS;
                                 var voiceList = tts.GetInstalledVoices();
                                 var listOfVoiceNames = new string[voiceList.Count];
@@ -923,6 +928,22 @@ namespace HuntHelper
                                 ImGui.Checkbox("Background Notifications", ref _enableTTSBackground);
                                 ImGui.SameLine(); ImGui_HelpMarker("Enabling this allows Hunt Helper to scan and send Chat and TTS notifications whilst the GUI is inactive.");
 
+                                ImGui.EndTabItem();
+                            }
+
+                            if (ImGui.BeginTabItem("Available Flags"))
+                            {
+                                _bottomPanelHeight = 170f;
+
+                                ImGui.TextUnformatted("Available Flags:"); 
+                                ImGui.SameLine(); ImGui_HelpMarker("DOUBLE CLICK to easily highlight a flag option for copy and paste.  \n-- ONLY <name> and <rank> work with TTS");
+                                var flags =
+                                    "Hunt: <flag> <name> <rank> <hpp>\n\n" +
+                                    "Cosmetic: <goldstar> <silverstar> <warning> <nocircle> <controllerbutton0> <controllerbutton1>\n" +
+                                    " <priorityworld> <elementallevel> <exclamationrectangle> <notoriousmonster> <alarm> <fanfestival>";
+
+                                var contentRegion = ImGui.GetContentRegionAvail();
+                                ImGui.InputTextMultiline("##cosmetic flag info", ref flags, 500, new Vector2(contentRegion.X - 10, 80), ImGuiInputTextFlags.ReadOnly);
                                 ImGui.EndTabItem();
                             }
 
