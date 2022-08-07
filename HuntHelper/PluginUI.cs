@@ -122,15 +122,15 @@ namespace HuntHelper
         private string _ttsAMessage = "<rank> Nearby";
         private string _ttsBMessage = "<rank> Nearby";
         private string _ttsSMessage = "<rank> in zone";
-        private string _chatAMessage = string.Empty;
-        private string _chatBMessage = string.Empty;
-        private string _chatSMessage = string.Empty;
+        private string _chatAMessage = "FOUND: <name> @ <flag> ---  <rank>";
+        private string _chatBMessage = "FOUND: <name> @ <flag> ---  <rank>";
+        private string _chatSMessage = "FOUND: <name> @ <flag> ---  <rank>";
         private bool _ttsAEnabled = false;
         private bool _ttsBEnabled = false;
         private bool _ttsSEnabled = true;
         private bool _chatAEnabled = false;
         private bool _chatBEnabled = false;
-        private bool _chatSEnabled = false;
+        private bool _chatSEnabled = true;
 
         private bool _enableTTSBackground = false;
 
@@ -197,8 +197,7 @@ namespace HuntHelper
             _ttsLoopCancelTokenSource = new CancellationTokenSource();
             _ttsLoop = Task.Run(() => TTSLoop(), _ttsLoopCancelTokenSource.Token); //for tts in background?
         }
-
-
+        
         private async void TTSLoop()
         {
             while (true)
@@ -214,7 +213,6 @@ namespace HuntHelper
                 Thread.Sleep(1000);
             }
         }
-
 
         public void Dispose()
         {
@@ -898,7 +896,7 @@ namespace HuntHelper
                                 ImGui.EndTabItem();
                             }
 
-                            if (ImGui.BeginTabItem(" TTS Settings "))
+                            if (ImGui.BeginTabItem("Settings"))
                             {
                                 var tts = _huntManager.TTS;
                                 var voiceList = tts.GetInstalledVoices();
@@ -922,9 +920,8 @@ namespace HuntHelper
                                     tempTTS.SpeakAsync($"BOO! {tts.Voice.Name} Selected");
                                 }
 
-                                ImGui.Checkbox("Background TTS", ref _enableTTSBackground);
-                                ImGui.SameLine(); ImGui_HelpMarker("Enabling this allows Hunt Helper to scan and send TTS notifications whilst the GUI is inactive.\n" +
-                                                                   "Which ");
+                                ImGui.Checkbox("Background Notifications", ref _enableTTSBackground);
+                                ImGui.SameLine(); ImGui_HelpMarker("Enabling this allows Hunt Helper to scan and send Chat and TTS notifications whilst the GUI is inactive.");
 
                                 ImGui.EndTabItem();
                             }
@@ -1007,21 +1004,7 @@ namespace HuntHelper
             if (ImGui.Begin("A Wonderful Configuration Window", ref this.settingsVisible,
                 ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse))
             {
-                // can't ref a property, so use a local copy
-                var configValue = this._configuration.UseMapImages;
-                if (ImGui.Checkbox("Use Map Image Bool", ref configValue))
-                {
-                    this._configuration.UseMapImages = configValue;
-                    // can save immediately on change, if you don't want to provide a "Save and Close" button
-                    //this._configuration.Save();
-                }
-
-                if (ImGui.Button("Show Loaded Hunt Data"))
-                {
-                    _showDatabaseListWindow = !_showDatabaseListWindow;
-                }
-
-                DrawDataBaseWindow();
+                ImGui_CentreText("There's nothing here", _defaultTextColour);
             }
             ImGui.End();
         }
@@ -1230,7 +1213,9 @@ namespace HuntHelper
                 if (!_huntManager.IsHunt(mob.NameId)) continue;
                 nearbyMobs.Add(mob);
             }
-            _huntManager.AddNearbyMobs(nearbyMobs, _ttsAEnabled, _ttsBEnabled, _ttsSEnabled, _ttsAMessage, _ttsBMessage, _ttsSMessage);
+            _huntManager.AddNearbyMobs(nearbyMobs, _mapZoneMaxCoordSize, 
+                _ttsAEnabled, _ttsBEnabled, _ttsSEnabled, _ttsAMessage, _ttsBMessage, _ttsSMessage, 
+                _chatAEnabled, _chatBEnabled, _chatSEnabled, _chatAMessage, _chatBMessage, _chatSMessage, _territoryName);
 
             if (nearbyMobs.Count == 0) return;
             if (!MapVisible) return;

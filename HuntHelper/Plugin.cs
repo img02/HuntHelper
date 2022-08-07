@@ -8,6 +8,7 @@ using Dalamud.Data;
 using Dalamud.Game.ClientState;
 using Dalamud.Game.ClientState.Objects;
 using System.Drawing;
+using Dalamud.Game.Gui;
 using HuntHelper.MapInfoManager;
 using ImGuiNET;
 using HuntHelper.Managers.Hunts;
@@ -18,26 +19,27 @@ namespace HuntHelper
     {
         public string Name => "Hunt Helper";
 
-        private const string commandName = "/hh1";
+        private const string MapWindowCommand = "/hh";
+        private const string CommandName = "/hh1";
 
         private DalamudPluginInterface PluginInterface { get; init; }
         private CommandManager CommandManager { get; init; }
         private Configuration Configuration { get; init; }
         private PluginUI PluginUi { get; init; }
-
         private ClientState ClientState { get; init; }
         private ObjectTable ObjectTable { get; init; }
         private DataManager DataManager { get; init; }
-
-        private HuntManager huntManager { get; init; }
-        private MapDataManager mapDataManager { get; init; }
+        private ChatGui ChatGui { get; init; }
+        private HuntManager HuntManager { get; init; }
+        private MapDataManager MapDataManager { get; init; }
 
         public Plugin(
-            [RequiredVersion("1.0")] DalamudPluginInterface pluginInterface,
-            [RequiredVersion("1.0")] CommandManager commandManager,
+            DalamudPluginInterface pluginInterface,
+            CommandManager commandManager,
             ClientState clientState,
-            [RequiredVersion("1.0")] ObjectTable objectTable,
-            DataManager dataManager)
+            ObjectTable objectTable,
+            DataManager dataManager,
+            ChatGui chatGui)
         {
             this.PluginInterface = pluginInterface;
             this.CommandManager = commandManager;
@@ -45,26 +47,27 @@ namespace HuntHelper
             this.ClientState = clientState;
             this.ObjectTable = objectTable;
             this.DataManager = dataManager;
+            this.ChatGui = chatGui;
 
             this.Configuration = this.PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
             this.Configuration.Initialize(this.PluginInterface);
 
-            this.huntManager = new HuntManager(PluginInterface);
-            this.mapDataManager = new MapDataManager(PluginInterface);
+            this.HuntManager = new HuntManager(PluginInterface, chatGui);
+            this.MapDataManager = new MapDataManager(PluginInterface);
 
             #region idk
             #endregion
 
-            this.PluginUi = new PluginUI(this.Configuration, pluginInterface, clientState, objectTable, dataManager, huntManager, mapDataManager);
+            this.PluginUi = new PluginUI(this.Configuration, pluginInterface, clientState, objectTable, dataManager, HuntManager, MapDataManager);
 
-            this.CommandManager.AddHandler(commandName, new CommandInfo(OnCommand)
+            this.CommandManager.AddHandler(CommandName, new CommandInfo(OnCommand)
             {
-                HelpMessage = "A useful message to display in /xlhelp"
+                HelpMessage = "random data, debug info"
             });
 
-            this.CommandManager.AddHandler("/hh", new CommandInfo(TestCommand)
+            this.CommandManager.AddHandler(MapWindowCommand, new CommandInfo(TestCommand)
             {
-                HelpMessage = "test"
+                HelpMessage = "help, i've fallen over"
             });
 
             this.PluginInterface.UiBuilder.Draw += DrawUI;
@@ -74,7 +77,7 @@ namespace HuntHelper
         public void Dispose()
         {
             this.PluginUi.Dispose();
-            this.CommandManager.RemoveHandler(commandName);
+            this.CommandManager.RemoveHandler(CommandName);
             this.CommandManager.RemoveHandler("/hh");
         }
 

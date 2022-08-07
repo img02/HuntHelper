@@ -8,8 +8,12 @@ using System.Reflection.Metadata.Ecma335;
 using System.Speech.Synthesis;
 using System.Threading.Tasks;
 using Dalamud.Game.ClientState.Objects.Types;
+using Dalamud.Game.Gui;
+using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Interface;
 using Dalamud.Plugin;
+using HuntHelper.Chat;
+using HuntHelper.Utilities;
 using ImGuiNET;
 using ImGuiScene;
 using Lumina.Excel.GeneratedSheets;
@@ -28,6 +32,7 @@ public class HuntManager
     private readonly Dictionary<HuntRank, List<Mob>> _ewDict;
     private readonly Dictionary<String, TextureWrap> _mapImages;
     private readonly DalamudPluginInterface _pluginInterface;
+    private readonly ChatGui _chatGui;
 
     private readonly List<(HuntRank Rank, BattleNpc Mob)> _currentMobs;
     private readonly List<(HuntRank Rank, BattleNpc Mob)> _previousMobs;
@@ -44,7 +49,7 @@ public class HuntManager
 
     public List<(HuntRank Rank, BattleNpc Mob)> CurrentMobs => _currentMobs;
 
-    public HuntManager(DalamudPluginInterface pluginInterface)
+    public HuntManager(DalamudPluginInterface pluginInterface, ChatGui chatGui)
     {
         _arrDict = new Dictionary<HuntRank, List<Mob>>();
         _hwDict = new Dictionary<HuntRank, List<Mob>>();
@@ -54,7 +59,9 @@ public class HuntManager
         _mapImages = new Dictionary<string, TextureWrap>();
         _currentMobs = new List<(HuntRank, BattleNpc)>();
         _previousMobs = new List<(HuntRank, BattleNpc)>();
-        this._pluginInterface = pluginInterface;
+        _pluginInterface = pluginInterface;
+        _chatGui = chatGui;
+
         _imageFolderPath = Path.Combine(_pluginInterface.AssemblyLocation.Directory?.FullName!, "Images/Maps");
         TTS = new SpeechSynthesizer();
         TTSName = TTS.Voice.Name;
@@ -66,7 +73,7 @@ public class HuntManager
         if (_priorityMob == null) return (_highestRank, null);
         if (_currentMobs.Count == 0) return (_highestRank, null);
         if (!IsHunt(_priorityMob.NameId))
-        {   
+        {
             _highestRank = HuntRank.B;
             foreach (var hunt in _currentMobs) PriorityCheck(hunt.Mob);
         }
@@ -76,8 +83,11 @@ public class HuntManager
     {
         return _currentMobs;
     }
-    
-    public void AddNearbyMobs(List<BattleNpc> nearbyMobs, bool a, bool b, bool s, string aMsg, string bMsg, string sMsg)
+
+    //bit much, grew big because I don't plan
+    public void AddNearbyMobs(List<BattleNpc> nearbyMobs, float zoneMapCoordSize,
+        bool aTTS, bool bTTS, bool sTTS, string aTTSmsg, string bTTSmsg, string sTTSmsg,
+        bool chatA, bool chatB, bool chatS, string chatAmsg, string chatBmsg, string chatSmsg, string placeName)
     {
         //compare with old list
         //move old mob set out
@@ -93,33 +103,75 @@ public class HuntManager
 
             //if exists in old mob set, skip tts + chat
             if (_previousMobs.Any(hunt => hunt.Mob.NameId == mob.NameId)) continue;
+
             //Do tts and chat stuff
             switch (GetHuntRank(mob.NameId))
             {
                 case HuntRank.A:
-                    NewMobFoundTTS(GetHuntRank(mob.NameId), mob, a, aMsg);
+                    NewMobFoundTTS(aTTS, aTTSmsg, mob);
+                    SendChatMessage(chatA, chatAmsg, placeName, mob, zoneMapCoordSize);
                     break;
                 case HuntRank.B:
-                    NewMobFoundTTS(GetHuntRank(mob.NameId), mob, b, bMsg);
+                    NewMobFoundTTS(bTTS, bTTSmsg, mob);
+                    SendChatMessage(chatB, chatBmsg, placeName, mob, zoneMapCoordSize);
                     break;
                 case HuntRank.S:
                 case HuntRank.SS:
-                    NewMobFoundTTS(GetHuntRank(mob.NameId), mob, s, sMsg);
+                    NewMobFoundTTS(sTTS, sTTSmsg, mob);
+                    SendChatMessage(chatS, chatSmsg, placeName, mob, zoneMapCoordSize);
                     break;
             }
         }
     }
 
-    private void NewMobFoundTTS(HuntRank rank, BattleNpc mob, bool enabled, string msg)
+    #region rework later
+
+    //this works but i want to rework this (se)string formatting thing, chat and tts 
+    private void SendChatMessage(bool enabled, string msg, string placeName, BattleNpc mob, float zoneCoordSize)
     {
-        msg = msg.Replace("<rank>", $"{rank}-Rank", true, CultureInfo.InvariantCulture);
-        msg = msg.Replace("<name>", $"{mob.Name}", true, CultureInfo.InvariantCulture);
-        //changed to creating a new tts each time because SpeakAsync just queues up to play...
-        var tts = new SpeechSynthesizer(); 
-        tts.SelectVoice(TTSName);
-        tts.SpeakAsync(msg);
-        //TTS.SpeakAsync(msg);
+        if (!enabled) return;
+        var message = FormatMessage(msg, mob);
+        var first = String.Empty;
+        var second = string.Empty;
+        var chatmsg = new ChatMessage();
+
+        if (message.Contains("<flag>",StringComparison.InvariantCultureIgnoreCase))
+        {
+            var index = message.IndexOf("<flag>", StringComparison.InvariantCultureIgnoreCase);
+            if (index != 0) first = message.Substring(0, index); //if <flag> tag not at beginning
+            if (index + 6 < message.Length) second = message.Substring(index + 6, message.Length - 1-(index+5)); //if <flag> tag not at end
+            chatmsg.Append(first);
+            chatmsg.AddFlag(placeName,
+                MapHelpers.ConvertToMapCoordinate(mob.Position.X, zoneCoordSize),
+                MapHelpers.ConvertToMapCoordinate(mob.Position.Z, zoneCoordSize));
+            chatmsg.Append(second);
+        }
+        else
+        {
+            chatmsg.Append(message);
+        }
+        _chatGui.Print(chatmsg.Message);
     }
+
+    private void NewMobFoundTTS(bool enabled, string msg, BattleNpc mob)
+    {
+        if (!enabled) return;
+        var message = FormatMessage(msg, mob);
+        //changed to creating a new tts each time because SpeakAsync just queues up to play...
+        var tts = new SpeechSynthesizer();
+        tts.SelectVoice(TTSName);
+        tts.SpeakAsync(message);
+    }
+
+    private string FormatMessage(string msg, BattleNpc mob)
+    {
+        msg = msg.Replace("<rank>", $"{GetHuntRank(mob.NameId)}-Rank", true, CultureInfo.InvariantCulture);
+        msg = msg.Replace("<name>", $"{mob.Name}", true, CultureInfo.InvariantCulture);
+        msg = msg.Replace("<hpp>", $"{GetHPP(mob):0}", true, CultureInfo.InvariantCulture);
+        return msg;
+    }
+
+    #endregion
 
     public List<BattleNpc> GetCurrentMobs()
     {
@@ -325,13 +377,5 @@ public class HuntManager
         if (B != null) dict.Add(HuntRank.B, B);
         if (S != null) dict.Add(HuntRank.S, S);
     }
-
-
-
-
-
-
-
-
 
 }
