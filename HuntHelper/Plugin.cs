@@ -9,6 +9,7 @@ using Dalamud.Game.ClientState;
 using Dalamud.Game.ClientState.Objects;
 using System.Drawing;
 using Dalamud.Game.Gui;
+using Dalamud.Game.Gui.FlyText;
 using HuntHelper.MapInfoManager;
 using ImGuiNET;
 using HuntHelper.Managers.Hunts;
@@ -39,7 +40,8 @@ namespace HuntHelper
             ClientState clientState,
             ObjectTable objectTable,
             DataManager dataManager,
-            ChatGui chatGui)
+            ChatGui chatGui,
+            FlyTextGui flyTextGui)
         {
             this.PluginInterface = pluginInterface;
             this.CommandManager = commandManager;
@@ -52,7 +54,7 @@ namespace HuntHelper
             this.Configuration = this.PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
             this.Configuration.Initialize(this.PluginInterface);
 
-            this.HuntManager = new HuntManager(PluginInterface, chatGui);
+            this.HuntManager = new HuntManager(PluginInterface, chatGui, flyTextGui);
             this.MapDataManager = new MapDataManager(PluginInterface);
 
             #region idk

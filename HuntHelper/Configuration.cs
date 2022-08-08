@@ -59,7 +59,7 @@ namespace HuntHelper
         public Vector4 PriorityMobColourBackground { get; set; } = new Vector4(1f, 0.43529411764705883f, 0.5137254901960784f, 0f); //nicely pink :D
         public Vector4 NearbyMobListColourBackground { get; set; } = new Vector4(1f, 0.43529411764705883f, 0.5137254901960784f, 0f); //nicely pink :D
 
-        public Vector4 MapWindowColour { get; set; }= new Vector4(0f, 0f, 0f, .2f); //alpha / w value isn't used
+        public Vector4 MapWindowColour { get; set; } = new Vector4(0f, 0f, 0f, .2f); //alpha / w value isn't used
         public float MapWindowOpacityAsPercentage { get; set; } = 20f;
 
         //checkbox bools
@@ -74,16 +74,22 @@ namespace HuntHelper
         public string TTSAMessage { get; set; } = "<rank> Nearby";
         public string TTSBMessage { get; set; } = "<rank> Nearby";
         public string TTSSMessage { get; set; } = "<rank> in zone";
-        public string ChatAMessage{get; set;} = "FOUND: <name> @ <flag> ---  <rank>  --  <hpp>";
-        public string ChatBMessage{get; set;} = "FOUND: <name> @ <flag> ---  <rank>  --  <hpp>";
-        public string ChatSMessage{get; set;} = "FOUND: <name> @ <flag> ---  <rank>  --  <hpp>";
-        public bool TTSAEnabled {get; set;} = false;
-        public bool TTSBEnabled {get; set;} = false;
-        public bool TTSSEnabled {get; set;} = true;
-        public bool ChatAEnabled {get; set;} = false;
-        public bool ChatBEnabled {get; set;} = false;
+        public string ChatAMessage { get; set; } = "FOUND: <name> @ <flag> ---  <rank>  --  <hpp>";
+        public string ChatBMessage { get; set; } = "FOUND: <name> @ <flag> ---  <rank>  --  <hpp>";
+        public string ChatSMessage { get; set; } = "FOUND: <name> @ <flag> ---  <rank>  --  <hpp>";
+        public bool TTSAEnabled { get; set; } = false;
+        public bool TTSBEnabled { get; set; } = false;
+        public bool TTSSEnabled { get; set; } = true;
+        public bool ChatAEnabled { get; set; } = false;
+        public bool ChatBEnabled { get; set; } = false;
         public bool ChatSEnabled { get; set; } = true;
         public bool EnableTTSBackground { get; set; } = false;
+        public bool ShowOptionsWindow { get; set; } = false;
+        public bool FlyTextAEnabled { get; set; } = false;
+        public bool FlyTextBEnabled { get; set; } = false;
+        public bool FlyTextSEnabled { get; set; } = true;
+
+
 
 
 

@@ -131,13 +131,18 @@ namespace HuntHelper
         private bool _chatAEnabled = false;
         private bool _chatBEnabled = false;
         private bool _chatSEnabled = true;
+        private bool _flyTxtAEnabled = true;
+        private bool _flyTxtBEnabled = true;
+        private bool _flyTxtSEnabled = true;
 
         private bool _enableTTSBackground = false;
+
+        //window bools
+        private bool _showOptionsWindow = true;
 
         #endregion
 
         private bool _showDebug = false;
-        private bool _showOptionsWindow = true;
         private float _mapZoneMaxCoordSize = 41; //default to 41 as thats most common for hunt zones
 
         public float SingleCoordSize => ImGui.GetWindowSize().X / _mapZoneMaxCoordSize;
@@ -298,7 +303,7 @@ namespace HuntHelper
             ImGui.End();
         }
 
-        public void DrawHuntMapWindow()
+        public async void DrawHuntMapWindow()
         {
             if (!MapVisible)
             {
@@ -336,14 +341,21 @@ namespace HuntHelper
                 //=========================================
                 if (_useMapImages)
                 {
-                    if (!_huntManager.ImagesLoaded) LoadMapImages();
-
-                    var mapImg = _huntManager.GetMapImage(_territoryName);
-                    if (mapImg != null)
+                    if (!_huntManager.ImagesLoaded)
                     {
-                        ImGui.SetCursorPos(Vector2.Zero);
-                        ImGui.Image(mapImg.ImGuiHandle, ImGui.GetWindowSize(), default(Vector2), new Vector2(1f, 1f), new Vector4(1f, 1f, 1f, _mapImageOpacityAsPercentage / 100));
-                        ImGui.SetCursorPos(Vector2.Zero);
+                        if (!Directory.Exists(_huntManager.ImageFolderPath)) MapImageDownloadWindow();
+                        else LoadMapImages();
+                    }
+                    else
+                    {
+                        var mapImg = _huntManager.GetMapImage(_territoryName);
+                        if (mapImg != null)
+                        {
+                            ImGui.SetCursorPos(Vector2.Zero);
+                            ImGui.Image(mapImg.ImGuiHandle, ImGui.GetWindowSize(), default(Vector2),
+                                new Vector2(1f, 1f), new Vector4(1f, 1f, 1f, _mapImageOpacityAsPercentage / 100));
+                            ImGui.SetCursorPos(Vector2.Zero);
+                        }
                     }
                 }
 
@@ -825,7 +837,7 @@ namespace HuntHelper
                             //ImGui.PushFont(UiBuilder.MonoFont); //aligns things, but then looks ugly so idk.. table?
                             if (ImGui.BeginTabItem(" A "))
                             {
-                                _bottomPanelHeight = 145f;
+                                _bottomPanelHeight = 155f;
 
                                 ImGui.Dummy(new Vector2(0, 2f));
                                 ImGui.TextUnformatted("Chat Message");
@@ -845,12 +857,19 @@ namespace HuntHelper
                                 ImGui.SameLine();
                                 ImGui_HelpMarker("Message to use with Text-to-Speech, usable tags: <name> <rank>");
 
+                                ImGui.Checkbox("FlyText##A Rank", ref _flyTxtAEnabled);
+                                ImGui.SameLine();
+                                ImGui_HelpMarker("FlyText is the type of text that appears when you attack something or are attacked.\n" +
+                                                 "(e.g. Crit, Miss, Resist)\n\n" +
+                                                 "Enabling this will show a coloured FlyText notification near the middle of your screen.\n\n" +
+                                                 "pls ignore ugly checkbox position");
+
                                 ImGui.EndTabItem();
                             }
 
                             if (ImGui.BeginTabItem(" B "))
                             {
-                                _bottomPanelHeight = 145f;
+                                _bottomPanelHeight = 155f;
 
                                 ImGui.Dummy(new Vector2(0, 2f));
                                 ImGui.TextUnformatted("Chat Message");
@@ -871,12 +890,18 @@ namespace HuntHelper
                                 ImGui.SameLine();
                                 ImGui_HelpMarker("Message to use with Text-to-Speech, usable tags: <name> <rank>");
 
+                                ImGui.Checkbox("FlyText##B Rank", ref _flyTxtBEnabled);
+                                ImGui.SameLine();
+                                ImGui_HelpMarker("FlyText is the type of text that appears when you attack something or are attacked.\n" +
+                                                 "(e.g. Crit, Miss, Resist)\n\n" +
+                                                 "Enabling this will show a coloured FlyText notification near the middle of your screen.");
+
                                 ImGui.EndTabItem();
                             }
 
                             if (ImGui.BeginTabItem(" S "))
                             {
-                                _bottomPanelHeight = 145f;
+                                _bottomPanelHeight = 155f;
 
                                 ImGui.Dummy(new Vector2(0, 2f));
                                 ImGui.TextUnformatted("Chat Message");
@@ -896,6 +921,12 @@ namespace HuntHelper
                                 ImGui.Checkbox("##A Rank S TTS Checkbox", ref _ttsSEnabled);
                                 ImGui.SameLine();
                                 ImGui_HelpMarker("Message to use with Text-to-Speech, usable tags: <name> <rank>");
+
+                                ImGui.Checkbox("FlyText##S Rank", ref _flyTxtSEnabled);
+                                ImGui.SameLine();
+                                ImGui_HelpMarker("FlyText is the type of text that appears when you attack something or are attacked.\n" +
+                                                 "(e.g. Crit, Miss, Resist)\n\n" +
+                                                 "Enabling this will show a coloured FlyText notification near the middle of your screen.");
 
                                 ImGui.EndTabItem();
                             }
@@ -1092,6 +1123,10 @@ namespace HuntHelper
             _configuration.ChatBEnabled = _chatBEnabled;
             _configuration.ChatSEnabled = _chatSEnabled;
             _configuration.EnableTTSBackground = _enableTTSBackground;
+            _configuration.ShowOptionsWindow = _showOptionsWindow;
+            _configuration.FlyTextAEnabled = _flyTxtAEnabled;
+            _configuration.FlyTextBEnabled = _flyTxtBEnabled;
+            _configuration.FlyTextSEnabled = _flyTxtSEnabled;
 
             this._configuration.Save();
         }
@@ -1157,6 +1192,11 @@ namespace HuntHelper
             _chatBEnabled = _configuration.ChatBEnabled;
             _chatSEnabled = _configuration.ChatSEnabled;
             _enableTTSBackground = _configuration.EnableTTSBackground;
+            _showOptionsWindow = _configuration.ShowOptionsWindow;
+
+            _flyTxtAEnabled = _configuration.FlyTextAEnabled;
+            _flyTxtBEnabled = _configuration.FlyTextBEnabled;
+            _flyTxtSEnabled = _configuration.FlyTextSEnabled;
 
 
 
@@ -1236,7 +1276,8 @@ namespace HuntHelper
             }
             _huntManager.AddNearbyMobs(nearbyMobs, _mapZoneMaxCoordSize,
                 _ttsAEnabled, _ttsBEnabled, _ttsSEnabled, _ttsAMessage, _ttsBMessage, _ttsSMessage,
-                _chatAEnabled, _chatBEnabled, _chatSEnabled, _chatAMessage, _chatBMessage, _chatSMessage, _territoryName);
+                _chatAEnabled, _chatBEnabled, _chatSEnabled, _chatAMessage, _chatBMessage, _chatSMessage, _territoryName,
+                _flyTxtAEnabled, _flyTxtBEnabled, _flyTxtSEnabled);
 
             if (nearbyMobs.Count == 0) return;
             if (!MapVisible) return;
@@ -1609,6 +1650,39 @@ namespace HuntHelper
             var textHeight = ImGui.GetTextLineHeight();
             //cant' easily get width and idc to try
             ImGui.SetCursorPos(new Vector2(winSize.X * percentX / 100, winSize.Y * percentY / 100 - textHeight));
+        }
+
+
+        private void MapImageDownloadWindow()
+        {
+            ImGui.SetNextWindowSize(new Vector2(710, 220));
+            if (ImGui.Begin("Images do not exist, download?", ref _useMapImages))
+            {
+                DoStuffWithMonoFont(() =>
+                {
+                    ImGui.Dummy(Vector2.Zero);
+                    ImGui.Text($"Could not find: \n" +
+                               $"\t\t{_huntManager.ImageFolderPath}.");
+                    ImGui.Text($"This is expected if this is your first time using map images.");
+                    ImGui.Text($"Would you like to try to download them? (23.2MB)");
+                    ImGui.Text($"");
+                    ImGui.Text($"Or you can manually view and download from:");
+                    ImGui.Dummy(new Vector2(52, 0));
+                    ImGui.SameLine(); var url = "https://github.com/imaginary-png/HuntHelper-Resources/";
+                    ImGui.InputText("##url", ref url, 30, ImGuiInputTextFlags.ReadOnly);
+                    ImGui.Text($"and put them in the directory as shown above.");
+                    ImGui.Dummy(Vector2.Zero);
+
+                    if (ImGui.Button("Download##download"))
+                    {
+                        ImGui.Text("ain't nothing here~!");
+                    }
+
+                    ImGui.SameLine();
+
+                });
+                ImGui.End();
+            }
         }
     }
 }

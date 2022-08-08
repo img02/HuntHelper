@@ -10,6 +10,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Dalamud.Game.ClientState.Objects.Types;
 using Dalamud.Game.Gui;
+using Dalamud.Game.Gui.FlyText;
 using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Game.Text.SeStringHandling.Payloads;
 using Dalamud.Interface;
@@ -24,7 +25,7 @@ namespace HuntHelper.Managers.Hunts;
 
 public class HuntManager
 {
-    private readonly string _imageFolderPath;
+    public readonly string ImageFolderPath;
 
     private readonly Dictionary<HuntRank, List<Mob>> _arrDict;
     private readonly Dictionary<HuntRank, List<Mob>> _hwDict;
@@ -34,6 +35,7 @@ public class HuntManager
     private readonly Dictionary<String, TextureWrap> _mapImages;
     private readonly DalamudPluginInterface _pluginInterface;
     private readonly ChatGui _chatGui;
+    private readonly FlyTextGui _flyTextGui;
 
     private readonly List<(HuntRank Rank, BattleNpc Mob)> _currentMobs;
     private readonly List<(HuntRank Rank, BattleNpc Mob)> _previousMobs;
@@ -50,7 +52,7 @@ public class HuntManager
 
     public List<(HuntRank Rank, BattleNpc Mob)> CurrentMobs => _currentMobs;
 
-    public HuntManager(DalamudPluginInterface pluginInterface, ChatGui chatGui)
+    public HuntManager(DalamudPluginInterface pluginInterface, ChatGui chatGui, FlyTextGui flyTextGui)
     {
         _arrDict = new Dictionary<HuntRank, List<Mob>>();
         _hwDict = new Dictionary<HuntRank, List<Mob>>();
@@ -62,8 +64,9 @@ public class HuntManager
         _previousMobs = new List<(HuntRank, BattleNpc)>();
         _pluginInterface = pluginInterface;
         _chatGui = chatGui;
+        _flyTextGui = flyTextGui;
 
-        _imageFolderPath = Path.Combine(_pluginInterface.AssemblyLocation.Directory?.FullName!, "Images/Maps");
+        ImageFolderPath = Path.Combine(_pluginInterface.AssemblyLocation.Directory?.FullName!, @"Images\Maps");
         TTS = new SpeechSynthesizer();
         TTSName = TTS.Voice.Name;
         LoadHuntData();
@@ -88,7 +91,8 @@ public class HuntManager
     //bit much, grew big because I don't plan
     public void AddNearbyMobs(List<BattleNpc> nearbyMobs, float zoneMapCoordSize,
         bool aTTS, bool bTTS, bool sTTS, string aTTSmsg, string bTTSmsg, string sTTSmsg,
-        bool chatA, bool chatB, bool chatS, string chatAmsg, string chatBmsg, string chatSmsg, string placeName)
+        bool chatA, bool chatB, bool chatS, string chatAmsg, string chatBmsg, string chatSmsg, string placeName,
+        bool flyTxtA, bool flyTxtB, bool flyTxtS)
     {
         //compare with old list
         //move old mob set out
@@ -106,26 +110,56 @@ public class HuntManager
             if (_previousMobs.Any(hunt => hunt.Mob.NameId == mob.NameId)) continue;
 
             //Do tts and chat stuff
-            switch (GetHuntRank(mob.NameId))
+            var rank = GetHuntRank(mob.NameId);
+            switch (rank)
             {
                 case HuntRank.A:
                     NewMobFoundTTS(aTTS, aTTSmsg, mob);
                     SendChatMessage(chatA, chatAmsg, placeName, mob, zoneMapCoordSize);
+                    SendFlyText(rank, mob, flyTxtA);
                     break;
                 case HuntRank.B:
                     NewMobFoundTTS(bTTS, bTTSmsg, mob);
                     SendChatMessage(chatB, chatBmsg, placeName, mob, zoneMapCoordSize);
+                    SendFlyText(rank, mob, flyTxtB);
                     break;
                 case HuntRank.S:
                 case HuntRank.SS:
                     NewMobFoundTTS(sTTS, sTTSmsg, mob);
                     SendChatMessage(chatS, chatSmsg, placeName, mob, zoneMapCoordSize);
+                    SendFlyText(rank, mob, flyTxtB);
                     break;
             }
         }
     }
 
     #region rework later?
+
+    //sent fly text in-game on the player  -- move these sestring colours from here and chatmsg to consts or something
+    private void SendFlyText(HuntRank rank, BattleNpc mob, bool enabled)
+    {
+        var rankSB = new SeStringBuilder();
+        var nameSB = new SeStringBuilder();
+        switch (rank)
+        {
+            case HuntRank.A:            //didn't hyphen 'rank' here.. think it looks better
+                rankSB.AddUiForeground("A RANK", 12); // pinkish-red - same as chat msg
+                nameSB.AddUiForeground($"{mob.Name}", 10); //tinted pinkish-red
+                _flyTextGui.AddFlyText(FlyTextKind.NamedDirectHit, 1, 1, 1, rankSB.BuiltString, nameSB.BuiltString, 16, 2);//last 2 nums don't seem to change anything
+                break;
+            case HuntRank.B:
+                rankSB.AddUiForeground("B RANK", 34); // blue - same as chat msg
+                nameSB.AddUiForeground($"{mob.Name}", 33); //tinted blue
+                _flyTextGui.AddFlyText(FlyTextKind.NamedDirectHit, 1, 1, 1, rankSB.BuiltString, nameSB.BuiltString, 16, 2);
+                break;
+            case HuntRank.S:
+            case HuntRank.SS:
+                rankSB.AddUiForeground("S RANK", 16); // dark-red - different from chat msg (goldish) because it stands out more.
+                nameSB.AddUiForeground($"{mob.Name}", 506); //same gold as chat msg
+                _flyTextGui.AddFlyText(FlyTextKind.NamedDirectHit, 1, 1, 1, rankSB.BuiltString, nameSB.BuiltString, 16, 2);
+                break;
+        }
+    }
 
     public void SendChatMessage(bool enabled, string msg, string placeName, BattleNpc mob, float zoneCoordSize)
     {
@@ -140,7 +174,7 @@ public class HuntManager
                          "|<controllerbutton0>|<controllerbutton1>" +
                          "|<priorityworld>|<elementallevel>" +
                          "|<exclamationrectangle>|<notoriousmonster>" +
-                         "|<alarm>|<fanfestival>)"; 
+                         "|<alarm>|<fanfestival>)";
         //splits the string based on above 
         var splitMsg = Regex.Split(msg, pattern);
 
@@ -321,11 +355,12 @@ public class HuntManager
         return exists;
     }
 
+    private bool _showFailedDownloadWindow = false;
     public bool LoadMapImages()
     {
-        if (ImagesLoaded) return false;
+        if (ImagesLoaded) return true;
 
-        if (!Directory.Exists(_imageFolderPath))
+        if (!Directory.Exists(ImageFolderPath))
         {
             //if dir doesn't exist, try downloading images
             //then if still doesn't exist, return false
@@ -333,8 +368,7 @@ public class HuntManager
             return false;
         }
 
-        //change this later for ss folder? or just draw ss on screen - have to update spawn point drawing and jsons
-        var paths = Directory.EnumerateFiles(_imageFolderPath, "*", SearchOption.TopDirectoryOnly);
+        var paths = Directory.EnumerateFiles(ImageFolderPath, "*", SearchOption.TopDirectoryOnly);
 
         foreach (var path in paths)
         {
@@ -376,7 +410,7 @@ public class HuntManager
 
     private string GetMapNameFromPath(string path)
     { //all files end with '-data.jpg', img source - http://cablemonkey.us/huntmap2/
-        var pathRemoved = path.Remove(0, _imageFolderPath.Length + 1).Replace("_", " ");
+        var pathRemoved = path.Remove(0, ImageFolderPath.Length + 1).Replace("_", " ");
         return pathRemoved.Remove(pathRemoved.Length - 9);
     }
 
