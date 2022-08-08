@@ -304,7 +304,7 @@ namespace HuntHelper
             ImGui.End();
         }
 
-        public async void DrawHuntMapWindow()
+        public void DrawHuntMapWindow()
         {
             if (!MapVisible)
             {

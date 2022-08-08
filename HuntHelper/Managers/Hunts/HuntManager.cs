@@ -46,7 +46,7 @@ public class HuntManager
     private BattleNpc? _priorityMob;
     private HuntRank _highestRank;
 
-    public bool ImagesLoaded = false;
+    public bool ImagesLoaded { get; private set; }= false;
     public bool ErrorPopUpVisible = false;
     public string ErrorMessage = string.Empty;
 
