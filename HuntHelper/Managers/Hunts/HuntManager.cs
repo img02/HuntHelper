@@ -218,9 +218,9 @@ public class HuntManager
                     if (rank == HuntRank.S) sb.AddUiForeground($"{mob.Name}", _sTextColour); //gold 
                     break;
                 case "<hpp>": //change colour based on initial hp? meh
-                    if (Math.Abs(hpp - 100) < 1) sb.AddUiForeground($"{hpp:0}%", 67); //green
-                    if (Math.Abs(hpp - 100) is <= 30 and >= 1) sb.AddUiForeground($"{hpp:0}%", 573); //yellow
-                    if (Math.Abs(hpp - 100) is > 30) sb.AddUiForeground($"{hpp:0}%", 531); //red
+                    if (Math.Abs(hpp - 100) < 1) sb.AddUiForeground($"{hpp:0}%", 67); //green - ~100% hp
+                    if (Math.Abs(hpp - 100) is <= 30 and >= 1) sb.AddUiForeground($"{hpp:0}%", 573); //yellow 70+%
+                    if (Math.Abs(hpp - 100) is > 30) sb.AddUiForeground($"{hpp:0}%", 531); //red - below 70%hp
                     break;
                 case "<goldstar>":
                     sb.AddIcon(BitmapFontIcon.GoldStar); //think i went a bit overboard lmao
@@ -400,7 +400,7 @@ public class HuntManager
 
     private string GetMapNameFromPath(string path)
     { //all files end with '-data.jpg', img source - http://cablemonkey.us/huntmap2/
-        var pathRemoved = path.Remove(0, ImageFolderPath.Length + 1).Replace("_", " ");
+        var pathRemoved = path.Remove(0, ImageFolderPath.Length).Replace("_", " ");
         return pathRemoved.Remove(pathRemoved.Length - 9);
     }
 
@@ -471,12 +471,17 @@ public class HuntManager
     public void LoadMapImages()
     {
         if (ImagesLoaded) return;
-
         //if images/map folder doesn't exist, or is empty
-        if (!Directory.Exists(ImageFolderPath) || !Directory.EnumerateFiles(ImageFolderPath).Any()) return;
+        if (!Directory.Exists(ImageFolderPath)) return;
+        
+        var files = Directory.EnumerateFiles(ImageFolderPath).ToList();
+        if (!files.Any() || files.Count != 41) return; //wait until all images downloaded
 
         var paths = Directory.EnumerateFiles(ImageFolderPath, "*", SearchOption.TopDirectoryOnly);
-        foreach (var path in paths) _mapImages.Add(GetMapNameFromPath(path), _pluginInterface.UiBuilder.LoadImage(path));
+        foreach (var path in paths)
+        {
+            _mapImages.Add(GetMapNameFromPath(path), _pluginInterface.UiBuilder.LoadImage(path));
+        }
 
         ImagesLoaded = true;
         return;

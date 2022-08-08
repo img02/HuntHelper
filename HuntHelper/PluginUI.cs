@@ -153,6 +153,7 @@ namespace HuntHelper
         //window bools
         private bool _mainWindowVisible = false;
         private bool _showDatabaseListWindow = false;
+        private bool _loadingImages = false; //used to stop spamming _huntmanager.LoadingImages -> unobservable task exception - same key
 
         private Task _ttsLoop;
         private CancellationTokenSource _ttsLoopCancelTokenSource;
@@ -385,7 +386,7 @@ namespace HuntHelper
                 if (_showDebug) ShowDebugInfo();
 
                 //button to toggle bottom panel thing
-                var cursorPos = new Vector2(8, ImGui.GetWindowSize().Y - 30);
+                var cursorPos = new Vector2(8, ImGui.GetWindowSize().Y - 46); //positioned so it doesn't block map image credits!
                 ImGui.SetCursorPos(cursorPos);
                 //get a cogwheel img or something idk
                 ImGui.PushStyleColor(ImGuiCol.Button, new Vector4(.4f, .4f, .4f, 1f));
@@ -1614,11 +1615,13 @@ namespace HuntHelper
             function();
             ImGui.PopFont();
         }
-
-        private void LoadMapImages()
+        private async void LoadMapImages()
         {
             if (!_useMapImages) return;
-            Task.Run(() => _huntManager.LoadMapImages());
+            if (_loadingImages) return;
+            _loadingImages = true;
+            await Task.Run(() => _huntManager.LoadMapImages());
+            _loadingImages = false;
         }
 
         //=================================================================
@@ -1681,8 +1684,8 @@ namespace HuntHelper
                         if (ImGui.Button("Okay, Don't Show Me This Again. Thanks."))
                         {
                             _huntManager.HasDownloadErrors = false;
-                            _huntManager.DownloadErrors.Clear(); 
-                        } 
+                            _huntManager.DownloadErrors.Clear();
+                        }
                     });
                 }
                 else //should be the first thing shown, download prompt.
@@ -1698,7 +1701,7 @@ namespace HuntHelper
                         ImGui.Text($"");
                         ImGui.Text($"Or you can view and manually download from:");
                         ImGui.Dummy(Vector2.Zero);
-                        
+
                     });
                 }
 
