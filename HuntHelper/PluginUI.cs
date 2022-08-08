@@ -341,9 +341,13 @@ namespace HuntHelper
                 //=========================================
                 if (_useMapImages)
                 {
+                    //if only something went wrong, such as only some maps images downloaded
+                    if (_huntManager.HasDownloadErrors) MapImageDownloadWindow();
+
                     if (!_huntManager.ImagesLoaded)
                     {
-                        if (!Directory.Exists(_huntManager.ImageFolderPath)) MapImageDownloadWindow();
+                        //if images/map doesn't exist, or is empty - show map download window
+                        if (!Directory.Exists(_huntManager.ImageFolderPath) || !Directory.EnumerateFiles(_huntManager.ImageFolderPath).Any()) MapImageDownloadWindow();
                         else LoadMapImages();
                     }
                     else
@@ -480,7 +484,8 @@ namespace HuntHelper
                                  "\t\tMap Images Created By Cable Monkey of Goblin\n" +
                                  "         \t\t   http://cablemonkey.us/huntmap2/\n" +
                                  "         \t\t   Same thing for spawn point data :D\n" +
-                                 "\t\t=======================================");
+                                 "\t\t=======================================\n\n" +
+                                 "If map images aren't showing, please verify that you have the images downloaded in your plugins folder.");
 
                 ImGui.CheckboxFlags("Hide Title Bar", ref _huntWindowFlag, 1);
                 ImGui.SameLine();
@@ -1655,32 +1660,53 @@ namespace HuntHelper
 
         private void MapImageDownloadWindow()
         {
-            ImGui.SetNextWindowSize(new Vector2(710, 220));
+            ImGui.SetNextWindowSize(new Vector2(710, 240));
             if (ImGui.Begin("Images do not exist, download?", ref _useMapImages))
             {
-                DoStuffWithMonoFont(() =>
+                var url = Constants.RepoUrl;
+                var imageDir = _huntManager.ImageFolderPath;
+                if (_huntManager.DownloadingImages) //show this is in process of downloading
                 {
-                    ImGui.Dummy(Vector2.Zero);
-                    ImGui.Text($"Could not find: \n" +
-                               $"\t\t{_huntManager.ImageFolderPath}.");
-                    ImGui.Text($"This is expected if this is your first time using map images.");
-                    ImGui.Text($"Would you like to try to download them? (23.2MB)");
-                    ImGui.Text($"");
-                    ImGui.Text($"Or you can manually view and download from:");
-                    ImGui.Dummy(new Vector2(52, 0));
-                    ImGui.SameLine(); var url = "https://github.com/imaginary-png/HuntHelper-Resources/";
-                    ImGui.InputText("##url", ref url, 30, ImGuiInputTextFlags.ReadOnly);
-                    ImGui.Text($"and put them in the directory as shown above.");
-                    ImGui.Dummy(Vector2.Zero);
-
-                    if (ImGui.Button("Download##download"))
+                    DoStuffWithMonoFont(() =>
+                        ImGui.TextUnformatted("Attempting to download, please wait.\n\n" +
+                                                                    "If there seems to be a problem, please manually download from:"));
+                }
+                else if (_huntManager.HasDownloadErrors) //show this is any download errors
+                {
+                    DoStuffWithMonoFont(() => //successfully (manually) tested with failed image.
                     {
-                        ImGui.Text("ain't nothing here~!");
-                    }
+                        ImGui.Text("The following errors occurred:");
+                        _huntManager.DownloadErrors.ForEach(e => ImGui.Text(e));
+                        ImGui.Text("Please download the images manually,\n or try deleting the Images/Map folder + RESET PLUGIN, and attempt download again:\n");
+                        if (ImGui.Button("Okay, Don't Show Me This Again. Thanks."))
+                        {
+                            _huntManager.HasDownloadErrors = false;
+                            _huntManager.DownloadErrors.Clear(); 
+                        } 
+                    });
+                }
+                else //should be the first thing shown, download prompt.
+                {
+                    DoStuffWithMonoFont(() =>
+                    {
+                        ImGui.Dummy(Vector2.Zero);
+                        ImGui.Text($"Could not find map images");
+                        ImGui.Text($"This is expected if this is your first time.");
+                        ImGui.Text($"Would you like to try to download them? (~23.2MB)");
+                        ImGui.SameLine();
+                        if (ImGui.Button("Download##download")) _huntManager.DownloadImages(_mapDataManager.SpawnPointsList);
+                        ImGui.Text($"");
+                        ImGui.Text($"Or you can view and manually download from:");
+                        ImGui.Dummy(Vector2.Zero);
+                        
+                    });
+                }
 
-                    ImGui.SameLine();
-
-                });
+                ImGui.Dummy(new Vector2(52, 0));
+                ImGui.InputText("##url", ref url, 30, ImGuiInputTextFlags.ReadOnly);
+                ImGui.Text("and place in:");
+                ImGui.Dummy(new Vector2(52, 0));
+                ImGui.InputText("##folder dir", ref imageDir, 30, ImGuiInputTextFlags.ReadOnly);
                 ImGui.End();
             }
         }
