@@ -14,7 +14,10 @@ using Dalamud.Game.Gui.FlyText;
 using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Game.Text.SeStringHandling.Payloads;
 using Dalamud.Interface;
+using Dalamud.Logging;
 using Dalamud.Plugin;
+using FFXIVClientStructs.FFXIV.Client.Game.Event;
+using HuntHelper.MapInfoManager;
 using HuntHelper.Utilities;
 using ImGuiNET;
 using ImGuiScene;
@@ -43,12 +46,22 @@ public class HuntManager
     private BattleNpc? _priorityMob;
     private HuntRank _highestRank;
 
-    public bool ImagesLoaded = false;
+    public bool ImagesLoaded { get; private set; }= false;
     public bool ErrorPopUpVisible = false;
     public string ErrorMessage = string.Empty;
 
     public SpeechSynthesizer TTS { get; init; } //aint really used anymore except for setting default voice on load
     public string TTSName { get; set; }
+
+    #region chat/flytext colours - make customizable later? prob not.
+    private readonly ushort _aTextColour = 12;
+    private readonly ushort _bTextColour = 34;
+    private readonly ushort _sTextColour = 506;
+    private readonly ushort _aFlyTextColour = 10;
+    private readonly ushort _bFlyTextColour = 33;
+    private readonly ushort _sFlyTextColour = 16;
+    #endregion
+
 
     public List<(HuntRank Rank, BattleNpc Mob)> CurrentMobs => _currentMobs;
 
@@ -66,7 +79,7 @@ public class HuntManager
         _chatGui = chatGui;
         _flyTextGui = flyTextGui;
 
-        ImageFolderPath = Path.Combine(_pluginInterface.AssemblyLocation.Directory?.FullName!, @"Images\Maps");
+        ImageFolderPath = Path.Combine(_pluginInterface.AssemblyLocation.Directory?.FullName!, @"Images\Maps\");
         TTS = new SpeechSynthesizer();
         TTSName = TTS.Voice.Name;
         LoadHuntData();
@@ -143,19 +156,19 @@ public class HuntManager
         switch (rank)
         {
             case HuntRank.A:            //didn't hyphen 'rank' here.. think it looks better
-                rankSB.AddUiForeground("A RANK", 12); // pinkish-red - same as chat msg
-                nameSB.AddUiForeground($"{mob.Name}", 10); //tinted pinkish-red
+                rankSB.AddUiForeground("A RANK", _aTextColour); // pinkish-red - same as chat msg
+                nameSB.AddUiForeground($"{mob.Name}", _aFlyTextColour); //tinted pinkish-red
                 _flyTextGui.AddFlyText(FlyTextKind.NamedDirectHit, 1, 1, 1, rankSB.BuiltString, nameSB.BuiltString, 16, 2);//last 2 nums don't seem to change anything
                 break;
             case HuntRank.B:
-                rankSB.AddUiForeground("B RANK", 34); // blue - same as chat msg
-                nameSB.AddUiForeground($"{mob.Name}", 33); //tinted blue
+                rankSB.AddUiForeground("B RANK", _bTextColour); // blue - same as chat msg
+                nameSB.AddUiForeground($"{mob.Name}", _bFlyTextColour); //tinted blue
                 _flyTextGui.AddFlyText(FlyTextKind.NamedDirectHit, 1, 1, 1, rankSB.BuiltString, nameSB.BuiltString, 16, 2);
                 break;
             case HuntRank.S:
             case HuntRank.SS:
-                rankSB.AddUiForeground("S RANK", 16); // dark-red - different from chat msg (goldish) because it stands out more.
-                nameSB.AddUiForeground($"{mob.Name}", 506); //same gold as chat msg
+                rankSB.AddUiForeground("S RANK", _sFlyTextColour); // dark-red - different from chat msg (goldish) because it stands out more.
+                nameSB.AddUiForeground($"{mob.Name}", _sTextColour); //same gold as chat msg
                 _flyTextGui.AddFlyText(FlyTextKind.NamedDirectHit, 1, 1, 1, rankSB.BuiltString, nameSB.BuiltString, 16, 2);
                 break;
         }
@@ -195,19 +208,19 @@ public class HuntManager
                     break;
                 case "<rank>":
                     //idk just test random numbers lmao
-                    if (rank == HuntRank.A) sb.AddUiForeground("A-Rank", 12); //red / pinkish
-                    if (rank == HuntRank.B) sb.AddUiForeground("B-Rank", 34); //blue
-                    if (rank == HuntRank.S) sb.AddUiForeground("S-Rank", 506); //gold 
+                    if (rank == HuntRank.A) sb.AddUiForeground("A-Rank", _aTextColour); //red / pinkish
+                    if (rank == HuntRank.B) sb.AddUiForeground("B-Rank", _bTextColour); //blue
+                    if (rank == HuntRank.S) sb.AddUiForeground("S-Rank", _sTextColour); //gold 
                     break;
                 case "<name>":
-                    if (rank == HuntRank.A) sb.AddUiForeground($"{mob.Name}", 12); //red / pinkish
-                    if (rank == HuntRank.B) sb.AddUiForeground($"{mob.Name}", 34); //blue
-                    if (rank == HuntRank.S) sb.AddUiForeground($"{mob.Name}", 506); //gold 
+                    if (rank == HuntRank.A) sb.AddUiForeground($"{mob.Name}", _aTextColour); //red / pinkish
+                    if (rank == HuntRank.B) sb.AddUiForeground($"{mob.Name}", _bTextColour); //blue
+                    if (rank == HuntRank.S) sb.AddUiForeground($"{mob.Name}", _sTextColour); //gold 
                     break;
                 case "<hpp>": //change colour based on initial hp? meh
-                    if (Math.Abs(hpp - 100) < 1) sb.AddUiForeground($"{hpp:0}%", 67); //green
-                    if (Math.Abs(hpp - 100) is <= 30 and >= 1) sb.AddUiForeground($"{hpp:0}%", 573); //yellow
-                    if (Math.Abs(hpp - 100) is > 30) sb.AddUiForeground($"{hpp:0}%", 531); //red
+                    if (Math.Abs(hpp - 100) < 1) sb.AddUiForeground($"{hpp:0}%", 67); //green - ~100% hp
+                    if (Math.Abs(hpp - 100) is <= 30 and >= 1) sb.AddUiForeground($"{hpp:0}%", 573); //yellow 70+%
+                    if (Math.Abs(hpp - 100) is > 30) sb.AddUiForeground($"{hpp:0}%", 531); //red - below 70%hp
                     break;
                 case "<goldstar>":
                     sb.AddIcon(BitmapFontIcon.GoldStar); //think i went a bit overboard lmao
@@ -355,29 +368,6 @@ public class HuntManager
         return exists;
     }
 
-    private bool _showFailedDownloadWindow = false;
-    public bool LoadMapImages()
-    {
-        if (ImagesLoaded) return true;
-
-        if (!Directory.Exists(ImageFolderPath))
-        {
-            //if dir doesn't exist, try downloading images
-            //then if still doesn't exist, return false
-            //DownloadMapImages();
-            return false;
-        }
-
-        var paths = Directory.EnumerateFiles(ImageFolderPath, "*", SearchOption.TopDirectoryOnly);
-
-        foreach (var path in paths)
-        {
-            _mapImages.Add(GetMapNameFromPath(path), _pluginInterface.UiBuilder.LoadImage(path));
-        }
-
-        ImagesLoaded = true;
-        return true;
-    }
 
     public TextureWrap? GetMapImage(string mapName)
     {
@@ -410,7 +400,7 @@ public class HuntManager
 
     private string GetMapNameFromPath(string path)
     { //all files end with '-data.jpg', img source - http://cablemonkey.us/huntmap2/
-        var pathRemoved = path.Remove(0, ImageFolderPath.Length + 1).Replace("_", " ");
+        var pathRemoved = path.Remove(0, ImageFolderPath.Length).Replace("_", " ");
         return pathRemoved.Remove(pathRemoved.Length - 9);
     }
 
@@ -477,5 +467,54 @@ public class HuntManager
         if (B != null) dict.Add(HuntRank.B, B);
         if (S != null) dict.Add(HuntRank.S, S);
     }
+
+    public void LoadMapImages()
+    {
+        if (ImagesLoaded) return;
+        //if images/map folder doesn't exist, or is empty
+        if (!Directory.Exists(ImageFolderPath)) return;
+        
+        var files = Directory.EnumerateFiles(ImageFolderPath).ToList();
+        if (!files.Any() || files.Count != 41) return; //wait until all images downloaded
+
+        var paths = Directory.EnumerateFiles(ImageFolderPath, "*", SearchOption.TopDirectoryOnly);
+        foreach (var path in paths)
+        {
+            _mapImages.Add(GetMapNameFromPath(path), _pluginInterface.UiBuilder.LoadImage(path));
+        }
+
+        ImagesLoaded = true;
+        return;
+    }
+
+    public bool DownloadingImages = false;
+    public bool HasDownloadErrors = false;
+    public List<string> DownloadErrors = new List<string>();
+
+    //only called from GUI
+    public async void DownloadImages(List<MapSpawnPoints> spawnpointdata)
+    {
+        DownloadingImages = true;
+        try
+        {
+            Directory.CreateDirectory(ImageFolderPath); //create dir where images will be stored
+        }
+        catch (Exception ex)
+        {
+            DownloadErrors.Add(ex.Message);
+        }
+
+        //use spawnpoint data to get map names and generate urls.. coz lazy to retype
+        var names = spawnpointdata.Select(x => x.MapName).ToList();
+        var urls = names.Select(n => n = Constants.BaseUrl + n.Replace(" ", "_") + "-data.jpg").ToList();
+
+        //then async download each image and save to file
+        var downloader = new ImageDownloader(urls, ImageFolderPath);
+        var results = await downloader.BeginDownloadAsync();
+        DownloadErrors.AddRange(results);
+        if (DownloadErrors.Count > 0) HasDownloadErrors = true;
+        DownloadingImages = false;
+    }
+
 
 }
