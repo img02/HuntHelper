@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using System.Reflection.Metadata.Ecma335;
 using System.Speech.Synthesis;
 using System.Text.RegularExpressions;
@@ -30,13 +31,14 @@ namespace HuntHelper.Managers.Hunts;
 public class HuntManager
 {
     public readonly string ImageFolderPath;
+    public readonly string HuntTrainFilePath;
 
     private readonly Dictionary<HuntRank, List<Mob>> _arrDict;
     private readonly Dictionary<HuntRank, List<Mob>> _hwDict;
     private readonly Dictionary<HuntRank, List<Mob>> _shbDict;
     private readonly Dictionary<HuntRank, List<Mob>> _sbDict;
     private readonly Dictionary<HuntRank, List<Mob>> _ewDict;
-    public readonly Dictionary<String, TextureWrap> _mapImages;
+    private readonly Dictionary<String, TextureWrap> _mapImages;
     private readonly DalamudPluginInterface _pluginInterface;
     private readonly ChatGui _chatGui;
     private readonly FlyTextGui _flyTextGui;
@@ -83,6 +85,7 @@ public class HuntManager
         HuntTrain = new List<HuntTrainMob>();
 
         ImageFolderPath = Path.Combine(_pluginInterface.AssemblyLocation.Directory?.FullName!, @"Images\Maps\");
+        HuntTrainFilePath =  Path.Combine(_pluginInterface.AssemblyLocation.Directory?.FullName!, @"Data\HuntTrain.json");
         TTS = new SpeechSynthesizer();
         TTSName = TTS.Voice.Name;
 
@@ -110,12 +113,10 @@ public class HuntManager
     {
         //skip if already recorded, ideally ID would be safer. 
         if (HuntTrain.Any(m => m.Name == mob.Name.ToString())) return;
-
-        var trainMob = new HuntTrainMob(mob.Name.TextValue, mapName, 
-            SeString.CreateMapLink(mapName,
-                MapHelpers.ConvertToMapCoordinate(mob.Position.X, zoneMapCoordSize),
-                MapHelpers.ConvertToMapCoordinate(mob.Position.Z, zoneMapCoordSize))!,
-            DateTime.Now.ToUniversalTime(), false);
+        var position = new Vector2(MapHelpers.ConvertToMapCoordinate(mob.Position.X, zoneMapCoordSize),
+            MapHelpers.ConvertToMapCoordinate(mob.Position.Z, zoneMapCoordSize));
+        var trainMob = new HuntTrainMob(mob.Name.TextValue, mapName, position, DateTime.Now.ToUniversalTime(), false);
+        HuntTrain.Add(trainMob);
     }
 
     //bit much, grew big because I don't plan
@@ -352,14 +353,20 @@ public class HuntManager
 
     public void LoadHuntTrainRecord()
     {
-        //load from hunttrain.json
+        //directory should exist by default, as that's where spawn and mob data is stored.
+        if (!File.Exists(HuntTrainFilePath)) return;
+        var deserialised = JsonConvert.DeserializeObject<List<HuntTrainMob>>(HuntTrainFilePath);
+        if (deserialised == null) return;
+        HuntTrain.AddRange(deserialised);
     }
+
     public void SaveHuntTrainRecord()
     {
         //save to hunttrain.json
-        var serialized = JsonConvert.SerializeObject(HuntTrain);
-        var path = Path.Combine(_pluginInterface.AssemblyLocation.Directory?.FullName!, @"Data\HuntTrain.json");
-        File.WriteAllText(serialized, path);
+        var serialised = JsonConvert.SerializeObject(HuntTrain);
+        PluginLog.Error(HuntTrainFilePath);
+        File.WriteAllText(HuntTrainFilePath, serialised);
+        PluginLog.Information($"Saving Hunt Train Record to: {HuntTrainFilePath}");
     }
 
     public float GetMapZoneCoordSize(ushort mapID)
@@ -501,7 +508,7 @@ public class HuntManager
         var files = Directory.EnumerateFiles(ImageFolderPath).ToList();
         if (!files.Any() || files.Count != 41) return; //wait until all images downloaded
 
-        PluginLog.Warning("Loading Images..");
+        PluginLog.Information("Loading Images..");
         var paths = Directory.EnumerateFiles(ImageFolderPath, "*", SearchOption.TopDirectoryOnly);
         foreach (var path in paths)
         {
@@ -509,7 +516,7 @@ public class HuntManager
             if (_mapImages.ContainsKey(name)) continue;
             _mapImages.Add(name, _pluginInterface.UiBuilder.LoadImage(path));
         }
-        PluginLog.Warning("Images Loaded!");
+        PluginLog.Information("Images Loaded!");
         ImagesLoaded = true;
         return;
     }
