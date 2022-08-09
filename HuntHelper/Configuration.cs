@@ -83,11 +83,20 @@ namespace HuntHelper
         public bool ChatAEnabled { get; set; } = false;
         public bool ChatBEnabled { get; set; } = false;
         public bool ChatSEnabled { get; set; } = true;
-        public bool EnableTTSBackground { get; set; } = false;
+        public bool EnableBackgroundScan { get; set; } = false;
         public bool ShowOptionsWindow { get; set; } = false;
         public bool FlyTextAEnabled { get; set; } = false;
         public bool FlyTextBEnabled { get; set; } = false;
         public bool FlyTextSEnabled { get; set; } = true;
+
+
+        #region Hunt Train Window
+        //public bool HuntTrainWindowVisible { get; set; } = false;
+        public Vector2 HuntTrainWindowSize { get; set; } = new Vector2(250, 400);
+        public Vector2 HuntTrainWindowPos { get; set; } = new Vector2(150, 150);
+
+
+        #endregion
 
 
 

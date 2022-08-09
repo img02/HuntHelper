@@ -23,6 +23,7 @@ using Dalamud.Plugin;
 using HuntHelper.MapInfoManager;
 using Lumina.Excel.GeneratedSheets;
 using HuntHelper.Managers.Hunts;
+using HuntHelper.Utilities;
 using Microsoft.VisualBasic;
 using Action = System.Action;
 
@@ -40,7 +41,6 @@ namespace HuntHelper
         private readonly DataManager _dataManager;
         private readonly HuntManager _huntManager;
         private readonly MapDataManager _mapDataManager;
-        private readonly HuntTrainUI _huntTrainUI;
 
         private String _territoryName;
         private String _worldName => _clientState.LocalPlayer?.CurrentWorld?.GameData?.Name.ToString() ?? "Not Found";
@@ -136,7 +136,7 @@ namespace HuntHelper
         private bool _flyTxtBEnabled = true;
         private bool _flyTxtSEnabled = true;
 
-        private bool _enableTTSBackground = false;
+        private bool _enableBackgroundScan = false;
 
         //window bools
         private bool _showOptionsWindow = true;
@@ -152,17 +152,17 @@ namespace HuntHelper
         private readonly Vector4 _defaultTextColour = Vector4.One; //white
 
         //window bools
-        private bool _mainWindowVisible = false;
+        private bool _randomDebugWindowVisible = false;
         private bool _showDatabaseListWindow = false;
 
-        private Task _ttsLoop;
-        private CancellationTokenSource _ttsLoopCancelTokenSource;
+        private Task _backgroundLoop;
+        private CancellationTokenSource _backgroundLoopCancelTokenSource;
         private Task _loadingImagesAttempt = Task.CompletedTask;
 
-        public bool MainWindowVisible
+        public bool RandomDebugWindowVisisble
         {
-            get => this._mainWindowVisible;
-            set { _mainWindowVisible = value; }
+            get => this._randomDebugWindowVisible;
+            set { _randomDebugWindowVisible = value; }
         }
 
         private bool _mapVisible = false;
@@ -193,7 +193,6 @@ namespace HuntHelper
             this._dataManager = dataManager;
             this._huntManager = huntManager;
             this._mapDataManager = mapDataManager;
-            this._huntTrainUI = new HuntTrainUI(_huntManager);
 
             _ttsVoiceName = huntManager.TTS.Voice.Name; // load default voice first, then from settings if avail.
             _territoryName = String.Empty;
@@ -204,20 +203,20 @@ namespace HuntHelper
             LoadSettings();
             LoadMapImages();
 
-            _ttsLoopCancelTokenSource = new CancellationTokenSource();
-            _ttsLoop = Task.Run(() => TTSLoop(), _ttsLoopCancelTokenSource.Token); //for tts in background?
+            _backgroundLoopCancelTokenSource = new CancellationTokenSource();
+            _backgroundLoop = Task.Run(() => BackgroundLoop(), _backgroundLoopCancelTokenSource.Token); //for tts in background?
 
             
         }
 
-        private async void TTSLoop()
+        private async void BackgroundLoop()
         {
             while (true)
             {
-                if (_ttsLoopCancelTokenSource.Token.IsCancellationRequested) return;
-                while (_enableTTSBackground && !MapVisible)
+                if (_backgroundLoopCancelTokenSource.Token.IsCancellationRequested) return;
+                while (_enableBackgroundScan && !MapVisible)
                 {
-                    if (_ttsLoopCancelTokenSource.Token.IsCancellationRequested) return;
+                    if (_backgroundLoopCancelTokenSource.Token.IsCancellationRequested) return;
                     UpdateMobInfo();
                     //_huntManager.TTS.SpeakAsync($"loop");
                     Thread.Sleep(1000);
@@ -228,11 +227,10 @@ namespace HuntHelper
 
         public void Dispose()
         {
-            _ttsLoopCancelTokenSource.Cancel();
-            while (!_ttsLoop.IsCompleted) ;
-            _ttsLoopCancelTokenSource.Dispose();
+            _backgroundLoopCancelTokenSource.Cancel();
+            while (!_backgroundLoop.IsCompleted) ;
+            _backgroundLoopCancelTokenSource.Dispose();
             SaveSettings();
-            _huntTrainUI.Dispose();
         }
 
         public void Draw()
@@ -243,22 +241,21 @@ namespace HuntHelper
             // it actually makes sense.
             // There are other ways to do this, but it is generally best to keep the number of
             // draw delegates as low as possible.
-            DrawMainWindow();
+            DrawDebugWindow();
             DrawSettingsWindow();
             DrawHuntMapWindow();
-            _huntTrainUI.Draw();
         }
 
-        public void DrawMainWindow()
+        public void DrawDebugWindow()
         {
-            if (!MainWindowVisible)
+            if (!RandomDebugWindowVisisble)
             {
                 return;
             }
 
             ImGui.SetNextWindowSize(new Vector2(375, 330), ImGuiCond.FirstUseEver);
             ImGui.SetNextWindowSizeConstraints(new Vector2(375, 330), new Vector2(float.MaxValue, float.MaxValue));
-            if (ImGui.Begin("Debug stuff", ref this._mainWindowVisible))
+            if (ImGui.Begin("Debug stuff", ref this._randomDebugWindowVisible))
             {
 
                 if (ImGui.Button("Settings"))
@@ -278,11 +275,22 @@ namespace HuntHelper
                 var v3 = _clientState.LocalPlayer?.Position ?? new Vector3(0, 0, 0);
                 ImGui.Text($"v3: -----\n" +
                            $"X: {ConvertPosToCoordinate(v3.X)} |" +
-                           $"Y: {ConvertPosToCoordinate(v3.Z)} |\n" +
-                           $"v3: -----\n" +
-                           $"X: {Math.Round(v3.X, 2)} |" +
-                           $"Y: {Math.Round(v3.Z, 2)} |");
+                           $"Y: {ConvertPosToCoordinate(v3.Z)} |\n");
                 //END
+
+
+                var nearby = _huntManager.GetCurrentMobs();
+                ImGui.Text("Nearby Mobs");
+                nearby.ForEach(m => ImGui.TextUnformatted($"{m.Name} - {m.NameId}"));
+                ImGui.Text("============");
+
+                var priority = _huntManager.GetPriorityMob();
+                ImGui.Text("priority:");
+                ImGui.TextUnformatted($"{priority.Rank} - {priority.Mob?.Name}");
+
+                ImGui.Text("============");
+
+
 
                 ImGui.Indent(55);
                 ImGui.Text("");
@@ -968,7 +976,7 @@ namespace HuntHelper
                                     tempTTS.SpeakAsync($"BOO! {tts.Voice.Name} Selected");
                                 }
 
-                                ImGui.Checkbox("Background Notifications", ref _enableTTSBackground);
+                                ImGui.Checkbox("Background Notifications", ref _enableBackgroundScan);
                                 ImGui.SameLine(); ImGui_HelpMarker("Enabling this allows Hunt Helper to scan and send Chat and TTS notifications whilst the GUI is inactive.");
 
                                 ImGui.EndTabItem();
@@ -1134,7 +1142,7 @@ namespace HuntHelper
             _configuration.ChatAEnabled = _chatAEnabled;
             _configuration.ChatBEnabled = _chatBEnabled;
             _configuration.ChatSEnabled = _chatSEnabled;
-            _configuration.EnableTTSBackground = _enableTTSBackground;
+            _configuration.EnableBackgroundScan = _enableBackgroundScan;
             _configuration.ShowOptionsWindow = _showOptionsWindow;
             _configuration.FlyTextAEnabled = _flyTxtAEnabled;
             _configuration.FlyTextBEnabled = _flyTxtBEnabled;
@@ -1203,7 +1211,7 @@ namespace HuntHelper
             _chatAEnabled = _configuration.ChatAEnabled;
             _chatBEnabled = _configuration.ChatBEnabled;
             _chatSEnabled = _configuration.ChatSEnabled;
-            _enableTTSBackground = _configuration.EnableTTSBackground;
+            _enableBackgroundScan = _configuration.EnableBackgroundScan;
             _showOptionsWindow = _configuration.ShowOptionsWindow;
 
             _flyTxtAEnabled = _configuration.FlyTextAEnabled;
@@ -1287,9 +1295,10 @@ namespace HuntHelper
                 nearbyMobs.Add(mob);
                 _huntManager.AddToTrain(mob, _territoryName, _mapZoneMaxCoordSize);     ///////////////////////////////////// TEST CODE HERE
             }
-            _huntManager.AddNearbyMobs(nearbyMobs, _mapZoneMaxCoordSize,
+
+            _huntManager.AddNearbyMobs(nearbyMobs, _mapZoneMaxCoordSize, _territoryId, MapHelpers.GetMapID(_dataManager, _territoryId),
                 _ttsAEnabled, _ttsBEnabled, _ttsSEnabled, _ttsAMessage, _ttsBMessage, _ttsSMessage,
-                _chatAEnabled, _chatBEnabled, _chatSEnabled, _chatAMessage, _chatBMessage, _chatSMessage, _territoryName,
+                _chatAEnabled, _chatBEnabled, _chatSEnabled, _chatAMessage, _chatBMessage, _chatSMessage, 
                 _flyTxtAEnabled, _flyTxtBEnabled, _flyTxtSEnabled);
 
 
@@ -1443,8 +1452,9 @@ namespace HuntHelper
                 ImGui.IsMouseClicked(ImGuiMouseButton.Right))
             {
                 _huntManager.SendChatMessage(true,
-                    "<exclamationrectangle> <name> <flag> -- <rank> <exclamationrectangle>", _territoryName, mob,
-                    _mapZoneMaxCoordSize);
+                    "<exclamationrectangle> <name> <flag> -- <rank> <exclamationrectangle>", 
+                    _territoryId, MapHelpers.GetMapID(_dataManager, _territoryId),
+                    mob, _mapZoneMaxCoordSize);
             }
         }
         #endregion

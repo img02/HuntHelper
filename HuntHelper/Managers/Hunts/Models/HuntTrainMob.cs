@@ -2,6 +2,7 @@
 using System.Numerics;
 using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Game.Text.SeStringHandling.Payloads;
+using Dalamud.Logging;
 using Newtonsoft.Json;
 
 namespace HuntHelper.Managers.Hunts.Models;
@@ -25,6 +26,7 @@ public class HuntTrainMob
         LastSeenUTC = lastSeenUTC;
         Dead = dead;
 
+        PluginLog.Warning($"Trying to make maplink with :|{mapName}|");
         MapLink = SeString.CreateMapLink(mapName, position.X, position.Y)!;
     }
 

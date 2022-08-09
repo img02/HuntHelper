@@ -111,6 +111,7 @@ public class HuntManager
 
     public void AddToTrain(BattleNpc mob, string mapName, float zoneMapCoordSize)
     {
+        return;
         //skip if already recorded, ideally ID would be safer. 
         if (HuntTrain.Any(m => m.Name == mob.Name.ToString())) return;
         var position = new Vector2(MapHelpers.ConvertToMapCoordinate(mob.Position.X, zoneMapCoordSize),
@@ -120,9 +121,9 @@ public class HuntManager
     }
 
     //bit much, grew big because I don't plan
-    public void AddNearbyMobs(List<BattleNpc> nearbyMobs, float zoneMapCoordSize,
+    public void AddNearbyMobs(List<BattleNpc> nearbyMobs, float zoneMapCoordSize, uint territoryId, uint mapid,
         bool aTTS, bool bTTS, bool sTTS, string aTTSmsg, string bTTSmsg, string sTTSmsg,
-        bool chatA, bool chatB, bool chatS, string chatAmsg, string chatBmsg, string chatSmsg, string placeName,
+        bool chatA, bool chatB, bool chatS, string chatAmsg, string chatBmsg, string chatSmsg,
         bool flyTxtA, bool flyTxtB, bool flyTxtS)
     {
         //compare with old list
@@ -130,6 +131,7 @@ public class HuntManager
         _previousMobs.Clear();
         _previousMobs.AddRange(_currentMobs);
         _currentMobs.Clear();
+        ResetPriorityMob();
 
         foreach (var mob in nearbyMobs)
         {   //add in new mobs to current list. 
@@ -146,19 +148,19 @@ public class HuntManager
             {
                 case HuntRank.A:
                     NewMobFoundTTS(aTTS, aTTSmsg, mob);
-                    SendChatMessage(chatA, chatAmsg, placeName, mob, zoneMapCoordSize);
+                    SendChatMessage(chatA, chatAmsg, territoryId, mapid, mob, zoneMapCoordSize);
                     SendFlyText(rank, mob, flyTxtA);
                     break;
                 case HuntRank.B:
                     NewMobFoundTTS(bTTS, bTTSmsg, mob);
-                    SendChatMessage(chatB, chatBmsg, placeName, mob, zoneMapCoordSize);
+                    SendChatMessage(chatB, chatBmsg, territoryId, mapid, mob, zoneMapCoordSize);
                     SendFlyText(rank, mob, flyTxtB);
                     break;
                 case HuntRank.S:
                 case HuntRank.SS:
                     NewMobFoundTTS(sTTS, sTTSmsg, mob);
-                    SendChatMessage(chatS, chatSmsg, placeName, mob, zoneMapCoordSize);
-                    SendFlyText(rank, mob, flyTxtB);
+                    SendChatMessage(chatS, chatSmsg, territoryId, mapid, mob, zoneMapCoordSize);
+                    SendFlyText(rank, mob, flyTxtS);
                     break;
             }
         }
@@ -169,6 +171,7 @@ public class HuntManager
     //sent fly text in-game on the player  -- move these sestring colours from here and chatmsg to consts or something
     private void SendFlyText(HuntRank rank, BattleNpc mob, bool enabled)
     {
+        if (!enabled) return;
         var rankSB = new SeStringBuilder();
         var nameSB = new SeStringBuilder();
         switch (rank)
@@ -192,7 +195,7 @@ public class HuntManager
         }
     }
 
-    public void SendChatMessage(bool enabled, string msg, string placeName, BattleNpc mob, float zoneCoordSize)
+    public void SendChatMessage(bool enabled, string msg, uint territoryId, uint mapid, BattleNpc mob, float zoneCoordSize)
     {
         if (!enabled) return;
 
@@ -215,13 +218,10 @@ public class HuntManager
             switch (s)
             {
                 case "<flag>": //Why doesn't SeStringBuilder.AddMapLink have an overload that takes in placename, while SeString.CreateMapLink does? :( cause null possible?
-                    var maplink = SeString.CreateMapLink(placeName, MapHelpers.ConvertToMapCoordinate(mob.Position.X, zoneCoordSize),
+                    var maplink = SeString.CreateMapLink(territoryId, mapid, MapHelpers.ConvertToMapCoordinate(mob.Position.X, zoneCoordSize),
                         MapHelpers.ConvertToMapCoordinate(mob.Position.Z, zoneCoordSize));
                     sb.AddUiForeground(64); //white
-                    sb.Append(maplink ??
-                              new SeString(new TextPayload(
-                                      $"|Error: couldn't create map link for: {placeName} - Please report what zone this occurred in.|"))
-                                  .Append(new IconPayload(BitmapFontIcon.NoCircle)));
+                    sb.Append(maplink);
                     sb.AddUiForegroundOff();
                     break;
                 case "<rank>":
@@ -355,16 +355,15 @@ public class HuntManager
     {
         //directory should exist by default, as that's where spawn and mob data is stored.
         if (!File.Exists(HuntTrainFilePath)) return;
-        var deserialised = JsonConvert.DeserializeObject<List<HuntTrainMob>>(HuntTrainFilePath);
+        var deserialised = JsonConvert.DeserializeObject<List<HuntTrainMob>>(File.ReadAllText(HuntTrainFilePath));
         if (deserialised == null) return;
         HuntTrain.AddRange(deserialised);
     }
 
     public void SaveHuntTrainRecord()
     {
-        //save to hunttrain.json
-        var serialised = JsonConvert.SerializeObject(HuntTrain);
-        PluginLog.Error(HuntTrainFilePath);
+        var serialised = JsonConvert.SerializeObject(HuntTrain, Formatting.Indented);
+        PluginLog.Log("Loaded Saved Hunt Train Record");
         File.WriteAllText(HuntTrainFilePath, serialised);
         PluginLog.Information($"Saving Hunt Train Record to: {HuntTrainFilePath}");
     }
@@ -427,6 +426,12 @@ public class HuntManager
             _highestRank = rank;
             _priorityMob = mob;
         }
+    }
+
+    private void ResetPriorityMob()
+    {
+        _highestRank = HuntRank.B;
+        _priorityMob = null;
     }
 
     private string GetMapNameFromPath(string path)
