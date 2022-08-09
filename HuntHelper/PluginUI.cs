@@ -40,6 +40,7 @@ namespace HuntHelper
         private readonly DataManager _dataManager;
         private readonly HuntManager _huntManager;
         private readonly MapDataManager _mapDataManager;
+        private readonly HuntTrainUI _huntTrainUI;
 
         private String _territoryName;
         private String _worldName => _clientState.LocalPlayer?.CurrentWorld?.GameData?.Name.ToString() ?? "Not Found";
@@ -153,10 +154,11 @@ namespace HuntHelper
         //window bools
         private bool _mainWindowVisible = false;
         private bool _showDatabaseListWindow = false;
-        private bool _loadingImages = false; //used to stop spamming _huntmanager.LoadingImages -> unobservable task exception - same key
 
         private Task _ttsLoop;
         private CancellationTokenSource _ttsLoopCancelTokenSource;
+        private Task _loadingImagesAttempt = Task.CompletedTask;
+
         public bool MainWindowVisible
         {
             get => this._mainWindowVisible;
@@ -191,6 +193,8 @@ namespace HuntHelper
             this._dataManager = dataManager;
             this._huntManager = huntManager;
             this._mapDataManager = mapDataManager;
+            this._huntTrainUI = new HuntTrainUI(_huntManager);
+
             _ttsVoiceName = huntManager.TTS.Voice.Name; // load default voice first, then from settings if avail.
             _territoryName = String.Empty;
 
@@ -202,6 +206,8 @@ namespace HuntHelper
 
             _ttsLoopCancelTokenSource = new CancellationTokenSource();
             _ttsLoop = Task.Run(() => TTSLoop(), _ttsLoopCancelTokenSource.Token); //for tts in background?
+
+            
         }
 
         private async void TTSLoop()
@@ -225,9 +231,8 @@ namespace HuntHelper
             _ttsLoopCancelTokenSource.Cancel();
             while (!_ttsLoop.IsCompleted) ;
             _ttsLoopCancelTokenSource.Dispose();
-            _huntManager.Dispose();
             SaveSettings();
-
+            _huntTrainUI.Dispose();
         }
 
         public void Draw()
@@ -241,6 +246,7 @@ namespace HuntHelper
             DrawMainWindow();
             DrawSettingsWindow();
             DrawHuntMapWindow();
+            _huntTrainUI.Draw();
         }
 
         public void DrawMainWindow()
@@ -1279,11 +1285,13 @@ namespace HuntHelper
                 if (obj is not BattleNpc mob) continue;
                 if (!_huntManager.IsHunt(mob.NameId)) continue;
                 nearbyMobs.Add(mob);
+                _huntManager.AddToTrain(mob, _territoryName, _mapZoneMaxCoordSize);     ///////////////////////////////////// TEST CODE HERE
             }
             _huntManager.AddNearbyMobs(nearbyMobs, _mapZoneMaxCoordSize,
                 _ttsAEnabled, _ttsBEnabled, _ttsSEnabled, _ttsAMessage, _ttsBMessage, _ttsSMessage,
                 _chatAEnabled, _chatBEnabled, _chatSEnabled, _chatAMessage, _chatBMessage, _chatSMessage, _territoryName,
                 _flyTxtAEnabled, _flyTxtBEnabled, _flyTxtSEnabled);
+
 
             if (nearbyMobs.Count == 0) return;
             if (!MapVisible) return;
@@ -1341,12 +1349,13 @@ namespace HuntHelper
                 //to have detection for mouseover tooltip
                 var labelVector = ImGui.GetCursorPos() + ImGui.GetWindowPos() + new Vector2(140, 20);//adding half of child x,y size to get middle of element
                 //fixed sizing.... mouse over tooltip in case long-ass mob name clips 
-                if (ImGui.GetMousePos().X - labelVector.X is < 140 and > -140 &&
+                if (ImGui.GetMousePos().X - labelVector.X is < 140 and > -140 &&  //Why didn't I try isitem/windowhovered? bcoz i'm stupid
                     ImGui.GetMousePos().Y - labelVector.Y is < 20 and > -20)
                 {
                     ImGui_ToolTip(info);
                     MouseClickToSendChatFlag(mob);
                 }
+                
 
                 ImGui.PushStyleColor(ImGuiCol.Border, _priorityMobColourBackground);
                 ImGui.PushStyleColor(ImGuiCol.ChildBg, _priorityMobColourBackground);
@@ -1359,6 +1368,17 @@ namespace HuntHelper
                     $"({ConvertPosToCoordinate(mob.Position.X):0.00}, {ConvertPosToCoordinate(mob.Position.Z):0.00})",
                     colour);
                 ImGui.EndChild();
+                /*if (ImGui.IsItemHovered(ImGuiHoveredFlags.None))
+                {
+                    ImGui.BeginTooltip();
+                    ImGui.TextUnformatted(text);
+                    ImGui.TextUnformatted("WHY  DIDN'T I DO THIS");
+                    if (ImGui.IsMouseClicked(ImGuiMouseButton.Left))
+                    {
+                        ImGui.TextUnformatted("Clicked");
+                    }
+                    ImGui.EndTooltip();
+                }*/
                 ImGui.PopStyleColor(2);
             });
         }
@@ -1615,13 +1635,12 @@ namespace HuntHelper
             function();
             ImGui.PopFont();
         }
-        private async void LoadMapImages()
+
+        private void LoadMapImages()
         {
+            if (!_loadingImagesAttempt.IsCompleted) return;
             if (!_useMapImages) return;
-            if (_loadingImages) return;
-            _loadingImages = true;
-            await Task.Run(() => _huntManager.LoadMapImages());
-            _loadingImages = false;
+            _loadingImagesAttempt = Task.Run(() => _huntManager.LoadMapImages());
         }
 
         //=================================================================

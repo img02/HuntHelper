@@ -17,6 +17,7 @@ using Dalamud.Interface;
 using Dalamud.Logging;
 using Dalamud.Plugin;
 using FFXIVClientStructs.FFXIV.Client.Game.Event;
+using HuntHelper.Managers.Hunts.Models;
 using HuntHelper.MapInfoManager;
 using HuntHelper.Utilities;
 using ImGuiNET;
@@ -35,7 +36,7 @@ public class HuntManager
     private readonly Dictionary<HuntRank, List<Mob>> _shbDict;
     private readonly Dictionary<HuntRank, List<Mob>> _sbDict;
     private readonly Dictionary<HuntRank, List<Mob>> _ewDict;
-    private readonly Dictionary<String, TextureWrap> _mapImages;
+    public readonly Dictionary<String, TextureWrap> _mapImages;
     private readonly DalamudPluginInterface _pluginInterface;
     private readonly ChatGui _chatGui;
     private readonly FlyTextGui _flyTextGui;
@@ -46,7 +47,7 @@ public class HuntManager
     private BattleNpc? _priorityMob;
     private HuntRank _highestRank;
 
-    public bool ImagesLoaded { get; private set; }= false;
+    public bool ImagesLoaded { get; private set; } = false;
     public bool ErrorPopUpVisible = false;
     public string ErrorMessage = string.Empty;
 
@@ -62,7 +63,7 @@ public class HuntManager
     private readonly ushort _sFlyTextColour = 16;
     #endregion
 
-
+    public List<HuntTrainMob> HuntTrain { get; init; }
     public List<(HuntRank Rank, BattleNpc Mob)> CurrentMobs => _currentMobs;
 
     public HuntManager(DalamudPluginInterface pluginInterface, ChatGui chatGui, FlyTextGui flyTextGui)
@@ -79,10 +80,14 @@ public class HuntManager
         _chatGui = chatGui;
         _flyTextGui = flyTextGui;
 
+        HuntTrain = new List<HuntTrainMob>();
+
         ImageFolderPath = Path.Combine(_pluginInterface.AssemblyLocation.Directory?.FullName!, @"Images\Maps\");
         TTS = new SpeechSynthesizer();
         TTSName = TTS.Voice.Name;
+
         LoadHuntData();
+        LoadHuntTrainRecord();
     }
 
     public (HuntRank Rank, BattleNpc? Mob) GetPriorityMob()
@@ -99,6 +104,18 @@ public class HuntManager
     public List<(HuntRank, BattleNpc)> GetAllCurrentMobsWithRank()
     {
         return _currentMobs;
+    }
+
+    public void AddToTrain(BattleNpc mob, string mapName, float zoneMapCoordSize)
+    {
+        //skip if already recorded, ideally ID would be safer. 
+        if (HuntTrain.Any(m => m.Name == mob.Name.ToString())) return;
+
+        var trainMob = new HuntTrainMob(mob.Name.TextValue, mapName, 
+            SeString.CreateMapLink(mapName,
+                MapHelpers.ConvertToMapCoordinate(mob.Position.X, zoneMapCoordSize),
+                MapHelpers.ConvertToMapCoordinate(mob.Position.Z, zoneMapCoordSize))!,
+            DateTime.Now.ToUniversalTime(), false);
     }
 
     //bit much, grew big because I don't plan
@@ -331,12 +348,18 @@ public class HuntManager
         LoadFilesIntoDic(_sbDict, SBJsonFiles);
         LoadFilesIntoDic(_shbDict, ShBJsonFiles);
         LoadFilesIntoDic(_ewDict, EWJsonFiles);
-
     }
 
-    public void SaveHuntData()
+    public void LoadHuntTrainRecord()
     {
-
+        //load from hunttrain.json
+    }
+    public void SaveHuntTrainRecord()
+    {
+        //save to hunttrain.json
+        var serialized = JsonConvert.SerializeObject(HuntTrain);
+        var path = Path.Combine(_pluginInterface.AssemblyLocation.Directory?.FullName!, @"Data\HuntTrain.json");
+        File.WriteAllText(serialized, path);
     }
 
     public float GetMapZoneCoordSize(ushort mapID)
@@ -381,6 +404,7 @@ public class HuntManager
         {
             kvp.Value.Dispose();
         }
+        SaveHuntTrainRecord();
     }
 
     public double GetHPP(BattleNpc mob)
@@ -473,16 +497,19 @@ public class HuntManager
         if (ImagesLoaded) return;
         //if images/map folder doesn't exist, or is empty
         if (!Directory.Exists(ImageFolderPath)) return;
-        
+
         var files = Directory.EnumerateFiles(ImageFolderPath).ToList();
         if (!files.Any() || files.Count != 41) return; //wait until all images downloaded
 
+        PluginLog.Warning("Loading Images..");
         var paths = Directory.EnumerateFiles(ImageFolderPath, "*", SearchOption.TopDirectoryOnly);
         foreach (var path in paths)
         {
-            _mapImages.Add(GetMapNameFromPath(path), _pluginInterface.UiBuilder.LoadImage(path));
+            var name = GetMapNameFromPath(path);
+            if (_mapImages.ContainsKey(name)) continue;
+            _mapImages.Add(name, _pluginInterface.UiBuilder.LoadImage(path));
         }
-
+        PluginLog.Warning("Images Loaded!");
         ImagesLoaded = true;
         return;
     }
@@ -507,14 +534,19 @@ public class HuntManager
         //use spawnpoint data to get map names and generate urls.. coz lazy to retype
         var names = spawnpointdata.Select(x => x.MapName).ToList();
         var urls = names.Select(n => n = Constants.BaseUrl + n.Replace(" ", "_") + "-data.jpg").ToList();
-
+        
+        PluginLog.Information("Attempting to download Images.");
         //then async download each image and save to file
         var downloader = new ImageDownloader(urls, ImageFolderPath);
         var results = await downloader.BeginDownloadAsync();
         DownloadErrors.AddRange(results);
-        if (DownloadErrors.Count > 0) HasDownloadErrors = true;
+        if (DownloadErrors.Count > 0)
+        {
+            HasDownloadErrors = true;
+            PluginLog.Error("Error:");
+            DownloadErrors.ForEach(e => PluginLog.Error(e));
+        }
+        else PluginLog.Information("All images downloaded!");
         DownloadingImages = false;
     }
-
-
 }

@@ -33,6 +33,7 @@ namespace HuntHelper
         private ChatGui ChatGui { get; init; }
         private HuntManager HuntManager { get; init; }
         private MapDataManager MapDataManager { get; init; }
+        private FlyTextGui FlyTextGui { get; init; }
 
         public Plugin(
             DalamudPluginInterface pluginInterface,
@@ -50,6 +51,7 @@ namespace HuntHelper
             this.ObjectTable = objectTable;
             this.DataManager = dataManager;
             this.ChatGui = chatGui;
+            this.FlyTextGui = flyTextGui;
 
             this.Configuration = this.PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
             this.Configuration.Initialize(this.PluginInterface);
@@ -81,6 +83,8 @@ namespace HuntHelper
             this.PluginUi.Dispose();
             this.CommandManager.RemoveHandler(CommandName);
             this.CommandManager.RemoveHandler("/hh");
+            this.HuntManager.Dispose();
+            this.FlyTextGui.Dispose();
         }
 
         private void OnCommand(string command, string args)
