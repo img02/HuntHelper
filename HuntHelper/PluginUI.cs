@@ -185,14 +185,14 @@ namespace HuntHelper
             ClientState clientState, ObjectTable objectTable, DataManager dataManager,
             HuntManager huntManager, MapDataManager mapDataManager)
         {
-            this._configuration = configuration;
-            this._pluginInterface = pluginInterface; //not using atm...
+            _configuration = configuration;
+            _pluginInterface = pluginInterface; //not using atm...
 
-            this._clientState = clientState;
-            this._objectTable = objectTable;
-            this._dataManager = dataManager;
-            this._huntManager = huntManager;
-            this._mapDataManager = mapDataManager;
+            _clientState = clientState;
+            _objectTable = objectTable;
+            _dataManager = dataManager;
+            _huntManager = huntManager;
+            _mapDataManager = mapDataManager;
 
             _ttsVoiceName = huntManager.TTS.Voice.Name; // load default voice first, then from settings if avail.
             _territoryName = String.Empty;
@@ -206,7 +206,7 @@ namespace HuntHelper
             _backgroundLoopCancelTokenSource = new CancellationTokenSource();
             _backgroundLoop = Task.Run(() => BackgroundLoop(), _backgroundLoopCancelTokenSource.Token); //for tts in background?
 
-            
+
         }
 
         private async void BackgroundLoop()
@@ -547,11 +547,6 @@ namespace HuntHelper
                         {
                             if (ImGui.BeginTable("General Options table", 2))
                             {
-                                /*
-                                 *  CHANGE THESE TO PERCENTAGE OF SCREEN SIZE
-                                 * OR THEY'LL CLIP OFF SCREEN WHEN RESIZED
-                                 */
-
                                 ImGui.TableNextColumn();
                                 ImGui.Checkbox("Zone Name", ref _showZoneName);
                                 ImGui.SameLine();
@@ -1073,10 +1068,12 @@ namespace HuntHelper
             }
 
             ImGui.SetNextWindowSize(new Vector2(232, 75), ImGuiCond.Always);
-            if (ImGui.Begin("A Wonderful Configuration Window", ref this.settingsVisible,
+            if (ImGui.Begin("help, i've fallen over", ref this.settingsVisible,
                 ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse))
             {
                 ImGui_CentreText("There's nothing here", _defaultTextColour);
+                ImGui_CentreText("Options are available from the main map window,", _defaultTextColour);
+                ImGui_CentreText("click the buttom in the bottom left corner.", _defaultTextColour);
             }
             ImGui.End();
         }
@@ -1293,12 +1290,14 @@ namespace HuntHelper
                 if (obj is not BattleNpc mob) continue;
                 if (!_huntManager.IsHunt(mob.NameId)) continue;
                 nearbyMobs.Add(mob);
-                _huntManager.AddToTrain(mob, _territoryName, _mapZoneMaxCoordSize);     ///////////////////////////////////// TEST CODE HERE
+                _huntManager.AddToTrain(mob, _territoryId, MapHelpers.GetMapID(_dataManager, _territoryId), _territoryName, _mapZoneMaxCoordSize);     ///////////////////////////////////// TEST CODE HERE
             }
+
+            if (nearbyMobs.Count == 0) return;
 
             _huntManager.AddNearbyMobs(nearbyMobs, _mapZoneMaxCoordSize, _territoryId, MapHelpers.GetMapID(_dataManager, _territoryId),
                 _ttsAEnabled, _ttsBEnabled, _ttsSEnabled, _ttsAMessage, _ttsBMessage, _ttsSMessage,
-                _chatAEnabled, _chatBEnabled, _chatSEnabled, _chatAMessage, _chatBMessage, _chatSMessage, 
+                _chatAEnabled, _chatBEnabled, _chatSEnabled, _chatAMessage, _chatBMessage, _chatSMessage,
                 _flyTxtAEnabled, _flyTxtBEnabled, _flyTxtSEnabled);
 
 
@@ -1364,7 +1363,7 @@ namespace HuntHelper
                     ImGui_ToolTip(info);
                     MouseClickToSendChatFlag(mob);
                 }
-                
+
 
                 ImGui.PushStyleColor(ImGuiCol.Border, _priorityMobColourBackground);
                 ImGui.PushStyleColor(ImGuiCol.ChildBg, _priorityMobColourBackground);
@@ -1452,7 +1451,7 @@ namespace HuntHelper
                 ImGui.IsMouseClicked(ImGuiMouseButton.Right))
             {
                 _huntManager.SendChatMessage(true,
-                    "<exclamationrectangle> <name> <flag> -- <rank> <exclamationrectangle>", 
+                    "<exclamationrectangle> <name> <flag> -- <rank> <exclamationrectangle>",
                     _territoryId, MapHelpers.GetMapID(_dataManager, _territoryId),
                     mob, _mapZoneMaxCoordSize);
             }
@@ -1626,7 +1625,7 @@ namespace HuntHelper
             ImGui.EndTooltip();
         }
 
-        private void ImGui_HelpMarker(string text)
+        public static void ImGui_HelpMarker(string text)
         {
             ImGui.TextDisabled("(?)");
             if (ImGui.IsItemHovered())

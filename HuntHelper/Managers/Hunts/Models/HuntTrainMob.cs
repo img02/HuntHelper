@@ -17,17 +17,22 @@ public class HuntTrainMob
     public SeString MapLink { get; init; }
     public bool Dead { get;  set; }
 
+    public uint TerritoryID { get; init; }
+    public uint MapID { get; init; }
+
     [JsonConstructor] //only display name, map- maybe lastseen as tooltip?       >>>> or to the side and minute since last seen XXm ago. <<<gud idea
-    public HuntTrainMob(string name, string mapName, Vector2 position, DateTime lastSeenUTC, bool dead = false)
+    public HuntTrainMob(string name, uint territoryId, uint mapId, string mapName, Vector2 position, DateTime lastSeenUTC, bool dead = false)
     {
         Name = name;
         MapName = mapName;
         Position = position;
         LastSeenUTC = lastSeenUTC;
         Dead = dead;
+        TerritoryID = territoryId;
+        MapID = mapId;
 
         PluginLog.Warning($"Trying to make maplink with :|{mapName}|");
-        MapLink = SeString.CreateMapLink(mapName, position.X, position.Y)!;
+        MapLink = SeString.CreateMapLink(territoryId, mapId, position.X, position.Y)!;
     }
 
 

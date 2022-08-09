@@ -109,14 +109,13 @@ public class HuntManager
         return _currentMobs;
     }
 
-    public void AddToTrain(BattleNpc mob, string mapName, float zoneMapCoordSize)
+    public void AddToTrain(BattleNpc mob, uint territoryid, uint mapid, string mapName, float zoneMapCoordSize)
     {
-        return;
         //skip if already recorded, ideally ID would be safer. 
         if (HuntTrain.Any(m => m.Name == mob.Name.ToString())) return;
         var position = new Vector2(MapHelpers.ConvertToMapCoordinate(mob.Position.X, zoneMapCoordSize),
             MapHelpers.ConvertToMapCoordinate(mob.Position.Z, zoneMapCoordSize));
-        var trainMob = new HuntTrainMob(mob.Name.TextValue, mapName, position, DateTime.Now.ToUniversalTime(), false);
+        var trainMob = new HuntTrainMob(mob.Name.TextValue, territoryid, mapid, mapName, position, DateTime.Now.ToUniversalTime(), false);
         HuntTrain.Add(trainMob);
     }
 
@@ -195,6 +194,26 @@ public class HuntManager
         }
     }
 
+    public void SendTrainFlag(int index, ushort textColor = 24, ushort flagColour = 559, ushort countColour = 502) //make customizable in the future, maybe
+    {
+        var sb = new SeStringBuilder();
+
+        sb.AddUiForeground(textColor);
+        sb.AddIcon(BitmapFontIcon.ExclamationRectangle);
+        sb.AddText(HuntTrain[index].Name +"---");
+        sb.AddUiForegroundOff();
+
+        sb.AddUiForeground(flagColour);
+        sb.Append(HuntTrain[index].MapLink);
+        sb.AddUiForegroundOff();
+
+
+        sb.AddUiForeground(countColour);
+        sb.AddText($" --- {index+1}/{HuntTrain.Count}");
+        sb.AddUiForegroundOff();
+
+        _chatGui.Print(sb.BuiltString);
+    }
     public void SendChatMessage(bool enabled, string msg, uint territoryId, uint mapid, BattleNpc mob, float zoneCoordSize)
     {
         if (!enabled) return;

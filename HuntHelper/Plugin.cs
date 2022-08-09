@@ -22,6 +22,7 @@ namespace HuntHelper
 
         private const string MapWindowCommand = "/hh";
         private const string HuntTrainWindowCommand = "/hht";
+        private const string NextHuntInTrainCommand = "/hhn";
         private const string CommandName = "/hh1";
 
         private DalamudPluginInterface PluginInterface { get; init; }
@@ -68,15 +69,17 @@ namespace HuntHelper
             {
                 HelpMessage = "random data, debug info"
             });
-
             this.CommandManager.AddHandler(MapWindowCommand, new CommandInfo(HuntMapCommand)
             {
-                HelpMessage = "help, i've fallen over"
+                HelpMessage = "Opens the Hunt Map"
             });
-
             this.CommandManager.AddHandler(HuntTrainWindowCommand, new CommandInfo(HuntTrainCommand)
             {
-                HelpMessage = "Hunt Train Window"
+                HelpMessage = "Opens the Hunt Train Window"
+            });
+            this.CommandManager.AddHandler(NextHuntInTrainCommand, new CommandInfo(GetNextMobCommand)
+            {
+                HelpMessage = "Gets a flag for the next mob in the recorded hunt train"
             });
 
             this.PluginInterface.UiBuilder.Draw += DrawUI;
@@ -91,6 +94,7 @@ namespace HuntHelper
             this.CommandManager.RemoveHandler(CommandName);
             this.CommandManager.RemoveHandler(MapWindowCommand);
             this.CommandManager.RemoveHandler(HuntTrainWindowCommand);
+            this.CommandManager.RemoveHandler(NextHuntInTrainCommand);
             this.HuntManager.Dispose();
             this.FlyTextGui.Dispose();
         }
@@ -98,6 +102,8 @@ namespace HuntHelper
         private void DebugWindowCommand(string command, string args) => this.PluginUi.RandomDebugWindowVisisble = !PluginUi.RandomDebugWindowVisisble;
         private void HuntMapCommand(string command, string args) => PluginUi.MapVisible = !PluginUi.MapVisible;
         private void HuntTrainCommand(string command, string args) => HuntTrainUI.HuntTrainWindowVisible = !HuntTrainUI.HuntTrainWindowVisible;
+        //gets next available hunt in the recorded train
+        private void GetNextMobCommand(string command, string args) => HuntTrainUI.GetNextMobCommand();
 
         private void DrawUI()
         {
