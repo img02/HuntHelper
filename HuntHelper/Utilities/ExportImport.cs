@@ -11,34 +11,28 @@ using Newtonsoft.Json;
 
 namespace HuntHelper.Utilities;
 
-public class ExportImport
+public static class ExportImport
 {
-    public ExportImport()
-    {
-
-    }
-
-
     public static string Export<T>(T objectToSerialise)
     {
         var byteArr = Compress(JsonConvert.SerializeObject(objectToSerialise));
         return Convert.ToBase64String(byteArr);
     }
 
+    //ImportList?
     public static void Import<T>(string importCode, List<T> listToDeserialiseTo)
     {
         try
         {
             var decompressed = Decompress(importCode);
-            PluginLog.Warning("imoprt:|"+decompressed+"|");
             var result = JsonConvert.DeserializeObject<List<T>>(decompressed);
             if (result == null) return;
             listToDeserialiseTo.AddRange(result);
         }
         catch (Exception e)
         {
-            PluginLog.Error(e.Message);
-            PluginLog.Error(e.StackTrace);
+            /*PluginLog.Error(e.Message);
+            PluginLog.Error(e.StackTrace);*/
             return;
         }
     }

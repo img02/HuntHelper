@@ -66,6 +66,8 @@ public class HuntManager
     #endregion
 
     public List<HuntTrainMob> HuntTrain { get; init; }
+    public List<HuntTrainMob> ImportedTrain { get; init; }
+
     public List<(HuntRank Rank, BattleNpc Mob)> CurrentMobs => _currentMobs;
 
     public HuntManager(DalamudPluginInterface pluginInterface, ChatGui chatGui, FlyTextGui flyTextGui)
@@ -83,6 +85,7 @@ public class HuntManager
         _flyTextGui = flyTextGui;
 
         HuntTrain = new List<HuntTrainMob>();
+        ImportedTrain = new List<HuntTrainMob>();
 
         ImageFolderPath = Path.Combine(_pluginInterface.AssemblyLocation.Directory?.FullName!, @"Images\Maps\");
         HuntTrainFilePath =  Path.Combine(_pluginInterface.AssemblyLocation.Directory?.FullName!, @"Data\HuntTrain.json");
@@ -589,4 +592,39 @@ public class HuntManager
         else PluginLog.Information("All images downloaded!");
         DownloadingImages = false;
     }
+
+    #region Train Methods
+    
+    public void ImportTrainAll()
+    {
+        HuntTrain.Clear();
+        HuntTrain.AddRange(ImportedTrain);
+    }
+
+    public void ImportTrainNew(bool updateOldTime)
+    {
+        foreach (var m in ImportedTrain)
+        {
+            if (HuntTrain.All(mob => mob.Name != m.Name)) HuntTrain.Add(m);
+
+            if (updateOldTime)
+            {   //inefficient?
+                var toUpdate = HuntTrain.FirstOrDefault(mob => mob.Name == m.Name);
+                if (toUpdate == null) continue;
+                if (m.LastSeenUTC > toUpdate.LastSeenUTC) toUpdate.LastSeenUTC = m.LastSeenUTC;
+            }
+        }
+    }
+
+    public void TrainRemoveDead()
+    {
+        var toRemove = new List<HuntTrainMob>();
+        foreach (var m in HuntTrain) if (m.Dead) toRemove.Add(m);
+        foreach (var m in toRemove) HuntTrain.Remove(m);
+    }
+    //Unkill is deinitely a real word! :^
+    public void TrainUnkillAll() => HuntTrain.ForEach(m => m.Dead = false);
+    public void TrainDelete() => HuntTrain.Clear();
+
+    #endregion
 }

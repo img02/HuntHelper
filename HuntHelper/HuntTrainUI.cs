@@ -6,6 +6,8 @@ using System.Linq.Expressions;
 using System.Numerics;
 using System.Threading;
 using System.Threading.Tasks;
+using Dalamud.Interface;
+using Dalamud.Interface.Components;
 using Dalamud.Logging;
 using HuntHelper.Managers.Hunts;
 using HuntHelper.Managers.Hunts.Models;
@@ -21,24 +23,45 @@ public class HuntTrainUI : IDisposable
     private readonly HuntManager _huntManager;
     private readonly Configuration _config;
 
+    private bool _huntTrainWindowVisible = false;
 
+    private string _copyText = "Copy export code clipboard.\n" +
+                               "Warning: The code will be too long to be pasted into in-game chat. Share via Discord.";
+    private Task _copyTextTask = Task.CompletedTask;
+    private int _tooltipChangeTime = 400;
+
+    #region user customisable - config
     private Vector2 _huntTrainWindowSize = new Vector2(250, 400);
     private Vector2 _huntTrainWindowPos = new Vector2(150, 150);
 
-    private bool _huntTrainWindowVisible = false;
+    private bool _showPos = true;
+    private bool _showLastSeen = true;
+    private bool _useBorder = false;
+    #endregion
+
+    private Vector4 _deadTextColour = new Vector4(.6f, .7f, .6f, 1f);
+
+    private int _selectedIndex = 0;
+    private readonly List<HuntTrainMob> _mobList;
+    private readonly List<HuntTrainMob> _importedTrain;
+
+    //import new is basically the same as import all but doesn't delete anything, think it's fine to leave as default
+    private bool _importAll = false;
+    private bool _importNew = true;
+    private bool _importUpdateTime = true;
+
     public bool HuntTrainWindowVisible
     {
         get => _huntTrainWindowVisible;
         set => _huntTrainWindowVisible = value;
     }
 
-    private readonly List<HuntTrainMob> _mobList;
-
     public HuntTrainUI(HuntManager huntManager, Configuration config)
     {
         _huntManager = huntManager;
         _mobList = _huntManager.HuntTrain;
         _config = config;
+        _importedTrain = _huntManager.ImportedTrain;
         LoadSettings();
     }
 
@@ -180,42 +203,72 @@ public class HuntTrainUI : IDisposable
 
             ImGui.EndChild(); //main hunt train data section
             #endregion
-
-            ImGui.Text("BOTTOM" + $" {_selectedIndex}");
-
+            
             ImGui.Checkbox("pos", ref _showPos);
             ImGui.SameLine(); ImGui.Checkbox("last seen", ref _showLastSeen);
             ImGui.SameLine(); ImGui.Checkbox("border", ref _useBorder);
+            ImGui.Dummy(new Vector2(0,12f));
+            #region Buttons
 
-            ImGui.Button("Remove Dead Hunts");
-            ImGui.Button("Unkill All Hunts");
-
-            if (ImGui.Button("Export"))
+            if (ImGui.BeginChild("TrainButtons"))
             {
-                //get export code
-                var exportCode = ExportImport.Export(_mobList);
-                //copy to clipboard
-                ImGui.SetClipboardText(exportCode);
-                ChangeCopyText();
+                ImGui.PushStyleVar(ImGuiStyleVar.CellPadding, new Vector2(10,8f));
+                if (ImGui.BeginTable("TrainButtonTable",3))
+                {
+                    ImGui.TableNextColumn();
+                    if (ImGui.Button("Remove Dead Hunts")) _huntManager.TrainRemoveDead();
+                    ImGui.TableNextColumn();
+                    if (ImGui.Button("Revive Hunts")) _huntManager.TrainUnkillAll();
+                    ImGui.SameLine();
+                    PluginUI.ImGui_HelpMarker("Note, this doesn't actually revive them in-game!");
+                    ImGui.TableNextColumn();
+                    if (ImGui.Button("Delete Train")) ImGui.OpenPopup("Delete##modal");
+
+                    ImGui.TableNextColumn(); ImGui.TableNextColumn();
+                    if (ImGui.Button("Export"))
+                    {
+                        //get export code
+                        var exportCode = ExportImport.Export(_mobList);
+                        //copy to clipboard
+                        ImGui.SetClipboardText(exportCode);
+                        ChangeCopyText();
+                    }
+
+                    if (ImGui.IsItemHovered())
+                    {
+                        ImGui.BeginTooltip();
+                        ImGui.Text(_copyText);
+                        ImGui.EndTooltip();
+                    }
+                    ImGui.TableNextColumn();
+                    if (ImGui.Button("Import"))
+                    {
+                        var importCode = ImGui.GetClipboardText();
+                        ExportImport.Import(importCode, _importedTrain);
+
+                        ImGui.OpenPopup("Import##popup");
+
+                        //show 2 buttons, overwrite old data, only import new data.
+                    }
+                    
+                    ImGui.EndTable();
+                }
+                ImGui.PopStyleVar();
+                ImGui.EndChild();
             }
-            if (ImGui.IsItemHovered())
-            {
-                ImGui.BeginTooltip();
-                ImGui.Text(_copyText);
-                ImGui.EndTooltip();
-            }
+            
+            ImGuiComponents.IconButton(FontAwesomeIcon.SkullCrossbones); //delete train
+            ImGuiComponents.IconButton(FontAwesomeIcon.Recycle); //remove dead
 
-            if (ImGui.Button("Import"))
-            {
-                var importCode = ImGui.GetClipboardText();
-                ExportImport.Import(importCode, _importedTrain);
+            ImGuiComponents.IconButton(FontAwesomeIcon.Moon); //revive idk
+            ImGuiComponents.IconButton(FontAwesomeIcon.Syringe); //revive idk
 
-                ImGui.OpenPopup("Import##popup");
+            ImGuiComponents.IconButton(FontAwesomeIcon.Cog); //use this for huntmap options button
 
-                //show 2 buttons, overwrite old data, only import new data.
-            }
+            #endregion
 
-            DrawImportWindow();
+            DrawDeleteModal();
+            DrawImportWindowModal();
 
             ImGui.PopStyleVar(); //pop itemspacing
             ImGui.End();
@@ -223,24 +276,35 @@ public class HuntTrainUI : IDisposable
         ImGui.PopStyleVar();//pop window padding
     }
 
-    private string _copyText = "Copy export code clipboard.";
-    private Task _copyTextTask = Task.CompletedTask;
-    private int _tooltipChangeTime = 400;
-    private bool _showImportWindow = false;
+    private void DrawDeleteModal()
+    {
+        var center = ImGui.GetWindowPos() + ImGui.GetWindowSize() / 2;
+        ImGui.SetNextWindowPos(center, ImGuiCond.Appearing, new Vector2(0.5f, 0.5f));
+        ImGui.SetNextWindowSize(new Vector2(400, 200));
 
-    private int _selectedIndex = 0;
-    #region user customisable - config
-    private bool _showPos = true;
-    private bool _showLastSeen = true;
-    private bool _useBorder = false;
-    #endregion
-    private Vector4 _deadTextColour = new Vector4(.6f, .7f, .6f, 1f);
-    private readonly List<HuntTrainMob> _importedTrain = new List<HuntTrainMob>();
+        
+        if (ImGui.BeginPopupModal("Delete##modal"))
+        {
+            ImGui.TextWrapped("Are you sure you want to DELETE train data?");
 
-    private bool _importAll = false;
-    private bool _importNew = true;
-    private bool _importUpdateTime = true;
-    private void DrawImportWindow()
+            ImGui.Dummy(new Vector2(0, 25));
+            ImGui.Dummy(new Vector2(6, 0)); ImGui.SameLine();
+            if (ImGui.Button("Delete"))
+            {
+                _huntManager.TrainDelete();
+                ImGui.CloseCurrentPopup();
+            }
+
+            ImGui.SameLine(); ImGui.Dummy(new Vector2(16, 0));
+            ImGui.SameLine();
+            if (ImGui.Button("Cancel"))
+            {
+                ImGui.CloseCurrentPopup();
+            }
+            ImGui.EndPopup();
+        }
+    }
+    private void DrawImportWindowModal()
     {
         var center = ImGui.GetWindowPos() + ImGui.GetWindowSize() / 2;
         ImGui.SetNextWindowPos(center, ImGuiCond.Appearing, new Vector2(0.5f, 0.5f));
@@ -250,6 +314,16 @@ public class HuntTrainUI : IDisposable
         {
 
             //if count is zero -> show message
+            if (_importedTrain.Count == 0)
+            {
+                ImGui.TextWrapped("Nothing to import - or incorrect code\n\n" +
+                           "The export code is too long to be shared via in-game chat. Please share through Discord or something.");
+                ImGui.Dummy(new Vector2(0,25)); 
+                ImGui.Dummy(new Vector2(6,0)); ImGui.SameLine();
+                if (ImGui.Button("Close", new Vector2(80, 0))) ImGui.CloseCurrentPopup();
+                return;
+            }
+
 
             ImGui.Text($"Imported data for {_importedTrain.Count} mobs.");
 
@@ -263,11 +337,12 @@ public class HuntTrainUI : IDisposable
                     ImGui.TableNextColumn();
                     ImGui.TextUnformatted($"Last Seen");
                     foreach (var m in _importedTrain)
-                    {   //green text if new mob, red text if exists.
+                    {   //green text if new mob, grey text if exists.
                         ImGui.PushStyleColor(ImGuiCol.Text,
                             _mobList.All(mob => mob.Name != m.Name)
                                 ? new Vector4(0.1647f, 1f, 0.647f, 1f) //greenish
-                                : new Vector4(1f, 0.345f, 0.345f, 1f)); //redish
+                                : new Vector4(0.51f, 0.51f, 0.51f, 1f)); //grey
+                               // : new Vector4(1f, 0.345f, 0.345f, 1f)); //redish
                         ImGui.TableNextColumn();
                         ImGui.TextUnformatted($"{m.Name}");
                         ImGui.TableNextColumn();
@@ -335,29 +410,17 @@ public class HuntTrainUI : IDisposable
 
     }
 
+   
     private void ImportTrainData()
     {
         if (_importAll)
         {
-            _mobList.Clear();
-            _mobList.AddRange(_importedTrain);
+            _huntManager.ImportTrainAll();
             return;
         }
-
-        var tempList = new List<HuntTrainMob>();
-
-        foreach (var m in _importedTrain)
-        {
-            if (_mobList.All(mob => mob.Name != m.Name)) _mobList.Add(m);
-
-            if (_importUpdateTime)
-            {   //inefficient?
-                var toUpdate = _mobList.FirstOrDefault(mob => mob.Name == m.Name);
-                if (toUpdate == null) continue;
-                if (m.LastSeenUTC > toUpdate.LastSeenUTC) toUpdate.LastSeenUTC = m.LastSeenUTC;
-            }
-        }
+        _huntManager.ImportTrainNew(_importUpdateTime);
     }
+
 
     //changes tooltip temporarily when clicked. ^^)b
     private void ChangeCopyText()
