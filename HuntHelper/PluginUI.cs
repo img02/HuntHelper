@@ -1421,7 +1421,7 @@ namespace HuntHelper
                             $"   {hunt.Rank} Rank | {_huntManager.GetHPP(mob):0.00}%%  ",
                             $"{mob.Name}",
                             "----------------------",
-                            $"Click to send flag" //todo
+                            $"Click to send flag" 
                         });
 
                         MouseClickToSendChatFlag(mob);

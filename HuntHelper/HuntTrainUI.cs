@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using System.Drawing.Text;
 using System.Linq.Expressions;
 using System.Numerics;
+using System.Threading;
+using System.Threading.Tasks;
 using Dalamud.Logging;
 using HuntHelper.Managers.Hunts;
 using HuntHelper.Managers.Hunts.Models;
+using HuntHelper.Utilities;
 using ImGuiNET;
 using ImGuiScene;
 using Lumina.Excel.GeneratedSheets;
@@ -185,8 +188,33 @@ public class HuntTrainUI : IDisposable
 
             ImGui.Button("Remove Dead Hunts");
             ImGui.Button("Unkill All Hunts");
-            ImGui.Button("Export");
-            ImGui.Button("Import");
+
+            if (ImGui.Button("Export"))
+            {
+                //get export code
+                var exportCode = ExportImport.Export(_mobList);
+                //copy to clipboard
+                ImGui.SetClipboardText(exportCode);
+                ChangeCopyText();
+            }
+            if (ImGui.IsItemHovered())
+            {
+                ImGui.BeginTooltip();
+                ImGui.Text(_copyText);
+                ImGui.EndTooltip();
+            }
+
+            if (ImGui.Button("Import"))
+            {
+                var importCode = ImGui.GetClipboardText();
+                ExportImport.Import(importCode, _importedTrain);
+
+                ImGui.OpenPopup("Import##popup");
+                
+                //show 2 buttons, overwrite old data, only import new data.
+            }
+
+            ImportWindow();
 
             ImGui.PopStyleVar(); //pop itemspacing
             ImGui.End();
@@ -194,11 +222,71 @@ public class HuntTrainUI : IDisposable
         ImGui.PopStyleVar();//pop window padding
     }
 
+    private string _copyText = "Copy export code clipboard.";
+    private Task _copyTextTask = Task.CompletedTask;
+    private int _tooltipChangeTime = 400;
+    private bool _showImportWindow = false;
+
     private int _selectedIndex = 0;
     private bool _showPos = true;
     private bool _showLastSeen = true;
     private bool _useBorder = false;
     private Vector4 _deadTextColour = new Vector4(.6f, .7f, .6f, 1f);
+    private readonly List<HuntTrainMob> _importedTrain = new List<HuntTrainMob>();
+    private void ImportWindow()
+    {
+        var center = ImGui.GetWindowPos() + ImGui.GetWindowSize() / 2;
+        ImGui.SetNextWindowPos(center, ImGuiCond.Appearing, new Vector2(0.5f, 0.5f));
+        ImGui.SetNextWindowSize(new Vector2(400,400));
+        
+        if (ImGui.BeginPopupModal("Import##popup"))
+        {
+            
+            //if count is zero -> show message
+
+            ImGui.Text($"Imported data for {_importedTrain.Count} mobs.");
+
+            foreach (var m in _importedTrain)
+            {
+                ImGui.TextUnformatted($"{m.Name}");
+            }
+
+
+
+
+
+
+
+
+            ImGui.Dummy(new Vector2(0,100));
+            if (ImGui.Button("OK", new Vector2(120, 0)))
+            {
+                ImGui.CloseCurrentPopup();
+            }
+            ImGui.SameLine();
+            if (ImGui.Button("Cancel", new Vector2(120, 0)))
+            {
+                ImGui.CloseCurrentPopup();
+            }
+
+            ImGui.EndPopup();
+        }
+
+
+    }
+
+    //changes tooltip temporarily when clicked. ^^)b
+    private void ChangeCopyText()
+    {
+        if (!_copyTextTask.IsCompleted) return;
+        _copyTextTask = Task.Run(() =>
+        {
+            var temp = _copyText;
+            _copyText = "Copied!";
+            Thread.Sleep(_tooltipChangeTime);
+            _copyText = temp;
+        });
+    }
 
     //called from command, sets current mob as dead, selects next, sends flag.
     public void GetNextMobCommand()
@@ -209,6 +297,7 @@ public class HuntTrainUI : IDisposable
         else _huntManager.SendTrainFlag(-1);
     }
 
+    //based off of https://github.com/ocornut/imgui/blob/docking/imgui_demo.cpp#L2337
     private void SelectableFromList(HuntTrainMobAttribute attributeToDisplay)
     {
         HuntTrainMob? toRemove = null;
