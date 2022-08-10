@@ -74,7 +74,7 @@ public class HuntTrainUI : IDisposable
         ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, new Vector2(0, 0));
         ImGui.SetNextWindowSize(_huntTrainWindowSize, ImGuiCond.FirstUseEver);
         ImGui.SetWindowPos(_huntTrainWindowPos);
-        if (ImGui.Begin("Hunt Train##Window", ref _huntTrainWindowVisible))
+        if (ImGui.Begin("Hunt Train##Window", ref _huntTrainWindowVisible, ImGuiWindowFlags.NoScrollbar))
         {
             //var childSize = new Vector2(ImGui.GetWindowSize().X / numOfColumns, _mobList.Count * 23);
             var childSizeX = ImGui.GetWindowSize().X / numOfColumns;
@@ -92,7 +92,7 @@ public class HuntTrainUI : IDisposable
             #region hunt train main
 
             ImGui.BeginChild("HUNT TRAIN MAIN CHILD WINDOW ALL ENCOMPASSING LAYOUT FIXING CHILD OF WINDOW",
-                new Vector2(ImGui.GetWindowSize().X, (_mobList.Count + 1) * 23f), true); //23f is the size of a selectable from SelectableFromList();
+                new Vector2(ImGui.GetWindowSize().X, (_mobList.Count + 1) * 23f), _useBorder); //23f is the size of a selectable from SelectableFromList();
 
             #region Headers
 
@@ -127,7 +127,8 @@ public class HuntTrainUI : IDisposable
                                       "            -- Remove - Removes the mob from the list (This permanently deletes data on that mob)\n\n" +
                                       "Use the command \"/hhn\" to automatically mark the current selected as dead, and send the next Map link into chat.\n" +
                                       "(you will have to click the first one manually)\n\n" +
-                                      "*Does not allow duplicates (currently does not handle instances or different worlds)");
+                                      "*Does not allow duplicates (currently does not handle instances or different worlds)\n" +
+                                      "*Drag reordering can glitch a bit if you drag from near the top of an item. ");
             ImGui.SameLine();
             ImGui.TextColored(new Vector4(1f, .3f, .3f, 1f), "  <<<");
 
@@ -139,15 +140,12 @@ public class HuntTrainUI : IDisposable
                 ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse);
             SelectableFromList(HuntTrainMobAttribute.Name);
             ImGui.EndChild();
-
             
-
             if (_showPos)
             {
                 ImGui.SameLine();
                 ImGui.BeginChild("Position", new Vector2(posWidth, childSizeY), _useBorder,
                     ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse);
-                //moblist.ForEach(m => ImGui.TextUnformatted($"{m.Position}"));
                 SelectableFromList(HuntTrainMobAttribute.Position);
                 ImGui.EndChild();
             }
@@ -157,7 +155,6 @@ public class HuntTrainUI : IDisposable
                 ImGui.SameLine();
                 ImGui.BeginChild("Last seen", new Vector2(lastSeenWidth, childSizeY), _useBorder,
                     ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse);
-                //moblist.ForEach(m => ImGui.TextUnformatted($"{(DateTime.Now.ToUniversalTime() - m.LastSeenUTC).TotalMinutes:0}m"));
                 SelectableFromList(HuntTrainMobAttribute.LastSeen);
                 ImGui.EndChild();
             }
@@ -171,7 +168,7 @@ public class HuntTrainUI : IDisposable
                 ImGui.Checkbox($"##DeadCheckBox{m.Name}", ref d);
                 ImGui.Separator();
                 m.Dead = d;
-                if (m.Dead && _mobList.IndexOf(m) == _selectedIndex) SelectNext();
+                if (m.Dead && _mobList.IndexOf(m) == _selectedIndex) SelectNext();//infinite if all dead
             });
             ImGui.EndChild();
 
@@ -182,23 +179,18 @@ public class HuntTrainUI : IDisposable
 
             ImGui.Text("BOTTOM" + $" {_selectedIndex}");
 
-            /*
-             *
-             *  ADD SOME CHECKBOXES HERE FOR THE BOOLS
-             *
-             */
             ImGui.Checkbox("pos", ref _showPos);
             ImGui.SameLine(); ImGui.Checkbox("last seen", ref _showLastSeen);
             ImGui.SameLine(); ImGui.Checkbox("border", ref _useBorder);
 
+            ImGui.Button("Remove Dead Hunts");
+            ImGui.Button("Unkill All Hunts");
+            ImGui.Button("Export");
+            ImGui.Button("Import");
+
             ImGui.PopStyleVar(); //pop itemspacing
-
-
-
             ImGui.End();
-
         }
-
         ImGui.PopStyleVar();//pop window padding
     }
 
@@ -214,6 +206,7 @@ public class HuntTrainUI : IDisposable
         if (_selectedIndex < _mobList.Count) _mobList[_selectedIndex].Dead = true;
         SelectNext();
         if (!_mobList[_selectedIndex].Dead) _huntManager.SendTrainFlag(_selectedIndex);
+        else _huntManager.SendTrainFlag(-1);
     }
 
     private void SelectableFromList(HuntTrainMobAttribute attributeToDisplay)
@@ -230,21 +223,22 @@ public class HuntTrainUI : IDisposable
             if (n == _selectedIndex) ImGui.Selectable($"{label}", true, ImGuiSelectableFlags.None, new Vector2(ImGui.GetContentRegionAvail().X, 23f));
             else ImGui.Selectable($"{label}", false, ImGuiSelectableFlags.None, new Vector2(ImGui.GetContentRegionAvail().X, 23f));
 
-            if (ImGui.IsItemActive() && ImGui.IsMouseClicked(ImGuiMouseButton.Left))
-            {
-                _huntManager.SendTrainFlag(n);
-            }
-            if (ImGui.IsItemActive() && ImGui.IsMouseDoubleClicked(ImGuiMouseButton.Left))
+            
+            /*if (ImGui.IsItemActive() && ImGui.IsMouseDoubleClicked(ImGuiMouseButton.Left)) //useless
             {
                 mob.Dead = !mob.Dead;
-            }
+            }*/
+            //how to check if mouse held?
+            if (ImGui.IsItemActive() && ImGui.IsMouseClicked(ImGuiMouseButton.Left)) _huntManager.SendTrainFlag(n);
 
             if (ImGui.BeginPopupContextItem($"ContextMenu##{mob.Name}", ImGuiPopupFlags.MouseButtonRight))
             {
+                ImGui.PushStyleColor(ImGuiCol.Text, Vector4.One); //white
                 if (ImGui.MenuItem("   Select", true)) _selectedIndex = n;
                 ImGui.MenuItem("   ---", false);
                 if (ImGui.MenuItem("   Remove", true)) toRemove = mob;
                 ImGui.EndPopup();
+                ImGui.PopStyleColor();
             }
 
             if (ImGui.IsItemActive() && !ImGui.IsItemHovered())
@@ -257,6 +251,7 @@ public class HuntTrainUI : IDisposable
                     ImGui.ResetMouseDragDelta();
                 }
             }
+            
             ImGui.Separator();
             ImGui.PopStyleColor(); // pop style text colour
         }
@@ -273,11 +268,15 @@ public class HuntTrainUI : IDisposable
 
     private void SelectNext()
     {
-        var train = _huntManager.HuntTrain;
-
-        for (; _selectedIndex < train.Count; _selectedIndex++)
+        for (int i = 0;_selectedIndex < _mobList.Count; _selectedIndex++)
         {
-            if (!train[_selectedIndex].Dead) return;
+            if (!_mobList[_selectedIndex].Dead) return;
+            
+            //this way, if there is a preceding hunt that was skipped (still alive) for some reason, 
+            //the list will continue downwards first, before looping back to the top 
+            if (i != 0 || _selectedIndex != _mobList.Count - 1) continue;
+            _selectedIndex = -1;
+            i++;
         }
         _selectedIndex = 0; //if all mobs are dead, set to index 0.
     }

@@ -198,6 +198,15 @@ public class HuntManager
     {
         var sb = new SeStringBuilder();
 
+        if (index == -1)
+        {
+            sb.AddUiForeground(textColor);
+            sb.AddText("Nothing Left");
+            sb.AddUiForegroundOff();
+            _chatGui.Print(sb.BuiltString);
+            return;
+        }
+
         sb.AddUiForeground(textColor);
         sb.AddIcon(BitmapFontIcon.ExclamationRectangle);
         sb.AddText(HuntTrain[index].Name +"---");
