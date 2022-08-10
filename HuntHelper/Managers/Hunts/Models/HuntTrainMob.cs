@@ -11,7 +11,7 @@ public class HuntTrainMob
 {
     public string Name { get; init; }
     public string MapName { get; init; }
-    public DateTime LastSeenUTC { get; init; }
+    public DateTime LastSeenUTC { get; set; }
     public Vector2 Position { get; set; }
     [JsonIgnore]
     public SeString MapLink { get; init; }

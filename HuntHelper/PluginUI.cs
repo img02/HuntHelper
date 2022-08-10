@@ -53,7 +53,7 @@ namespace HuntHelper
         private float _playerIconRadius;
         private float _spawnPointIconRadius;
 
-        #region  User Customizable stuff - load and save to config
+        #region  User Customisable stuff - load and save to config
 
         //map opacity - should be between 0-1f;
         private float _mapImageOpacityAsPercentage = 100f;

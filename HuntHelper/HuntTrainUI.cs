@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing.Text;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Numerics;
 using System.Threading;
@@ -100,7 +101,7 @@ public class HuntTrainUI : IDisposable
             #region Headers
 
             ImGui.SameLine();
-            ImGui.BeginChild("NameHeader", new Vector2(childSizeX*1.75f, 20), _useBorder,
+            ImGui.BeginChild("NameHeader", new Vector2(childSizeX * 1.75f, 20), _useBorder,
                 ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse);
             ImGui.Text("Name");
             ImGui.EndChild();
@@ -139,11 +140,11 @@ public class HuntTrainUI : IDisposable
 
             ImGui.Separator();
 
-            ImGui.BeginChild("Name", new Vector2(childSizeX * 1.75f, childSizeY), _useBorder, 
+            ImGui.BeginChild("Name", new Vector2(childSizeX * 1.75f, childSizeY), _useBorder,
                 ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse);
             SelectableFromList(HuntTrainMobAttribute.Name);
             ImGui.EndChild();
-            
+
             if (_showPos)
             {
                 ImGui.SameLine();
@@ -163,7 +164,7 @@ public class HuntTrainUI : IDisposable
             }
 
             ImGui.SameLine();
-            ImGui.BeginChild("DeadButtons", new Vector2(childSizeX *0.25f, childSizeY), _useBorder,
+            ImGui.BeginChild("DeadButtons", new Vector2(childSizeX * 0.25f, childSizeY), _useBorder,
                 ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse);
             _mobList.ForEach(m =>
             {
@@ -210,11 +211,11 @@ public class HuntTrainUI : IDisposable
                 ExportImport.Import(importCode, _importedTrain);
 
                 ImGui.OpenPopup("Import##popup");
-                
+
                 //show 2 buttons, overwrite old data, only import new data.
             }
 
-            ImportWindow();
+            DrawImportWindow();
 
             ImGui.PopStyleVar(); //pop itemspacing
             ImGui.End();
@@ -228,44 +229,103 @@ public class HuntTrainUI : IDisposable
     private bool _showImportWindow = false;
 
     private int _selectedIndex = 0;
+    #region user customisable - config
     private bool _showPos = true;
     private bool _showLastSeen = true;
     private bool _useBorder = false;
+    #endregion
     private Vector4 _deadTextColour = new Vector4(.6f, .7f, .6f, 1f);
     private readonly List<HuntTrainMob> _importedTrain = new List<HuntTrainMob>();
-    private void ImportWindow()
+
+    private bool _importAll = false;
+    private bool _importNew = true;
+    private bool _importUpdateTime = true;
+    private void DrawImportWindow()
     {
         var center = ImGui.GetWindowPos() + ImGui.GetWindowSize() / 2;
         ImGui.SetNextWindowPos(center, ImGuiCond.Appearing, new Vector2(0.5f, 0.5f));
-        ImGui.SetNextWindowSize(new Vector2(400,400));
-        
+        ImGui.SetNextWindowSize(new Vector2(400, 700));
+
         if (ImGui.BeginPopupModal("Import##popup"))
         {
-            
+
             //if count is zero -> show message
 
             ImGui.Text($"Imported data for {_importedTrain.Count} mobs.");
 
-            foreach (var m in _importedTrain)
+            if (ImGui.BeginChild("tablechild", new Vector2(ImGui.GetWindowSize().X, (ImGui.GetTextLineHeightWithSpacing() + 5) * (_importedTrain.Count + 1))))
             {
-                ImGui.TextUnformatted($"{m.Name}");
+
+                if (ImGui.BeginTable("ImportTable", 2, ImGuiTableFlags.BordersH))
+                {
+                    ImGui.TableNextColumn();
+                    ImGui.TextUnformatted($"Name");
+                    ImGui.TableNextColumn();
+                    ImGui.TextUnformatted($"Last Seen");
+                    foreach (var m in _importedTrain)
+                    {   //green text if new mob, red text if exists.
+                        ImGui.PushStyleColor(ImGuiCol.Text,
+                            _mobList.All(mob => mob.Name != m.Name)
+                                ? new Vector4(0.1647f, 1f, 0.647f, 1f) //greenish
+                                : new Vector4(1f, 0.345f, 0.345f, 1f)); //redish
+                        ImGui.TableNextColumn();
+                        ImGui.TextUnformatted($"{m.Name}");
+                        ImGui.TableNextColumn();
+                        ImGui.TextUnformatted($"{(DateTime.Now.ToUniversalTime() - m.LastSeenUTC).TotalMinutes:0}m");
+                        ImGui.PopStyleColor();
+                    }
+                    ImGui.EndTable();
+                }
+                ImGui.EndChild();
             }
 
-
-
-
-
-
-
-
-            ImGui.Dummy(new Vector2(0,100));
-            if (ImGui.Button("OK", new Vector2(120, 0)))
+            if (ImGui.Checkbox("Import All ", ref _importAll))
             {
+                _importNew = false;
+                _importUpdateTime = false;
+            }
+            ImGui.SameLine(); PluginUI.ImGui_HelpMarker("Overwrites current data with imported data");
+            ImGui.Dummy(new Vector2(0, 6f));
+            ImGui.Separator();
+            ImGui.Dummy(new Vector2(0, 6f));
+
+            if (ImGui.Checkbox("Import New ", ref _importNew))
+            {
+                _importAll = false;
+                if (!_importNew) _importUpdateTime = false;
+            }
+            ImGui.SameLine(); PluginUI.ImGui_HelpMarker("Only imports new mobs");
+
+
+            ImGui.SameLine(); ImGui.Dummy(new Vector2(16, 0));
+            ImGui.SameLine();
+
+            if (ImGui.Checkbox("Update Last Seen Time ", ref _importUpdateTime))
+            {
+                _importNew = true;
+                _importAll = false;
+            };
+            ImGui.SameLine(); PluginUI.ImGui_HelpMarker("Imports new mobs and updates old mobs Last Seen times, if applicable");
+
+
+
+            ImGui.Dummy(new Vector2(0, 100));
+
+
+            ImGui.Dummy(new Vector2(6, 0));
+            ImGui.SameLine();
+            if (ImGui.Button("Import", new Vector2(80, 0)))
+            {
+                if (!_importNew && !_importUpdateTime && !_importAll) return;
+                ImportTrainData();
+                _importedTrain.Clear();
                 ImGui.CloseCurrentPopup();
             }
+            ImGui.SameLine(); ImGui.Dummy(new Vector2(6, 0));
             ImGui.SameLine();
-            if (ImGui.Button("Cancel", new Vector2(120, 0)))
+            if (ImGui.Button("Cancel", new Vector2(80, 0)))
             {
+                _importedTrain.Clear();
                 ImGui.CloseCurrentPopup();
             }
 
@@ -273,6 +333,30 @@ public class HuntTrainUI : IDisposable
         }
 
 
+    }
+
+    private void ImportTrainData()
+    {
+        if (_importAll)
+        {
+            _mobList.Clear();
+            _mobList.AddRange(_importedTrain);
+            return;
+        }
+
+        var tempList = new List<HuntTrainMob>();
+
+        foreach (var m in _importedTrain)
+        {
+            if (_mobList.All(mob => mob.Name != m.Name)) _mobList.Add(m);
+
+            if (_importUpdateTime)
+            {   //inefficient?
+                var toUpdate = _mobList.FirstOrDefault(mob => mob.Name == m.Name);
+                if (toUpdate == null) continue;
+                if (m.LastSeenUTC > toUpdate.LastSeenUTC) toUpdate.LastSeenUTC = m.LastSeenUTC;
+            }
+        }
     }
 
     //changes tooltip temporarily when clicked. ^^)b
@@ -312,7 +396,7 @@ public class HuntTrainUI : IDisposable
             if (n == _selectedIndex) ImGui.Selectable($"{label}", true, ImGuiSelectableFlags.None, new Vector2(ImGui.GetContentRegionAvail().X, 23f));
             else ImGui.Selectable($"{label}", false, ImGuiSelectableFlags.None, new Vector2(ImGui.GetContentRegionAvail().X, 23f));
 
-            
+
             /*if (ImGui.IsItemActive() && ImGui.IsMouseDoubleClicked(ImGuiMouseButton.Left)) //useless
             {
                 mob.Dead = !mob.Dead;
@@ -340,7 +424,7 @@ public class HuntTrainUI : IDisposable
                     ImGui.ResetMouseDragDelta();
                 }
             }
-            
+
             ImGui.Separator();
             ImGui.PopStyleColor(); // pop style text colour
         }
@@ -357,10 +441,10 @@ public class HuntTrainUI : IDisposable
 
     private void SelectNext()
     {
-        for (int i = 0;_selectedIndex < _mobList.Count; _selectedIndex++)
+        for (int i = 0; _selectedIndex < _mobList.Count; _selectedIndex++)
         {
             if (!_mobList[_selectedIndex].Dead) return;
-            
+
             //this way, if there is a preceding hunt that was skipped (still alive) for some reason, 
             //the list will continue downwards first, before looping back to the top 
             if (i != 0 || _selectedIndex != _mobList.Count - 1) continue;
