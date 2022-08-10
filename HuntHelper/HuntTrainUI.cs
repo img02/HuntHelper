@@ -76,19 +76,36 @@ public class HuntTrainUI : IDisposable
         ImGui.SetWindowPos(_huntTrainWindowPos);
         if (ImGui.Begin("Hunt Train##Window", ref _huntTrainWindowVisible))
         {
-            var childSize = new Vector2(ImGui.GetWindowSize().X / numOfColumns, ImGui.GetWindowSize().Y - 100);
+            //var childSize = new Vector2(ImGui.GetWindowSize().X / numOfColumns, _mobList.Count * 23);
+            var childSizeX = ImGui.GetWindowSize().X / numOfColumns;
+            var childSizeY = _mobList.Count * 23;
+            var lastSeenWidth = childSizeX; //math is hard, resizing is hard owie :(
+            var posWidth = childSizeX;
+            if (_showPos && _showLastSeen)
+            {
+                lastSeenWidth = childSizeX * .75f;
+                posWidth = childSizeX * 1.25f;
+            }
 
             ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing, new Vector2(0, 0));
 
+            #region hunt train main
+
+            ImGui.BeginChild("HUNT TRAIN MAIN CHILD WINDOW ALL ENCOMPASSING LAYOUT FIXING CHILD OF WINDOW",
+                new Vector2(ImGui.GetWindowSize().X, (_mobList.Count + 1) * 23f), true); //23f is the size of a selectable from SelectableFromList();
+
             #region Headers
+
             ImGui.SameLine();
-            ImGui.BeginChild("NameHeader", new Vector2(ImGui.GetWindowSize().X / numOfColumns, 20), _useBorder);
+            ImGui.BeginChild("NameHeader", new Vector2(childSizeX*1.75f, 20), _useBorder,
+                ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse);
             ImGui.Text("Name");
             ImGui.EndChild();
             if (_showPos)
             {
                 ImGui.SameLine();
-                ImGui.BeginChild("PositionHeader", new Vector2(ImGui.GetWindowSize().X / numOfColumns, 20), _useBorder);
+                ImGui.BeginChild("PositionHeader", new Vector2(posWidth, 20),
+                    _useBorder, ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse);
                 ImGui.Text("Position");
                 ImGui.EndChild();
             }
@@ -96,44 +113,58 @@ public class HuntTrainUI : IDisposable
             if (_showLastSeen)
             {
                 ImGui.SameLine();
-                ImGui.BeginChild("LastSeenHeader", new Vector2(ImGui.GetWindowSize().X / numOfColumns, 20), _useBorder);
+                ImGui.BeginChild("LastSeenHeader", new Vector2(lastSeenWidth, 20),
+                    _useBorder, ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse);
                 ImGui.Text("Last Seen");
                 ImGui.EndChild();
             }
-            ImGui.SameLine(); PluginUI.ImGui_HelpMarker("HOW TO:\n\n" +
+
+            ImGui.SameLine();
+            PluginUI.ImGui_HelpMarker("HOW TO:\n\n" +
                                       "Click on any of the rows to send the relevant Map Link into chat. (Drag to reorder the list)\n\n" +
                                       "Click on the checkbox to mark a mob as dead.\n\n" +
                                       "Right-click -- Select - change the selected mob\n" +
                                       "            -- Remove - Removes the mob from the list (This permanently deletes data on that mob)\n\n" +
                                       "Use the command \"/hhn\" to automatically mark the current selected as dead, and send the next Map link into chat.\n" +
-                                      "(you will have to click the first one manually)");
-            ImGui.SameLine(); ImGui.TextColored(new Vector4(1f,.3f,.3f,1f), "  <<<");
+                                      "(you will have to click the first one manually)\n\n" +
+                                      "*Does not allow duplicates (currently does not handle instances or different worlds)");
+            ImGui.SameLine();
+            ImGui.TextColored(new Vector4(1f, .3f, .3f, 1f), "  <<<");
+
             #endregion
 
             ImGui.Separator();
 
-            ImGui.BeginChild("Name", childSize);
+            ImGui.BeginChild("Name", new Vector2(childSizeX * 1.75f, childSizeY), _useBorder, 
+                ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse);
             SelectableFromList(HuntTrainMobAttribute.Name);
             ImGui.EndChild();
+
+            
+
             if (_showPos)
             {
                 ImGui.SameLine();
-                ImGui.BeginChild("Position", childSize, _useBorder);
+                ImGui.BeginChild("Position", new Vector2(posWidth, childSizeY), _useBorder,
+                    ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse);
                 //moblist.ForEach(m => ImGui.TextUnformatted($"{m.Position}"));
-                SelectableFromList( HuntTrainMobAttribute.Position);
+                SelectableFromList(HuntTrainMobAttribute.Position);
                 ImGui.EndChild();
             }
+
             if (_showLastSeen)
             {
                 ImGui.SameLine();
-                ImGui.BeginChild("Last seen", childSize, _useBorder);
+                ImGui.BeginChild("Last seen", new Vector2(lastSeenWidth, childSizeY), _useBorder,
+                    ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse);
                 //moblist.ForEach(m => ImGui.TextUnformatted($"{(DateTime.Now.ToUniversalTime() - m.LastSeenUTC).TotalMinutes:0}m"));
                 SelectableFromList(HuntTrainMobAttribute.LastSeen);
                 ImGui.EndChild();
             }
 
             ImGui.SameLine();
-            ImGui.BeginChild("DeadButtons", childSize, _useBorder);
+            ImGui.BeginChild("DeadButtons", new Vector2(childSizeX *0.25f, childSizeY), _useBorder,
+                ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse);
             _mobList.ForEach(m =>
             {
                 var d = m.Dead;
@@ -145,19 +176,36 @@ public class HuntTrainUI : IDisposable
             ImGui.EndChild();
 
             ImGui.Separator();
-            ImGui.Text("BOTTOM"+$" {_selectedIndex}");
+
+            ImGui.EndChild(); //main hunt train data section
+            #endregion
+
+            ImGui.Text("BOTTOM" + $" {_selectedIndex}");
+
+            /*
+             *
+             *  ADD SOME CHECKBOXES HERE FOR THE BOOLS
+             *
+             */
+            ImGui.Checkbox("pos", ref _showPos);
+            ImGui.SameLine(); ImGui.Checkbox("last seen", ref _showLastSeen);
+            ImGui.SameLine(); ImGui.Checkbox("border", ref _useBorder);
 
             ImGui.PopStyleVar(); //pop itemspacing
 
+
+
             ImGui.End();
+
         }
+
         ImGui.PopStyleVar();//pop window padding
     }
 
     private int _selectedIndex = 0;
     private bool _showPos = true;
     private bool _showLastSeen = true;
-    private bool _useBorder = true;
+    private bool _useBorder = false;
     private Vector4 _deadTextColour = new Vector4(.6f, .7f, .6f, 1f);
 
     //called from command, sets current mob as dead, selects next, sends flag.
@@ -168,7 +216,7 @@ public class HuntTrainUI : IDisposable
         if (!_mobList[_selectedIndex].Dead) _huntManager.SendTrainFlag(_selectedIndex);
     }
 
-    private void SelectableFromList( HuntTrainMobAttribute attributeToDisplay)
+    private void SelectableFromList(HuntTrainMobAttribute attributeToDisplay)
     {
         HuntTrainMob? toRemove = null;
         for (int n = 0; n < _mobList.Count; n++)
@@ -220,7 +268,7 @@ public class HuntTrainUI : IDisposable
         {
             HuntTrainMobAttribute.Name => mob.Name,
             HuntTrainMobAttribute.LastSeen => $"{(DateTime.Now.ToUniversalTime() - mob.LastSeenUTC).TotalMinutes:0.}m",
-            HuntTrainMobAttribute.Position => $"({mob.Position.X}, {mob.Position.Y})",
+            HuntTrainMobAttribute.Position => $"({mob.Position.X:0.0}, {mob.Position.Y:0.0})",
         };
 
     private void SelectNext()

@@ -31,7 +31,7 @@ public class HuntTrainMob
         TerritoryID = territoryId;
         MapID = mapId;
 
-        PluginLog.Warning($"Trying to make maplink with :|{mapName}|");
+        //PluginLog.Information($"Trying to make maplink with :|{mapName}|");  //"Mor Dhona" fails when using as placename
         MapLink = SeString.CreateMapLink(territoryId, mapId, position.X, position.Y)!;
     }
 
