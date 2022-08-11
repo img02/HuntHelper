@@ -31,7 +31,7 @@ public class HuntTrainUI : IDisposable
     private int _tooltipChangeTime = 400;
 
     #region user customisable - config
-    private Vector2 _huntTrainWindowSize = new Vector2(200, 480);
+    private Vector2 _huntTrainWindowSize = new Vector2(310, 270);
     private Vector2 _huntTrainWindowPos = new Vector2(150, 150);
 
     private bool _showPos = true;
@@ -275,6 +275,7 @@ public class HuntTrainUI : IDisposable
             //ImGui.TextUnformatted($"{ImGui.GetWindowSize()}");
             #endregion
 
+            //ImGui.TextUnformatted($"{ImGui.GetWindowSize()}");
 
             ImGui.PopStyleVar(); //pop itemspacing
             ImGui.End();
