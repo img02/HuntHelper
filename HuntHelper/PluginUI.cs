@@ -195,7 +195,7 @@ namespace HuntHelper
             LoadMapImages();
 
             _backgroundLoopCancelTokenSource = new CancellationTokenSource();
-            _backgroundLoop = Task.Run(BackgroundLoop, _backgroundLoopCancelTokenSource.Token); //for tts in background?
+            _backgroundLoop = Task.Run(BackgroundLoop, _backgroundLoopCancelTokenSource.Token); 
 
 
         }
@@ -1270,7 +1270,7 @@ namespace HuntHelper
             {
                 $"{mob.Name}",
                 $"({ConvertPosToCoordinate(mob.Position.X)}, {ConvertPosToCoordinate(mob.Position.Z)})",
-                $"{Math.Round((mob.CurrentHp * 1.0) / mob.MaxHp * 100, 2)}%"
+                $"{Math.Round((mob.CurrentHp * 1.0) / mob.MaxHp * 100, 2)}%%"
             };
             ImGui_ToolTip(text);
         }
