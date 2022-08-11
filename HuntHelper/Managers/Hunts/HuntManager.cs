@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using System.Reflection.Metadata.Ecma335;
 using System.Speech.Synthesis;
 using System.Text.RegularExpressions;
@@ -17,6 +18,7 @@ using Dalamud.Interface;
 using Dalamud.Logging;
 using Dalamud.Plugin;
 using FFXIVClientStructs.FFXIV.Client.Game.Event;
+using HuntHelper.Managers.Hunts.Models;
 using HuntHelper.MapInfoManager;
 using HuntHelper.Utilities;
 using ImGuiNET;
@@ -29,6 +31,7 @@ namespace HuntHelper.Managers.Hunts;
 public class HuntManager
 {
     public readonly string ImageFolderPath;
+    public readonly string HuntTrainFilePath;
 
     private readonly Dictionary<HuntRank, List<Mob>> _arrDict;
     private readonly Dictionary<HuntRank, List<Mob>> _hwDict;
@@ -39,6 +42,7 @@ public class HuntManager
     private readonly DalamudPluginInterface _pluginInterface;
     private readonly ChatGui _chatGui;
     private readonly FlyTextGui _flyTextGui;
+    private readonly TrainManager _trainManager;
 
     private readonly List<(HuntRank Rank, BattleNpc Mob)> _currentMobs;
     private readonly List<(HuntRank Rank, BattleNpc Mob)> _previousMobs;
@@ -46,7 +50,7 @@ public class HuntManager
     private BattleNpc? _priorityMob;
     private HuntRank _highestRank;
 
-    public bool ImagesLoaded { get; private set; }= false;
+    public bool ImagesLoaded { get; private set; } = false;
     public bool ErrorPopUpVisible = false;
     public string ErrorMessage = string.Empty;
 
@@ -61,11 +65,13 @@ public class HuntManager
     private readonly ushort _bFlyTextColour = 33;
     private readonly ushort _sFlyTextColour = 16;
     #endregion
-
+    
+    public List<HuntTrainMob> HuntTrain { get; init; }
+    public List<HuntTrainMob> ImportedTrain { get; init; }
 
     public List<(HuntRank Rank, BattleNpc Mob)> CurrentMobs => _currentMobs;
 
-    public HuntManager(DalamudPluginInterface pluginInterface, ChatGui chatGui, FlyTextGui flyTextGui)
+    public HuntManager(DalamudPluginInterface pluginInterface, TrainManager trainManager,ChatGui chatGui, FlyTextGui flyTextGui)
     {
         _arrDict = new Dictionary<HuntRank, List<Mob>>();
         _hwDict = new Dictionary<HuntRank, List<Mob>>();
@@ -78,11 +84,18 @@ public class HuntManager
         _pluginInterface = pluginInterface;
         _chatGui = chatGui;
         _flyTextGui = flyTextGui;
+        _trainManager = trainManager;
+
+        HuntTrain = new List<HuntTrainMob>();
+        ImportedTrain = new List<HuntTrainMob>();
 
         ImageFolderPath = Path.Combine(_pluginInterface.AssemblyLocation.Directory?.FullName!, @"Images\Maps\");
+        //HuntTrainFilePath =  Path.Combine(_pluginInterface.AssemblyLocation.Directory?.FullName!, @"Data\HuntTrain.json");
         TTS = new SpeechSynthesizer();
         TTSName = TTS.Voice.Name;
+
         LoadHuntData();
+        //LoadHuntTrainRecord();
     }
 
     public (HuntRank Rank, BattleNpc? Mob) GetPriorityMob()
@@ -101,10 +114,19 @@ public class HuntManager
         return _currentMobs;
     }
 
+    public void AddToTrain(BattleNpc mob, uint territoryid, uint mapid, string mapName, float zoneMapCoordSize)
+    {
+        if (!_trainManager.RecordTrain) return;
+        //only record A ranks
+        if (GetHuntRank(mob.NameId) != HuntRank.A) return;
+        //skip if already recorded, ideally ID would be safer. 
+        _trainManager.AddMob(mob, territoryid, mapid, mapName, zoneMapCoordSize);
+    }
+
     //bit much, grew big because I don't plan
-    public void AddNearbyMobs(List<BattleNpc> nearbyMobs, float zoneMapCoordSize,
+    public void AddNearbyMobs(List<BattleNpc> nearbyMobs, float zoneMapCoordSize, uint territoryId, uint mapid,
         bool aTTS, bool bTTS, bool sTTS, string aTTSmsg, string bTTSmsg, string sTTSmsg,
-        bool chatA, bool chatB, bool chatS, string chatAmsg, string chatBmsg, string chatSmsg, string placeName,
+        bool chatA, bool chatB, bool chatS, string chatAmsg, string chatBmsg, string chatSmsg,
         bool flyTxtA, bool flyTxtB, bool flyTxtS)
     {
         //compare with old list
@@ -112,6 +134,7 @@ public class HuntManager
         _previousMobs.Clear();
         _previousMobs.AddRange(_currentMobs);
         _currentMobs.Clear();
+        ResetPriorityMob();
 
         foreach (var mob in nearbyMobs)
         {   //add in new mobs to current list. 
@@ -128,19 +151,19 @@ public class HuntManager
             {
                 case HuntRank.A:
                     NewMobFoundTTS(aTTS, aTTSmsg, mob);
-                    SendChatMessage(chatA, chatAmsg, placeName, mob, zoneMapCoordSize);
+                    SendChatMessage(chatA, chatAmsg, territoryId, mapid, mob, zoneMapCoordSize);
                     SendFlyText(rank, mob, flyTxtA);
                     break;
                 case HuntRank.B:
                     NewMobFoundTTS(bTTS, bTTSmsg, mob);
-                    SendChatMessage(chatB, chatBmsg, placeName, mob, zoneMapCoordSize);
+                    SendChatMessage(chatB, chatBmsg, territoryId, mapid, mob, zoneMapCoordSize);
                     SendFlyText(rank, mob, flyTxtB);
                     break;
                 case HuntRank.S:
                 case HuntRank.SS:
                     NewMobFoundTTS(sTTS, sTTSmsg, mob);
-                    SendChatMessage(chatS, chatSmsg, placeName, mob, zoneMapCoordSize);
-                    SendFlyText(rank, mob, flyTxtB);
+                    SendChatMessage(chatS, chatSmsg, territoryId, mapid, mob, zoneMapCoordSize);
+                    SendFlyText(rank, mob, flyTxtS);
                     break;
             }
         }
@@ -151,6 +174,7 @@ public class HuntManager
     //sent fly text in-game on the player  -- move these sestring colours from here and chatmsg to consts or something
     private void SendFlyText(HuntRank rank, BattleNpc mob, bool enabled)
     {
+        if (!enabled) return;
         var rankSB = new SeStringBuilder();
         var nameSB = new SeStringBuilder();
         switch (rank)
@@ -174,7 +198,7 @@ public class HuntManager
         }
     }
 
-    public void SendChatMessage(bool enabled, string msg, string placeName, BattleNpc mob, float zoneCoordSize)
+    public void SendChatMessage(bool enabled, string msg, uint territoryId, uint mapid, BattleNpc mob, float zoneCoordSize)
     {
         if (!enabled) return;
 
@@ -197,13 +221,10 @@ public class HuntManager
             switch (s)
             {
                 case "<flag>": //Why doesn't SeStringBuilder.AddMapLink have an overload that takes in placename, while SeString.CreateMapLink does? :( cause null possible?
-                    var maplink = SeString.CreateMapLink(placeName, MapHelpers.ConvertToMapCoordinate(mob.Position.X, zoneCoordSize),
+                    var maplink = SeString.CreateMapLink(territoryId, mapid, MapHelpers.ConvertToMapCoordinate(mob.Position.X, zoneCoordSize),
                         MapHelpers.ConvertToMapCoordinate(mob.Position.Z, zoneCoordSize));
                     sb.AddUiForeground(64); //white
-                    sb.Append(maplink ??
-                              new SeString(new TextPayload(
-                                      $"|Error: couldn't create map link for: {placeName} - Please report what zone this occurred in.|"))
-                                  .Append(new IconPayload(BitmapFontIcon.NoCircle)));
+                    sb.Append(maplink);
                     sb.AddUiForegroundOff();
                     break;
                 case "<rank>":
@@ -331,15 +352,9 @@ public class HuntManager
         LoadFilesIntoDic(_sbDict, SBJsonFiles);
         LoadFilesIntoDic(_shbDict, ShBJsonFiles);
         LoadFilesIntoDic(_ewDict, EWJsonFiles);
-
     }
 
-    public void SaveHuntData()
-    {
-
-    }
-
-    public float GetMapZoneCoordSize(ushort mapID)
+   public float GetMapZoneCoordSize(ushort mapID)
     {
         //EVERYTHING EXCEPT HEAVENSWARD HAS 41 COORDS, BUT FOR SOME REASON HW HAS 43, WHYYYYYY
         if (mapID is >= 397 and <= 402) return 43.1f;
@@ -381,6 +396,7 @@ public class HuntManager
         {
             kvp.Value.Dispose();
         }
+        _trainManager.SaveHuntTrainRecord();
     }
 
     public double GetHPP(BattleNpc mob)
@@ -396,6 +412,12 @@ public class HuntManager
             _highestRank = rank;
             _priorityMob = mob;
         }
+    }
+
+    private void ResetPriorityMob()
+    {
+        _highestRank = HuntRank.B;
+        _priorityMob = null;
     }
 
     private string GetMapNameFromPath(string path)
@@ -473,16 +495,19 @@ public class HuntManager
         if (ImagesLoaded) return;
         //if images/map folder doesn't exist, or is empty
         if (!Directory.Exists(ImageFolderPath)) return;
-        
+
         var files = Directory.EnumerateFiles(ImageFolderPath).ToList();
         if (!files.Any() || files.Count != 41) return; //wait until all images downloaded
 
+        PluginLog.Information("Loading Images..");
         var paths = Directory.EnumerateFiles(ImageFolderPath, "*", SearchOption.TopDirectoryOnly);
         foreach (var path in paths)
         {
-            _mapImages.Add(GetMapNameFromPath(path), _pluginInterface.UiBuilder.LoadImage(path));
+            var name = GetMapNameFromPath(path);
+            if (_mapImages.ContainsKey(name)) continue;
+            _mapImages.Add(name, _pluginInterface.UiBuilder.LoadImage(path));
         }
-
+        PluginLog.Information("Images Loaded!");
         ImagesLoaded = true;
         return;
     }
@@ -507,14 +532,20 @@ public class HuntManager
         //use spawnpoint data to get map names and generate urls.. coz lazy to retype
         var names = spawnpointdata.Select(x => x.MapName).ToList();
         var urls = names.Select(n => n = Constants.BaseUrl + n.Replace(" ", "_") + "-data.jpg").ToList();
-
+        
+        PluginLog.Information("Attempting to download Images.");
         //then async download each image and save to file
         var downloader = new ImageDownloader(urls, ImageFolderPath);
         var results = await downloader.BeginDownloadAsync();
         DownloadErrors.AddRange(results);
-        if (DownloadErrors.Count > 0) HasDownloadErrors = true;
+        if (DownloadErrors.Count > 0)
+        {
+            HasDownloadErrors = true;
+            PluginLog.Error("Error:");
+            DownloadErrors.ForEach(e => PluginLog.Error(e));
+        }
+        else PluginLog.Information("All images downloaded!");
         DownloadingImages = false;
     }
-
 
 }

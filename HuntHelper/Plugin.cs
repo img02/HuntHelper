@@ -21,18 +21,23 @@ namespace HuntHelper
         public string Name => "Hunt Helper";
 
         private const string MapWindowCommand = "/hh";
-        private const string CommandName = "/hh1";
+        private const string HuntTrainWindowCommand = "/hht";
+        private const string NextHuntInTrainCommand = "/hhn";
+        private const string DebugCommand = "/hhdebug";
 
         private DalamudPluginInterface PluginInterface { get; init; }
         private CommandManager CommandManager { get; init; }
         private Configuration Configuration { get; init; }
         private PluginUI PluginUi { get; init; }
+        private HuntTrainUI HuntTrainUI { get; init; }
         private ClientState ClientState { get; init; }
         private ObjectTable ObjectTable { get; init; }
         private DataManager DataManager { get; init; }
         private ChatGui ChatGui { get; init; }
         private HuntManager HuntManager { get; init; }
+        private TrainManager TrainManager { get; init; }
         private MapDataManager MapDataManager { get; init; }
+        private FlyTextGui FlyTextGui { get; init; }
 
         public Plugin(
             DalamudPluginInterface pluginInterface,
@@ -50,26 +55,33 @@ namespace HuntHelper
             this.ObjectTable = objectTable;
             this.DataManager = dataManager;
             this.ChatGui = chatGui;
+            this.FlyTextGui = flyTextGui;
 
             this.Configuration = this.PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
             this.Configuration.Initialize(this.PluginInterface);
 
-            this.HuntManager = new HuntManager(PluginInterface, chatGui, flyTextGui);
+            this.TrainManager = new TrainManager(ChatGui, Path.Combine(PluginInterface.AssemblyLocation.Directory?.FullName!, @"Data\HuntTrain.json"));
+            this.HuntManager = new HuntManager(PluginInterface, TrainManager, chatGui, flyTextGui);
             this.MapDataManager = new MapDataManager(PluginInterface);
 
-            #region idk
-            #endregion
-
             this.PluginUi = new PluginUI(this.Configuration, pluginInterface, clientState, objectTable, dataManager, HuntManager, MapDataManager);
+            this.HuntTrainUI = new HuntTrainUI(TrainManager, Configuration);
 
-            this.CommandManager.AddHandler(CommandName, new CommandInfo(OnCommand)
+            this.CommandManager.AddHandler(MapWindowCommand, new CommandInfo(HuntMapCommand)
+            {
+                HelpMessage = "Opens the Hunt Map"
+            });
+            this.CommandManager.AddHandler(HuntTrainWindowCommand, new CommandInfo(HuntTrainCommand)
+            {
+                HelpMessage = "Opens the Hunt Train Window"
+            });
+            this.CommandManager.AddHandler(NextHuntInTrainCommand, new CommandInfo(GetNextMobCommand)
+            {
+                HelpMessage = "Sends the flag for the next train mob into chat"
+            });
+            this.CommandManager.AddHandler(DebugCommand, new CommandInfo(DebugWindowCommand)
             {
                 HelpMessage = "random data, debug info"
-            });
-
-            this.CommandManager.AddHandler(MapWindowCommand, new CommandInfo(TestCommand)
-            {
-                HelpMessage = "help, i've fallen over"
             });
 
             this.PluginInterface.UiBuilder.Draw += DrawUI;
@@ -78,26 +90,27 @@ namespace HuntHelper
 
         public void Dispose()
         {
+            //save hunttrainui config first
+            this.HuntTrainUI.Dispose();
             this.PluginUi.Dispose();
-            this.CommandManager.RemoveHandler(CommandName);
-            this.CommandManager.RemoveHandler("/hh");
+            this.CommandManager.RemoveHandler(DebugCommand);
+            this.CommandManager.RemoveHandler(MapWindowCommand);
+            this.CommandManager.RemoveHandler(HuntTrainWindowCommand);
+            this.CommandManager.RemoveHandler(NextHuntInTrainCommand);
+            this.HuntManager.Dispose();
+            this.FlyTextGui.Dispose();
         }
 
-        private void OnCommand(string command, string args)
-        {
-            // in response to the slash command, just display our main ui
-            this.PluginUi.MainWindowVisible = true;
-        }
-        private void TestCommand(string command, string args)
-        {
-            //this.PluginUi.TestVisible = true;
-
-            PluginUi.MapVisible = !PluginUi.MapVisible;
-        }
+        private void DebugWindowCommand(string command, string args) => this.PluginUi.RandomDebugWindowVisisble = !PluginUi.RandomDebugWindowVisisble;
+        private void HuntMapCommand(string command, string args) => PluginUi.MapVisible = !PluginUi.MapVisible;
+        private void HuntTrainCommand(string command, string args) => HuntTrainUI.HuntTrainWindowVisible = !HuntTrainUI.HuntTrainWindowVisible;
+        //gets next available hunt in the recorded train
+        private void GetNextMobCommand(string command, string args) => HuntTrainUI.GetNextMobCommand();
 
         private void DrawUI()
         {
             this.PluginUi.Draw();
+            this.HuntTrainUI.Draw();
         }
 
         private void DrawConfigUI()
