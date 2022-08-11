@@ -23,7 +23,7 @@ namespace HuntHelper
         private const string MapWindowCommand = "/hh";
         private const string HuntTrainWindowCommand = "/hht";
         private const string NextHuntInTrainCommand = "/hhn";
-        private const string CommandName = "/hh1";
+        private const string DebugCommand = "/hhdebug";
 
         private DalamudPluginInterface PluginInterface { get; init; }
         private CommandManager CommandManager { get; init; }
@@ -35,6 +35,7 @@ namespace HuntHelper
         private DataManager DataManager { get; init; }
         private ChatGui ChatGui { get; init; }
         private HuntManager HuntManager { get; init; }
+        private TrainManager TrainManager { get; init; }
         private MapDataManager MapDataManager { get; init; }
         private FlyTextGui FlyTextGui { get; init; }
 
@@ -59,16 +60,13 @@ namespace HuntHelper
             this.Configuration = this.PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
             this.Configuration.Initialize(this.PluginInterface);
 
-            this.HuntManager = new HuntManager(PluginInterface, chatGui, flyTextGui);
+            this.TrainManager = new TrainManager(ChatGui, Path.Combine(PluginInterface.AssemblyLocation.Directory?.FullName!, @"Data\HuntTrain.json"));
+            this.HuntManager = new HuntManager(PluginInterface, TrainManager, chatGui, flyTextGui);
             this.MapDataManager = new MapDataManager(PluginInterface);
-            
-            this.PluginUi = new PluginUI(this.Configuration, pluginInterface, clientState, objectTable, dataManager, HuntManager, MapDataManager);
-            this.HuntTrainUI = new HuntTrainUI(HuntManager, Configuration);
 
-            this.CommandManager.AddHandler(CommandName, new CommandInfo(DebugWindowCommand)
-            {
-                HelpMessage = "random data, debug info"
-            });
+            this.PluginUi = new PluginUI(this.Configuration, pluginInterface, clientState, objectTable, dataManager, HuntManager, MapDataManager);
+            this.HuntTrainUI = new HuntTrainUI(TrainManager, Configuration);
+
             this.CommandManager.AddHandler(MapWindowCommand, new CommandInfo(HuntMapCommand)
             {
                 HelpMessage = "Opens the Hunt Map"
@@ -79,7 +77,11 @@ namespace HuntHelper
             });
             this.CommandManager.AddHandler(NextHuntInTrainCommand, new CommandInfo(GetNextMobCommand)
             {
-                HelpMessage = "Gets a flag for the next mob in the recorded hunt train"
+                HelpMessage = "Sends the flag for the next train mob into chat"
+            });
+            this.CommandManager.AddHandler(DebugCommand, new CommandInfo(DebugWindowCommand)
+            {
+                HelpMessage = "random data, debug info"
             });
 
             this.PluginInterface.UiBuilder.Draw += DrawUI;
@@ -91,7 +93,7 @@ namespace HuntHelper
             //save hunttrainui config first
             this.HuntTrainUI.Dispose();
             this.PluginUi.Dispose();
-            this.CommandManager.RemoveHandler(CommandName);
+            this.CommandManager.RemoveHandler(DebugCommand);
             this.CommandManager.RemoveHandler(MapWindowCommand);
             this.CommandManager.RemoveHandler(HuntTrainWindowCommand);
             this.CommandManager.RemoveHandler(NextHuntInTrainCommand);

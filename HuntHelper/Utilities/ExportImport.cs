@@ -19,8 +19,8 @@ public static class ExportImport
         return Convert.ToBase64String(byteArr);
     }
 
-    //ImportList?
-    public static void Import<T>(string importCode, List<T> listToDeserialiseTo)
+    //ImportList? --replaced with below
+    public static void ImportList<T>(string importCode, List<T> listToDeserialiseTo)
     {
         try
         {
@@ -34,6 +34,24 @@ public static class ExportImport
             /*PluginLog.Error(e.Message);
             PluginLog.Error(e.StackTrace);*/
             return;
+        }
+    }
+    
+    //if failed, returns original (prob empty?) object. Is this bad? lmao
+    public static T Import<T>(string importCode, T objectToDeserialiseTo)
+    {
+        try
+        {
+            var decompressed = Decompress(importCode);
+            var result = JsonConvert.DeserializeObject<T>(decompressed);
+            if (result == null) return objectToDeserialiseTo;
+            return result;
+        }
+        catch (Exception e)
+        {
+            /*PluginLog.Error(e.Message);
+            PluginLog.Error(e.StackTrace);*/
+            return objectToDeserialiseTo;
         }
     }
 

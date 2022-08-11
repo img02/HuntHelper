@@ -20,7 +20,7 @@ namespace HuntHelper;
 
 public class HuntTrainUI : IDisposable
 {
-    private readonly HuntManager _huntManager;
+    private readonly TrainManager _trainManager;
     private readonly Configuration _config;
 
     private bool _huntTrainWindowVisible = false;
@@ -31,7 +31,7 @@ public class HuntTrainUI : IDisposable
     private int _tooltipChangeTime = 400;
 
     #region user customisable - config
-    private Vector2 _huntTrainWindowSize = new Vector2(250, 400);
+    private Vector2 _huntTrainWindowSize = new Vector2(200, 480);
     private Vector2 _huntTrainWindowPos = new Vector2(150, 150);
 
     private bool _showPos = true;
@@ -56,12 +56,12 @@ public class HuntTrainUI : IDisposable
         set => _huntTrainWindowVisible = value;
     }
 
-    public HuntTrainUI(HuntManager huntManager, Configuration config)
+    public HuntTrainUI(TrainManager trainManager, Configuration config)
     {
-        _huntManager = huntManager;
-        _mobList = _huntManager.HuntTrain;
+        _trainManager = trainManager;
+        _mobList = _trainManager.HuntTrain;
         _config = config;
-        _importedTrain = _huntManager.ImportedTrain;
+        _importedTrain = _trainManager.ImportedTrain;
         LoadSettings();
     }
 
@@ -80,6 +80,9 @@ public class HuntTrainUI : IDisposable
         //HuntTrainWindowVisible = _config.HuntTrainWindowVisible;
         _huntTrainWindowSize = _config.HuntTrainWindowSize;
         _huntTrainWindowPos = _config.HuntTrainWindowPos;
+        _showPos = _config.HuntTrainShowPos;
+        _showLastSeen = _config.HuntTrainShowLastSeen;
+        _useBorder = _config.HuntTrainUseBorder;
     }
 
     public void SaveSettings()
@@ -87,7 +90,11 @@ public class HuntTrainUI : IDisposable
         //_config.HuntTrainWindowVisible = HuntTrainWindowVisible;
         _config.HuntTrainWindowSize = _huntTrainWindowSize;
         _config.HuntTrainWindowPos = _huntTrainWindowPos;
+        _config.HuntTrainShowPos = _showPos;
+        _config.HuntTrainShowLastSeen = _showLastSeen;
+        _config.HuntTrainUseBorder = _useBorder;
     }
+
 
     private Vector4 bg = new Vector4(.3f, .3f, .3f, 1f);
     public void DrawHuntTrainWindow()
@@ -103,7 +110,6 @@ public class HuntTrainUI : IDisposable
         ImGui.SetWindowPos(_huntTrainWindowPos);
         if (ImGui.Begin("Hunt Train##Window", ref _huntTrainWindowVisible, ImGuiWindowFlags.NoScrollbar))
         {
-            //var childSize = new Vector2(ImGui.GetWindowSize().X / numOfColumns, _mobList.Count * 23);
             var childSizeX = ImGui.GetWindowSize().X / numOfColumns;
             var childSizeY = _mobList.Count * 23;
             var lastSeenWidth = childSizeX; //math is hard, resizing is hard owie :(
@@ -119,7 +125,7 @@ public class HuntTrainUI : IDisposable
             #region hunt train main
 
             ImGui.BeginChild("HUNT TRAIN MAIN CHILD WINDOW ALL ENCOMPASSING LAYOUT FIXING CHILD OF WINDOW",
-                new Vector2(ImGui.GetWindowSize().X, (_mobList.Count + 1) * 23f), _useBorder); //23f is the size of a selectable from SelectableFromList();
+                new Vector2(ImGui.GetWindowSize().X, (_mobList.Count + 1) * 24f), _useBorder); //23f is the size of a selectable from SelectableFromList();
 
             #region Headers
 
@@ -148,13 +154,14 @@ public class HuntTrainUI : IDisposable
 
             ImGui.SameLine();
             PluginUI.ImGui_HelpMarker("HOW TO:\n\n" +
+                                      "Background\n" +
                                       "Click on any of the rows to send the relevant Map Link into chat. (Drag to reorder the list)\n\n" +
                                       "Click on the checkbox to mark a mob as dead.\n\n" +
                                       "Right-click -- Select - change the selected mob\n" +
                                       "            -- Remove - Removes the mob from the list (This permanently deletes data on that mob)\n\n" +
                                       "Use the command \"/hhn\" to automatically mark the current selected as dead, and send the next Map link into chat.\n" +
                                       "(you will have to click the first one manually)\n\n" +
-                                      "*Does not allow duplicates (currently does not handle instances or different worlds)\n" +
+                                      "*Does not allow duplicates (currently does not handle instances or different worlds) - Only records A ranks.\n" +
                                       "*Drag reordering can glitch a bit if you drag from near the top of an item. ");
             ImGui.SameLine();
             ImGui.TextColored(new Vector4(1f, .3f, .3f, 1f), "  <<<");
@@ -187,6 +194,7 @@ public class HuntTrainUI : IDisposable
             }
 
             ImGui.SameLine();
+
             ImGui.BeginChild("DeadButtons", new Vector2(childSizeX * 0.25f, childSizeY), _useBorder,
                 ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse);
             _mobList.ForEach(m =>
@@ -203,72 +211,70 @@ public class HuntTrainUI : IDisposable
 
             ImGui.EndChild(); //main hunt train data section
             #endregion
-            
+
             ImGui.Checkbox("pos", ref _showPos);
             ImGui.SameLine(); ImGui.Checkbox("last seen", ref _showLastSeen);
             ImGui.SameLine(); ImGui.Checkbox("border", ref _useBorder);
-            ImGui.Dummy(new Vector2(0,12f));
+            ImGui.Dummy(new Vector2(0, 12f));
+
+
             #region Buttons
-
-            if (ImGui.BeginChild("TrainButtons"))
-            {
-                ImGui.PushStyleVar(ImGuiStyleVar.CellPadding, new Vector2(10,8f));
-                if (ImGui.BeginTable("TrainButtonTable",3))
-                {
-                    ImGui.TableNextColumn();
-                    if (ImGui.Button("Remove Dead Hunts")) _huntManager.TrainRemoveDead();
-                    ImGui.TableNextColumn();
-                    if (ImGui.Button("Revive Hunts")) _huntManager.TrainUnkillAll();
-                    ImGui.SameLine();
-                    PluginUI.ImGui_HelpMarker("Note, this doesn't actually revive them in-game!");
-                    ImGui.TableNextColumn();
-                    if (ImGui.Button("Delete Train")) ImGui.OpenPopup("Delete##modal");
-
-                    ImGui.TableNextColumn(); ImGui.TableNextColumn();
-                    if (ImGui.Button("Export"))
-                    {
-                        //get export code
-                        var exportCode = ExportImport.Export(_mobList);
-                        //copy to clipboard
-                        ImGui.SetClipboardText(exportCode);
-                        ChangeCopyText();
-                    }
-
-                    if (ImGui.IsItemHovered())
-                    {
-                        ImGui.BeginTooltip();
-                        ImGui.Text(_copyText);
-                        ImGui.EndTooltip();
-                    }
-                    ImGui.TableNextColumn();
-                    if (ImGui.Button("Import"))
-                    {
-                        var importCode = ImGui.GetClipboardText();
-                        ExportImport.Import(importCode, _importedTrain);
-
-                        ImGui.OpenPopup("Import##popup");
-
-                        //show 2 buttons, overwrite old data, only import new data.
-                    }
-                    
-                    ImGui.EndTable();
-                }
-                ImGui.PopStyleVar();
-                ImGui.EndChild();
-            }
             
-            ImGuiComponents.IconButton(FontAwesomeIcon.SkullCrossbones); //delete train
-            ImGuiComponents.IconButton(FontAwesomeIcon.Recycle); //remove dead
+            if (ImGuiComponents.IconButton(FontAwesomeIcon.History)) _trainManager.TrainRemoveDead();
+            ImGui_HoveredToolTip("Remove Dead");
+            ImGui.SameLine(); ImGui.Dummy(new Vector2(4, 0)); ImGui.SameLine();
 
-            ImGuiComponents.IconButton(FontAwesomeIcon.Moon); //revive idk
-            ImGuiComponents.IconButton(FontAwesomeIcon.Syringe); //revive idk
+            if (ImGuiComponents.IconButton(FontAwesomeIcon.Syringe)) _trainManager.TrainUnkillAll();
+            ImGui_HoveredToolTip("Reset Dead Status");
+            ImGui.SameLine(); ImGui.Dummy(new Vector2(4, 0)); ImGui.SameLine();
 
-            ImGuiComponents.IconButton(FontAwesomeIcon.Cog); //use this for huntmap options button
+            //position record button on far right
+            ImGui.SetCursorPosX(ImGui.GetWindowSize().X-26);
+            if (!_trainManager.RecordTrain)
+            {
+                if (ImGuiComponents.IconButton(FontAwesomeIcon.Play)) _trainManager.RecordTrain = true;
+                ImGui_HoveredToolTip("Start Recording");
+            }
+            else
+            {
+                if (ImGuiComponents.IconButton(FontAwesomeIcon.Pause)) _trainManager.RecordTrain = false;
+                ImGui_HoveredToolTip("Stop Recording");
+            }
 
-            #endregion
+            ImGui.Dummy(new Vector2(0, 20f));
+
+            if (ImGuiComponents.IconButton(FontAwesomeIcon.Skull)) ImGui.OpenPopup("Delete##modal");
+            ImGui_HoveredToolTip("Delete Train");
+            ImGui.SameLine();
+           
+            //gosh these buttons don't line up, off by like 1 pixel :(
+            ImGui.SetCursorPosX(ImGui.GetWindowSize().X-54);
+            if (ImGuiComponents.IconButton(FontAwesomeIcon.SignOutAlt))
+            {
+                //get export code
+                var exportCode = ExportImport.Export(_mobList);
+                //copy to clipboard
+                ImGui.SetClipboardText(exportCode);
+                ChangeCopyText();
+            }
+            ImGui_HoveredToolTip(_copyText);
+            ImGui.SameLine(); ImGui.Dummy(new Vector2(4, 0)); ImGui.SameLine();
+
+            if (ImGuiComponents.IconButton(FontAwesomeIcon.SignInAlt))
+            {
+                var importCode = ImGui.GetClipboardText();
+                //ExportImport.Import(importCode, _importedTrain);
+                _trainManager.Import(importCode);
+                ImGui.OpenPopup("Import##popup");
+            }
+            ImGui_HoveredToolTip("Import");
 
             DrawDeleteModal();
             DrawImportWindowModal();
+
+            //ImGui.TextUnformatted($"{ImGui.GetWindowSize()}");
+            #endregion
+
 
             ImGui.PopStyleVar(); //pop itemspacing
             ImGui.End();
@@ -282,7 +288,7 @@ public class HuntTrainUI : IDisposable
         ImGui.SetNextWindowPos(center, ImGuiCond.Appearing, new Vector2(0.5f, 0.5f));
         ImGui.SetNextWindowSize(new Vector2(400, 200));
 
-        
+
         if (ImGui.BeginPopupModal("Delete##modal"))
         {
             ImGui.TextWrapped("Are you sure you want to DELETE train data?");
@@ -291,7 +297,7 @@ public class HuntTrainUI : IDisposable
             ImGui.Dummy(new Vector2(6, 0)); ImGui.SameLine();
             if (ImGui.Button("Delete"))
             {
-                _huntManager.TrainDelete();
+                _trainManager.TrainDelete();
                 ImGui.CloseCurrentPopup();
             }
 
@@ -318,8 +324,8 @@ public class HuntTrainUI : IDisposable
             {
                 ImGui.TextWrapped("Nothing to import - or incorrect code\n\n" +
                            "The export code is too long to be shared via in-game chat. Please share through Discord or something.");
-                ImGui.Dummy(new Vector2(0,25)); 
-                ImGui.Dummy(new Vector2(6,0)); ImGui.SameLine();
+                ImGui.Dummy(new Vector2(0, 25));
+                ImGui.Dummy(new Vector2(6, 0)); ImGui.SameLine();
                 if (ImGui.Button("Close", new Vector2(80, 0))) ImGui.CloseCurrentPopup();
                 return;
             }
@@ -342,7 +348,7 @@ public class HuntTrainUI : IDisposable
                             _mobList.All(mob => mob.Name != m.Name)
                                 ? new Vector4(0.1647f, 1f, 0.647f, 1f) //greenish
                                 : new Vector4(0.51f, 0.51f, 0.51f, 1f)); //grey
-                               // : new Vector4(1f, 0.345f, 0.345f, 1f)); //redish
+                                                                         // : new Vector4(1f, 0.345f, 0.345f, 1f)); //redish
                         ImGui.TableNextColumn();
                         ImGui.TextUnformatted($"{m.Name}");
                         ImGui.TableNextColumn();
@@ -406,19 +412,17 @@ public class HuntTrainUI : IDisposable
 
             ImGui.EndPopup();
         }
-
-
     }
 
-   
+
     private void ImportTrainData()
     {
         if (_importAll)
         {
-            _huntManager.ImportTrainAll();
+            _trainManager.ImportTrainAll();
             return;
         }
-        _huntManager.ImportTrainNew(_importUpdateTime);
+        _trainManager.ImportTrainNew(_importUpdateTime);
     }
 
 
@@ -440,8 +444,8 @@ public class HuntTrainUI : IDisposable
     {
         if (_selectedIndex < _mobList.Count) _mobList[_selectedIndex].Dead = true;
         SelectNext();
-        if (!_mobList[_selectedIndex].Dead) _huntManager.SendTrainFlag(_selectedIndex);
-        else _huntManager.SendTrainFlag(-1);
+        if (!_mobList[_selectedIndex].Dead) _trainManager.SendTrainFlag(_selectedIndex);
+        else _trainManager.SendTrainFlag(-1);
     }
 
     //based off of https://github.com/ocornut/imgui/blob/docking/imgui_demo.cpp#L2337
@@ -465,7 +469,7 @@ public class HuntTrainUI : IDisposable
                 mob.Dead = !mob.Dead;
             }*/
             //how to check if mouse held?
-            if (ImGui.IsItemActive() && ImGui.IsMouseClicked(ImGuiMouseButton.Left)) _huntManager.SendTrainFlag(n);
+            if (ImGui.IsItemActive() && ImGui.IsMouseClicked(ImGuiMouseButton.Left)) _trainManager.SendTrainFlag(n);
 
             if (ImGui.BeginPopupContextItem($"ContextMenu##{mob.Name}", ImGuiPopupFlags.MouseButtonRight))
             {
@@ -519,5 +523,15 @@ public class HuntTrainUI : IDisposable
     private enum HuntTrainMobAttribute
     {
         Name, Position, LastSeen
+    }
+
+    private void ImGui_HoveredToolTip(string msg)
+    {
+        if (ImGui.IsItemHovered())
+        {
+            ImGui.BeginTooltip();
+            ImGui.Text(msg);
+            ImGui.EndTooltip();
+        }
     }
 }

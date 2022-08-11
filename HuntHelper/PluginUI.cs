@@ -18,6 +18,7 @@ using Dalamud.Game.ClientState.Objects.Enums;
 using Dalamud.Game.ClientState.Objects.Types;
 using Dalamud.Interface;
 using Dalamud.Interface.Colors;
+using Dalamud.Interface.Components;
 using Dalamud.Logging;
 using Dalamud.Plugin;
 using HuntHelper.MapInfoManager;
@@ -29,8 +30,6 @@ using Action = System.Action;
 
 namespace HuntHelper
 {
-    // It is good to have this be disposable in general, in case you ever need it
-    // to do any cleanup
     class PluginUI : IDisposable
     {
         private readonly Configuration _configuration;
@@ -290,7 +289,7 @@ namespace HuntHelper
 
                 ImGui.Text("============");
 
-
+                ShowDebugInfo();
 
                 ImGui.Indent(55);
                 ImGui.Text("");
@@ -402,9 +401,9 @@ namespace HuntHelper
                 //button to toggle bottom panel thing
                 var cursorPos = new Vector2(8, ImGui.GetWindowSize().Y - 46); //positioned so it doesn't block map image credits!
                 ImGui.SetCursorPos(cursorPos);
-                //get a cogwheel img or something idk
+
                 ImGui.PushStyleColor(ImGuiCol.Button, new Vector4(.4f, .4f, .4f, 1f));
-                if (ImGui.Button(" ö ")) _showOptionsWindow = !_showOptionsWindow;
+                if (ImGuiComponents.IconButton(FontAwesomeIcon.Cog)) _showOptionsWindow = !_showOptionsWindow;
                 ImGui.PopStyleColor();
                 if (_huntManager.ErrorPopUpVisible || _mapDataManager.ErrorPopUpVisible)
                 {
@@ -475,7 +474,6 @@ namespace HuntHelper
 
         }
 
-        //break this down? lazyu- could def make functions for repeat gui element sets...
         private void DrawOptionsWindow()
         {
             var bottomDockingPos = Vector2.Add(ImGui.GetWindowPos(), new Vector2(0, ImGui.GetWindowSize().Y));
@@ -503,16 +501,10 @@ namespace HuntHelper
                                  "If map images aren't showing, please verify that you have the images downloaded in your plugins folder.");
 
                 ImGui.CheckboxFlags("Hide Title Bar", ref _huntWindowFlag, 1);
-                ImGui.SameLine();
-                ImGui_HelpMarker("Wasn't initially designed to have a title bar, things might need adjusting -->");
 
-                ImGui.Checkbox("Show Debug", ref _showDebug);
-                ImGui.SameLine();
-                ImGui_HelpMarker("idk shows random debug info i used");
-
-                ImGui.Checkbox("Save Spawn Data", ref _saveSpawnData);
-                ImGui.SameLine();
-                ImGui_HelpMarker("Saves S Rank Information to desktop txt (ToDo)");
+                ImGui.Checkbox("Background Scan", ref _enableBackgroundScan);
+                ImGui.SameLine(); ImGui_HelpMarker("Allows Hunt Helper to scan while GUI inactive.\n" +
+                                                   "Enables notifications and recording Train while this main map window is inactive.");
 
                 //ImGui.Dummy(new Vector2(0, 4f));
 
@@ -520,13 +512,6 @@ namespace HuntHelper
                 ImGui.SameLine();
                 ImGui_HelpMarker("Show the loaded hunt and spawn point data");
                 DrawDataBaseWindow();
-
-
-
-
-                Debug_OptionsWindowTable_ShowWindowSize();
-
-
 
                 ImGui.NextColumn();
                 if (ImGui.BeginTabBar("Options", ImGuiTabBarFlags.None))
@@ -788,7 +773,7 @@ namespace HuntHelper
                                 ImGui.EndTabItem();
                             }
 
-                            if (ImGui.BeginTabItem("Colours"))
+                            if (ImGui.BeginTabItem($"Colours"))
                             {
                                 ImGui.Dummy(new Vector2(0, 2f));
 
@@ -844,8 +829,7 @@ namespace HuntHelper
 
                         ImGui.EndTabItem();
                     }
-
-                    if (ImGui.BeginTabItem("Notifications"))
+                    if (ImGui.BeginTabItem($"Notifications"))
                     {
                         if (ImGui.BeginTabBar("Notifications sub-bar"))
                         {
@@ -942,6 +926,10 @@ namespace HuntHelper
                                 ImGui_HelpMarker("FlyText is the type of text that appears when you attack something or are attacked.\n" +
                                                  "(e.g. Crit, Miss, Resist)\n\n" +
                                                  "Enabling this will show a coloured FlyText notification near the middle of your screen.");
+                                ImGui.SameLine();
+                                ImGui.Checkbox("Save Spawn Data", ref _saveSpawnData);
+                                ImGui.SameLine();
+                                ImGui_HelpMarker("Saves S Rank Information to desktop txt (ToDo)");
 
                                 ImGui.EndTabItem();
                             }
@@ -970,9 +958,6 @@ namespace HuntHelper
                                     tempTTS.SelectVoice(_ttsVoiceName);
                                     tempTTS.SpeakAsync($"BOO! {tts.Voice.Name} Selected");
                                 }
-
-                                ImGui.Checkbox("Background Notifications", ref _enableBackgroundScan);
-                                ImGui.SameLine(); ImGui_HelpMarker("Enabling this allows Hunt Helper to scan and send Chat and TTS notifications whilst the GUI is inactive.");
 
                                 ImGui.EndTabItem();
                             }
@@ -1067,13 +1052,13 @@ namespace HuntHelper
                 return;
             }
 
-            ImGui.SetNextWindowSize(new Vector2(232, 75), ImGuiCond.Always);
+            ImGui.SetNextWindowSize(new Vector2(300, 100), ImGuiCond.Always);
             if (ImGui.Begin("help, i've fallen over", ref this.settingsVisible,
                 ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse))
             {
                 ImGui_CentreText("There's nothing here", _defaultTextColour);
                 ImGui_CentreText("Options are available from the main map window,", _defaultTextColour);
-                ImGui_CentreText("click the buttom in the bottom left corner.", _defaultTextColour);
+                ImGui_CentreText("click the button in the bottom left corner.", _defaultTextColour);
             }
             ImGui.End();
         }
@@ -1246,7 +1231,7 @@ namespace HuntHelper
             {
                 if (ImGui.BeginTabItem("database"))
                 {
-                    DoStuffWithMonoFont(() => ImGui_CentreText(_huntManager.GetDatabaseAsString(), _defaultTextColour));
+                    DoStuffWithMonoFont(() => ImGui_CentreText(_huntManager.GetDatabaseAsString()));
                     ImGui.EndTabItem();
                 }
 
@@ -1290,7 +1275,7 @@ namespace HuntHelper
                 if (obj is not BattleNpc mob) continue;
                 if (!_huntManager.IsHunt(mob.NameId)) continue;
                 nearbyMobs.Add(mob);
-                _huntManager.AddToTrain(mob, _territoryId, MapHelpers.GetMapID(_dataManager, _territoryId), _territoryName, _mapZoneMaxCoordSize);     ///////////////////////////////////// TEST CODE HERE
+                _huntManager.AddToTrain(mob, _territoryId, MapHelpers.GetMapID(_dataManager, _territoryId), _territoryName, _mapZoneMaxCoordSize);
             }
 
             if (nearbyMobs.Count == 0) return;
@@ -1376,17 +1361,6 @@ namespace HuntHelper
                     $"({ConvertPosToCoordinate(mob.Position.X):0.00}, {ConvertPosToCoordinate(mob.Position.Z):0.00})",
                     colour);
                 ImGui.EndChild();
-                /*if (ImGui.IsItemHovered(ImGuiHoveredFlags.None))
-                {
-                    ImGui.BeginTooltip();
-                    ImGui.TextUnformatted(text);
-                    ImGui.TextUnformatted("WHY  DIDN'T I DO THIS");
-                    if (ImGui.IsMouseClicked(ImGuiMouseButton.Left))
-                    {
-                        ImGui.TextUnformatted("Clicked");
-                    }
-                    ImGui.EndTooltip();
-                }*/
                 ImGui.PopStyleColor(2);
             });
         }
@@ -1421,7 +1395,7 @@ namespace HuntHelper
                             $"   {hunt.Rank} Rank | {_huntManager.GetHPP(mob):0.00}%%  ",
                             $"{mob.Name}",
                             "----------------------",
-                            $"Click to send flag" 
+                            $"Click to send flag"
                         });
 
                         MouseClickToSendChatFlag(mob);
@@ -1527,21 +1501,21 @@ namespace HuntHelper
             ImGui.Spacing();
             ImGui.Spacing();
             ImGui.Spacing();
-            ImGui_TextColourSwapWhenUsingMapImage("Random Debug Info?!:");
+            ImGui.TextUnformatted("Random Debug Info?!:");
             ImGui.BeginChild("debug");
             ImGui.Columns(2);
-            ImGui_TextColourSwapWhenUsingMapImage($"Content1 Region: {ImGui.GetContentRegionAvail()}");
-            ImGui_TextColourSwapWhenUsingMapImage($"Window Size: {ImGui.GetWindowSize()}");
-            ImGui_TextColourSwapWhenUsingMapImage($"Window  Pos: {ImGui.GetWindowPos()}");
+            ImGui.TextUnformatted($"Content1 Region: {ImGui.GetContentRegionAvail()}");
+            ImGui.TextUnformatted($"Window Size: {ImGui.GetWindowSize()}");
+            ImGui.TextUnformatted($"Window  Pos: {ImGui.GetWindowPos()}");
 
             if (_clientState?.LocalPlayer?.Position != null)
             {
-                ImGui_TextColourSwapWhenUsingMapImage($"rotation: {_clientState.LocalPlayer.Rotation}");
+                ImGui.TextUnformatted($"rotation: {_clientState.LocalPlayer.Rotation}");
                 var rotation = Math.Abs(_clientState.LocalPlayer.Rotation - Math.PI);
-                ImGui_TextColourSwapWhenUsingMapImage($"rotation rad.: {Math.Round(rotation, 2):0.00}");
-                ImGui_TextColourSwapWhenUsingMapImage($"rotation sin.: {Math.Round(Math.Sin(rotation), 2):0.00}");
-                ImGui_TextColourSwapWhenUsingMapImage($"rotation cos.: {Math.Round(Math.Cos(rotation), 2):0.00}");
-                ImGui_TextColourSwapWhenUsingMapImage($"Player Pos: (" +
+                ImGui.TextUnformatted($"rotation rad.: {Math.Round(rotation, 2):0.00}");
+                ImGui.TextUnformatted($"rotation sin.: {Math.Round(Math.Sin(rotation), 2):0.00}");
+                ImGui.TextUnformatted($"rotation cos.: {Math.Round(Math.Cos(rotation), 2):0.00}");
+                ImGui.TextUnformatted($"Player Pos: (" +
                                    $"{Utilities.MapHelpers.ConvertToMapCoordinate(_clientState.LocalPlayer.Position.X, _mapZoneMaxCoordSize):0.00}" +
                                    $"," +
                                    $" {Utilities.MapHelpers.ConvertToMapCoordinate(_clientState.LocalPlayer.Position.Z, _mapZoneMaxCoordSize):0.00}" +
@@ -1549,7 +1523,7 @@ namespace HuntHelper
                 var playerPos = CoordinateToPositionInWindow(
                     new Vector2(ConvertPosToCoordinate(_clientState.LocalPlayer.Position.X),
                         ConvertPosToCoordinate(_clientState.LocalPlayer.Position.Z)));
-                ImGui_TextColourSwapWhenUsingMapImage($"Player Pos: {playerPos}");
+                ImGui.TextUnformatted($"Player Pos: {playerPos}");
                 ImGui.NextColumn();
                 ImGui_RightAlignText($"Map: {_territoryName} - {_territoryId}");
                 ImGui_RightAlignText($"Coord size: {_mapZoneMaxCoordSize} ");
@@ -1592,21 +1566,20 @@ namespace HuntHelper
             ImGui.SetCursorPosX((windowWidth - textWidth) * 0.5f * offset);
             ImGui.TextColored(colour, text);
         }
+        private void ImGui_CentreText(string text, float offset = 1f)
+        {
+            var windowWidth = ImGui.GetWindowSize().X;
+            var textWidth = ImGui.CalcTextSize(text).X;
+            ImGui.SetCursorPosX((windowWidth - textWidth) * 0.5f * offset);
+            ImGui.TextUnformatted(text);
+        }
 
         private void ImGui_RightAlignText(string text)
         {
             var windowWidth = ImGui.GetWindowSize().X;
             var textWidth = ImGui.CalcTextSize(text).X;
             ImGui.SetCursorPosX((windowWidth - textWidth) * .95f);
-            ImGui_TextColourSwapWhenUsingMapImage(text);
-            //ImGui.TextUnformatted(text);
-        }
-
-        private void ImGui_TextColourSwapWhenUsingMapImage(string text)
-        {
-            var colour = new Vector4(1f, 1f, 1f, 1f);
-            if (_useMapImages) colour = new Vector4(0f, 0f, 0f, 1f);
-            ImGui.TextColored(colour, text);
+            ImGui.TextUnformatted(text);
         }
 
         private void ImGui_ToolTip(string[] text)
@@ -1671,13 +1644,6 @@ namespace HuntHelper
             var x = (pos.X - 1) * SingleCoordSize + ImGui.GetWindowPos().X;
             var y = (pos.Y - 1) * SingleCoordSize + ImGui.GetWindowPos().Y;
             return new Vector2(x, y);
-        }
-
-        private void Debug_OptionsWindowTable_ShowWindowSize()
-        {
-            ImGui.TextDisabled($"{ImGui.GetWindowSize()}");
-            //ImGui.TextDisabled($"{_bottomPanelHeight}");
-
         }
 
         private void SetCursorPosByPercentage(float percentX, float percentY)

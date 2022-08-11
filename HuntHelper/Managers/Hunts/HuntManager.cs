@@ -42,6 +42,7 @@ public class HuntManager
     private readonly DalamudPluginInterface _pluginInterface;
     private readonly ChatGui _chatGui;
     private readonly FlyTextGui _flyTextGui;
+    private readonly TrainManager _trainManager;
 
     private readonly List<(HuntRank Rank, BattleNpc Mob)> _currentMobs;
     private readonly List<(HuntRank Rank, BattleNpc Mob)> _previousMobs;
@@ -64,13 +65,13 @@ public class HuntManager
     private readonly ushort _bFlyTextColour = 33;
     private readonly ushort _sFlyTextColour = 16;
     #endregion
-
+    
     public List<HuntTrainMob> HuntTrain { get; init; }
     public List<HuntTrainMob> ImportedTrain { get; init; }
 
     public List<(HuntRank Rank, BattleNpc Mob)> CurrentMobs => _currentMobs;
 
-    public HuntManager(DalamudPluginInterface pluginInterface, ChatGui chatGui, FlyTextGui flyTextGui)
+    public HuntManager(DalamudPluginInterface pluginInterface, TrainManager trainManager,ChatGui chatGui, FlyTextGui flyTextGui)
     {
         _arrDict = new Dictionary<HuntRank, List<Mob>>();
         _hwDict = new Dictionary<HuntRank, List<Mob>>();
@@ -83,17 +84,18 @@ public class HuntManager
         _pluginInterface = pluginInterface;
         _chatGui = chatGui;
         _flyTextGui = flyTextGui;
+        _trainManager = trainManager;
 
         HuntTrain = new List<HuntTrainMob>();
         ImportedTrain = new List<HuntTrainMob>();
 
         ImageFolderPath = Path.Combine(_pluginInterface.AssemblyLocation.Directory?.FullName!, @"Images\Maps\");
-        HuntTrainFilePath =  Path.Combine(_pluginInterface.AssemblyLocation.Directory?.FullName!, @"Data\HuntTrain.json");
+        //HuntTrainFilePath =  Path.Combine(_pluginInterface.AssemblyLocation.Directory?.FullName!, @"Data\HuntTrain.json");
         TTS = new SpeechSynthesizer();
         TTSName = TTS.Voice.Name;
 
         LoadHuntData();
-        LoadHuntTrainRecord();
+        //LoadHuntTrainRecord();
     }
 
     public (HuntRank Rank, BattleNpc? Mob) GetPriorityMob()
@@ -114,12 +116,11 @@ public class HuntManager
 
     public void AddToTrain(BattleNpc mob, uint territoryid, uint mapid, string mapName, float zoneMapCoordSize)
     {
+        if (!_trainManager.RecordTrain) return;
+        //only record A ranks
+        if (GetHuntRank(mob.NameId) != HuntRank.A) return;
         //skip if already recorded, ideally ID would be safer. 
-        if (HuntTrain.Any(m => m.Name == mob.Name.ToString())) return;
-        var position = new Vector2(MapHelpers.ConvertToMapCoordinate(mob.Position.X, zoneMapCoordSize),
-            MapHelpers.ConvertToMapCoordinate(mob.Position.Z, zoneMapCoordSize));
-        var trainMob = new HuntTrainMob(mob.Name.TextValue, territoryid, mapid, mapName, position, DateTime.Now.ToUniversalTime(), false);
-        HuntTrain.Add(trainMob);
+        _trainManager.AddMob(mob, territoryid, mapid, mapName, zoneMapCoordSize);
     }
 
     //bit much, grew big because I don't plan
@@ -197,35 +198,6 @@ public class HuntManager
         }
     }
 
-    public void SendTrainFlag(int index, ushort textColor = 24, ushort flagColour = 559, ushort countColour = 502) //make customizable in the future, maybe
-    {
-        var sb = new SeStringBuilder();
-
-        if (index == -1)
-        {
-            sb.AddUiForeground(textColor);
-            sb.AddText("Nothing Left");
-            sb.AddUiForegroundOff();
-            _chatGui.Print(sb.BuiltString);
-            return;
-        }
-
-        sb.AddUiForeground(textColor);
-        sb.AddIcon(BitmapFontIcon.ExclamationRectangle);
-        sb.AddText(HuntTrain[index].Name +"---");
-        sb.AddUiForegroundOff();
-
-        sb.AddUiForeground(flagColour);
-        sb.Append(HuntTrain[index].MapLink);
-        sb.AddUiForegroundOff();
-
-
-        sb.AddUiForeground(countColour);
-        sb.AddText($" --- {index+1}/{HuntTrain.Count}");
-        sb.AddUiForegroundOff();
-
-        _chatGui.Print(sb.BuiltString);
-    }
     public void SendChatMessage(bool enabled, string msg, uint territoryId, uint mapid, BattleNpc mob, float zoneCoordSize)
     {
         if (!enabled) return;
@@ -382,24 +354,7 @@ public class HuntManager
         LoadFilesIntoDic(_ewDict, EWJsonFiles);
     }
 
-    public void LoadHuntTrainRecord()
-    {
-        //directory should exist by default, as that's where spawn and mob data is stored.
-        if (!File.Exists(HuntTrainFilePath)) return;
-        var deserialised = JsonConvert.DeserializeObject<List<HuntTrainMob>>(File.ReadAllText(HuntTrainFilePath));
-        if (deserialised == null) return;
-        HuntTrain.AddRange(deserialised);
-    }
-
-    public void SaveHuntTrainRecord()
-    {
-        var serialised = JsonConvert.SerializeObject(HuntTrain, Formatting.Indented);
-        PluginLog.Log("Loaded Saved Hunt Train Record");
-        File.WriteAllText(HuntTrainFilePath, serialised);
-        PluginLog.Information($"Saving Hunt Train Record to: {HuntTrainFilePath}");
-    }
-
-    public float GetMapZoneCoordSize(ushort mapID)
+   public float GetMapZoneCoordSize(ushort mapID)
     {
         //EVERYTHING EXCEPT HEAVENSWARD HAS 41 COORDS, BUT FOR SOME REASON HW HAS 43, WHYYYYYY
         if (mapID is >= 397 and <= 402) return 43.1f;
@@ -441,7 +396,7 @@ public class HuntManager
         {
             kvp.Value.Dispose();
         }
-        SaveHuntTrainRecord();
+        _trainManager.SaveHuntTrainRecord();
     }
 
     public double GetHPP(BattleNpc mob)
@@ -593,38 +548,4 @@ public class HuntManager
         DownloadingImages = false;
     }
 
-    #region Train Methods
-    
-    public void ImportTrainAll()
-    {
-        HuntTrain.Clear();
-        HuntTrain.AddRange(ImportedTrain);
-    }
-
-    public void ImportTrainNew(bool updateOldTime)
-    {
-        foreach (var m in ImportedTrain)
-        {
-            if (HuntTrain.All(mob => mob.Name != m.Name)) HuntTrain.Add(m);
-
-            if (updateOldTime)
-            {   //inefficient?
-                var toUpdate = HuntTrain.FirstOrDefault(mob => mob.Name == m.Name);
-                if (toUpdate == null) continue;
-                if (m.LastSeenUTC > toUpdate.LastSeenUTC) toUpdate.LastSeenUTC = m.LastSeenUTC;
-            }
-        }
-    }
-
-    public void TrainRemoveDead()
-    {
-        var toRemove = new List<HuntTrainMob>();
-        foreach (var m in HuntTrain) if (m.Dead) toRemove.Add(m);
-        foreach (var m in toRemove) HuntTrain.Remove(m);
-    }
-    //Unkill is deinitely a real word! :^
-    public void TrainUnkillAll() => HuntTrain.ForEach(m => m.Dead = false);
-    public void TrainDelete() => HuntTrain.Clear();
-
-    #endregion
 }
