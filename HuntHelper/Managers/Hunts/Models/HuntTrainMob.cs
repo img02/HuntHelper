@@ -1,9 +1,7 @@
-﻿using System;
-using System.Numerics;
-using Dalamud.Game.Text.SeStringHandling;
-using Dalamud.Game.Text.SeStringHandling.Payloads;
-using Dalamud.Logging;
+﻿using Dalamud.Game.Text.SeStringHandling;
 using Newtonsoft.Json;
+using System;
+using System.Numerics;
 
 namespace HuntHelper.Managers.Hunts.Models;
 
@@ -15,7 +13,7 @@ public class HuntTrainMob
     public Vector2 Position { get; set; }
     [JsonIgnore]
     public SeString MapLink { get; init; }
-    public bool Dead { get;  set; }
+    public bool Dead { get; set; }
 
     public uint TerritoryID { get; init; }
     public uint MapID { get; init; }

@@ -1,18 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Dalamud.Logging;
 
 namespace HuntHelper.Managers;
 
 public class ImageDownloader
 {
-    private List<string> _urls;
-    private List<string> failedFiles;
-    private string _savePath;
+    private readonly List<string> _urls;
+    private readonly string _savePath;
+
 
 
     public ImageDownloader(List<string> urls, string savePath)
@@ -36,15 +34,13 @@ public class ImageDownloader
     {
         var filename = url.Replace(Constants.BaseUrl, "");
 
-        using (HttpClient httpc = new HttpClient())
-        {
-            var res = await httpc.GetAsync(url);
-            //res.EnsureSuccessStatusCode(); //throws if fail
-            if (!res.IsSuccessStatusCode) return $"Failed to download: {filename}";
+        using var httpc = new HttpClient();
+        var res = await httpc.GetAsync(url);
+        //res.EnsureSuccessStatusCode(); //throws if fail
+        if (!res.IsSuccessStatusCode) return $"Failed to download: {filename}";
 
-            var content = await res.Content.ReadAsByteArrayAsync();
-            await File.WriteAllBytesAsync(_savePath + filename, content);
-            return string.Empty;
-        }
+        var content = await res.Content.ReadAsByteArrayAsync();
+        await File.WriteAllBytesAsync(_savePath + filename, content);
+        return string.Empty;
     }
 }

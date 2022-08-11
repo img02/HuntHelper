@@ -1,13 +1,22 @@
 {
-  "Author": "your name here",
+  "Author": "imaginary-png",
   "Name": "Hunt Helper",
-  "Punchline": "A short one-liner that shows up in /xlplugins.",
-  "Description": "A description that shows up in /xlplugins. List any major slash-command(s).",
-  "InternalName": "Hunt Helper",
-  "ApplicableVersion": "any",
+  "Punchline": "basically a hunt radar + train recorder + notifications.",
+  "Description": "Hunt map with with spawns points, A-Rank train recorder (w/ export/import sharing), TTS, Chat MapLink notifications.",
   "Tags": [
-    "sample",
-    "plugin",
-    "goats"
-  ]
+    "hunt",
+    "radar",
+    "the hunt",
+    "train",
+    "s rank",
+    "map",
+    "mob"
+  ],
+  "InternalName": "Hunt Helper",
+  "AssemblyVersion": "0.0.0.1",
+  "RepoUrl": "https://github.com/imaginary-png/HuntHelper",
+  "ApplicableVersion": "any",
+  "DalamudApiLevel": 6,
+  "LoadPriority": 0,
+  "ImageUrls": null
 }

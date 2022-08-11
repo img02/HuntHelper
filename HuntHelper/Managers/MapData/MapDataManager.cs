@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using Dalamud.Plugin;
+using Newtonsoft.Json;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Numerics;
-using Dalamud.Plugin;
-using Newtonsoft.Json;
 
 namespace HuntHelper.MapInfoManager;
 
@@ -24,7 +24,7 @@ public class MapDataManager
         SpawnPointsList = new List<MapSpawnPoints>();
         LoadSpawnPointData();
     }
-    
+
     public void LoadSpawnPointData()
     {
         ErrorMessage = string.Empty;
@@ -44,7 +44,7 @@ public class MapDataManager
     //search for relevant map, and return list of spawn points, or if null return blank
     public List<Vector2> GetSpawnPoints(ushort mapID)
     {
-        return SpawnPointsList.FirstOrDefault(spawnPoints => spawnPoints.MapID == mapID)?.Positions ??  new List<Vector2>();
+        return SpawnPointsList.FirstOrDefault(spawnPoints => spawnPoints.MapID == mapID)?.Positions ?? new List<Vector2>();
     }
 
     public override string ToString()

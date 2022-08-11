@@ -1,13 +1,9 @@
-﻿using System;
-using System.Buffers.Text;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Text;
-using System.Text.Unicode;
-using Dalamud.Logging;
-using Lumina.Excel.GeneratedSheets;
-using Newtonsoft.Json;
 
 namespace HuntHelper.Utilities;
 
@@ -36,7 +32,7 @@ public static class ExportImport
             return;
         }
     }
-    
+
     //if failed, returns original (prob empty?) object. Is this bad? lmao
     public static T Import<T>(string importCode, T objectToDeserialiseTo)
     {

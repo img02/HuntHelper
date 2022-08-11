@@ -1,20 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing.Text;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Numerics;
-using System.Threading;
-using System.Threading.Tasks;
-using Dalamud.Interface;
+﻿using Dalamud.Interface;
 using Dalamud.Interface.Components;
-using Dalamud.Logging;
 using HuntHelper.Managers.Hunts;
 using HuntHelper.Managers.Hunts.Models;
 using HuntHelper.Utilities;
 using ImGuiNET;
-using ImGuiScene;
-using Lumina.Excel.GeneratedSheets;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Numerics;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace HuntHelper;
 
@@ -153,16 +148,16 @@ public class HuntTrainUI : IDisposable
             }
 
             ImGui.SameLine();
-            PluginUI.ImGui_HelpMarker("HOW TO:\n\n" +
-                                      "Background\n" +
-                                      "Click on any of the rows to send the relevant Map Link into chat. (Drag to reorder the list)\n\n" +
-                                      "Click on the checkbox to mark a mob as dead.\n\n" +
-                                      "Right-click -- Select - change the selected mob\n" +
-                                      "            -- Remove - Removes the mob from the list (This permanently deletes data on that mob)\n\n" +
-                                      "Use the command \"/hhn\" to automatically mark the current selected as dead, and send the next Map link into chat.\n" +
-                                      "(you will have to click the first one manually)\n\n" +
-                                      "*Does not allow duplicates (currently does not handle instances or different worlds) - Only records A ranks.\n" +
-                                      "*Drag reordering can glitch a bit if you drag from near the top of an item. ");
+            MyImGuiHelpers.ImGui_HelpMarker("HOW TO:\n\n" +
+                                          "Background\n" +
+                                          "Click on any of the rows to send the relevant Map Link into chat. (Drag to reorder the list)\n\n" +
+                                          "Click on the checkbox to mark a mob as dead.\n\n" +
+                                          "Right-click -- Select - change the selected mob\n" +
+                                          "            -- Remove - Removes the mob from the list (This permanently deletes data on that mob)\n\n" +
+                                          "Use the command \"/hhn\" to automatically mark the current selected as dead, and send the next Map link into chat.\n" +
+                                          "(you will have to click the first one manually)\n\n" +
+                                          "*Does not allow duplicates (currently does not handle instances or different worlds) - Only records A ranks.\n" +
+                                          "*Drag reordering can glitch a bit if you drag from near the top of an item. ");
             ImGui.SameLine();
             ImGui.TextColored(new Vector4(1f, .3f, .3f, 1f), "  <<<");
 
@@ -219,36 +214,36 @@ public class HuntTrainUI : IDisposable
 
 
             #region Buttons
-            
+
             if (ImGuiComponents.IconButton(FontAwesomeIcon.History)) _trainManager.TrainRemoveDead();
-            ImGui_HoveredToolTip("Remove Dead");
+            MyImGuiHelpers.ImGui_HoveredToolTip("Remove Dead");
             ImGui.SameLine(); ImGui.Dummy(new Vector2(4, 0)); ImGui.SameLine();
 
             if (ImGuiComponents.IconButton(FontAwesomeIcon.Syringe)) _trainManager.TrainUnkillAll();
-            ImGui_HoveredToolTip("Reset Dead Status");
+            MyImGuiHelpers.ImGui_HoveredToolTip("Reset Dead Status");
             ImGui.SameLine(); ImGui.Dummy(new Vector2(4, 0)); ImGui.SameLine();
 
             //position record button on far right
-            ImGui.SetCursorPosX(ImGui.GetWindowSize().X-26);
+            ImGui.SetCursorPosX(ImGui.GetWindowSize().X - 26);
             if (!_trainManager.RecordTrain)
             {
                 if (ImGuiComponents.IconButton(FontAwesomeIcon.Play)) _trainManager.RecordTrain = true;
-                ImGui_HoveredToolTip("Start Recording");
+                MyImGuiHelpers.ImGui_HoveredToolTip("Start Recording");
             }
             else
             {
                 if (ImGuiComponents.IconButton(FontAwesomeIcon.Pause)) _trainManager.RecordTrain = false;
-                ImGui_HoveredToolTip("Stop Recording");
+                MyImGuiHelpers.ImGui_HoveredToolTip("Stop Recording");
             }
 
             ImGui.Dummy(new Vector2(0, 20f));
 
             if (ImGuiComponents.IconButton(FontAwesomeIcon.Skull)) ImGui.OpenPopup("Delete##modal");
-            ImGui_HoveredToolTip("Delete Train");
+            MyImGuiHelpers.ImGui_HoveredToolTip("Delete Train");
             ImGui.SameLine();
-           
+
             //gosh these buttons don't line up, off by like 1 pixel :(
-            ImGui.SetCursorPosX(ImGui.GetWindowSize().X-54);
+            ImGui.SetCursorPosX(ImGui.GetWindowSize().X - 54);
             if (ImGuiComponents.IconButton(FontAwesomeIcon.SignOutAlt))
             {
                 //get export code
@@ -257,7 +252,8 @@ public class HuntTrainUI : IDisposable
                 ImGui.SetClipboardText(exportCode);
                 ChangeCopyText();
             }
-            ImGui_HoveredToolTip(_copyText);
+
+            MyImGuiHelpers.ImGui_HoveredToolTip(_copyText);
             ImGui.SameLine(); ImGui.Dummy(new Vector2(4, 0)); ImGui.SameLine();
 
             if (ImGuiComponents.IconButton(FontAwesomeIcon.SignInAlt))
@@ -267,7 +263,8 @@ public class HuntTrainUI : IDisposable
                 _trainManager.Import(importCode);
                 ImGui.OpenPopup("Import##popup");
             }
-            ImGui_HoveredToolTip("Import");
+
+            MyImGuiHelpers.ImGui_HoveredToolTip("Import");
 
             DrawDeleteModal();
             DrawImportWindowModal();
@@ -366,7 +363,7 @@ public class HuntTrainUI : IDisposable
                 _importNew = false;
                 _importUpdateTime = false;
             }
-            ImGui.SameLine(); PluginUI.ImGui_HelpMarker("Overwrites current data with imported data");
+            ImGui.SameLine(); MyImGuiHelpers.ImGui_HelpMarker("Overwrites current data with imported data");
             ImGui.Dummy(new Vector2(0, 6f));
             ImGui.Separator();
             ImGui.Dummy(new Vector2(0, 6f));
@@ -376,7 +373,7 @@ public class HuntTrainUI : IDisposable
                 _importAll = false;
                 if (!_importNew) _importUpdateTime = false;
             }
-            ImGui.SameLine(); PluginUI.ImGui_HelpMarker("Only imports new mobs");
+            ImGui.SameLine(); MyImGuiHelpers.ImGui_HelpMarker("Only imports new mobs");
 
 
             ImGui.SameLine(); ImGui.Dummy(new Vector2(16, 0));
@@ -387,7 +384,7 @@ public class HuntTrainUI : IDisposable
                 _importNew = true;
                 _importAll = false;
             };
-            ImGui.SameLine(); PluginUI.ImGui_HelpMarker("Imports new mobs and updates old mobs Last Seen times, if applicable");
+            ImGui.SameLine(); MyImGuiHelpers.ImGui_HelpMarker("Imports new mobs and updates old mobs Last Seen times, if applicable");
 
 
 
@@ -504,7 +501,7 @@ public class HuntTrainUI : IDisposable
         {
             HuntTrainMobAttribute.Name => mob.Name,
             HuntTrainMobAttribute.LastSeen => $"{(DateTime.Now.ToUniversalTime() - mob.LastSeenUTC).TotalMinutes:0.}m",
-            HuntTrainMobAttribute.Position => $"({mob.Position.X:0.0}, {mob.Position.Y:0.0})",
+            HuntTrainMobAttribute.Position => $"({mob.Position.X:0.0}, {mob.Position.Y:0.0})"
         };
 
     private void SelectNext()
@@ -521,18 +518,10 @@ public class HuntTrainUI : IDisposable
         }
         _selectedIndex = 0; //if all mobs are dead, set to index 0.
     }
+
     private enum HuntTrainMobAttribute
     {
         Name, Position, LastSeen
     }
 
-    private void ImGui_HoveredToolTip(string msg)
-    {
-        if (ImGui.IsItemHovered())
-        {
-            ImGui.BeginTooltip();
-            ImGui.Text(msg);
-            ImGui.EndTooltip();
-        }
-    }
 }

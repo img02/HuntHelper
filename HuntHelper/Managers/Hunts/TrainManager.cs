@@ -1,16 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Numerics;
-using System.Reflection.Metadata.Ecma335;
-using Dalamud.Game.ClientState.Objects.Types;
+﻿using Dalamud.Game.ClientState.Objects.Types;
 using Dalamud.Game.Gui;
 using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Logging;
 using HuntHelper.Managers.Hunts.Models;
 using HuntHelper.Utilities;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Numerics;
 
 namespace HuntHelper.Managers.Hunts;
 
@@ -23,7 +22,7 @@ public class TrainManager
     public readonly List<HuntTrainMob> ImportedTrain;
     public bool RecordTrain = false;
 
-    public TrainManager(ChatGui chatGui ,string huntTrainFilePath)
+    public TrainManager(ChatGui chatGui, string huntTrainFilePath)
     {
         HuntTrain = new List<HuntTrainMob>();
         ImportedTrain = new List<HuntTrainMob>();

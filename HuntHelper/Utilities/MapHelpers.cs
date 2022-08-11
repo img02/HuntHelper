@@ -1,8 +1,6 @@
-﻿using System;
-using System.Reflection.Metadata;
-using Dalamud.Data;
-using Dalamud.Game.ClientState;
+﻿using Dalamud.Data;
 using Lumina.Excel.GeneratedSheets;
+using System;
 
 namespace HuntHelper.Utilities;
 
@@ -19,7 +17,7 @@ public class MapHelpers
     }
 
     public static float ConvertToMapCoordinate(float pos, float zoneMaxCoordSize)
-    {   
+    {
         return (float)Math.Floor(((zoneMaxCoordSize + 1.96) / 2 + (pos / 50)) * 100) / 100;
     }
 }

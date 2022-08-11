@@ -1,37 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Numerics;
-using System.Reflection.Metadata.Ecma335;
-using System.Speech.Synthesis;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using Dalamud.Game.ClientState.Objects.Types;
+﻿using Dalamud.Game.ClientState.Objects.Types;
 using Dalamud.Game.Gui;
 using Dalamud.Game.Gui.FlyText;
 using Dalamud.Game.Text.SeStringHandling;
-using Dalamud.Game.Text.SeStringHandling.Payloads;
 using Dalamud.Interface;
 using Dalamud.Logging;
 using Dalamud.Plugin;
-using FFXIVClientStructs.FFXIV.Client.Game.Event;
 using HuntHelper.Managers.Hunts.Models;
 using HuntHelper.MapInfoManager;
 using HuntHelper.Utilities;
-using ImGuiNET;
 using ImGuiScene;
-using Lumina.Excel.GeneratedSheets;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Speech.Synthesis;
+using System.Text.RegularExpressions;
 
 namespace HuntHelper.Managers.Hunts;
 
 public class HuntManager
 {
     public readonly string ImageFolderPath;
-    public readonly string HuntTrainFilePath;
 
     private readonly Dictionary<HuntRank, List<Mob>> _arrDict;
     private readonly Dictionary<HuntRank, List<Mob>> _hwDict;
@@ -65,13 +56,13 @@ public class HuntManager
     private readonly ushort _bFlyTextColour = 33;
     private readonly ushort _sFlyTextColour = 16;
     #endregion
-    
+
     public List<HuntTrainMob> HuntTrain { get; init; }
     public List<HuntTrainMob> ImportedTrain { get; init; }
 
     public List<(HuntRank Rank, BattleNpc Mob)> CurrentMobs => _currentMobs;
 
-    public HuntManager(DalamudPluginInterface pluginInterface, TrainManager trainManager,ChatGui chatGui, FlyTextGui flyTextGui)
+    public HuntManager(DalamudPluginInterface pluginInterface, TrainManager trainManager, ChatGui chatGui, FlyTextGui flyTextGui)
     {
         _arrDict = new Dictionary<HuntRank, List<Mob>>();
         _hwDict = new Dictionary<HuntRank, List<Mob>>();
@@ -90,7 +81,6 @@ public class HuntManager
         ImportedTrain = new List<HuntTrainMob>();
 
         ImageFolderPath = Path.Combine(_pluginInterface.AssemblyLocation.Directory?.FullName!, @"Images\Maps\");
-        //HuntTrainFilePath =  Path.Combine(_pluginInterface.AssemblyLocation.Directory?.FullName!, @"Data\HuntTrain.json");
         TTS = new SpeechSynthesizer();
         TTSName = TTS.Voice.Name;
 
@@ -354,7 +344,7 @@ public class HuntManager
         LoadFilesIntoDic(_ewDict, EWJsonFiles);
     }
 
-   public float GetMapZoneCoordSize(ushort mapID)
+    public float GetMapZoneCoordSize(ushort mapID)
     {
         //EVERYTHING EXCEPT HEAVENSWARD HAS 41 COORDS, BUT FOR SOME REASON HW HAS 43, WHYYYYYY
         if (mapID is >= 397 and <= 402) return 43.1f;
@@ -532,7 +522,7 @@ public class HuntManager
         //use spawnpoint data to get map names and generate urls.. coz lazy to retype
         var names = spawnpointdata.Select(x => x.MapName).ToList();
         var urls = names.Select(n => n = Constants.BaseUrl + n.Replace(" ", "_") + "-data.jpg").ToList();
-        
+
         PluginLog.Information("Attempting to download Images.");
         //then async download each image and save to file
         var downloader = new ImageDownloader(urls, ImageFolderPath);
