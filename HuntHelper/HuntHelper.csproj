@@ -1,12 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Authors></Authors>
+    <Authors>https://github.com/imaginary-png</Authors>
     <Company></Company>
     <Version>0.0.0.1</Version>
-    <Description>A sample plugin.</Description>
+    <Description>Hunt map with spawns points, A-Rank train recorder (w/ export/import sharing), TTS, Chat MapLink notifications.</Description>
     <Copyright></Copyright>
-    <PackageProjectUrl>https://github.com/goatcorp/SamplePlugin</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/imaginary-png/HuntHelper</PackageProjectUrl>
   </PropertyGroup>
 
   <PropertyGroup>
