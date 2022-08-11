@@ -2,7 +2,7 @@
   "Author": "imaginary-png",
   "Name": "Hunt Helper",
   "Punchline": "basically a hunt radar + train recorder + notifications.",
-  "Description": "Hunt map with with spawns points, A-Rank train recorder (w/ export/import sharing), TTS, Chat MapLink notifications.",
+  "Description": "Hunt map with spawns points, A-Rank train recorder (w/ export/import sharing), TTS, Chat MapLink notifications.",
   "Tags": [
     "hunt",
     "radar",
@@ -18,5 +18,11 @@
   "ApplicableVersion": "any",
   "DalamudApiLevel": 6,
   "LoadPriority": 0,
-  "ImageUrls": null
+  "ImageUrls": [
+    "https://raw.githubusercontent.com/imaginary-png/HuntHelper/main/Images/hunt_map.png",
+    "https://raw.githubusercontent.com/imaginary-png/HuntHelper/main/Images/hunt_train.png",
+    "https://raw.githubusercontent.com/imaginary-png/HuntHelper/main/Images/chat_notification.png",
+    "https://raw.githubusercontent.com/imaginary-png/HuntHelper/main/Images/no_map.png",
+    "https://raw.githubusercontent.com/imaginary-png/HuntHelper/main/Images/hunt_map1.png"
+  ]
 }

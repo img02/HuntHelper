@@ -916,19 +916,19 @@ namespace HuntHelper
                                 ImGui.EndTabItem();
                             }
 
-                            if (ImGui.BeginTabItem("Available Flags"))
+                            if (ImGui.BeginTabItem("Available Tags"))
                             {
                                 _bottomPanelHeight = 170f;
 
-                                ImGui.TextUnformatted("Available Flags:");
-                                ImGui.SameLine(); MyImGuiHelpers.ImGui_HelpMarker("DOUBLE CLICK to easily highlight a flag option for copy and paste.  \n-- ONLY <name> and <rank> work with TTS");
-                                var flags =
+                                ImGui.TextUnformatted("Available Tags:");
+                                ImGui.SameLine(); MyImGuiHelpers.ImGui_HelpMarker("DOUBLE CLICK to easily highlight a tag option for copy and paste.  \n-- ONLY <name> and <rank> work with TTS");
+                                var tags =
                                     "Hunt: <flag> <name> <rank> <hpp>\n\n" +
                                     "Cosmetic: <goldstar> <silverstar> <warning> <nocircle> <controllerbutton0> <controllerbutton1>\n" +
                                     " <priorityworld> <elementallevel> <exclamationrectangle> <notoriousmonster> <alarm> <fanfestival>";
 
                                 var contentRegion = ImGui.GetContentRegionAvail();
-                                ImGui.InputTextMultiline("##cosmetic flag info", ref flags, 500, new Vector2(contentRegion.X - 10, 80), ImGuiInputTextFlags.ReadOnly);
+                                ImGui.InputTextMultiline("##cosmetic tag info", ref tags, 500, new Vector2(contentRegion.X - 10, 80), ImGuiInputTextFlags.ReadOnly);
                                 ImGui.EndTabItem();
                             }
 
