@@ -17,6 +17,7 @@ using System.IO;
 using System.Linq;
 using System.Speech.Synthesis;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace HuntHelper.Managers.Hunts;
 
@@ -284,7 +285,12 @@ public class HuntManager
         //changed to creating a new tts each time because SpeakAsync just queues up to play...
         var tts = new SpeechSynthesizer();
         tts.SelectVoice(TTSName);
-        tts.SpeakAsync(message);
+        var prompt = tts.SpeakAsync(message);
+        Task.Run(() =>
+            { //this works but looks weird?
+                while (!prompt.IsCompleted) ;
+                tts.Dispose();
+            });
     }
 
     private string FormatMessageFlags(string msg, BattleNpc mob)
@@ -387,6 +393,7 @@ public class HuntManager
             kvp.Value.Dispose();
         }
         _trainManager.SaveHuntTrainRecord();
+        TTS.Dispose();
     }
 
     public double GetHPP(BattleNpc mob)
@@ -534,7 +541,7 @@ public class HuntManager
             PluginLog.Error("Error:");
             DownloadErrors.ForEach(e => PluginLog.Error(e));
         }
-       //else PluginLog.Information("All images downloaded!");
+        //else PluginLog.Information("All images downloaded!");
         DownloadingImages = false;
     }
 

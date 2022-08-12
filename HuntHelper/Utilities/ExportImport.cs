@@ -40,8 +40,7 @@ public static class ExportImport
         {
             var decompressed = Decompress(importCode);
             var result = JsonConvert.DeserializeObject<T>(decompressed);
-            if (result == null) return objectToDeserialiseTo;
-            return result;
+            return result ?? objectToDeserialiseTo;
         }
         catch (Exception e)
         {

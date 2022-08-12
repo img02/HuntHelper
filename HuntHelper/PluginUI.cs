@@ -18,6 +18,7 @@ using System.Numerics;
 using System.Speech.Synthesis;
 using System.Threading;
 using System.Threading.Tasks;
+using Dalamud.Logging;
 using Action = System.Action;
 
 namespace HuntHelper
@@ -910,7 +911,12 @@ namespace HuntHelper
                                     //creating new speechsynthesizer because it does not play audio asynchronously
                                     var tempTTS = new SpeechSynthesizer();
                                     tempTTS.SelectVoice(_ttsVoiceName);
-                                    tempTTS.SpeakAsync($"BOO! {tts.Voice.Name} Selected");
+                                    var prompt = tempTTS.SpeakAsync($"BOO! {tts.Voice.Name} Selected");
+                                    Task.Run(() =>
+                                    {
+                                        while (!prompt.IsCompleted) {};
+                                        tempTTS.Dispose();
+                                    });
                                 }
 
                                 ImGui.EndTabItem();
