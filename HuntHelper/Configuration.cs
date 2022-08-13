@@ -107,7 +107,9 @@ namespace HuntHelper
         #region Counter Window
 
         public Vector2 CounterWindowPos { get; set; } = new Vector2(50, 50);
-        public Vector2 CounterWindowSize { get; set; } = new Vector2(200, 50);
+        public Vector2 CounterWindowSize { get; set; } = new Vector2(250, 50);
+
+        public bool CountInBackground { get; set; } = false;
 
         #endregion
 

@@ -10,7 +10,7 @@ public static class Constants
     //arr
     public static readonly string[] Minhocao = {"Earth Sprite"};
     //hw
-    public static readonly string[] Leucrotta = {"Allagan Chimera", "Lesser Hydra", "Merecydian Voivre"};
+    public static readonly string[] Leucrotta = {"Allagan Chimera", "Lesser Hydra", "Meracydian Vouivre"};
     public static readonly string[] Gandawera = { "Aurum Regis Ore", "Seventh Heaven"};
     //sb
     public static readonly string[] Okina = { "Yumemi", "Naked Yumemi" };
@@ -24,6 +24,7 @@ public static class Constants
 
 
     public const string MinhocaoRegex = "(?i)(defeat|defeats) the earth sprite.";
+    public const string LeucrottaRegex = "(?i)(defeat|defeats) the (Allagan chimera|lesser hydra|Meracydian vouivre).";
 
 
 }

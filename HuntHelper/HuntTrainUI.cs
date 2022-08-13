@@ -268,12 +268,8 @@ public class HuntTrainUI : IDisposable
 
             DrawDeleteModal();
             DrawImportWindowModal();
-
-            //ImGui.TextUnformatted($"{ImGui.GetWindowSize()}");
             #endregion
-
-            //ImGui.TextUnformatted($"{ImGui.GetWindowSize()}");
-
+            
             ImGui.PopStyleVar(); //pop itemspacing
             ImGui.End();
         }

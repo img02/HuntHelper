@@ -5,6 +5,8 @@ using System.Numerics;
 using Dalamud.Game.ClientState;
 using Dalamud.Game.Gui;
 using Dalamud.Game.Text;
+using Dalamud.Interface;
+using Dalamud.Interface.Components;
 using Dalamud.Logging;
 using HuntHelper.Managers.Counters;
 using HuntHelper.Utilities;
@@ -20,7 +22,8 @@ public class CounterUI : IDisposable
     private readonly List<CounterBase> _counters;
 
     private Vector2 _windowPos = new Vector2(50, 50);
-    private Vector2 _windowSize = new Vector2(200, 50);
+    private Vector2 _windowSize = new Vector2(250, 50);
+    private bool _countInBackground = true;
 
     public bool WindowVisible = false;
 
@@ -31,7 +34,8 @@ public class CounterUI : IDisposable
         _config = config;
         _counters = new List<CounterBase>()
         {
-            new MinhocaoCounter()
+            new MinhocaoCounter(),
+            new LeucrottaCounter()
         };
         LoadSettings();
 
@@ -43,12 +47,14 @@ public class CounterUI : IDisposable
     {
         _windowPos = _config.CounterWindowPos;
         _windowSize = _config.CounterWindowSize;
+        _countInBackground = _config.CountInBackground;
     }
 
     public void SaveSettings()
     {
         _config.CounterWindowPos = _windowPos;
         _config.CounterWindowSize = _windowSize;
+        _config.CountInBackground = _countInBackground;
     }
 
     public void Draw()
@@ -62,32 +68,49 @@ public class CounterUI : IDisposable
 
         ImGui.SetNextWindowSize(_windowSize, ImGuiCond.FirstUseEver);
         ImGui.SetNextWindowPos(_windowPos, ImGuiCond.FirstUseEver);
-        if (ImGui.Begin("Counter", ref WindowVisible))
+        if (ImGui.Begin("Counter", ref WindowVisible, ImGuiWindowFlags.NoScrollbar))
         {
             var counter = _counters.FirstOrDefault(c => c.MapID == _clientState.TerritoryType);
             if (counter == null) return;
-
-            foreach (var (name, count) in counter.Tally)
+            
+            if (ImGui.BeginTable("CounterTable", 2, ImGuiTableFlags.Borders))
             {
-                ImGuiUtil.DoStuffWithMonoFont(() =>
+                ImGui.TableSetupColumn("name", ImGuiTableColumnFlags.None, ImGui.GetWindowPos().X * (3.0f / 4.0f));
+                ImGui.TableSetupColumn("count", ImGuiTableColumnFlags.None, ImGui.GetWindowPos().X / 4.0f);
+                foreach (var (name, count) in counter.Tally)
                 {
-                    ImGui.TextUnformatted($"{name}: ");
-                    ImGui.SameLine();
-                    //ImGui.TextUnformatted($"{count:D3}");
-                    ImGui.TextUnformatted($"{count}");
-                });
+                    ImGuiUtil.DoStuffWithMonoFont(() =>
+                    {
+                        ImGui.TableNextColumn();
+                        ImGui.TextUnformatted($"{name}: ");
+                        ImGui.TableNextColumn();
+                        ImGui.TextUnformatted($"{count}");
+                    });
+                }
+                ImGui.EndTable();
             }
+            ImGui.TextUnformatted($"{ImGui.GetWindowSize()}");
+
+            //ImGui.Checkbox("##background", ref _countInBackground);
+            ImGuiComponents.ToggleButton("##backgroundcounttoggle", ref _countInBackground);
+            ImGuiUtil.ImGui_HoveredToolTip("Allow counting when window closed.\n" +
+                                           "Status: " +
+                                           (_countInBackground ? "Enabled" : "Disabled"));
+            ImGui.SameLine();
+            if (ImGuiComponents.IconButton(FontAwesomeIcon.Trash)) counter.Reset();
+            ImGuiUtil.ImGui_HoveredToolTip("Reset");
+
+
             ImGui.End();
         }
     }
 
-    private bool _countInBackground = true;
     private void chatGui_ChatMessage(Dalamud.Game.Text.XivChatType type, uint senderId, ref Dalamud.Game.Text.SeStringHandling.SeString sender, ref Dalamud.Game.Text.SeStringHandling.SeString message, ref bool isHandled)
     {
         if (!_countInBackground) return;
 
         PluginLog.Warning($"?? line: " + message + $" {type}");
-        if ((ushort)type is not 2874 or 2115) return; //2874 = death message?, 2115 = gather attempt
+        if ((ushort)type is not 2874 and not 2115 and not 17210) return; //2874 = you killed, 2115 = gather attempt, 17210 = chocobo killed owo,
 
         var counter = _counters.FirstOrDefault(c => c.MapID == _clientState.TerritoryType);
         if (counter == null) return;

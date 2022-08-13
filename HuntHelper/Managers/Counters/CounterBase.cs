@@ -29,7 +29,8 @@ public abstract class CounterBase
 
     public void Reset()
     {
-        Tally.ForEach(c => c.Count = 0);
+        Tally.Clear();
+        AddCountRequirements();
     }
 
     public void TryAddFromLogLine(string msg)
