@@ -5,7 +5,7 @@ using ImGuiNET;
 
 namespace HuntHelper.Utilities;
 
-public class MyImGuiHelpers
+public class ImGuiUtil
 {
     public static void ImGui_CentreText(string text, Vector4 colour, float offset = 1f)
     {

@@ -67,10 +67,10 @@ public class HuntTrainUI : IDisposable
 
     public void Dispose()
     {
-        SaveSettings();
+        //SaveSettings();
     }
 
-    public void LoadSettings()
+    private void LoadSettings()
     {
         //HuntTrainWindowVisible = _config.HuntTrainWindowVisible;
         _huntTrainWindowSize = _config.HuntTrainWindowSize;
@@ -148,7 +148,7 @@ public class HuntTrainUI : IDisposable
             }
 
             ImGui.SameLine();
-            MyImGuiHelpers.ImGui_HelpMarker("HOW TO:\n\n" +
+            ImGuiUtil.ImGui_HelpMarker("HOW TO:\n\n" +
                                           "Background\n" +
                                           "Click on any of the rows to send the relevant Map Link into chat. (Drag to reorder the list)\n\n" +
                                           "Click on the checkbox to mark a mob as dead.\n\n" +
@@ -216,11 +216,11 @@ public class HuntTrainUI : IDisposable
             #region Buttons
 
             if (ImGuiComponents.IconButton(FontAwesomeIcon.History)) _trainManager.TrainRemoveDead();
-            MyImGuiHelpers.ImGui_HoveredToolTip("Remove Dead");
+            ImGuiUtil.ImGui_HoveredToolTip("Remove Dead");
             ImGui.SameLine(); ImGui.Dummy(new Vector2(4, 0)); ImGui.SameLine();
 
             if (ImGuiComponents.IconButton(FontAwesomeIcon.Syringe)) _trainManager.TrainUnkillAll();
-            MyImGuiHelpers.ImGui_HoveredToolTip("Reset Dead Status");
+            ImGuiUtil.ImGui_HoveredToolTip("Reset Dead Status");
             ImGui.SameLine(); ImGui.Dummy(new Vector2(4, 0)); ImGui.SameLine();
 
             //position record button on far right
@@ -228,18 +228,18 @@ public class HuntTrainUI : IDisposable
             if (!_trainManager.RecordTrain)
             {
                 if (ImGuiComponents.IconButton(FontAwesomeIcon.Play)) _trainManager.RecordTrain = true;
-                MyImGuiHelpers.ImGui_HoveredToolTip("Start Recording");
+                ImGuiUtil.ImGui_HoveredToolTip("Start Recording");
             }
             else
             {
                 if (ImGuiComponents.IconButton(FontAwesomeIcon.Pause)) _trainManager.RecordTrain = false;
-                MyImGuiHelpers.ImGui_HoveredToolTip("Stop Recording");
+                ImGuiUtil.ImGui_HoveredToolTip("Stop Recording");
             }
 
             ImGui.Dummy(new Vector2(0, 20f));
 
             if (ImGuiComponents.IconButton(FontAwesomeIcon.Skull)) ImGui.OpenPopup("Delete##modal");
-            MyImGuiHelpers.ImGui_HoveredToolTip("Delete Train");
+            ImGuiUtil.ImGui_HoveredToolTip("Delete Train");
             ImGui.SameLine();
 
             //gosh these buttons don't line up, off by like 1 pixel :(
@@ -253,7 +253,7 @@ public class HuntTrainUI : IDisposable
                 ChangeCopyText();
             }
 
-            MyImGuiHelpers.ImGui_HoveredToolTip(_copyText);
+            ImGuiUtil.ImGui_HoveredToolTip(_copyText);
             ImGui.SameLine(); ImGui.Dummy(new Vector2(4, 0)); ImGui.SameLine();
 
             if (ImGuiComponents.IconButton(FontAwesomeIcon.SignInAlt))
@@ -264,7 +264,7 @@ public class HuntTrainUI : IDisposable
                 ImGui.OpenPopup("Import##popup");
             }
 
-            MyImGuiHelpers.ImGui_HoveredToolTip("Import");
+            ImGuiUtil.ImGui_HoveredToolTip("Import");
 
             DrawDeleteModal();
             DrawImportWindowModal();
@@ -363,7 +363,7 @@ public class HuntTrainUI : IDisposable
                 _importNew = false;
                 _importUpdateTime = false;
             }
-            ImGui.SameLine(); MyImGuiHelpers.ImGui_HelpMarker("Overwrites current data with imported data");
+            ImGui.SameLine(); ImGuiUtil.ImGui_HelpMarker("Overwrites current data with imported data");
             ImGui.Dummy(new Vector2(0, 6f));
             ImGui.Separator();
             ImGui.Dummy(new Vector2(0, 6f));
@@ -373,7 +373,7 @@ public class HuntTrainUI : IDisposable
                 _importAll = false;
                 if (!_importNew) _importUpdateTime = false;
             }
-            ImGui.SameLine(); MyImGuiHelpers.ImGui_HelpMarker("Only imports new mobs");
+            ImGui.SameLine(); ImGuiUtil.ImGui_HelpMarker("Only imports new mobs");
 
 
             ImGui.SameLine(); ImGui.Dummy(new Vector2(16, 0));
@@ -384,7 +384,7 @@ public class HuntTrainUI : IDisposable
                 _importNew = true;
                 _importAll = false;
             };
-            ImGui.SameLine(); MyImGuiHelpers.ImGui_HelpMarker("Imports new mobs and updates old mobs Last Seen times, if applicable");
+            ImGui.SameLine(); ImGuiUtil.ImGui_HelpMarker("Imports new mobs and updates old mobs Last Seen times, if applicable");
 
 
 

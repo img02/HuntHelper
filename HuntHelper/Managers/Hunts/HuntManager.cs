@@ -528,7 +528,7 @@ public class HuntManager
 
         //use spawnpoint data to get map names and generate urls.. coz lazy to retype
         var names = spawnpointdata.Select(x => x.MapName).ToList();
-        var urls = names.Select(n => n = Constants.BaseUrl + n.Replace(" ", "_") + "-data.jpg").ToList();
+        var urls = names.Select(n => n = Constants.BaseImageUrl + n.Replace(" ", "_") + "-data.jpg").ToList();
 
         //PluginLog.Information("Attempting to download Images.");
         //then async download each image and save to file

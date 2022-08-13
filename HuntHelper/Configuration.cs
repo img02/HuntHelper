@@ -11,6 +11,8 @@ namespace HuntHelper
     {
         public int Version { get; set; } = 0;
 
+        #region Main Map Window
+        
         //initial window position
         public Vector2 MapWindowPos { get; set; } = new Vector2(25, 25);
         //window sizes
@@ -89,6 +91,7 @@ namespace HuntHelper
         public bool FlyTextBEnabled { get; set; } = false;
         public bool FlyTextSEnabled { get; set; } = true;
 
+        #endregion
 
         #region Hunt Train Window
         //public bool HuntTrainWindowVisible { get; set; } = false;
@@ -101,7 +104,12 @@ namespace HuntHelper
         #endregion
 
 
+        #region Counter Window
 
+        public Vector2 CounterWindowPos { get; set; } = new Vector2(50, 50);
+        public Vector2 CounterWindowSize { get; set; } = new Vector2(200, 50);
+
+        #endregion
 
 
         //Hunt Window Flag - used for toggling title bar

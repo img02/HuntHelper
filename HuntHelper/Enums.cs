@@ -9,7 +9,6 @@ public enum HuntRank
 
 }
 
-//don't need these, but leaving in
 public enum MapID
 {
     //assign map values here.

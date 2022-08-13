@@ -18,6 +18,7 @@ namespace HuntHelper
         private const string MapWindowCommand = "/hh";
         private const string HuntTrainWindowCommand = "/hht";
         private const string NextHuntInTrainCommand = "/hhn";
+        private const string CounterCommand = "/hhc";
         private const string DebugCommand = "/hhdebug";
 
         private DalamudPluginInterface PluginInterface { get; init; }
@@ -25,6 +26,7 @@ namespace HuntHelper
         private Configuration Configuration { get; init; }
         private PluginUI PluginUi { get; init; }
         private HuntTrainUI HuntTrainUI { get; init; }
+        private CounterUI CounterUI { get; init; }
         private ClientState ClientState { get; init; }
         private ObjectTable ObjectTable { get; init; }
         private DataManager DataManager { get; init; }
@@ -61,6 +63,7 @@ namespace HuntHelper
 
             this.PluginUi = new PluginUI(this.Configuration, pluginInterface, clientState, objectTable, dataManager, HuntManager, MapDataManager);
             this.HuntTrainUI = new HuntTrainUI(TrainManager, Configuration);
+            this.CounterUI = new CounterUI(ClientState, ChatGui, Configuration);
 
             this.CommandManager.AddHandler(MapWindowCommand, new CommandInfo(HuntMapCommand)
             {
@@ -78,6 +81,10 @@ namespace HuntHelper
             {
                 HelpMessage = "random data, debug info"
             });
+            this.CommandManager.AddHandler(CounterCommand, new CommandInfo(CounterWindowCommand)
+            {
+                HelpMessage = "random data, debug info"
+            });
 
             this.PluginInterface.UiBuilder.Draw += DrawUI;
             this.PluginInterface.UiBuilder.OpenConfigUi += DrawConfigUI;
@@ -86,12 +93,18 @@ namespace HuntHelper
         public void Dispose()
         {
             //save hunttrainui config first
-            this.HuntTrainUI.Dispose();
+            this.HuntTrainUI.SaveSettings();
+            this.CounterUI.SaveSettings();
+
+            //this.HuntTrainUI.Dispose();
+            this.CounterUI.Dispose();
             this.PluginUi.Dispose();
             this.CommandManager.RemoveHandler(DebugCommand);
             this.CommandManager.RemoveHandler(MapWindowCommand);
             this.CommandManager.RemoveHandler(HuntTrainWindowCommand);
             this.CommandManager.RemoveHandler(NextHuntInTrainCommand);
+            this.CommandManager.RemoveHandler(CounterCommand);
+
             this.HuntManager.Dispose();
             this.FlyTextGui.Dispose();
         }
@@ -101,11 +114,13 @@ namespace HuntHelper
         private void HuntTrainCommand(string command, string args) => HuntTrainUI.HuntTrainWindowVisible = !HuntTrainUI.HuntTrainWindowVisible;
         //gets next available hunt in the recorded train
         private void GetNextMobCommand(string command, string args) => HuntTrainUI.GetNextMobCommand();
+        private void CounterWindowCommand(string command, string args) => CounterUI.WindowVisible = !CounterUI.WindowVisible;
 
         private void DrawUI()
         {
             this.PluginUi.Draw();
             this.HuntTrainUI.Draw();
+            this.CounterUI.Draw();
         }
 
         private void DrawConfigUI()

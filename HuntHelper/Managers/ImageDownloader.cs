@@ -32,7 +32,7 @@ public class ImageDownloader
 
     private async Task<string> DownloadAsync(string url)
     {
-        var filename = url.Replace(Constants.BaseUrl, "");
+        var filename = url.Replace(Constants.BaseImageUrl, "");
 
         using var httpc = new HttpClient();
         var res = await httpc.GetAsync(url);
