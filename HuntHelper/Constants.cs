@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Speech.Synthesis.TtsEngine;
 using FFXIVClientStructs.FFXIV.Client.UI.Misc;
 
 namespace HuntHelper;
@@ -34,6 +35,9 @@ public static class Constants
     //sbh
     public const string ForgivenPedantryRegex = "(?i)You obtain .*dwarven cotton (boll|bolls)";
     public const string IxtabRegex = "(?i)(defeat|defeats) the Cracked (Ronkan Doll|Ronkan Thorn|Ronkan Vessel).";
+    //ew
+    public const string SphatikaRegex = "(?i)(defeat|defeats) the (Asvattha|Pisaca|Vajralangula).";
+    public const string RuinatorRegex = "(?i)(defeat|defeats) the (Thinker|Wanderer|Weeper).";
 
 
 }

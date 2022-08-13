@@ -10,6 +10,7 @@ using Dalamud.Interface.Components;
 using Dalamud.Logging;
 using HuntHelper.Managers.Counters;
 using HuntHelper.Managers.Counters.ARR;
+using HuntHelper.Managers.Counters.EW;
 using HuntHelper.Managers.Counters.HW;
 using HuntHelper.Managers.Counters.SB;
 using HuntHelper.Managers.Counters.ShB;
@@ -44,7 +45,9 @@ public class CounterUI : IDisposable
             new OkinaCounter(),
             new UdumbaraCounter(),
             new ForgivenPedantryCounter(),
-            new IxtabCounter()
+            new IxtabCounter(),
+            new SphatikaCounter(),
+            new RuinatorCounter()
         };
         LoadSettings();
 

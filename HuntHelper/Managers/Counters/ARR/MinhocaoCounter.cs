@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Reflection.Metadata.Ecma335;
-using System.Text.RegularExpressions;
-
-namespace HuntHelper.Managers.Counters.ARR;
+﻿namespace HuntHelper.Managers.Counters.ARR;
 
 public class MinhocaoCounter : CounterBase
 {
