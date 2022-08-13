@@ -2,7 +2,7 @@
 using System.Reflection.Metadata.Ecma335;
 using System.Text.RegularExpressions;
 
-namespace HuntHelper.Managers.Counters;
+namespace HuntHelper.Managers.Counters.ARR;
 
 public class MinhocaoCounter : CounterBase
 {

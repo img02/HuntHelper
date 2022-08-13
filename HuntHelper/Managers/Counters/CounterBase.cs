@@ -43,11 +43,15 @@ public abstract class CounterBase
     {
         foreach (var name in NamesToMatch)
         {
+            PluginLog.Warning("looking for  " + name);
             if (msg.ToLowerInvariant().Contains(name.ToLowerInvariant()))
             {
+                PluginLog.Warning("Adding  " + name);
                 AddOne(name);
+                return; //if a matching name is found, stop looking.
             }
         }
+        PluginLog.Warning("notfound");
     }
     protected void AddCountRequirements()
     {

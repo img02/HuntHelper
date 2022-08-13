@@ -9,6 +9,9 @@ using Dalamud.Interface;
 using Dalamud.Interface.Components;
 using Dalamud.Logging;
 using HuntHelper.Managers.Counters;
+using HuntHelper.Managers.Counters.ARR;
+using HuntHelper.Managers.Counters.HW;
+using HuntHelper.Managers.Counters.SB;
 using HuntHelper.Utilities;
 using ImGuiNET;
 
@@ -35,7 +38,10 @@ public class CounterUI : IDisposable
         _counters = new List<CounterBase>()
         {
             new MinhocaoCounter(),
-            new LeucrottaCounter()
+            new LeucrottaCounter(),
+            new GandaweraCounter(),
+            new OkinaCounter(),
+            new UdumbaraCounter()
         };
         LoadSettings();
 
@@ -89,9 +95,7 @@ public class CounterUI : IDisposable
                 }
                 ImGui.EndTable();
             }
-            ImGui.TextUnformatted($"{ImGui.GetWindowSize()}");
-
-            //ImGui.Checkbox("##background", ref _countInBackground);
+            ImGui.Dummy(Vector2.Zero);
             ImGuiComponents.ToggleButton("##backgroundcounttoggle", ref _countInBackground);
             ImGuiUtil.ImGui_HoveredToolTip("Allow counting when window closed.\n" +
                                            "Status: " +
@@ -109,7 +113,7 @@ public class CounterUI : IDisposable
     {
         if (!_countInBackground) return;
 
-        PluginLog.Warning($"?? line: " + message + $" {type}");
+        //PluginLog.Warning($"?? line: " + message + $" {type}");
         if ((ushort)type is not 2874 and not 2115 and not 17210) return; //2874 = you killed, 2115 = gather attempt, 17210 = chocobo killed owo,
 
         var counter = _counters.FirstOrDefault(c => c.MapID == _clientState.TerritoryType);

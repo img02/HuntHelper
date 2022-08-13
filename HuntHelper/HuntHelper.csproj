@@ -129,6 +129,12 @@
     </Reference>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Managers\Counters\EW\" />
+    <Folder Include="Managers\Counters\ShB\" />
+    <Folder Include="Managers\Counters\SB\" />
+  </ItemGroup>
+
   <ProjectExtensions><VisualStudio><UserProperties /></VisualStudio></ProjectExtensions>
 
 </Project>
