@@ -13,6 +13,7 @@ public static class Constants
     //sb
     public static readonly string[] Okina = { "Naked Yumemi", "Yumemi" }; //naked goes first here, otherwise minor issue w/ matching 'naked yumemi' to 'yumemi'
     public static readonly string[] Udumbara = { "Leshy", "Diakka" };
+    public static readonly string[] SaltAndLight = { "Throw" };
     //shb
     public static readonly string[] ForgivenPedantry = { "Dwarven Cotton Boll" };
     public static readonly string[] Ixtab = { "Cracked Ronkan Doll", "Cracked Ronkan Thorn", "Cracked Ronkan Vessel" };
@@ -21,19 +22,21 @@ public static class Constants
     public static readonly string[] Ruinator = { "Thinker", "Wanderer", "Weeper" };
 
     //arr
-    public const string MinhocaoRegex = "(?i)(defeat|defeats) the earth sprite.";
+    public const string MinhocaoRegex = $"{BattleRegexBase}earth sprite.";
     //hw
-    public const string LeucrottaRegex = "(?i)(defeat|defeats) the (Allagan chimera|lesser hydra|Meracydian vouivre).";
-    public const string GandaweraRegex = "(?i)You obtain .*(aurum regis ore|seventh heaven)";
+    public const string LeucrottaRegex = $"{BattleRegexBase}(Allagan chimera|lesser hydra|Meracydian vouivre).";
+    public const string GandaweraRegex = $"{GatheringRegexBase}(aurum regis ore|seventh heaven)";
     //sb
-    public const string OkinaRegex = "(?i)(defeat|defeats) the (Yumemi|Naked Yumemi).";
-    public const string UdumbaraRegex = "(?i)(defeat|defeats) the (Leshy|Diakka).";
+    public const string OkinaRegex = $"{BattleRegexBase}(Yumemi|Naked Yumemi).";
+    public const string UdumbaraRegex = $"{BattleRegexBase}(Leshy|Diakka).";
+    public const string SaltAndLightRegex = $"You throw away.*";
     //sbh
-    public const string ForgivenPedantryRegex = "(?i)You obtain .*dwarven cotton (boll|bolls)";
-    public const string IxtabRegex = "(?i)(defeat|defeats) the Cracked (Ronkan Doll|Ronkan Thorn|Ronkan Vessel).";
+    public const string ForgivenPedantryRegex = $"{GatheringRegexBase}dwarven cotton (boll|bolls)";
+    public const string IxtabRegex = $"{BattleRegexBase}Cracked (Ronkan Doll|Ronkan Thorn|Ronkan Vessel).";
     //ew
-    public const string SphatikaRegex = "(?i)(defeat|defeats) the (Asvattha|Pisaca|Vajralangula).";
-    public const string RuinatorRegex = "(?i)(defeat|defeats) the (Thinker|Wanderer|Weeper).";
+    public const string SphatikaRegex = $"{BattleRegexBase}(Asvattha|Pisaca|Vajralangula).";
+    public const string RuinatorRegex = $"{BattleRegexBase}(Thinker|Wanderer|Weeper).";
 
-
+    private const string BattleRegexBase = "(?i)(defeat|defeats) the ";
+    private const string GatheringRegexBase = "(?i)You obtain.*";
 }

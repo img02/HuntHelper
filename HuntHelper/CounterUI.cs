@@ -14,6 +14,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using Dalamud.Game.Text;
+using Dalamud.Logging;
 
 namespace HuntHelper;
 
@@ -42,6 +44,7 @@ public class CounterUI : IDisposable
             new GandaweraCounter(),
             new OkinaCounter(),
             new UdumbaraCounter(),
+            new SaltAndLightCounter(),
             new ForgivenPedantryCounter(),
             new IxtabCounter(),
             new SphatikaCounter(),
@@ -117,8 +120,8 @@ public class CounterUI : IDisposable
     {
         if (!_countInBackground) return;
 
-        //PluginLog.Warning($"?? line: " + message + $" {type}");
-        if ((ushort)type is not 2874 and not 2115 and not 17210) return; //2874 = you killed, 2115 = gather attempt, 17210 = chocobo killed owo,
+        PluginLog.Warning($"?? line: " + message + $" {type}");
+        if ((ushort)type is not 2874 and not 2115 and not 17210 and not 57) return; //2874 = you killed, 2115 = gather attempt, 17210 = chocobo killed owo, 
         var counter = _counters.FirstOrDefault(c => c.MapID == _clientState.TerritoryType);
         if (counter == null) return;
         counter.TryAddFromLogLine(message.ToString());
