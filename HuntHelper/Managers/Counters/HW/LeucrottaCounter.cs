@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace HuntHelper.Managers.Counters.HW
+﻿namespace HuntHelper.Managers.Counters.HW
 {
     public class LeucrottaCounter : CounterBase
     {

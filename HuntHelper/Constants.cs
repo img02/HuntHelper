@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Speech.Synthesis.TtsEngine;
-using FFXIVClientStructs.FFXIV.Client.UI.Misc;
-
-namespace HuntHelper;
+﻿namespace HuntHelper;
 
 public static class Constants
 {
@@ -10,16 +6,16 @@ public static class Constants
     public const string RepoUrl = "https://github.com/imaginary-png/HuntHelper-Resources/";
 
     //arr
-    public static readonly string[] Minhocao = {"Earth Sprite"};
+    public static readonly string[] Minhocao = { "Earth Sprite" };
     //hw
-    public static readonly string[] Leucrotta = {"Allagan Chimera", "Lesser Hydra", "Meracydian Vouivre"};
+    public static readonly string[] Leucrotta = { "Allagan Chimera", "Lesser Hydra", "Meracydian Vouivre" };
     public static readonly string[] Gandawera = { "Aurum Regis Ore", "Seventh Heaven" };
     //sb
     public static readonly string[] Okina = { "Naked Yumemi", "Yumemi" }; //naked goes first here, otherwise minor issue w/ matching 'naked yumemi' to 'yumemi'
     public static readonly string[] Udumbara = { "Leshy", "Diakka" };
     //shb
-    public static readonly string[] ForgivenPedantry = {"Dwarven Cotton Boll"};
-    public static readonly string[] Ixtab = { "Cracked Ronkan Doll", "Cracked Ronkan Thorn", "Cracked Ronkan Vessel"};
+    public static readonly string[] ForgivenPedantry = { "Dwarven Cotton Boll" };
+    public static readonly string[] Ixtab = { "Cracked Ronkan Doll", "Cracked Ronkan Thorn", "Cracked Ronkan Vessel" };
     //ew
     public static readonly string[] Sphatika = { "Asvattha", "Pisaca", "Vajralangula" };
     public static readonly string[] Ruinator = { "Thinker", "Wanderer", "Weeper" };

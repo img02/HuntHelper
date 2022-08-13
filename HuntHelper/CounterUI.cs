@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using Dalamud.Game.ClientState;
+﻿using Dalamud.Game.ClientState;
 using Dalamud.Game.Gui;
-using Dalamud.Game.Text;
 using Dalamud.Interface;
 using Dalamud.Interface.Components;
-using Dalamud.Logging;
 using HuntHelper.Managers.Counters;
 using HuntHelper.Managers.Counters.ARR;
 using HuntHelper.Managers.Counters.EW;
@@ -16,6 +10,10 @@ using HuntHelper.Managers.Counters.SB;
 using HuntHelper.Managers.Counters.ShB;
 using HuntHelper.Utilities;
 using ImGuiNET;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Numerics;
 
 namespace HuntHelper;
 
@@ -84,7 +82,7 @@ public class CounterUI : IDisposable
         {
             var counter = _counters.FirstOrDefault(c => c.MapID == _clientState.TerritoryType);
             if (counter == null) return;
-            
+
             if (ImGui.BeginTable("CounterTable", 2, ImGuiTableFlags.Borders))
             {
                 ImGui.TableSetupColumn("name", ImGuiTableColumnFlags.None, ImGui.GetWindowPos().X * (3.0f / 4.0f));
@@ -121,7 +119,6 @@ public class CounterUI : IDisposable
 
         //PluginLog.Warning($"?? line: " + message + $" {type}");
         if ((ushort)type is not 2874 and not 2115 and not 17210) return; //2874 = you killed, 2115 = gather attempt, 17210 = chocobo killed owo,
-
         var counter = _counters.FirstOrDefault(c => c.MapID == _clientState.TerritoryType);
         if (counter == null) return;
         counter.TryAddFromLogLine(message.ToString());

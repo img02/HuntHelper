@@ -11,7 +11,7 @@ public class Mob
     //plan was to allow user to disable certain mobs (like b ranks) - but you can just edit the jsons,
     //and it's such a specific low use case kind of thing --also not useful for me, so cbf.
     public bool IsEnabled { get; set; }
-    
+
     [JsonConstructor]
     public Mob(string name, string rank, uint modelId, bool isEnabled)
     {

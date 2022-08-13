@@ -12,7 +12,7 @@ namespace HuntHelper
         public int Version { get; set; } = 0;
 
         #region Main Map Window
-        
+
         //initial window position
         public Vector2 MapWindowPos { get; set; } = new Vector2(25, 25);
         //window sizes

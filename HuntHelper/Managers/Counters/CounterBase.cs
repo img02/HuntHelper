@@ -1,10 +1,9 @@
-﻿using System;
+﻿using Dalamud.Logging;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using Dalamud.Logging;
 namespace HuntHelper.Managers.Counters;
 
-public abstract class CounterBase 
+public abstract class CounterBase
 {
     public ushort MapID { get; init; }
     public List<(string Name, int Count)> Tally { get; init; }
@@ -24,7 +23,7 @@ public abstract class CounterBase
     {
         var index = Tally.FindIndex(i => i.Name == name);
         if (index == -1) return;
-        Tally[index]= new(Tally[index].Name, Tally[index].Count+1);
+        Tally[index] = new(Tally[index].Name, Tally[index].Count + 1);
     }
 
     public void Reset()
@@ -36,22 +35,18 @@ public abstract class CounterBase
     public void TryAddFromLogLine(string msg)
     {
         if (Regex.IsMatch(msg, RegexPattern)) FindNameAndAdd(msg);
-        PluginLog.Warning("Trying line: " + msg);
     }
 
     protected void FindNameAndAdd(string msg)
     {
         foreach (var name in NamesToMatch)
         {
-            PluginLog.Warning("looking for  " + name);
             if (msg.ToLowerInvariant().Contains(name.ToLowerInvariant()))
             {
-                PluginLog.Warning("Adding  " + name);
                 AddOne(name);
                 return; //if a matching name is found, stop looking.
             }
         }
-        PluginLog.Warning("notfound");
     }
     protected void AddCountRequirements()
     {

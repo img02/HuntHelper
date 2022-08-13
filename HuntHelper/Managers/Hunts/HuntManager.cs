@@ -2,7 +2,6 @@
 using Dalamud.Game.Gui;
 using Dalamud.Game.Gui.FlyText;
 using Dalamud.Game.Text.SeStringHandling;
-using Dalamud.Interface;
 using Dalamud.Logging;
 using Dalamud.Plugin;
 using HuntHelper.Managers.Hunts.Models;

@@ -18,8 +18,6 @@ using System.Numerics;
 using System.Speech.Synthesis;
 using System.Threading;
 using System.Threading.Tasks;
-using Dalamud.Logging;
-using Action = System.Action;
 
 namespace HuntHelper
 {
@@ -196,7 +194,7 @@ namespace HuntHelper
             LoadMapImages();
 
             _backgroundLoopCancelTokenSource = new CancellationTokenSource();
-            _backgroundLoop = Task.Run(BackgroundLoop, _backgroundLoopCancelTokenSource.Token); 
+            _backgroundLoop = Task.Run(BackgroundLoop, _backgroundLoopCancelTokenSource.Token);
 
 
         }
@@ -915,7 +913,7 @@ namespace HuntHelper
                                     var prompt = tempTTS.SpeakAsync($"BOO! {tts.Voice.Name} Selected");
                                     Task.Run(() =>
                                     {
-                                        while (!prompt.IsCompleted) {};
+                                        while (!prompt.IsCompleted) { };
                                         tempTTS.Dispose();
                                     });
                                 }
@@ -1519,7 +1517,7 @@ namespace HuntHelper
             }
         }
 
-   
+
         private void ImGui_ToolTip(string[] text)
         {
             ImGui.BeginTooltip();
@@ -1535,7 +1533,7 @@ namespace HuntHelper
             ImGui.PopTextWrapPos();
             ImGui.EndTooltip();
         }
-     
+
         private void LoadMapImages()
         {
             if (!_loadingImagesAttempt.IsCompleted) return;
@@ -1626,4 +1624,5 @@ namespace HuntHelper
             }
         }
 
-    } }
+    }
+}

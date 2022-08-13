@@ -1,7 +1,7 @@
-﻿using System;
-using System.Numerics;
-using Dalamud.Interface;
+﻿using Dalamud.Interface;
 using ImGuiNET;
+using System;
+using System.Numerics;
 
 namespace HuntHelper.Utilities;
 
