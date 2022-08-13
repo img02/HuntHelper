@@ -12,6 +12,7 @@ using HuntHelper.Managers.Counters;
 using HuntHelper.Managers.Counters.ARR;
 using HuntHelper.Managers.Counters.HW;
 using HuntHelper.Managers.Counters.SB;
+using HuntHelper.Managers.Counters.ShB;
 using HuntHelper.Utilities;
 using ImGuiNET;
 
@@ -41,7 +42,9 @@ public class CounterUI : IDisposable
             new LeucrottaCounter(),
             new GandaweraCounter(),
             new OkinaCounter(),
-            new UdumbaraCounter()
+            new UdumbaraCounter(),
+            new ForgivenPedantryCounter(),
+            new IxtabCounter()
         };
         LoadSettings();
 
