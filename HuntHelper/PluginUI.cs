@@ -219,6 +219,7 @@ namespace HuntHelper
 
         public void Dispose()
         {
+            _clientState.TerritoryChanged -= ClientState_TerritoryChanged;
             _backgroundLoopCancelTokenSource.Cancel();
             while (!_backgroundLoop.IsCompleted) ;
             _backgroundLoopCancelTokenSource.Dispose();
