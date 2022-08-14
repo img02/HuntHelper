@@ -17,7 +17,7 @@ using System.Numerics;
 using Dalamud.Game.Text;
 using Dalamud.Logging;
 
-namespace HuntHelper;
+namespace HuntHelper.Gui;
 
 public class CounterUI : IDisposable
 {
@@ -116,7 +116,7 @@ public class CounterUI : IDisposable
         }
     }
 
-    private void chatGui_ChatMessage(Dalamud.Game.Text.XivChatType type, uint senderId, ref Dalamud.Game.Text.SeStringHandling.SeString sender, ref Dalamud.Game.Text.SeStringHandling.SeString message, ref bool isHandled)
+    private void chatGui_ChatMessage(XivChatType type, uint senderId, ref Dalamud.Game.Text.SeStringHandling.SeString sender, ref Dalamud.Game.Text.SeStringHandling.SeString message, ref bool isHandled)
     {
         if (!_countInBackground) return;
 
