@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.AccessControl;
 using Dalamud.Logging;
 using Dalamud.Plugin;
 using HuntHelper.Managers.MapData.Models;
+using HuntHelper.Utilities;
 using ImGuiNET;
 using Newtonsoft.Json;
 
@@ -13,6 +15,7 @@ public class MapDataManager
 {
     //dict storing map id and corresponding spawn points
     public List<MapSpawnPoints> SpawnPointsList { get; private set; }
+    public List<MapSpawnPoints> ImportedList { get; private set; }
 
     public bool ErrorPopUpVisible = false;
     public string ErrorMessage = string.Empty;
@@ -25,6 +28,7 @@ public class MapDataManager
         //this._pluginInterface = pluginInterface;
         _filePath = filePath;
         SpawnPointsList = new List<MapSpawnPoints>();
+        ImportedList = new List<MapSpawnPoints>();
         LoadSpawnPointData();
     }
 
@@ -83,7 +87,19 @@ public class MapDataManager
 
     public void Import(string importCode)
     {
+        ImportedList.Clear();
+        var tempList = ExportImport.Import(importCode, ImportedList);
+        if (tempList.Count > 0) ImportedList.AddRange(tempList);
+    }
 
+    public void ImportAll()
+    {
+        foreach (var msp in ImportedList)
+        {
+            var index = SpawnPointsList.FindIndex(item => item.MapID == msp.MapID);
+            SpawnPointsList[index] = msp;
+        }
+        ImportedList.Clear();
     }
     public override string ToString()
     {

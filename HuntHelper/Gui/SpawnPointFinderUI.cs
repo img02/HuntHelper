@@ -35,7 +35,7 @@ public unsafe class SpawnPointFinderUI : IDisposable//idk what to call this
         _config = config;
         _spawnPoints = _mapDataManager.SpawnPointsList;
         LoadSettings();
-        _importList = new List<MapSpawnPoints>();
+        _importList = _mapDataManager.ImportedList;
         var filterPtr = ImGuiNative.ImGuiTextFilter_ImGuiTextFilter(null);
         _filter = new ImGuiTextFilterPtr(filterPtr);
     }
@@ -156,16 +156,51 @@ public unsafe class SpawnPointFinderUI : IDisposable//idk what to call this
             if (ImGuiComponents.IconButton(FontAwesomeIcon.SignInAlt))
             {
                 var importCode = ImGui.GetClipboardText();
-               //_mapDataManager.Import(importCode);
-
-               //get import code
-               //show modal window
-               //list out maps contained in import
-               //options -> replace all, or add onto.
+               _mapDataManager.Import(importCode);
+               ImGui.OpenPopup("importmodal");
             }
             ImGuiUtil.ImGui_HoveredToolTip("Import map data");
-
+            
+            DrawImportModal();
             ImGui.End();
+        }
+    }
+
+    private void DrawImportModal()
+    {
+        var center = ImGui.GetWindowPos() + ImGui.GetWindowSize() / 2;
+        ImGui.SetNextWindowPos(center, ImGuiCond.Appearing, new Vector2(0.5f, 0.5f));
+        ImGui.SetNextWindowSize(new Vector2(200, 150), ImGuiCond.FirstUseEver);
+
+        if (ImGui.BeginPopupModal("importmodal"))
+        {
+            if (_importList.Count == 0)
+            {
+                PluginLog.Error($"{_mapDataManager.ImportedList.Count}");
+                ImGui.TextWrapped("Nothing to import - or incorrect code");
+                ImGui.Dummy(new Vector2(0, 25));
+                ImGui.Dummy(new Vector2(6, 0)); ImGui.SameLine();
+                if (ImGui.Button("Close", new Vector2(80, 0))) ImGui.CloseCurrentPopup();
+                return;
+            }
+
+            ImGui.TextUnformatted("Imported Maps:");
+            ImGui.Separator(); ImGui.Dummy(Vector2.Zero);
+
+            foreach (var msp in _importList)
+            {
+                ImGui.TextUnformatted(msp.MapName);
+            }
+            ImGui.Dummy(Vector2.Zero); ImGui.Separator(); ImGui.Dummy(Vector2.Zero);
+
+            if (ImGui.Button("Import"))
+            {
+                _mapDataManager.ImportAll();
+                ImGui.CloseCurrentPopup();
+            }
+            ImGui.SameLine();
+            if (ImGui.Button("Cancel")) ImGui.CloseCurrentPopup();
+            ImGui.EndPopup();
         }
     }
 

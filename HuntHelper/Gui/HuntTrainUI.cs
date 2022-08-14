@@ -259,7 +259,6 @@ public class HuntTrainUI : IDisposable
             if (ImGuiComponents.IconButton(FontAwesomeIcon.SignInAlt))
             {
                 var importCode = ImGui.GetClipboardText();
-                //ExportImport.Import(importCode, _importedTrain);
                 _trainManager.Import(importCode);
                 ImGui.OpenPopup("Import##popup");
             }
@@ -308,7 +307,7 @@ public class HuntTrainUI : IDisposable
     {
         var center = ImGui.GetWindowPos() + ImGui.GetWindowSize() / 2;
         ImGui.SetNextWindowPos(center, ImGuiCond.Appearing, new Vector2(0.5f, 0.5f));
-        ImGui.SetNextWindowSize(new Vector2(400, 700));
+        ImGui.SetNextWindowSize(new Vector2(400, 700), ImGuiCond.FirstUseEver);
 
         if (ImGui.BeginPopupModal("Import##popup"))
         {
