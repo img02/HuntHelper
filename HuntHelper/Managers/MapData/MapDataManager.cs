@@ -1,11 +1,11 @@
-﻿using Dalamud.Plugin;
-using Newtonsoft.Json;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Numerics;
+using Dalamud.Plugin;
+using HuntHelper.Managers.MapData.Models;
+using Newtonsoft.Json;
 
-namespace HuntHelper.MapInfoManager;
+namespace HuntHelper.Managers.MapData;
 
 public class MapDataManager
 {
@@ -16,37 +16,49 @@ public class MapDataManager
     public string ErrorMessage = string.Empty;
 
     private readonly DalamudPluginInterface pluginInterface;
-    private string filePath = "./Data/SpawnPointData.json";
+    private string filePath;
 
     public MapDataManager(DalamudPluginInterface pluginInterface)
     {
         this.pluginInterface = pluginInterface;
         SpawnPointsList = new List<MapSpawnPoints>();
         LoadSpawnPointData();
+        filePath = Path.Combine(pluginInterface.AssemblyLocation.Directory?.FullName!, "./Data/SpawnPointData.json");
     }
 
     public void LoadSpawnPointData()
     {
         ErrorMessage = string.Empty;
-        var combinedPath = Path.Combine(pluginInterface.AssemblyLocation.Directory?.FullName!, filePath);
-
-        if (!File.Exists(combinedPath))
+       
+        if (!File.Exists(filePath))
         {
             ErrorPopUpVisible = true;
             ErrorMessage = "Can't find ./Data/SpawnPointData.json...";
             return;
         }
 
-        var data = JsonConvert.DeserializeObject<List<MapSpawnPoints>>(File.ReadAllText(combinedPath));
+        var data = JsonConvert.DeserializeObject<List<MapSpawnPoints>>(File.ReadAllText(filePath));
         if (data != null) SpawnPointsList = data;
     }
 
-    //search for relevant map, and return list of spawn points, or if null return blank
-    public List<Vector2> GetSpawnPoints(ushort mapID)
+    public void SaveSpawnPointData()
     {
-        return SpawnPointsList.FirstOrDefault(spawnPoints => spawnPoints.MapID == mapID)?.Positions ?? new List<Vector2>();
+        var data = JsonConvert.SerializeObject(SpawnPointsList);
+        File.WriteAllText(data,filePath);
     }
 
+    //search for relevant map, and return list of spawn points, or if null return blank
+    public List<SpawnPointPosition> GetSpawnPoints(ushort mapID)
+    {
+        return SpawnPointsList.FirstOrDefault(spawnPoints => spawnPoints.MapID == mapID)?.Positions ?? new List<SpawnPointPosition>();
+    }
+
+    private bool IsRecording(ushort mapID)
+    {
+        var msp = SpawnPointsList.FirstOrDefault(msp => msp.MapID == mapID);
+        if (msp == null) return false;
+        return msp.Recording;
+    }
     public override string ToString()
     {
         var text = string.Empty;
@@ -55,9 +67,9 @@ public class MapDataManager
         {
             text += $"{map.MapName} - {map.MapID}\n" +
                     $"-------------------\n";
-            foreach (var v2 in map.Positions)
+            foreach (var sp in map.Positions)
             {
-                text += $"({v2.X}), ({v2.Y})\n";
+                text += $"({sp.Position.X}), ({sp.Position.Y})\n";
             }
             text += $"-----------------------------------------\n";
         }

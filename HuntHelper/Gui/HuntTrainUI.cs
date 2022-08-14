@@ -11,7 +11,7 @@ using System.Numerics;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace HuntHelper;
+namespace HuntHelper.Gui;
 
 public class HuntTrainUI : IDisposable
 {
