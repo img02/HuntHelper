@@ -92,12 +92,26 @@ public class MapDataManager
         if (tempList.Count > 0) ImportedList.AddRange(tempList);
     }
 
-    public void ImportAll()
+    public void ImportOverwrite()
     {
         foreach (var msp in ImportedList)
         {
             var index = SpawnPointsList.FindIndex(item => item.MapID == msp.MapID);
             SpawnPointsList[index] = msp;
+        }
+        ImportedList.Clear();
+    }
+
+    public void ImportOnlyNew()
+    {
+        foreach (var msp in ImportedList)
+        {
+            var index = SpawnPointsList.FindIndex(item => item.MapID == msp.MapID);
+            var toUpdate = SpawnPointsList[index].Positions;
+            for (int i = 0; i < msp.Positions.Count; i++)
+            {   //update new taken positions
+                if (msp.Positions[i].Taken) toUpdate[i].Taken = true;
+            }
         }
         ImportedList.Clear();
     }

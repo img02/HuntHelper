@@ -163,7 +163,7 @@ public unsafe class SpawnPointFinderUI : IDisposable//idk what to call this
             {
                 var importCode = ImGui.GetClipboardText();
                _mapDataManager.Import(importCode);
-               ImGui.OpenPopup("importmodal");
+               ImGui.OpenPopup("Import##modal");
             }
             ImGuiUtil.ImGui_HoveredToolTip("Import map data");
             
@@ -178,7 +178,7 @@ public unsafe class SpawnPointFinderUI : IDisposable//idk what to call this
         ImGui.SetNextWindowPos(center, ImGuiCond.Appearing, new Vector2(0.5f, 0.5f));
         ImGui.SetNextWindowSize(new Vector2(200, 150), ImGuiCond.FirstUseEver);
 
-        if (ImGui.BeginPopupModal("importmodal"))
+        if (ImGui.BeginPopupModal("Import##modal"))
         {
             if (_importList.Count == 0)
             {
@@ -199,12 +199,22 @@ public unsafe class SpawnPointFinderUI : IDisposable//idk what to call this
             }
             ImGui.Dummy(Vector2.Zero); ImGui.Separator(); ImGui.Dummy(Vector2.Zero);
 
-            if (ImGui.Button("Import"))
+            if (ImGui.Button("Overwrite"))
             {
-                _mapDataManager.ImportAll();
+                _mapDataManager.ImportOverwrite();
                 ImGui.CloseCurrentPopup();
             }
+            ImGuiUtil.ImGui_HoveredToolTip("Import and Overwrite current data for these maps");
             ImGui.SameLine();
+            if (ImGui.Button("Only New"))
+            {
+                _mapDataManager.ImportOnlyNew();
+                ImGui.CloseCurrentPopup();
+            }
+            ImGuiUtil.ImGui_HoveredToolTip("Import only new data");
+            
+            ImGui.SetCursorPosX(90);
+            ImGui.SetCursorPosY(ImGui.GetCursorPos().Y+12);
             if (ImGui.Button("Cancel")) ImGui.CloseCurrentPopup();
             ImGui.EndPopup();
         }
