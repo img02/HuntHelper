@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 using System.Threading;
 using System.Threading.Tasks;
@@ -42,7 +43,7 @@ public unsafe class SpawnPointFinderUI : IDisposable//idk what to call this
 
     public void Draw()
     {
-        DrawSpawnRefinementWindow();
+        DrawSpawnPointRefinementWindow();
     }
 
     public void LoadSettings()
@@ -61,14 +62,14 @@ public unsafe class SpawnPointFinderUI : IDisposable//idk what to call this
         ImGuiNative.ImGuiTextFilter_destroy(_filter.NativePtr);
     }
 
-    public void DrawSpawnRefinementWindow()
+    public void DrawSpawnPointRefinementWindow()
     {
         if (!WindowVisible) return;
-
+        _mapDataManager.SortSpawnlistByRecordingStatus();
         ImGui.SetNextWindowSize(new Vector2(250, 540), ImGuiCond.FirstUseEver);
         ImGui.SetNextWindowPos(new Vector2(50, 50), ImGuiCond.FirstUseEver);
 
-        if (ImGui.Begin("Spawn Point Refinement##", ref WindowVisible, ImGuiWindowFlags.NoScrollbar))
+        if (ImGui.Begin("Spawn Point Refinement##idkwhattocallthis", ref WindowVisible, ImGuiWindowFlags.NoScrollbar))
         {
             _filter.Draw("Search by name", 120); 
             ImGui.SameLine(); ImGuiUtil.ImGui_HelpMarker("Used for recording taken spawn positions.\n" +
@@ -85,7 +86,7 @@ public unsafe class SpawnPointFinderUI : IDisposable//idk what to call this
                     ImGui.TableSetupColumn("MapName", ImGuiTableColumnFlags.WidthStretch, 50);
                     ImGui.TableSetupColumn("MapID", ImGuiTableColumnFlags.WidthFixed, 25);
                     ImGui.TableSetupColumn("Buttons", ImGuiTableColumnFlags.WidthFixed, 40);
-
+                    
                     var i = 1;
                     var j = -1;
                     var k = 100;

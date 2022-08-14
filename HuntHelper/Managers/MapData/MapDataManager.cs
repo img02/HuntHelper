@@ -35,7 +35,7 @@ public class MapDataManager
     public void LoadSpawnPointData()
     {
         ErrorMessage = string.Empty;
-       
+
         if (!File.Exists(_filePath))
         {
             ErrorPopUpVisible = true;
@@ -115,6 +115,25 @@ public class MapDataManager
         }
         ImportedList.Clear();
     }
+
+    public void SortSpawnlistByRecordingStatus()
+    {
+        Sort(0, 1);
+    }
+
+    private void Sort(int previous, int current)
+    {
+        if (previous < 0) return;
+        if (current >= SpawnPointsList.Count) return;
+        //if prev false, curr true, swap
+        if (!SpawnPointsList[previous].Recording && SpawnPointsList[current].Recording)
+        {
+            (SpawnPointsList[previous], SpawnPointsList[current]) =
+                (SpawnPointsList[current], SpawnPointsList[previous]);
+        }
+        Sort(previous + 1, current + 1);
+    }
+
     public override string ToString()
     {
         var text = string.Empty;
