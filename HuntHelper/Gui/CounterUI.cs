@@ -120,7 +120,7 @@ public class CounterUI : IDisposable
     {
         if (!_countInBackground) return;
 
-        PluginLog.Warning($"?? line: " + message + $" {type}");
+        //PluginLog.Warning($"?? line: " + message + $" {type}");
         if ((ushort)type is not 2874 and not 2115 and not 17210 and not 57) return; //2874 = you killed, 2115 = gather attempt, 17210 = chocobo killed owo, 
         var counter = _counters.FirstOrDefault(c => c.MapID == _clientState.TerritoryType);
         if (counter == null) return;
