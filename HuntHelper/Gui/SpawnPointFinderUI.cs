@@ -70,7 +70,13 @@ public unsafe class SpawnPointFinderUI : IDisposable//idk what to call this
 
         if (ImGui.Begin("Spawn Point Refinement##", ref WindowVisible, ImGuiWindowFlags.NoScrollbar))
         {
-            _filter.Draw("Search by name", 120);
+            _filter.Draw("Search by name", 120); 
+            ImGui.SameLine(); ImGuiUtil.ImGui_HelpMarker("Used for recording taken spawn positions.\n" +
+                                                         "Helpful for position-specific spawns such as\n" +
+                                                         "Nandi, Gamma, Tarchia, Burfulululu, Narrow-Rift, etc\n\n" +
+                                                         "Data persists and is saved to file,\n" +
+                                                         "Turning recording off will reset tracked data.\n" +
+                                                         "Importing will overwrite data for the relevant map.");
             ImGui.Dummy(Vector2.Zero);
             if (ImGui.BeginChild("sp table child##", new Vector2(ImGui.GetWindowSize().X, ImGui.GetWindowSize().Y * .82f), false, ImGuiWindowFlags.NoScrollbar))
             {

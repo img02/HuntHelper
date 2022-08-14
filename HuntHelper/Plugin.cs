@@ -91,7 +91,7 @@ namespace HuntHelper
             });
             this.CommandManager.AddHandler(SpawnPointCommand, new CommandInfo(SpawnPointWindowCommand)
             {
-                HelpMessage = "spawn point refinement window"
+                HelpMessage = "spawn point tracking window"
             });
 
             this.PluginInterface.UiBuilder.Draw += DrawUI;
