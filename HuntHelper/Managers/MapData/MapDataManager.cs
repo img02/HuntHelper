@@ -80,6 +80,11 @@ public class MapDataManager
             }
         });
     }
+
+    public void Import(string importCode)
+    {
+
+    }
     public override string ToString()
     {
         var text = string.Empty;

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Numerics;
+using System.Threading;
+using System.Threading.Tasks;
 using Dalamud.Interface;
 using Dalamud.Interface.Components;
 using Dalamud.Logging;
@@ -19,15 +21,21 @@ public unsafe class SpawnPointFinderUI : IDisposable//idk what to call this
     private ImGuiTextFilterPtr _filter;
 
     private bool _recordAll = false;
-
+    private readonly List<MapSpawnPoints> _importList;
+    private Task _copyTextTask = Task.CompletedTask;
+    private string _copyText = "Copy export code clipboard";
+    private string _copyTextAllExport = "Export all currently recorded map data";
+    private int _tooltipChangeTime = 400;
 
     public bool WindowVisible = false;
+
     public SpawnPointFinderUI(MapDataManager mapDataManager, Configuration config)
     {
         _mapDataManager = mapDataManager;
         _config = config;
         _spawnPoints = _mapDataManager.SpawnPointsList;
         LoadSettings();
+        _importList = new List<MapSpawnPoints>();
         var filterPtr = ImGuiNative.ImGuiTextFilter_ImGuiTextFilter(null);
         _filter = new ImGuiTextFilterPtr(filterPtr);
     }
@@ -74,30 +82,37 @@ public unsafe class SpawnPointFinderUI : IDisposable//idk what to call this
 
                     var i = 1;
                     var j = -1;
-                    foreach (var sp in _spawnPoints)
+                    var k = 100;
+                    foreach (var msp in _spawnPoints)
                     {
-                        if (_filter.PassFilter(sp.MapName))
+                        if (_filter.PassFilter(msp.MapName))
                         {
                             ImGui.TableNextColumn();
-                            ImGui.TextUnformatted($"{sp.MapName}");
+                            ImGui.TextUnformatted($"{msp.MapName}");
                             ImGui.TableNextColumn();
-                            if (!sp.Recording)
+                            if (!msp.Recording)
                             {
-                                if (ImGuiComponents.IconButton(i++, FontAwesomeIcon.Video)) sp.Recording = true;
+                                if (ImGuiComponents.IconButton(i++, FontAwesomeIcon.Video)) msp.Recording = true;
                                 ImGuiUtil.ImGui_HoveredToolTip("Start Recording");
                             }
                             else
                             {
                                 if (ImGuiComponents.IconButton(j--, FontAwesomeIcon.VideoSlash))
                                 {
-                                    sp.Recording = false;
-                                    _mapDataManager.ClearTakenSpawnPoints(sp.MapID);
+                                    msp.Recording = false;
+                                    _mapDataManager.ClearTakenSpawnPoints(msp.MapID);
                                 }
                                 ImGuiUtil.ImGui_HoveredToolTip("Stop Recording -- This will WIPE all data.");
                                
                             } 
                             ImGui.TableNextColumn();
-                            ImGuiComponents.IconButton(FontAwesomeIcon.SignOutAlt);
+                            if (ImGuiComponents.IconButton( k++,FontAwesomeIcon.SignOutAlt))
+                            {
+                                var exportList = new List<MapSpawnPoints>(){msp};
+                                ImGui.SetClipboardText(ExportImport.Export(exportList));
+                                ChangeCopyText();
+                            }
+                            ImGuiUtil.ImGui_HoveredToolTip(_copyText);
                         }
                     }
                     ImGui.EndTable();
@@ -126,13 +141,47 @@ public unsafe class SpawnPointFinderUI : IDisposable//idk what to call this
             }
             ImGui.SameLine();
             ImGui.SetCursorPosX(ImGui.GetWindowSize().X - 64);
-            ImGuiComponents.IconButton(FontAwesomeIcon.SignOutAlt);
+            if (ImGuiComponents.IconButton(FontAwesomeIcon.SignOutAlt))
+            {
+                var tempList = new List<MapSpawnPoints>();
+                _spawnPoints.ForEach(msp =>
+                {
+                    if (msp.Recording) tempList.Add(msp);
+                });
+                ImGui.SetClipboardText(ExportImport.Export(tempList));
+                ChangeCopyText();
+            }
+            ImGuiUtil.ImGui_HoveredToolTip(_copyTextAllExport);
             ImGui.SameLine();
-            ImGuiComponents.IconButton(FontAwesomeIcon.SignInAlt);
-            ImGui.SameLine();
-            ImGui.Text($"{ImGui.GetWindowSize()}");
+            if (ImGuiComponents.IconButton(FontAwesomeIcon.SignInAlt))
+            {
+                var importCode = ImGui.GetClipboardText();
+               //_mapDataManager.Import(importCode);
+
+               //get import code
+               //show modal window
+               //list out maps contained in import
+               //options -> replace all, or add onto.
+            }
+            ImGuiUtil.ImGui_HoveredToolTip("Import map data");
 
             ImGui.End();
         }
     }
+
+    private void ChangeCopyText()
+    {
+        if (!_copyTextTask.IsCompleted) return;
+        _copyTextTask = Task.Run(() =>
+        {
+            var temp = _copyText;
+            var tempAll = _copyTextAllExport;
+            _copyText = "Copied!";
+            _copyTextAllExport  = "copied";
+            Thread.Sleep(_tooltipChangeTime);
+            _copyText = temp;
+            _copyTextAllExport = tempAll;
+        });
+    }
+
 }
