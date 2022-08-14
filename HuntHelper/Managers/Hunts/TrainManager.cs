@@ -122,8 +122,6 @@ public class TrainManager
     public void SaveHuntTrainRecord()
     {
         var serialised = JsonConvert.SerializeObject(HuntTrain, Formatting.Indented);
-        PluginLog.Log("Loaded Saved Hunt Train Record");
         File.WriteAllText(_huntTrainFilePath, serialised);
-        PluginLog.Information($"Saving Hunt Train Record to: {_huntTrainFilePath}");
     }
 }

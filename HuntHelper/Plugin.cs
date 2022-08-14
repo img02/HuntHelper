@@ -5,9 +5,10 @@ using Dalamud.Game.Command;
 using Dalamud.Game.Gui;
 using Dalamud.Game.Gui.FlyText;
 using Dalamud.Plugin;
+using HuntHelper.Gui;
 using HuntHelper.Managers.Hunts;
-using HuntHelper.MapInfoManager;
 using System.IO;
+using HuntHelper.Managers.MapData;
 
 namespace HuntHelper
 {
@@ -19,6 +20,7 @@ namespace HuntHelper
         private const string HuntTrainWindowCommand = "/hht";
         private const string NextHuntInTrainCommand = "/hhn";
         private const string CounterCommand = "/hhc";
+        private const string SpawnPointCommand = "/hhr";
         private const string DebugCommand = "/hhdebug";
 
         private DalamudPluginInterface PluginInterface { get; init; }
@@ -27,6 +29,7 @@ namespace HuntHelper
         private PluginUI PluginUi { get; init; }
         private HuntTrainUI HuntTrainUI { get; init; }
         private CounterUI CounterUI { get; init; }
+        private SpawnPointFinderUI SpawnPointFinderUI { get; init; }
         private ClientState ClientState { get; init; }
         private ObjectTable ObjectTable { get; init; }
         private DataManager DataManager { get; init; }
@@ -59,11 +62,12 @@ namespace HuntHelper
 
             this.TrainManager = new TrainManager(ChatGui, Path.Combine(PluginInterface.AssemblyLocation.Directory?.FullName!, @"Data\HuntTrain.json"));
             this.HuntManager = new HuntManager(PluginInterface, TrainManager, chatGui, flyTextGui);
-            this.MapDataManager = new MapDataManager(PluginInterface);
+            this.MapDataManager = new MapDataManager(Path.Combine(PluginInterface.AssemblyLocation.Directory?.FullName!, @"Data\SpawnPointData.json"));
 
             this.PluginUi = new PluginUI(this.Configuration, pluginInterface, clientState, objectTable, dataManager, HuntManager, MapDataManager);
             this.HuntTrainUI = new HuntTrainUI(TrainManager, Configuration);
             this.CounterUI = new CounterUI(ClientState, ChatGui, Configuration);
+            this.SpawnPointFinderUI = new SpawnPointFinderUI(MapDataManager, Configuration);
 
             this.CommandManager.AddHandler(MapWindowCommand, new CommandInfo(HuntMapCommand)
             {
@@ -85,6 +89,10 @@ namespace HuntHelper
             {
                 HelpMessage = "random data, debug info"
             });
+            this.CommandManager.AddHandler(SpawnPointCommand, new CommandInfo(SpawnPointWindowCommand)
+            {
+                HelpMessage = "spawn point tracking window"
+            });
 
             this.PluginInterface.UiBuilder.Draw += DrawUI;
             this.PluginInterface.UiBuilder.OpenConfigUi += DrawConfigUI;
@@ -95,8 +103,10 @@ namespace HuntHelper
             //save hunttrainui config first
             this.HuntTrainUI.SaveSettings();
             this.CounterUI.SaveSettings();
+            this.SpawnPointFinderUI.SaveSettings();
 
             //this.HuntTrainUI.Dispose();
+            this.SpawnPointFinderUI.Dispose();
             this.CounterUI.Dispose();
             this.PluginUi.Dispose();
             this.CommandManager.RemoveHandler(DebugCommand);
@@ -104,6 +114,7 @@ namespace HuntHelper
             this.CommandManager.RemoveHandler(HuntTrainWindowCommand);
             this.CommandManager.RemoveHandler(NextHuntInTrainCommand);
             this.CommandManager.RemoveHandler(CounterCommand);
+            this.CommandManager.RemoveHandler(SpawnPointCommand);
 
             this.HuntManager.Dispose();
             this.FlyTextGui.Dispose();
@@ -115,12 +126,14 @@ namespace HuntHelper
         //gets next available hunt in the recorded train
         private void GetNextMobCommand(string command, string args) => HuntTrainUI.GetNextMobCommand();
         private void CounterWindowCommand(string command, string args) => CounterUI.WindowVisible = !CounterUI.WindowVisible;
+        private void SpawnPointWindowCommand(string command, string args) => SpawnPointFinderUI.WindowVisible = !SpawnPointFinderUI.WindowVisible;
 
         private void DrawUI()
         {
             this.PluginUi.Draw();
             this.HuntTrainUI.Draw();
             this.CounterUI.Draw();
+            this.SpawnPointFinderUI.Draw();
         }
 
         private void DrawConfigUI()

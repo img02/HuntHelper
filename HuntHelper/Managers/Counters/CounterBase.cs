@@ -19,7 +19,7 @@ public abstract class CounterBase
         AddCountRequirements();
     }
 
-    public void AddOne(string name)
+    private void AddOne(string name)
     {
         var index = Tally.FindIndex(i => i.Name == name);
         if (index == -1) return;
@@ -37,7 +37,7 @@ public abstract class CounterBase
         if (Regex.IsMatch(msg, RegexPattern)) FindNameAndAdd(msg);
     }
 
-    protected void FindNameAndAdd(string msg)
+    private void FindNameAndAdd(string msg)
     {
         foreach (var name in NamesToMatch)
         {
@@ -48,7 +48,7 @@ public abstract class CounterBase
             }
         }
     }
-    protected void AddCountRequirements()
+    private void AddCountRequirements()
     {
         foreach (var s in NamesToMatch)
         {

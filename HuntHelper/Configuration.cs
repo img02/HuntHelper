@@ -106,6 +106,11 @@ namespace HuntHelper
 
         #region Counter Window
 
+        #region spawn point refinement window
+
+        public bool SpawnPointRecordAll { get; set; } = false;
+
+        #endregion
         public Vector2 CounterWindowPos { get; set; } = new Vector2(50, 50);
         public Vector2 CounterWindowSize { get; set; } = new Vector2(250, 50);
 

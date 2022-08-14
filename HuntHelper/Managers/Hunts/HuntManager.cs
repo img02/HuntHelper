@@ -5,7 +5,7 @@ using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Logging;
 using Dalamud.Plugin;
 using HuntHelper.Managers.Hunts.Models;
-using HuntHelper.MapInfoManager;
+using HuntHelper.Managers.MapData.Models;
 using HuntHelper.Utilities;
 using ImGuiScene;
 using Newtonsoft.Json;

@@ -7,7 +7,6 @@ using Dalamud.Interface;
 using Dalamud.Interface.Components;
 using Dalamud.Plugin;
 using HuntHelper.Managers.Hunts;
-using HuntHelper.MapInfoManager;
 using HuntHelper.Utilities;
 using ImGuiNET;
 using System;
@@ -18,8 +17,11 @@ using System.Numerics;
 using System.Speech.Synthesis;
 using System.Threading;
 using System.Threading.Tasks;
+using Dalamud.Logging;
+using HuntHelper.Managers.MapData;
+using HuntHelper.Managers.MapData.Models;
 
-namespace HuntHelper
+namespace HuntHelper.Gui
 {
     class PluginUI : IDisposable
     {
@@ -32,8 +34,8 @@ namespace HuntHelper
         private readonly HuntManager _huntManager;
         private readonly MapDataManager _mapDataManager;
 
-        private String _territoryName;
-        private String WorldName => _clientState.LocalPlayer?.CurrentWorld?.GameData?.Name.ToString() ?? "Not Found";
+        private string _territoryName;
+        private string WorldName => _clientState.LocalPlayer?.CurrentWorld?.GameData?.Name.ToString() ?? "Not Found";
         private ushort _territoryId;
 
         private float _bottomPanelHeight = 30;
@@ -151,7 +153,7 @@ namespace HuntHelper
 
         public bool RandomDebugWindowVisisble
         {
-            get => this._randomDebugWindowVisible;
+            get => _randomDebugWindowVisible;
             set { _randomDebugWindowVisible = value; }
         }
 
@@ -166,8 +168,8 @@ namespace HuntHelper
 
         public bool SettingsVisible
         {
-            get => this.settingsVisible;
-            set => this.settingsVisible = value;
+            get => settingsVisible;
+            set => settingsVisible = value;
         }
 
 
@@ -185,7 +187,7 @@ namespace HuntHelper
             _mapDataManager = mapDataManager;
 
             _ttsVoiceName = huntManager.TTS.Voice.Name; // load default voice first, then from settings if avail.
-            _territoryName = String.Empty;
+            _territoryName = string.Empty;
 
             ClientState_TerritoryChanged(null, 0);
             _clientState.TerritoryChanged += ClientState_TerritoryChanged;
@@ -226,12 +228,6 @@ namespace HuntHelper
 
         public void Draw()
         {
-            // This is our only draw handler attached to UIBuilder, so it needs to be
-            // able to draw any windows we might have open.
-            // Each method checks its own visibility/state to ensure it only draws when
-            // it actually makes sense.
-            // There are other ways to do this, but it is generally best to keep the number of
-            // draw delegates as low as possible.
             DrawDebugWindow();
             DrawSettingsWindow();
             DrawHuntMapWindow();
@@ -246,7 +242,7 @@ namespace HuntHelper
 
             ImGui.SetNextWindowSize(new Vector2(375, 330), ImGuiCond.FirstUseEver);
             ImGui.SetNextWindowSizeConstraints(new Vector2(375, 330), new Vector2(float.MaxValue, float.MaxValue));
-            if (ImGui.Begin("Debug stuff", ref this._randomDebugWindowVisible))
+            if (ImGui.Begin("Debug stuff", ref _randomDebugWindowVisible))
             {
 
                 if (ImGui.Button("Settings"))
@@ -287,7 +283,7 @@ namespace HuntHelper
                 ImGui.Text("");
 
                 var hunt = "";
-                foreach (var obj in this._objectTable)
+                foreach (var obj in _objectTable)
                 {
                     if (obj is not BattleNpc bobj) continue;
                     if (bobj.MaxHp < 10000) continue; //not really needed if subkind is enemy, once matching to id / name
@@ -298,7 +294,7 @@ namespace HuntHelper
                             $"KIND: {bobj.BattleNpcKind}\n" +
                             $"NAMEID: {bobj.NameId}\n" +
                             $"|HP: {bobj.CurrentHp}\n" +
-                            $"|HP%%: {(bobj.CurrentHp * 1.0 / bobj.MaxHp) * 100}%%\n" +
+                            $"|HP%%: {bobj.CurrentHp * 1.0 / bobj.MaxHp * 100}%%\n" +
                             //$"|object ID: {obj.ObjectId}\n| Data ID: {obj.DataId} \n| OwnerID: {obj.OwnerId}\n" +
                             $"X: {ConvertPosToCoordinate(obj.Position.X)};\n" +
                             $"Y: {ConvertPosToCoordinate(obj.Position.Y)}\n" +
@@ -316,14 +312,13 @@ namespace HuntHelper
                 return;
             }
 
-
             ImGui.SetNextWindowSize(new Vector2(_currentWindowSize, _currentWindowSize), ImGuiCond.Always);
             ImGui.SetNextWindowSizeConstraints(new Vector2(512, -1), new Vector2(float.MaxValue, -1)); //disable manual resize vertical
             ImGui.SetNextWindowPos(_mapWindowPos, ImGuiCond.FirstUseEver);
             ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, new Vector2(0, 0));
             ImGui.PushStyleVar(ImGuiStyleVar.WindowBorderSize, 0f);
             ImGui.PushStyleColor(ImGuiCol.WindowBg, new Vector4(_mapWindowColour.X, _mapWindowColour.Y, _mapWindowColour.Z, _mapWindowOpacityAsPercentage / 100f));
-            if (ImGui.Begin("Hunt Helper", ref this._mapVisible, (ImGuiWindowFlags)_huntWindowFlag))
+            if (ImGui.Begin("Hunt Helper", ref _mapVisible, (ImGuiWindowFlags)_huntWindowFlag))
             {
                 _currentWindowSize = (int)ImGui.GetWindowSize().X;
                 _mapWindowPos = ImGui.GetWindowPos();
@@ -368,7 +363,6 @@ namespace HuntHelper
                         }
                     }
                 }
-
 
                 //show map coordinates when mouse is over gui
                 ShowCoordOnMouseOver();
@@ -538,7 +532,7 @@ namespace HuntHelper
 
                         ImGui.SameLine();
                         if (ImGui.BeginChild("general right side resize section",
-                                new Vector2((1.8f * tableSizeX / 3) - 8f, tableSizeY - 24f), true))
+                                new Vector2(1.8f * tableSizeX / 3 - 8f, tableSizeY - 24f), true))
                         {
                             if (ImGui.BeginTable("right side table", 4))
                             {
@@ -1012,7 +1006,7 @@ namespace HuntHelper
             }
 
             ImGui.SetNextWindowSize(new Vector2(300, 100), ImGuiCond.Always);
-            if (ImGui.Begin("help, i've fallen over", ref this.settingsVisible,
+            if (ImGui.Begin("help, i've fallen over", ref settingsVisible,
                 ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse))
             {
                 ImGuiUtil.ImGui_CentreText("There's nothing here", _defaultTextColour);
@@ -1089,7 +1083,7 @@ namespace HuntHelper
             _configuration.FlyTextBEnabled = _flyTxtBEnabled;
             _configuration.FlyTextSEnabled = _flyTxtSEnabled;
 
-            this._configuration.Save();
+            _configuration.Save();
         }
 
         private void LoadSettings()
@@ -1173,7 +1167,7 @@ namespace HuntHelper
 
         private void ClientState_TerritoryChanged(object? sender, ushort e)
         {
-            _territoryName = Utilities.MapHelpers.GetMapName(_dataManager, this._clientState.TerritoryType);
+            _territoryName = MapHelpers.GetMapName(_dataManager, _clientState.TerritoryType);
             //_worldName = _clientState.LocalPlayer?.CurrentWorld?.GameData?.Name.ToString() ?? "Not Found";
             _territoryId = _clientState.TerritoryType;
         }
@@ -1214,11 +1208,15 @@ namespace HuntHelper
             var spawnPoints = _mapDataManager.GetSpawnPoints(mapID);
             if (spawnPoints.Count == 0) return;
             var drawList = ImGui.GetWindowDrawList();
-
+            var recordingSpawnPos = _mapDataManager.IsRecording(mapID);
             foreach (var sp in spawnPoints)
             {
-                var drawPos = CoordinateToPositionInWindow(sp);
-                drawList.AddCircleFilled(drawPos, _spawnPointIconRadius, ImGui.ColorConvertFloat4ToU32(_spawnPointColour));
+                var drawPos = CoordinateToPositionInWindow(sp.Position);
+                
+                drawList.AddCircleFilled(drawPos, _spawnPointIconRadius,
+                    sp.Taken && recordingSpawnPos
+                        ? ImGui.ColorConvertFloat4ToU32(new Vector4(1f, 0f, 0f, 1f)) //red for taken spawn point
+                        : ImGui.ColorConvertFloat4ToU32(_spawnPointColour));
             }
         }
 
@@ -1257,16 +1255,32 @@ namespace HuntHelper
 
         private void DrawMobIcon(BattleNpc mob)
         {
-            var mobPos = CoordinateToPositionInWindow(new Vector2(ConvertPosToCoordinate(mob.Position.X),
-                ConvertPosToCoordinate(mob.Position.Z)));
+            var mobInGamePos = new Vector2(ConvertPosToCoordinate(mob.Position.X), ConvertPosToCoordinate(mob.Position.Z));
+            var mobWindowPos = CoordinateToPositionInWindow(mobInGamePos);
             var drawlist = ImGui.GetWindowDrawList();
-            drawlist.AddCircleFilled(mobPos, _mobIconRadius, ImGui.ColorConvertFloat4ToU32(_mobColour));
-
+            drawlist.AddCircleFilled(mobWindowPos, _mobIconRadius, ImGui.ColorConvertFloat4ToU32(_mobColour));
+            if (_mapDataManager.IsRecording(_territoryId)) ConfirmTakenSpawnPoint(mobInGamePos);
             //draw mob icon tooltip
-            if (Vector2.Distance(ImGui.GetMousePos(), mobPos) < _mobIconRadius * _mouseOverDistanceModifier)
+            if (Vector2.Distance(ImGui.GetMousePos(), mobWindowPos) < _mobIconRadius * _mouseOverDistanceModifier)
             {
                 DrawMobIconToolTip(mob);
             }
+        }
+
+        private void ConfirmTakenSpawnPoint(Vector2 position)
+        {
+            var spawnPoints = _mapDataManager.SpawnPointsList.First(msp => msp.MapID == _territoryId);
+            SpawnPointPosition? takenSp = null;
+            var smallestDistance = 1f;
+            foreach (var sp in spawnPoints.Positions)
+            {
+                var dist = Vector2.Distance(sp.Position, position);
+                if (!(dist < smallestDistance)) continue;
+                smallestDistance = dist;
+                takenSp = sp;
+            }
+            var index = spawnPoints.Positions.IndexOf(takenSp!);
+            spawnPoints.Positions[index].Taken = true;
         }
 
         private void DrawMobIconToolTip(BattleNpc mob)
@@ -1275,7 +1289,7 @@ namespace HuntHelper
             {
                 $"{mob.Name}",
                 $"({ConvertPosToCoordinate(mob.Position.X)}, {ConvertPosToCoordinate(mob.Position.Z)})",
-                $"{Math.Round((mob.CurrentHp * 1.0) / mob.MaxHp * 100, 2)}%%"
+                $"{Math.Round(mob.CurrentHp * 1.0 / mob.MaxHp * 100, 2)}%%"
             };
             ImGui_ToolTip(text);
         }
@@ -1346,7 +1360,7 @@ namespace HuntHelper
 
                     //MOUSE OVER TOOLTIP
                     if (ImGui.GetMousePos().X - labelVector.X is < 100 and > -100 && //this is a mess, but it works.
-                        ImGui.GetMousePos().Y - labelVector.Y < (size.Y / nearbyMobs.Count / 2) - 4f && ImGui.GetMousePos().Y - labelVector.Y > -(size.Y / nearbyMobs.Count / 2) - 5f)
+                        ImGui.GetMousePos().Y - labelVector.Y < size.Y / nearbyMobs.Count / 2 - 4f && ImGui.GetMousePos().Y - labelVector.Y > -(size.Y / nearbyMobs.Count / 2) - 5f)
                     {
                         ImGui_ToolTip(new string[]
                         {
@@ -1474,9 +1488,9 @@ namespace HuntHelper
                 ImGui.TextUnformatted($"rotation sin.: {Math.Round(Math.Sin(rotation), 2):0.00}");
                 ImGui.TextUnformatted($"rotation cos.: {Math.Round(Math.Cos(rotation), 2):0.00}");
                 ImGui.TextUnformatted($"Player Pos: (" +
-                                   $"{Utilities.MapHelpers.ConvertToMapCoordinate(_clientState.LocalPlayer.Position.X, _mapZoneMaxCoordSize):0.00}" +
+                                   $"{MapHelpers.ConvertToMapCoordinate(_clientState.LocalPlayer.Position.X, _mapZoneMaxCoordSize):0.00}" +
                                    $"," +
-                                   $" {Utilities.MapHelpers.ConvertToMapCoordinate(_clientState.LocalPlayer.Position.Z, _mapZoneMaxCoordSize):0.00}" +
+                                   $" {MapHelpers.ConvertToMapCoordinate(_clientState.LocalPlayer.Position.Z, _mapZoneMaxCoordSize):0.00}" +
                                    $")");
                 var playerPos = CoordinateToPositionInWindow(
                     new Vector2(ConvertPosToCoordinate(_clientState.LocalPlayer.Position.X),
@@ -1552,7 +1566,7 @@ namespace HuntHelper
 
         private float ConvertPosToCoordinate(float pos)
         {
-            return Utilities.MapHelpers.ConvertToMapCoordinate(pos, _mapZoneMaxCoordSize);
+            return MapHelpers.ConvertToMapCoordinate(pos, _mapZoneMaxCoordSize);
         }
 
         private Vector2 CoordinateToPositionInWindow(Vector2 pos)
