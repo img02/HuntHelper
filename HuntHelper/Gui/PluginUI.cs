@@ -17,6 +17,7 @@ using System.Numerics;
 using System.Speech.Synthesis;
 using System.Threading;
 using System.Threading.Tasks;
+using Dalamud.Logging;
 using HuntHelper.Managers.MapData;
 using HuntHelper.Managers.MapData.Models;
 
@@ -1207,7 +1208,7 @@ namespace HuntHelper.Gui
             var spawnPoints = _mapDataManager.GetSpawnPoints(mapID);
             if (spawnPoints.Count == 0) return;
             var drawList = ImGui.GetWindowDrawList();
-            var recordingSpawnPos = _mapDataManager.SpawnPointsList.First(msp => msp.MapID == _territoryId).Recording;
+            var recordingSpawnPos = _mapDataManager.IsRecording(mapID);
             foreach (var sp in spawnPoints)
             {
                 var drawPos = CoordinateToPositionInWindow(sp.Position);

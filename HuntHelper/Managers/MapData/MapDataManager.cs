@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Dalamud.Logging;
 using Dalamud.Plugin;
 using HuntHelper.Managers.MapData.Models;
+using ImGuiNET;
 using Newtonsoft.Json;
 
 namespace HuntHelper.Managers.MapData;
@@ -15,36 +17,36 @@ public class MapDataManager
     public bool ErrorPopUpVisible = false;
     public string ErrorMessage = string.Empty;
 
-    private readonly DalamudPluginInterface pluginInterface;
-    private string filePath;
+    //private readonly DalamudPluginInterface _pluginInterface;
+    private readonly string _filePath;
 
-    public MapDataManager(DalamudPluginInterface pluginInterface)
+    public MapDataManager(string filePath)
     {
-        this.pluginInterface = pluginInterface;
+        //this._pluginInterface = pluginInterface;
+        _filePath = filePath;
         SpawnPointsList = new List<MapSpawnPoints>();
         LoadSpawnPointData();
-        filePath = Path.Combine(pluginInterface.AssemblyLocation.Directory?.FullName!, "./Data/SpawnPointData.json");
     }
 
     public void LoadSpawnPointData()
     {
         ErrorMessage = string.Empty;
        
-        if (!File.Exists(filePath))
+        if (!File.Exists(_filePath))
         {
             ErrorPopUpVisible = true;
-            ErrorMessage = "Can't find ./Data/SpawnPointData.json...";
+            ErrorMessage = $"Can't find {_filePath}";
             return;
         }
 
-        var data = JsonConvert.DeserializeObject<List<MapSpawnPoints>>(File.ReadAllText(filePath));
+        var data = JsonConvert.DeserializeObject<List<MapSpawnPoints>>(File.ReadAllText(_filePath));
         if (data != null) SpawnPointsList = data;
     }
 
     public void SaveSpawnPointData()
     {
-        var data = JsonConvert.SerializeObject(SpawnPointsList);
-        File.WriteAllText(data,filePath);
+        var data = JsonConvert.SerializeObject(SpawnPointsList, Formatting.Indented);
+        File.WriteAllText(_filePath, data);
     }
 
     //search for relevant map, and return list of spawn points, or if null return blank
@@ -53,11 +55,30 @@ public class MapDataManager
         return SpawnPointsList.FirstOrDefault(spawnPoints => spawnPoints.MapID == mapID)?.Positions ?? new List<SpawnPointPosition>();
     }
 
-    private bool IsRecording(ushort mapID)
+    public bool IsRecording(ushort mapID)
     {
         var msp = SpawnPointsList.FirstOrDefault(msp => msp.MapID == mapID);
         if (msp == null) return false;
         return msp.Recording;
+    }
+
+    public void ClearTakenSpawnPoints(ushort mapid)
+    {
+        var map = SpawnPointsList.FirstOrDefault(msp => msp.MapID == mapid);
+        if (map == null) return;
+        map.Positions.ForEach(sp => sp.Taken = false);
+    }
+
+    public void ClearAllTakenSpawnPoints()
+    {
+        SpawnPointsList.ForEach(msp =>
+        {
+            if (msp.Recording)
+            {
+                msp.Recording = false;
+                msp.Positions.ForEach(sp => sp.Taken = false);
+            }
+        });
     }
     public override string ToString()
     {

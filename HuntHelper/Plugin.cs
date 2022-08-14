@@ -62,12 +62,12 @@ namespace HuntHelper
 
             this.TrainManager = new TrainManager(ChatGui, Path.Combine(PluginInterface.AssemblyLocation.Directory?.FullName!, @"Data\HuntTrain.json"));
             this.HuntManager = new HuntManager(PluginInterface, TrainManager, chatGui, flyTextGui);
-            this.MapDataManager = new MapDataManager(PluginInterface);
+            this.MapDataManager = new MapDataManager(Path.Combine(PluginInterface.AssemblyLocation.Directory?.FullName!, @"Data\SpawnPointData.json"));
 
             this.PluginUi = new PluginUI(this.Configuration, pluginInterface, clientState, objectTable, dataManager, HuntManager, MapDataManager);
             this.HuntTrainUI = new HuntTrainUI(TrainManager, Configuration);
             this.CounterUI = new CounterUI(ClientState, ChatGui, Configuration);
-            this.SpawnPointFinderUI = new SpawnPointFinderUI(MapDataManager);
+            this.SpawnPointFinderUI = new SpawnPointFinderUI(MapDataManager, Configuration);
 
             this.CommandManager.AddHandler(MapWindowCommand, new CommandInfo(HuntMapCommand)
             {
@@ -103,6 +103,7 @@ namespace HuntHelper
             //save hunttrainui config first
             this.HuntTrainUI.SaveSettings();
             this.CounterUI.SaveSettings();
+            this.SpawnPointFinderUI.SaveSettings();
 
             //this.HuntTrainUI.Dispose();
             this.SpawnPointFinderUI.Dispose();
