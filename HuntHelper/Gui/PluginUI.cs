@@ -1259,7 +1259,7 @@ namespace HuntHelper.Gui
             var mobWindowPos = CoordinateToPositionInWindow(mobInGamePos);
             var drawlist = ImGui.GetWindowDrawList();
             drawlist.AddCircleFilled(mobWindowPos, _mobIconRadius, ImGui.ColorConvertFloat4ToU32(_mobColour));
-            ConfirmTakenSpawnPoint(mobInGamePos);
+            if (_mapDataManager.IsRecording(_territoryId)) ConfirmTakenSpawnPoint(mobInGamePos);
             //draw mob icon tooltip
             if (Vector2.Distance(ImGui.GetMousePos(), mobWindowPos) < _mobIconRadius * _mouseOverDistanceModifier)
             {
@@ -1275,11 +1275,9 @@ namespace HuntHelper.Gui
             foreach (var sp in spawnPoints.Positions)
             {
                 var dist = Vector2.Distance(sp.Position, position);
-                if ( dist < smallestDistance)
-                {
-                    smallestDistance = dist;
-                    takenSp = sp;
-                }
+                if (!(dist < smallestDistance)) continue;
+                smallestDistance = dist;
+                takenSp = sp;
             }
             var index = spawnPoints.Positions.IndexOf(takenSp!);
             spawnPoints.Positions[index].Taken = true;
