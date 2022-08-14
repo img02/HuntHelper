@@ -83,7 +83,7 @@ namespace HuntHelper
             });
             this.CommandManager.AddHandler(CounterCommand, new CommandInfo(CounterWindowCommand)
             {
-                HelpMessage = "random data, debug info"
+                HelpMessage = "Counter window -- for counter-based S ranks"
             });
 
             this.PluginInterface.UiBuilder.Draw += DrawUI;
