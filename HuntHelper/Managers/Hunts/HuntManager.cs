@@ -110,10 +110,11 @@ public class HuntManager
 
     public void AddToTrain(BattleNpc mob, uint territoryid, uint mapid, string mapName, float zoneMapCoordSize)
     {
+        //if mob already exists, update last seen - even if not recording
+        if (_trainManager.UpdateLastSeen(mob)) return;
         if (!_trainManager.RecordTrain) return;
         //only record A ranks
         if (GetHuntRank(mob.NameId) != HuntRank.A) return;
-        //skip if already recorded, ideally ID would be safer. 
         _trainManager.AddMob(mob, territoryid, mapid, mapName, zoneMapCoordSize);
     }
 

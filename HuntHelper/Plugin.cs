@@ -85,10 +85,12 @@ namespace HuntHelper
             {
                 HelpMessage = "Sends the flag for the next train mob into chat"
             });
+#if DEBUG
             this.CommandManager.AddHandler(DebugCommand, new CommandInfo(DebugWindowCommand)
             {
                 HelpMessage = "random data, debug info"
             });
+#endif
             this.CommandManager.AddHandler(CounterCommand, new CommandInfo(CounterWindowCommand)
             {
                 HelpMessage = "Counter window -- for counter-based S ranks"
@@ -113,7 +115,9 @@ namespace HuntHelper
             this.SpawnPointFinderUI.Dispose();
             this.CounterUI.Dispose();
             this.PluginUi.Dispose();
+#if DEBUG
             this.CommandManager.RemoveHandler(DebugCommand);
+#endif
             this.CommandManager.RemoveHandler(MapWindowCommand);
             this.CommandManager.RemoveHandler(HuntTrainWindowCommand);
             this.CommandManager.RemoveHandler(NextHuntInTrainCommand);

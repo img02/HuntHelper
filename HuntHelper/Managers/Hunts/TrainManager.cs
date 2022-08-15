@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Numerics;
+using System.Threading;
 using Dalamud.Game.Text.SeStringHandling.Payloads;
 
 namespace HuntHelper.Managers.Hunts;
@@ -38,15 +39,23 @@ public class TrainManager
     }
 
     public void AddMob(BattleNpc mob, uint territoryid, uint mapid, string mapName, float zoneMapCoordSize)
-    {
+    {   //if already exists in train, return
         if (HuntTrain.Any(m => m.Name == mob.Name.ToString())) return;
         var position = new Vector2(MapHelpers.ConvertToMapCoordinate(mob.Position.X, zoneMapCoordSize),
             MapHelpers.ConvertToMapCoordinate(mob.Position.Z, zoneMapCoordSize));
-        var trainMob = new HuntTrainMob(mob.Name.TextValue, territoryid, mapid, mapName, position, DateTime.Now.ToUniversalTime(), false);
+        var trainMob = new HuntTrainMob(mob.Name.TextValue, territoryid, mapid, mapName, position, DateTime.UtcNow, false);
         HuntTrain.Add(trainMob);
     }
 
-    public void SendTrainFlag(int index, bool openMap,ushort textColor = 24, ushort flagColour = 559, ushort countColour = 502) //make customizable in the future, maybe
+
+    public bool UpdateLastSeen(BattleNpc mob)
+    {
+        var existing = HuntTrain.FirstOrDefault(m => m.Name == mob.Name.ToString());
+        if (existing == null) return false;
+        existing.LastSeenUTC = DateTime.UtcNow;
+        return true;
+    }
+    public void SendTrainFlag(int index, bool openMap, ushort textColor = 24, ushort flagColour = 559, ushort countColour = 502) //make customizable in the future, maybe
     {
         var sb = new SeStringBuilder();
 
@@ -77,7 +86,7 @@ public class TrainManager
         if (!openMap) return;
         var mlp = (MapLinkPayload)HuntTrain[index].MapLink.Payloads[0];
         _gameGui.OpenMapWithMapLink(mlp);
-        
+
     }
 
     public void Import(string importCode)
