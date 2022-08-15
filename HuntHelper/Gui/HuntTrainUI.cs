@@ -32,6 +32,7 @@ public class HuntTrainUI : IDisposable
     private bool _showPos = true;
     private bool _showLastSeen = true;
     private bool _useBorder = false;
+    private bool _openMap = false;
     #endregion
 
     private Vector4 _deadTextColour = new Vector4(.6f, .7f, .6f, 1f);
@@ -78,6 +79,7 @@ public class HuntTrainUI : IDisposable
         _showPos = _config.HuntTrainShowPos;
         _showLastSeen = _config.HuntTrainShowLastSeen;
         _useBorder = _config.HuntTrainUseBorder;
+        _openMap = _config.HuntTrainNextOpensMap;
     }
 
     public void SaveSettings()
@@ -88,6 +90,7 @@ public class HuntTrainUI : IDisposable
         _config.HuntTrainShowPos = _showPos;
         _config.HuntTrainShowLastSeen = _showLastSeen;
         _config.HuntTrainUseBorder = _useBorder;
+        _config.HuntTrainNextOpensMap = _openMap;
     }
 
 
@@ -207,9 +210,26 @@ public class HuntTrainUI : IDisposable
             ImGui.EndChild(); //main hunt train data section
             #endregion
 
-            ImGui.Checkbox("pos", ref _showPos);
-            ImGui.SameLine(); ImGui.Checkbox("last seen", ref _showLastSeen);
-            ImGui.SameLine(); ImGui.Checkbox("border", ref _useBorder);
+            if (ImGui.TreeNode("options##treeeee", "Settings"))
+            {
+                if (ImGui.BeginTable("settingsalignment",2))
+                {
+                    ImGui.TableNextColumn();
+                    ImGui.Checkbox("Pos", ref _showPos);
+                    ImGui.TableNextColumn();
+                    ImGui.Checkbox("Last seen", ref _showLastSeen);
+                    ImGuiUtil.ImGui_HoveredToolTip("Show how long since the hunt was found.");
+                    ImGui.TableNextColumn();
+                    ImGui.Checkbox("Border", ref _useBorder);
+                    ImGui.TableNextColumn();
+                    ImGui.Checkbox("Open Map", ref _openMap); //assuming this is allowed as it requires user interaction, but opening map on S rank spawn would be passive and so 'automated'
+                    ImGuiUtil.ImGui_HoveredToolTip("Open the relevant map when /hhn used or when name clicked.");
+                    ImGui.EndTable();
+                }
+
+                ImGui.TreePop();
+                ImGui.Separator();
+            }
             ImGui.Dummy(new Vector2(0, 12f));
 
 
@@ -437,8 +457,8 @@ public class HuntTrainUI : IDisposable
     {
         if (_selectedIndex < _mobList.Count) _mobList[_selectedIndex].Dead = true;
         SelectNext();
-        if (!_mobList[_selectedIndex].Dead) _trainManager.SendTrainFlag(_selectedIndex);
-        else _trainManager.SendTrainFlag(-1);
+        if (!_mobList[_selectedIndex].Dead) _trainManager.SendTrainFlag(_selectedIndex, _openMap);
+        else _trainManager.SendTrainFlag(-1, false);
     }
 
     //based off of https://github.com/ocornut/imgui/blob/docking/imgui_demo.cpp#L2337
@@ -461,7 +481,7 @@ public class HuntTrainUI : IDisposable
                 mob.Dead = !mob.Dead;
             }*/
             //how to check if mouse held?
-            if (ImGui.IsItemActive() && ImGui.IsMouseClicked(ImGuiMouseButton.Left)) _trainManager.SendTrainFlag(n);
+            if (ImGui.IsItemActive() && ImGui.IsMouseClicked(ImGuiMouseButton.Left)) _trainManager.SendTrainFlag(n, _openMap);
 
             if (ImGui.BeginPopupContextItem($"ContextMenu##{mob.Name}", ImGuiPopupFlags.MouseButtonRight))
             {

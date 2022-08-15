@@ -91,6 +91,10 @@ namespace HuntHelper
         public bool FlyTextBEnabled { get; set; } = false;
         public bool FlyTextSEnabled { get; set; } = true;
 
+        public int SFoundCount { get; set; } = 0;
+        public int AFoundCount { get; set; } = 0;
+        public int BFoundCount { get; set; } = 0;
+
         #endregion
 
         #region Hunt Train Window
@@ -100,6 +104,8 @@ namespace HuntHelper
         public bool HuntTrainShowPos { get; set; } = false;
         public bool HuntTrainShowLastSeen { get; set; } = false;
         public bool HuntTrainUseBorder { get; set; } = false;
+
+        public bool HuntTrainNextOpensMap { get; set; } = false;
 
         #endregion
 

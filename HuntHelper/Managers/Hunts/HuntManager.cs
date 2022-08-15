@@ -41,6 +41,10 @@ public class HuntManager
     private BattleNpc? _priorityMob;
     private HuntRank _highestRank;
 
+    public int ACount;
+    public int SCount;
+    public int BCount;
+
     public bool ImagesLoaded { get; private set; } = false;
     public bool ErrorPopUpVisible = false;
     public string ErrorMessage = string.Empty;
@@ -143,17 +147,20 @@ public class HuntManager
                     NewMobFoundTTS(aTTS, aTTSmsg, mob);
                     SendChatMessage(chatA, chatAmsg, territoryId, mapid, mob, zoneMapCoordSize);
                     SendFlyText(rank, mob, flyTxtA);
+                    ACount++;
                     break;
                 case HuntRank.B:
                     NewMobFoundTTS(bTTS, bTTSmsg, mob);
                     SendChatMessage(chatB, chatBmsg, territoryId, mapid, mob, zoneMapCoordSize);
                     SendFlyText(rank, mob, flyTxtB);
+                    BCount++;
                     break;
                 case HuntRank.S:
                 case HuntRank.SS:
                     NewMobFoundTTS(sTTS, sTTSmsg, mob);
                     SendChatMessage(chatS, chatSmsg, territoryId, mapid, mob, zoneMapCoordSize);
                     SendFlyText(rank, mob, flyTxtS);
+                    SCount++;
                     break;
             }
         }

@@ -132,7 +132,6 @@ namespace HuntHelper.Gui
 
         //window bools
         private bool _showOptionsWindow = true;
-
         #endregion
 
         private bool _showDebug = false;
@@ -992,6 +991,22 @@ namespace HuntHelper.Gui
                         ImGui.EndTabItem();
                     }
 
+
+                    if (ImGui.BeginTabItem("Stats"))
+                    {
+                        _bottomPanelHeight = 120f;
+                       
+                        ImGuiUtil.DoStuffWithMonoFont(() =>
+                            {
+                                ImGui.TextUnformatted($"Hunts found:");
+                                ImGui.TextUnformatted($"S: {_configuration.SFoundCount:00000}");
+                                ImGui.TextUnformatted($"A: {_configuration.AFoundCount:00000}");
+                                ImGui.TextUnformatted($"B: {_configuration.BFoundCount:00000}");
+                                //yes these count duplicates, sue me
+                            }
+                        );
+                        ImGui.EndTabItem();
+                    }
                     ImGui.EndTabBar();
                 }
             }
@@ -1082,6 +1097,9 @@ namespace HuntHelper.Gui
             _configuration.FlyTextAEnabled = _flyTxtAEnabled;
             _configuration.FlyTextBEnabled = _flyTxtBEnabled;
             _configuration.FlyTextSEnabled = _flyTxtSEnabled;
+            _configuration.SFoundCount += _huntManager.ACount;
+            _configuration.AFoundCount += _huntManager.SCount;
+            _configuration.BFoundCount += _huntManager.BCount;
 
             _configuration.Save();
         }
@@ -1152,8 +1170,6 @@ namespace HuntHelper.Gui
             _flyTxtAEnabled = _configuration.FlyTextAEnabled;
             _flyTxtBEnabled = _configuration.FlyTextBEnabled;
             _flyTxtSEnabled = _configuration.FlyTextSEnabled;
-
-
 
             //if voice name available on user's pc, set as tts voice. --else default already set.
             if (_huntManager.TTS.GetInstalledVoices().Any(v => v.VoiceInfo.Name == _configuration.TTSVoiceName))

@@ -1,4 +1,5 @@
-﻿using Dalamud.Data;
+﻿using System.ComponentModel.Design;
+using Dalamud.Data;
 using Dalamud.Game.ClientState;
 using Dalamud.Game.ClientState.Objects;
 using Dalamud.Game.Command;
@@ -38,6 +39,7 @@ namespace HuntHelper
         private TrainManager TrainManager { get; init; }
         private MapDataManager MapDataManager { get; init; }
         private FlyTextGui FlyTextGui { get; init; }
+        private GameGui GameGui { get; init; }
 
         public Plugin(
             DalamudPluginInterface pluginInterface,
@@ -46,7 +48,8 @@ namespace HuntHelper
             ObjectTable objectTable,
             DataManager dataManager,
             ChatGui chatGui,
-            FlyTextGui flyTextGui)
+            FlyTextGui flyTextGui,
+            GameGui gameGui)
         {
             this.PluginInterface = pluginInterface;
             this.CommandManager = commandManager;
@@ -56,11 +59,12 @@ namespace HuntHelper
             this.DataManager = dataManager;
             this.ChatGui = chatGui;
             this.FlyTextGui = flyTextGui;
+            this.GameGui = gameGui;
 
             this.Configuration = this.PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
             this.Configuration.Initialize(this.PluginInterface);
 
-            this.TrainManager = new TrainManager(ChatGui, Path.Combine(PluginInterface.AssemblyLocation.Directory?.FullName!, @"Data\HuntTrain.json"));
+            this.TrainManager = new TrainManager(ChatGui, GameGui, Path.Combine(PluginInterface.AssemblyLocation.Directory?.FullName!, @"Data\HuntTrain.json"));
             this.HuntManager = new HuntManager(PluginInterface, TrainManager, chatGui, flyTextGui);
             this.MapDataManager = new MapDataManager(Path.Combine(PluginInterface.AssemblyLocation.Directory?.FullName!, @"Data\SpawnPointData.json"));
 
@@ -75,7 +79,7 @@ namespace HuntHelper
             });
             this.CommandManager.AddHandler(HuntTrainWindowCommand, new CommandInfo(HuntTrainCommand)
             {
-                HelpMessage = "Opens the Hunt Train Window"
+                HelpMessage = $"Opens the Hunt Train Window."
             });
             this.CommandManager.AddHandler(NextHuntInTrainCommand, new CommandInfo(GetNextMobCommand)
             {

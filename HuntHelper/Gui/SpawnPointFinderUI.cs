@@ -13,7 +13,7 @@ using HuntHelper.Utilities;
 using ImGuiNET;
 
 namespace HuntHelper.Gui;
-
+//https://github.com/mellinoe/ImGui.NET/issues/107#issuecomment-467146212
 public unsafe class SpawnPointFinderUI : IDisposable//idk what to call this
 {
     private readonly MapDataManager _mapDataManager;

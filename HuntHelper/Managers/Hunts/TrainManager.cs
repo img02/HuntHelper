@@ -10,24 +10,29 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Numerics;
+using Dalamud.Game.Text.SeStringHandling.Payloads;
 
 namespace HuntHelper.Managers.Hunts;
 
 public class TrainManager
 {
     private readonly ChatGui _chatGui;
+    private readonly GameGui _gameGui;
+
     private readonly string _huntTrainFilePath;
 
     public readonly List<HuntTrainMob> HuntTrain;
     public readonly List<HuntTrainMob> ImportedTrain;
     public bool RecordTrain = false;
 
-    public TrainManager(ChatGui chatGui, string huntTrainFilePath)
+    public TrainManager(ChatGui chatGui, GameGui gameGui, string huntTrainFilePath)
     {
         HuntTrain = new List<HuntTrainMob>();
         ImportedTrain = new List<HuntTrainMob>();
 
         _chatGui = chatGui;
+        _gameGui = gameGui;
+
         _huntTrainFilePath = huntTrainFilePath;
         LoadHuntTrainRecord();
     }
@@ -41,7 +46,7 @@ public class TrainManager
         HuntTrain.Add(trainMob);
     }
 
-    public void SendTrainFlag(int index, ushort textColor = 24, ushort flagColour = 559, ushort countColour = 502) //make customizable in the future, maybe
+    public void SendTrainFlag(int index, bool openMap,ushort textColor = 24, ushort flagColour = 559, ushort countColour = 502) //make customizable in the future, maybe
     {
         var sb = new SeStringBuilder();
 
@@ -63,12 +68,16 @@ public class TrainManager
         sb.Append(HuntTrain[index].MapLink);
         sb.AddUiForegroundOff();
 
-
         sb.AddUiForeground(countColour);
         sb.AddText($" --- {index + 1}/{HuntTrain.Count}");
         sb.AddUiForegroundOff();
 
         _chatGui.Print(sb.BuiltString);
+
+        if (!openMap) return;
+        var mlp = (MapLinkPayload)HuntTrain[index].MapLink.Payloads[0];
+        _gameGui.OpenMapWithMapLink(mlp);
+        
     }
 
     public void Import(string importCode)
