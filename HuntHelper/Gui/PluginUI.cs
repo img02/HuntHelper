@@ -1097,9 +1097,11 @@ namespace HuntHelper.Gui
             _configuration.FlyTextAEnabled = _flyTxtAEnabled;
             _configuration.FlyTextBEnabled = _flyTxtBEnabled;
             _configuration.FlyTextSEnabled = _flyTxtSEnabled;
+            /*
             _configuration.SFoundCount += _huntManager.ACount;
             _configuration.AFoundCount += _huntManager.SCount;
             _configuration.BFoundCount += _huntManager.BCount;
+            */
 
             _configuration.Save();
         }
@@ -1178,6 +1180,10 @@ namespace HuntHelper.Gui
                 _huntManager.TTS.SelectVoice(_ttsVoiceName);
                 _huntManager.TTSName = _ttsVoiceName;
             }
+
+            _huntManager.ACount = _configuration.AFoundCount;
+            _huntManager.BCount = _configuration.BFoundCount;
+            _huntManager.SCount = _configuration.SFoundCount;
         }
 
 
@@ -1257,9 +1263,8 @@ namespace HuntHelper.Gui
                 _ttsAEnabled, _ttsBEnabled, _ttsSEnabled, _ttsAMessage, _ttsBMessage, _ttsSMessage,
                 _chatAEnabled, _chatBEnabled, _chatSEnabled, _chatAMessage, _chatBMessage, _chatSMessage,
                 _flyTxtAEnabled, _flyTxtBEnabled, _flyTxtSEnabled);
+            UpdateStats();
 
-
-            if (nearbyMobs.Count == 0) return;
             if (!MapVisible) return;
 
             var mobs = _huntManager.GetCurrentMobs();
@@ -1652,6 +1657,13 @@ namespace HuntHelper.Gui
                 ImGui.InputText("##folder dir", ref imageDir, 30, ImGuiInputTextFlags.ReadOnly);
                 ImGui.End();
             }
+        }
+
+        private void UpdateStats()
+        {
+            _configuration.AFoundCount = _huntManager.ACount;
+            _configuration.BFoundCount = _huntManager.BCount;
+            _configuration.SFoundCount = _huntManager.SCount;
         }
 
     }
