@@ -585,7 +585,7 @@ namespace HuntHelper.Gui
                                 if (ImGui.Button("Save")) SavePreset(1);
                                 ImGui.PopID();
                                 ImGui.TableNextColumn();
-                                
+
                                 // Window Size Preset 2
                                 ImGui.TableNextColumn();
                                 ImGui.Dummy(new Vector2(0f, 0f));
@@ -1301,7 +1301,7 @@ namespace HuntHelper.Gui
             var mobWindowPos = CoordinateToPositionInWindow(mobInGamePos);
             var drawlist = ImGui.GetWindowDrawList();
             drawlist.AddCircleFilled(mobWindowPos, _mobIconRadius, ImGui.ColorConvertFloat4ToU32(_mobColour));
-            if (_mapDataManager.IsRecording(_territoryId)) ConfirmTakenSpawnPoint(mobInGamePos);
+            if (_mapDataManager.IsRecording(_territoryId) && mob.NameId is not Constants.SS_Ker and not Constants.SS_Forgiven_Rebellion) ConfirmTakenSpawnPoint(mobInGamePos);
             //draw mob icon tooltip
             if (Vector2.Distance(ImGui.GetMousePos(), mobWindowPos) < _mobIconRadius * _mouseOverDistanceModifier)
             {
@@ -1322,7 +1322,9 @@ namespace HuntHelper.Gui
                 takenSp = sp;
             }
             var index = spawnPoints.Positions.IndexOf(takenSp!);
+            if (index < 0) return; 
             spawnPoints.Positions[index].Taken = true;
+
         }
 
         private void DrawMobIconToolTip(BattleNpc mob)

@@ -39,4 +39,8 @@ public static class Constants
 
     private const string BattleRegexBase = "(?i)(defeat|defeats) the ";
     private const string GatheringRegexBase = "(?i)You obtain.*";
+
+    //ss ids
+    public const uint SS_Ker = 10615;
+    public const uint SS_Forgiven_Rebellion = 8915;
 }

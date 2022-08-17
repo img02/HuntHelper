@@ -89,7 +89,6 @@ public class HuntManager
         TTSName = TTS.Voice.Name;
 
         LoadHuntData();
-        //LoadHuntTrainRecord();
     }
 
     public (HuntRank Rank, BattleNpc? Mob) GetPriorityMob()
