@@ -2,6 +2,7 @@
 using Dalamud.Plugin;
 using ImGuiNET;
 using System;
+using System.Drawing.Printing;
 using System.Numerics;
 
 namespace HuntHelper
@@ -17,8 +18,6 @@ namespace HuntHelper
         public Vector2 MapWindowPos { get; set; } = new Vector2(25, 25);
         //window sizes
         public int CurrentWindowSize { get; set; } = 512;
-        public int PresetOneWindowSize { get; set; } = 512;
-        public int PresetTwoWindowSize { get; set; } = 1024;
         public float MapImageOpacityAsPercentage { get; set; } = 100f;
 
         // icon colours
@@ -95,6 +94,9 @@ namespace HuntHelper
         public int AFoundCount { get; set; } = 0;
         public int BFoundCount { get; set; } = 0;
 
+        public Preset PresetOne { get; set; } = new Preset() { MapOpacity = 1, UseMap = false, WindowOpacity = 1, WindowSize = 512 };
+        public Preset PresetTwo { get; set; } = new Preset() { MapOpacity = 1, UseMap = false, WindowOpacity = 1, WindowSize = 512 };
+
         #endregion
 
         #region Hunt Train Window
@@ -121,7 +123,6 @@ namespace HuntHelper
         public Vector2 CounterWindowSize { get; set; } = new Vector2(250, 50);
 
         public bool CountInBackground { get; set; } = false;
-
         #endregion
 
 
@@ -140,6 +141,17 @@ namespace HuntHelper
         public void Save()
         {
             this._pluginInterface!.SavePluginConfig(this);
+        }
+
+        public void SaveMainMapPreset(int windowSize, float windowOpacity, float mapOpacity, bool useMap, Vector2 winPos, int presetNumber)
+        {
+            if (presetNumber is < 1 or > 2) return;
+            var toUpdate = presetNumber == 1 ? PresetOne : PresetTwo;
+            toUpdate.MapOpacity = mapOpacity;
+            toUpdate.WindowOpacity = windowOpacity;
+            toUpdate.UseMap = useMap;
+            toUpdate.WindowSize = windowSize;
+            toUpdate.WindowPosition = winPos;
         }
     }
 }

@@ -16,7 +16,7 @@
   "AssemblyVersion": "0.0.0.1",
   "RepoUrl": "https://github.com/imaginary-png/HuntHelper",
   "ApplicableVersion": "any",
-  "DalamudApiLevel": 6,
+  "DalamudApiLevel": 7,
   "LoadPriority": 0,
   "ImageUrls": [
     "https://raw.githubusercontent.com/imaginary-png/HuntHelper/main/Images/hunt_map.png",

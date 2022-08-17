@@ -18,6 +18,10 @@ namespace HuntHelper
         public string Name => "Hunt Helper";
 
         private const string MapWindowCommand = "/hh";
+        private const string MapWindowPresetOne = "/hh1";
+        private const string MapWindowPresetTwo = "/hh2";
+        private const string MapWindowPresetOneSave = "/hh1save";
+        private const string MapWindowPresetTwoSave = "/hh2save";
         private const string HuntTrainWindowCommand = "/hht";
         private const string NextHuntInTrainCommand = "/hhn";
         private const string CounterCommand = "/hhc";
@@ -77,6 +81,22 @@ namespace HuntHelper
             {
                 HelpMessage = "Opens the Hunt Map"
             });
+            this.CommandManager.AddHandler(MapWindowPresetOne, new CommandInfo(ApplyPresetOneCommand)
+            {
+                HelpMessage = "Applies Preset One"
+            });
+            this.CommandManager.AddHandler(MapWindowPresetTwo, new CommandInfo(ApplyPresetTwoCommand)
+            {
+                HelpMessage = "Applies Preset Two"
+            });
+            this.CommandManager.AddHandler(MapWindowPresetOneSave, new CommandInfo(SavePresetOneCommand)
+            {
+                HelpMessage = "Save Preset One"
+            });
+            this.CommandManager.AddHandler(MapWindowPresetTwoSave, new CommandInfo(SavePresetTwoCommand)
+            {
+                HelpMessage = "Save Preset Two"
+            });
             this.CommandManager.AddHandler(HuntTrainWindowCommand, new CommandInfo(HuntTrainCommand)
             {
                 HelpMessage = $"Opens the Hunt Train Window."
@@ -119,6 +139,10 @@ namespace HuntHelper
             this.CommandManager.RemoveHandler(DebugCommand);
 #endif
             this.CommandManager.RemoveHandler(MapWindowCommand);
+            this.CommandManager.RemoveHandler(MapWindowPresetOne);
+            this.CommandManager.RemoveHandler(MapWindowPresetTwo);
+            this.CommandManager.RemoveHandler(MapWindowPresetOneSave);
+            this.CommandManager.RemoveHandler(MapWindowPresetTwoSave);
             this.CommandManager.RemoveHandler(HuntTrainWindowCommand);
             this.CommandManager.RemoveHandler(NextHuntInTrainCommand);
             this.CommandManager.RemoveHandler(CounterCommand);
@@ -130,6 +154,10 @@ namespace HuntHelper
 
         private void DebugWindowCommand(string command, string args) => this.PluginUi.RandomDebugWindowVisisble = !PluginUi.RandomDebugWindowVisisble;
         private void HuntMapCommand(string command, string args) => PluginUi.MapVisible = !PluginUi.MapVisible;
+        private void ApplyPresetOneCommand(string command, string args) => PluginUi.ApplyPreset(1);
+        private void ApplyPresetTwoCommand(string command, string args) => PluginUi.ApplyPreset(2);
+        private void SavePresetOneCommand(string command, string args) => PluginUi.SavePreset(1);
+        private void SavePresetTwoCommand(string command, string args) => PluginUi.SavePreset(2);
         private void HuntTrainCommand(string command, string args) => HuntTrainUI.HuntTrainWindowVisible = !HuntTrainUI.HuntTrainWindowVisible;
         //gets next available hunt in the recorded train
         private void GetNextMobCommand(string command, string args) => HuntTrainUI.GetNextMobCommand();

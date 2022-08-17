@@ -313,7 +313,7 @@ namespace HuntHelper.Gui
 
             ImGui.SetNextWindowSize(new Vector2(_currentWindowSize, _currentWindowSize), ImGuiCond.Always);
             ImGui.SetNextWindowSizeConstraints(new Vector2(512, -1), new Vector2(float.MaxValue, -1)); //disable manual resize vertical
-            ImGui.SetNextWindowPos(_mapWindowPos, ImGuiCond.FirstUseEver);
+            ImGui.SetNextWindowPos(_mapWindowPos, ImGuiCond.Appearing);
             ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, new Vector2(0, 0));
             ImGui.PushStyleVar(ImGuiStyleVar.WindowBorderSize, 0f);
             ImGui.PushStyleColor(ImGuiCol.WindowBg, new Vector4(_mapWindowColour.X, _mapWindowColour.Y, _mapWindowColour.Z, _mapWindowOpacityAsPercentage / 100f));
@@ -425,14 +425,15 @@ namespace HuntHelper.Gui
             ImGui.End();
             ImGui.PopStyleVar(2);
         }
-
         private void DrawOptionsWindow()
         {
             var bottomDockingPos = Vector2.Add(ImGui.GetWindowPos(), new Vector2(0, ImGui.GetWindowSize().Y));
 
             ImGui.SetNextWindowSize(new Vector2(ImGui.GetWindowSize().X, _bottomPanelHeight), ImGuiCond.Always);
             ImGui.SetNextWindowSizeConstraints(new Vector2(-1, 95), new Vector2(-1, 300));
+            ImGui.SetNextWindowPos(bottomDockingPos);
 
+            //this gets a little glitchy when it clips out the bottom of the screen, but I already committed and refuse to back down
             //hide grip color
             ImGui.PushStyleColor(ImGuiCol.ResizeGrip, 0);
             if (ImGui.Begin("Options Window", ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoMove))
@@ -571,7 +572,7 @@ namespace HuntHelper.Gui
                                 ImGui.Text("Preset 1");
                                 ImGui.SameLine();
                                 ImGuiUtil.ImGui_HelpMarker(
-                                    "Save a preset for quick switching\nOnly need to type it in.\nPress Apply to change to this size");
+                                    "Save a preset for quick switching - Size, opacity, position, and use map\n\nApply with command: /hh1\nSave with /hh1save or -->");
 
                                 ImGui.TableNextColumn();
                                 ImGui.Dummy(new Vector2(0f, 0f));
@@ -581,12 +582,10 @@ namespace HuntHelper.Gui
 
                                 ImGui.TableNextColumn();
                                 ImGui.Dummy(new Vector2(0f, 0f));
-                                if (ImGui.Button("Apply")) _currentWindowSize = _presetOneWindowSize;
+                                if (ImGui.Button("Save")) SavePreset(1);
                                 ImGui.PopID();
-
                                 ImGui.TableNextColumn();
-
-
+                                
                                 // Window Size Preset 2
                                 ImGui.TableNextColumn();
                                 ImGui.Dummy(new Vector2(0f, 0f));
@@ -595,7 +594,7 @@ namespace HuntHelper.Gui
                                 ImGui.Text("Preset 2");
                                 ImGui.SameLine();
                                 ImGuiUtil.ImGui_HelpMarker(
-                                    "Save a preset for quick switching\nOnly need to type it in.\nPress Apply to change to this size");
+                                    "Save a preset for quick switching - Size, opacity, position, and use map\n\nApply with command: /hh2\nSave with /hh1save or -->");
 
                                 ImGui.TableNextColumn();
                                 ImGui.Dummy(new Vector2(0f, 0f));
@@ -605,9 +604,7 @@ namespace HuntHelper.Gui
 
                                 ImGui.TableNextColumn();
                                 ImGui.Dummy(new Vector2(0f, 0f));
-                                if (ImGui.Button("Apply")) _currentWindowSize = _presetTwoWindowSize;
-                                ImGui.SameLine();
-                                ImGuiUtil.ImGui_HelpMarker("why button go right :(");
+                                if (ImGui.Button("Save")) SavePreset(2);
                                 ImGui.PopID();
                                 ImGui.EndTable();
 
@@ -995,7 +992,7 @@ namespace HuntHelper.Gui
                     if (ImGui.BeginTabItem("Stats"))
                     {
                         _bottomPanelHeight = 120f;
-                       
+
                         ImGuiUtil.DoStuffWithMonoFont(() =>
                             {
                                 ImGui.TextUnformatted($"Hunts found:");
@@ -1013,6 +1010,31 @@ namespace HuntHelper.Gui
             ImGui.PopStyleColor();
             ImGui.End();
         }
+
+        public void SavePreset(int presetNumber)
+        {
+            _configuration.SaveMainMapPreset(_presetOneWindowSize, _mapImageOpacityAsPercentage, _mapWindowOpacityAsPercentage, _useMapImages, _mapWindowPos, 1);
+        }
+
+        public void ApplyPreset(int presetNumber)
+        {
+            if (presetNumber is < 0 or > 2) return;
+            var toApply = presetNumber == 1 ? _configuration.PresetOne : _configuration.PresetTwo;
+            _currentWindowSize = toApply.WindowSize;
+            _mapImageOpacityAsPercentage = toApply.MapOpacity;
+            _mapWindowOpacityAsPercentage = toApply.WindowOpacity;
+            _useMapImages = toApply.UseMap;
+            Task.Run(() => ChangeMapWindowPosition(toApply));
+        }
+
+        private void ChangeMapWindowPosition(Preset toApply)
+        {
+            MapVisible = false;
+            _mapWindowPos = toApply.WindowPosition;
+            Thread.Sleep(50);
+            MapVisible = true;
+        }
+
         public void DrawSettingsWindow()
         {
             if (!SettingsVisible)
@@ -1041,8 +1063,6 @@ namespace HuntHelper.Gui
             _configuration.UseMapImages = _useMapImages;
             _configuration.MapWindowPos = _mapWindowPos;
             _configuration.CurrentWindowSize = _currentWindowSize;
-            _configuration.PresetOneWindowSize = _presetOneWindowSize;
-            _configuration.PresetTwoWindowSize = _presetTwoWindowSize;
             _configuration.MapImageOpacityAsPercentage = _mapImageOpacityAsPercentage;
             _configuration.SpawnPointColour = _spawnPointColour;
             _configuration.MobColour = _mobColour;
@@ -1116,8 +1136,8 @@ namespace HuntHelper.Gui
             _useMapImages = _configuration.UseMapImages;
             _mapWindowPos = _configuration.MapWindowPos;
             _currentWindowSize = _configuration.CurrentWindowSize;
-            _presetOneWindowSize = _configuration.PresetOneWindowSize;
-            _presetTwoWindowSize = _configuration.PresetTwoWindowSize;
+            _presetOneWindowSize = _configuration.PresetOne.WindowSize;
+            _presetTwoWindowSize = _configuration.PresetTwo.WindowSize;
             _mapImageOpacityAsPercentage = _configuration.MapImageOpacityAsPercentage;
             _spawnPointColour = _configuration.SpawnPointColour;
             _mobColour = _configuration.MobColour;
@@ -1234,7 +1254,7 @@ namespace HuntHelper.Gui
             foreach (var sp in spawnPoints)
             {
                 var drawPos = CoordinateToPositionInWindow(sp.Position);
-                
+
                 drawList.AddCircleFilled(drawPos, _spawnPointIconRadius,
                     sp.Taken && recordingSpawnPos
                         ? ImGui.ColorConvertFloat4ToU32(new Vector4(1f, 0f, 0f, 1f)) //red for taken spawn point
