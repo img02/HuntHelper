@@ -594,7 +594,7 @@ namespace HuntHelper.Gui
                                 ImGui.Text("Preset 2");
                                 ImGui.SameLine();
                                 ImGuiUtil.ImGui_HelpMarker(
-                                    "Save a preset for quick switching - Size, opacity, position, and use map\n\nApply with command: /hh2\nSave with /hh1save or -->");
+                                    "Save a preset for quick switching - Size, opacity, position, and use map\n\nApply with command: /hh2\nSave with /hh2save or -->");
 
                                 ImGui.TableNextColumn();
                                 ImGui.Dummy(new Vector2(0f, 0f));
@@ -1013,7 +1013,8 @@ namespace HuntHelper.Gui
 
         public void SavePreset(int presetNumber)
         {
-            _configuration.SaveMainMapPreset(_presetOneWindowSize, _mapImageOpacityAsPercentage, _mapWindowOpacityAsPercentage, _useMapImages, _mapWindowPos, 1);
+            var winSize = presetNumber == 1 ? _presetOneWindowSize : _presetTwoWindowSize;
+            _configuration.SaveMainMapPreset(winSize, _mapImageOpacityAsPercentage, _mapWindowOpacityAsPercentage, _useMapImages, _mapWindowPos, presetNumber);
         }
 
         public void ApplyPreset(int presetNumber)

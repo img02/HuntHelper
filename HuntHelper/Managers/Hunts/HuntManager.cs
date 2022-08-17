@@ -157,7 +157,7 @@ public class HuntManager
                     BCount++;
                     break;
                 case HuntRank.S:
-                case HuntRank.SS:
+                case HuntRank.SS: //don't think ss is actually used lol
                     NewMobFoundTTS(sTTS, sTTSmsg, mob);
                     SendChatMessage(chatS, chatSmsg, territoryId, mapid, mob, zoneMapCoordSize);
                     SendFlyText(rank, mob, flyTxtS);
@@ -435,7 +435,7 @@ public class HuntManager
         //just default to B if for some reason mob can't be found - shouldn't happen tho...
         var rank = HuntRank.B;
         var found = false;
-        if (!found)
+        if (!found) //?????? why is this here
         {   //ugly and repetitive
             var kvp = SearchDictionaryForModelID(_arrDict, modelID);
             if (!kvp.Equals(default(KeyValuePair<HuntRank, List<Mob>>))) return kvp.Key;
