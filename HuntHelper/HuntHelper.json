@@ -19,10 +19,10 @@
   "DalamudApiLevel": 7,
   "LoadPriority": 0,
   "ImageUrls": [
-    "https://raw.githubusercontent.com/imaginary-png/HuntHelper/main/Images/hunt_map.png",
-    "https://raw.githubusercontent.com/imaginary-png/HuntHelper/main/Images/hunt_train.png",
-    "https://raw.githubusercontent.com/imaginary-png/HuntHelper/main/Images/chat_notification.png",
-    "https://raw.githubusercontent.com/imaginary-png/HuntHelper/main/Images/no_map.png",
-    "https://raw.githubusercontent.com/imaginary-png/HuntHelper/main/Images/hunt_map1.png"
-  ]
+    "https://raw.githubusercontent.com/imaginary-png/HuntHelper/main/Images/image1.png",
+    "https://raw.githubusercontent.com/imaginary-png/HuntHelper/main/Images/image2.png",
+    "https://raw.githubusercontent.com/imaginary-png/HuntHelper/main/Images/image3.png",
+    "https://raw.githubusercontent.com/imaginary-png/HuntHelper/main/Images/image4.png"
+  ],
+  "IconUrl": "https://raw.githubusercontent.com/imaginary-png/HuntHelper/main/Images/icon.png"
 }
