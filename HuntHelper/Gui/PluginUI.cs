@@ -19,6 +19,7 @@ using System.Numerics;
 using System.Speech.Synthesis;
 using System.Threading;
 using System.Threading.Tasks;
+using Dalamud.Game.Gui;
 
 namespace HuntHelper.Gui
 {
@@ -32,6 +33,7 @@ namespace HuntHelper.Gui
         private readonly DataManager _dataManager;
         private readonly HuntManager _huntManager;
         private readonly MapDataManager _mapDataManager;
+        private readonly GameGui _gameGui;
 
         private string _territoryName;
         private string WorldName => _clientState.LocalPlayer?.CurrentWorld?.GameData?.Name.ToString() ?? "Not Found";
@@ -173,7 +175,7 @@ namespace HuntHelper.Gui
 
         public PluginUI(Configuration configuration, DalamudPluginInterface pluginInterface,
             ClientState clientState, ObjectTable objectTable, DataManager dataManager,
-            HuntManager huntManager, MapDataManager mapDataManager)
+            HuntManager huntManager, MapDataManager mapDataManager, GameGui gameGui)
         {
             _configuration = configuration;
             _pluginInterface = pluginInterface; //not using atm...
@@ -183,6 +185,7 @@ namespace HuntHelper.Gui
             _dataManager = dataManager;
             _huntManager = huntManager;
             _mapDataManager = mapDataManager;
+            _gameGui = gameGui;
 
             _ttsVoiceName = huntManager.TTS.Voice.Name; // load default voice first, then from settings if avail.
             _territoryName = string.Empty;
@@ -1292,8 +1295,83 @@ namespace HuntHelper.Gui
 
             DrawPriorityMobInfo();
             DrawNearbyMobInfo();
+            PointToPriorityMobBecauseBlind();
         }
 
+        private void PointToPriorityMobBecauseBlind()
+        {
+            var (rank, mob) = _huntManager.GetPriorityMob();
+            if (mob == null) return;
+            _gameGui.WorldToScreen(mob.Position, out var pointofFocusPosition);
+            //if (pointofFocusPosition == default(Vector2)) return;
+
+            //actual position
+            //works but a bit buggy, if using when camera not facing, worldtoscreen sets pos to opposite-ish direction once camera turned far enough.
+            ImGui.PushStyleColor(ImGuiCol.WindowBg, ImGui.ColorConvertFloat4ToU32(new Vector4(0, 0, 0, 0)));
+            ImGui.SetNextWindowSize(new Vector2(30));
+            ImGui.SetNextWindowPos(new Vector2(pointofFocusPosition.X, pointofFocusPosition.Y - 100));
+            if (ImGui.Begin($"##dsadas", ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoInputs))
+            {
+                var dl = ImGui.GetWindowDrawList();
+                var pos = new Vector2(ImGui.GetWindowPos().X, ImGui.GetWindowPos().Y + 15);
+                var diamond = new Vector2[]
+                {
+                    pos, new Vector2(pos.X + 15, pos.Y + 15), new Vector2(pos.X + 30, pos.Y),
+                    new Vector2(pos.X + 15, pos.Y - 15)
+                };
+                dl.AddConvexPolyFilled(ref diamond[0], 4, ImGui.ColorConvertFloat4ToU32(new Vector4(1, 0, 0, 1)));
+                ImGui.End();
+            }
+            ImGui.PopStyleColor();
+
+            //pointer when off screen
+            var screenSize = ImGuiHelpers.MainViewport.Size;
+            if (!(pointofFocusPosition.X < 0) && !(pointofFocusPosition.X > screenSize.X) &&
+                !(pointofFocusPosition.Y < 0) && !(pointofFocusPosition.Y > screenSize.Y)) return;
+
+            var helperArrowPosition = Vector2.Zero;
+            var helperArrowSize = new Vector2(30, 30);
+
+            var xMin = 20f;
+            var xMax = screenSize.X - 40;
+            var yMin = 20f;
+            var yMax = screenSize.Y - 40;
+
+            var xPos = pointofFocusPosition.X;
+            var yPos = pointofFocusPosition.Y;
+
+            if (pointofFocusPosition.X < 0) xPos = xMin;
+            if (pointofFocusPosition.Y < 0) yPos = yMin;
+
+            if (pointofFocusPosition.X > screenSize.X) xPos = xMax;
+            if (pointofFocusPosition.Y > screenSize.Y) yPos = yMax;
+
+            helperArrowPosition.X = xPos;
+            helperArrowPosition.Y = yPos;
+
+            //diamond
+            var helperArrowDrawVector = new Vector2[] { helperArrowPosition,
+                    new Vector2(helperArrowPosition.X + 15, helperArrowPosition.Y + 15),
+                    new Vector2(helperArrowPosition.X +30, helperArrowPosition.Y),
+                    new Vector2(helperArrowPosition.X + 15, helperArrowPosition.Y - 15) };
+
+            //pointer arrow
+            ImGui.SetNextWindowSize(helperArrowSize);
+            ImGui.SetNextWindowPos(new Vector2(helperArrowPosition.X, helperArrowPosition.Y - helperArrowSize.Y / 2));
+            if (ImGui.Begin("POINT LEFT", ImGuiWindowFlags.NoDecoration | ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoSavedSettings |
+                                          ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoMouseInputs | ImGuiWindowFlags.NoDocking |
+                                          ImGuiWindowFlags.NoFocusOnAppearing | ImGuiWindowFlags.NoNav))
+            {
+                var dl = ImGui.GetWindowDrawList();
+
+
+                //if (helperArrowDrawVector.Length != 4) return;
+                dl.AddConvexPolyFilled(ref helperArrowDrawVector[0], 4, ImGui.ColorConvertFloat4ToU32(new Vector4(1, 0, 0, 1)));
+                ImGui.End();
+            }
+
+
+        }
         private void DrawMobIcon(BattleNpc mob)
         {
             var mobInGamePos = new Vector2(ConvertPosToCoordinate(mob.Position.X), ConvertPosToCoordinate(mob.Position.Z));
