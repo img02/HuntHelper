@@ -1302,6 +1302,19 @@ namespace HuntHelper.Gui
         {
             var (rank, mob) = _huntManager.GetPriorityMob();
             if (mob == null) return;
+
+            var floatingPointingIconThingyColour = ImGui.ColorConvertFloat4ToU32(new Vector4(0, 0, 1, 1));
+            switch (rank)
+            {
+                case HuntRank.A:
+                    floatingPointingIconThingyColour = ImGui.ColorConvertFloat4ToU32(new Vector4(0, 1, 0, 1));
+                    break;
+                case HuntRank.S:
+                case HuntRank.SS:
+                    floatingPointingIconThingyColour = ImGui.ColorConvertFloat4ToU32(new Vector4(1, 0, 0, 1));
+                    break;
+            }
+
             _gameGui.WorldToScreen(mob.Position, out var pointofFocusPosition);
             //if (pointofFocusPosition == default(Vector2)) return;
 
@@ -1319,7 +1332,7 @@ namespace HuntHelper.Gui
                     pos, new Vector2(pos.X + 15, pos.Y + 15), new Vector2(pos.X + 30, pos.Y),
                     new Vector2(pos.X + 15, pos.Y - 15)
                 };
-                dl.AddConvexPolyFilled(ref diamond[0], 4, ImGui.ColorConvertFloat4ToU32(new Vector4(1, 0, 0, 1)));
+                dl.AddConvexPolyFilled(ref diamond[0], 4, floatingPointingIconThingyColour);
                 ImGui.End();
             }
             ImGui.PopStyleColor();
@@ -1366,7 +1379,7 @@ namespace HuntHelper.Gui
 
 
                 //if (helperArrowDrawVector.Length != 4) return;
-                dl.AddConvexPolyFilled(ref helperArrowDrawVector[0], 4, ImGui.ColorConvertFloat4ToU32(new Vector4(1, 0, 0, 1)));
+                dl.AddConvexPolyFilled(ref helperArrowDrawVector[0], 4, floatingPointingIconThingyColour);
                 ImGui.End();
             }
 
