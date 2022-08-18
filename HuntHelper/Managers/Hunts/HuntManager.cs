@@ -102,7 +102,7 @@ public class HuntManager
         }
         return (_highestRank, _priorityMob);
     }
-    public List<(HuntRank, BattleNpc)> GetAllCurrentMobsWithRank()
+    public List<(HuntRank Rank, BattleNpc Mob)> GetAllCurrentMobsWithRank()
     {
         return _currentMobs;
     }

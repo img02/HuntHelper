@@ -1295,23 +1295,30 @@ namespace HuntHelper.Gui
 
             DrawPriorityMobInfo();
             DrawNearbyMobInfo();
-            PointToPriorityMobBecauseBlind();
+
+            _huntManager.GetAllCurrentMobsWithRank().ForEach((item) =>
+               PointToMobsBecauseBlind(item.Rank, item.Mob));
         }
 
-        private void PointToPriorityMobBecauseBlind()
+        private void PointToMobsBecauseBlind(HuntRank rank, BattleNpc mob)
         {
-            var (rank, mob) = _huntManager.GetPriorityMob();
-            if (mob == null) return;
+            /*var (rank, mob) = _huntManager.GetPriorityMob();
+            if (mob == null) return;*/
 
-            var floatingPointingIconThingyColour = ImGui.ColorConvertFloat4ToU32(new Vector4(0, 0, 1, 1));
+            var floatingPointingIconThingyColour = ImGui.ColorConvertFloat4ToU32(new Vector4(0, 0.9f, 1, 1)); // blueish
             switch (rank)
             {
                 case HuntRank.A:
-                    floatingPointingIconThingyColour = ImGui.ColorConvertFloat4ToU32(new Vector4(0, 1, 0, 1));
+                    //if (!_pointToARank) return;
+                    floatingPointingIconThingyColour = ImGui.ColorConvertFloat4ToU32(new Vector4(.9f, .24f, .24f, 1)); //redish-pink
+                    break;
+                case HuntRank.B:
+                    //if (!_pointToBRank) return;
                     break;
                 case HuntRank.S:
                 case HuntRank.SS:
-                    floatingPointingIconThingyColour = ImGui.ColorConvertFloat4ToU32(new Vector4(1, 0, 0, 1));
+                    //if (!_pointToSRank) return;
+                    floatingPointingIconThingyColour = ImGui.ColorConvertFloat4ToU32(new Vector4(1, .93f, .12f, 1)); //yellowish-gold
                     break;
             }
 
@@ -1323,7 +1330,7 @@ namespace HuntHelper.Gui
             ImGui.PushStyleColor(ImGuiCol.WindowBg, ImGui.ColorConvertFloat4ToU32(new Vector4(0, 0, 0, 0)));
             ImGui.SetNextWindowSize(new Vector2(30));
             ImGui.SetNextWindowPos(new Vector2(pointofFocusPosition.X, pointofFocusPosition.Y - 100));
-            if (ImGui.Begin($"##dsadas", ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoInputs))
+            if (ImGui.Begin($"ONTOP##{mob.NameId}", ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoInputs))
             {
                 var dl = ImGui.GetWindowDrawList();
                 var pos = new Vector2(ImGui.GetWindowPos().X, ImGui.GetWindowPos().Y + 15);
@@ -1335,7 +1342,6 @@ namespace HuntHelper.Gui
                 dl.AddConvexPolyFilled(ref diamond[0], 4, floatingPointingIconThingyColour);
                 ImGui.End();
             }
-            ImGui.PopStyleColor();
 
             //pointer when off screen
             var screenSize = ImGuiHelpers.MainViewport.Size;
@@ -1371,9 +1377,7 @@ namespace HuntHelper.Gui
             //pointer arrow
             ImGui.SetNextWindowSize(helperArrowSize);
             ImGui.SetNextWindowPos(new Vector2(helperArrowPosition.X, helperArrowPosition.Y - helperArrowSize.Y / 2));
-            if (ImGui.Begin("POINT LEFT", ImGuiWindowFlags.NoDecoration | ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoSavedSettings |
-                                          ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoMouseInputs | ImGuiWindowFlags.NoDocking |
-                                          ImGuiWindowFlags.NoFocusOnAppearing | ImGuiWindowFlags.NoNav))
+            if (ImGui.Begin($"DIRECTION##{mob.NameId}", ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoInputs))
             {
                 var dl = ImGui.GetWindowDrawList();
 
@@ -1383,6 +1387,8 @@ namespace HuntHelper.Gui
                 ImGui.End();
             }
 
+
+            ImGui.PopStyleColor();//transparency
 
         }
         private void DrawMobIcon(BattleNpc mob)
