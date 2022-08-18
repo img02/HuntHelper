@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.Design;
-using Dalamud.Data;
+﻿using Dalamud.Data;
 using Dalamud.Game.ClientState;
 using Dalamud.Game.ClientState.Objects;
 using Dalamud.Game.Command;
@@ -8,8 +7,8 @@ using Dalamud.Game.Gui.FlyText;
 using Dalamud.Plugin;
 using HuntHelper.Gui;
 using HuntHelper.Managers.Hunts;
-using System.IO;
 using HuntHelper.Managers.MapData;
+using System.IO;
 
 namespace HuntHelper
 {

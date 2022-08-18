@@ -501,7 +501,7 @@ public class HuntManager
 
         var files = Directory.EnumerateFiles(ImageFolderPath).ToList();
         if (!files.Any() || files.Count != 41) return; //wait until all images downloaded
-        
+
         var paths = Directory.EnumerateFiles(ImageFolderPath, "*", SearchOption.TopDirectoryOnly);
         foreach (var path in paths)
         {
@@ -533,7 +533,7 @@ public class HuntManager
         //use spawnpoint data to get map names and generate urls.. coz lazy to retype
         var names = spawnpointdata.Select(x => x.MapName).ToList();
         var urls = names.Select(n => n = Constants.BaseImageUrl + n.Replace(" ", "_") + "-data.jpg").ToList();
-        
+
         //then async download each image and save to file
         var downloader = new ImageDownloader(urls, ImageFolderPath);
         var results = await downloader.BeginDownloadAsync();

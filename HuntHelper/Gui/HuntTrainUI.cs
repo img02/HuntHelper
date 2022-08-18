@@ -212,7 +212,7 @@ public class HuntTrainUI : IDisposable
 
             if (ImGui.TreeNode("options##treeeee", "Settings"))
             {
-                if (ImGui.BeginTable("settingsalignment",2))
+                if (ImGui.BeginTable("settingsalignment", 2))
                 {
                     ImGui.TableNextColumn();
                     ImGui.Checkbox("Pos", ref _showPos);
@@ -300,7 +300,6 @@ public class HuntTrainUI : IDisposable
         var center = ImGui.GetWindowPos() + ImGui.GetWindowSize() / 2;
         ImGui.SetNextWindowPos(center, ImGuiCond.Appearing, new Vector2(0.5f, 0.5f));
         ImGui.SetNextWindowSize(new Vector2(400, 200));
-
 
         if (ImGui.BeginPopupModal("Delete##modal"))
         {

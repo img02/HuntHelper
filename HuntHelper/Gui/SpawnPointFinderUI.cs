@@ -1,16 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Threading;
-using System.Threading.Tasks;
-using Dalamud.Interface;
+﻿using Dalamud.Interface;
 using Dalamud.Interface.Components;
 using Dalamud.Logging;
 using HuntHelper.Managers.MapData;
 using HuntHelper.Managers.MapData.Models;
 using HuntHelper.Utilities;
 using ImGuiNET;
+using System;
+using System.Collections.Generic;
+using System.Numerics;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace HuntHelper.Gui;
 //https://github.com/mellinoe/ImGui.NET/issues/107#issuecomment-467146212
@@ -71,7 +70,7 @@ public unsafe class SpawnPointFinderUI : IDisposable//idk what to call this
 
         if (ImGui.Begin("Spawn Point Refinement##idkwhattocallthis", ref WindowVisible, ImGuiWindowFlags.NoScrollbar))
         {
-            _filter.Draw("Search by name", 120); 
+            _filter.Draw("Search by name", 120);
             ImGui.SameLine(); ImGuiUtil.ImGui_HelpMarker("Used for recording taken spawn positions.\n" +
                                                          "Helpful for position-specific spawns such as\n" +
                                                          "Nandi, Gamma, Tarchia, Burfulululu, Narrow-Rift, etc\n\n" +
@@ -86,7 +85,7 @@ public unsafe class SpawnPointFinderUI : IDisposable//idk what to call this
                     ImGui.TableSetupColumn("MapName", ImGuiTableColumnFlags.WidthStretch, 50);
                     ImGui.TableSetupColumn("MapID", ImGuiTableColumnFlags.WidthFixed, 25);
                     ImGui.TableSetupColumn("Buttons", ImGuiTableColumnFlags.WidthFixed, 40);
-                    
+
                     var i = 1;
                     var j = -1;
                     var k = 100;
@@ -110,12 +109,12 @@ public unsafe class SpawnPointFinderUI : IDisposable//idk what to call this
                                     _mapDataManager.ClearTakenSpawnPoints(msp.MapID);
                                 }
                                 ImGuiUtil.ImGui_HoveredToolTip("Stop Recording -- This will WIPE all data.");
-                               
-                            } 
+
+                            }
                             ImGui.TableNextColumn();
-                            if (ImGuiComponents.IconButton( k++,FontAwesomeIcon.SignOutAlt))
+                            if (ImGuiComponents.IconButton(k++, FontAwesomeIcon.SignOutAlt))
                             {
-                                var exportList = new List<MapSpawnPoints>(){msp};
+                                var exportList = new List<MapSpawnPoints>() { msp };
                                 ImGui.SetClipboardText(ExportImport.Export(exportList));
                                 ChangeCopyText();
                             }
@@ -144,7 +143,7 @@ public unsafe class SpawnPointFinderUI : IDisposable//idk what to call this
                     _mapDataManager.ClearAllTakenSpawnPoints();
                 }
                 ImGuiUtil.ImGui_HoveredToolTip("Stop Recording All -- This will WIPE all data.");
-                
+
             }
             ImGui.SameLine();
             ImGui.SetCursorPosX(ImGui.GetWindowSize().X - 64);
@@ -163,11 +162,11 @@ public unsafe class SpawnPointFinderUI : IDisposable//idk what to call this
             if (ImGuiComponents.IconButton(FontAwesomeIcon.SignInAlt))
             {
                 var importCode = ImGui.GetClipboardText();
-               _mapDataManager.Import(importCode);
-               ImGui.OpenPopup("Import##modal");
+                _mapDataManager.Import(importCode);
+                ImGui.OpenPopup("Import##modal");
             }
             ImGuiUtil.ImGui_HoveredToolTip("Import map data");
-            
+
             DrawImportModal();
             ImGui.End();
         }
@@ -213,9 +212,9 @@ public unsafe class SpawnPointFinderUI : IDisposable//idk what to call this
                 ImGui.CloseCurrentPopup();
             }
             ImGuiUtil.ImGui_HoveredToolTip("Import only new data");
-            
+
             ImGui.SetCursorPosX(90);
-            ImGui.SetCursorPosY(ImGui.GetCursorPos().Y+12);
+            ImGui.SetCursorPosY(ImGui.GetCursorPos().Y + 12);
             if (ImGui.Button("Cancel")) ImGui.CloseCurrentPopup();
             ImGui.EndPopup();
         }
@@ -229,7 +228,7 @@ public unsafe class SpawnPointFinderUI : IDisposable//idk what to call this
             var temp = _copyText;
             var tempAll = _copyTextAllExport;
             _copyText = "Copied!";
-            _copyTextAllExport  = "copied";
+            _copyTextAllExport = "copied";
             Thread.Sleep(_tooltipChangeTime);
             _copyText = temp;
             _copyTextAllExport = tempAll;

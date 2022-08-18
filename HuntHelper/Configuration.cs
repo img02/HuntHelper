@@ -2,7 +2,6 @@
 using Dalamud.Plugin;
 using ImGuiNET;
 using System;
-using System.Drawing.Printing;
 using System.Numerics;
 
 namespace HuntHelper

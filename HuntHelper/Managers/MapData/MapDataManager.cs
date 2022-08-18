@@ -1,13 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using HuntHelper.Managers.MapData.Models;
+using HuntHelper.Utilities;
+using Newtonsoft.Json;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Security.AccessControl;
-using Dalamud.Logging;
-using Dalamud.Plugin;
-using HuntHelper.Managers.MapData.Models;
-using HuntHelper.Utilities;
-using ImGuiNET;
-using Newtonsoft.Json;
 
 namespace HuntHelper.Managers.MapData;
 

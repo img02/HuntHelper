@@ -7,6 +7,8 @@ using Dalamud.Interface;
 using Dalamud.Interface.Components;
 using Dalamud.Plugin;
 using HuntHelper.Managers.Hunts;
+using HuntHelper.Managers.MapData;
+using HuntHelper.Managers.MapData.Models;
 using HuntHelper.Utilities;
 using ImGuiNET;
 using System;
@@ -17,9 +19,6 @@ using System.Numerics;
 using System.Speech.Synthesis;
 using System.Threading;
 using System.Threading.Tasks;
-using Dalamud.Logging;
-using HuntHelper.Managers.MapData;
-using HuntHelper.Managers.MapData.Models;
 
 namespace HuntHelper.Gui
 {
@@ -1322,7 +1321,7 @@ namespace HuntHelper.Gui
                 takenSp = sp;
             }
             var index = spawnPoints.Positions.IndexOf(takenSp!);
-            if (index < 0) return; 
+            if (index < 0) return;
             spawnPoints.Positions[index].Taken = true;
 
         }
