@@ -469,8 +469,8 @@ namespace HuntHelper.Gui
                 ImGui.CheckboxFlags("Hide Title Bar", ref _huntWindowFlag, 1);
 
                 ImGui.Checkbox("Background Scan", ref _enableBackgroundScan);
-                ImGui.SameLine(); ImGuiUtil.ImGui_HelpMarker("Allows Hunt Helper to scan while GUI inactive.\n" +
-                                                                  "Enables notifications and recording Train while this main map window is inactive.");
+                ImGuiUtil.ImGui_HoveredToolTip("Allows Hunt Helper to scan while GUI inactive.\n" +
+                                                                  "Enables notifications, recording Train, etc. while this main map window is inactive.");
 
                 //ImGui.Dummy(new Vector2(0, 4f));
 
