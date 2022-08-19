@@ -1323,23 +1323,15 @@ namespace HuntHelper.Gui
             }
 
             _gameGui.WorldToScreen(mob.Position, out var pointofFocusPosition);
-            //if (pointofFocusPosition == default(Vector2)) return;
-
+            var windowOffsetY = -100;
             //actual position
             //works but a bit buggy, if using when camera not facing, worldtoscreen sets pos to opposite-ish direction once camera turned far enough.
             ImGui.PushStyleColor(ImGuiCol.WindowBg, ImGui.ColorConvertFloat4ToU32(new Vector4(0, 0, 0, 0)));
             ImGui.SetNextWindowSize(new Vector2(30));
-            ImGui.SetNextWindowPos(new Vector2(pointofFocusPosition.X, pointofFocusPosition.Y - 100));
+            ImGui.SetNextWindowPos(new Vector2(pointofFocusPosition.X, pointofFocusPosition.Y + windowOffsetY));
             if (ImGui.Begin($"ONTOP##{mob.NameId}", ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoInputs))
             {
-                var dl = ImGui.GetWindowDrawList();
-                var pos = new Vector2(ImGui.GetWindowPos().X, ImGui.GetWindowPos().Y + 15);
-                var diamond = new Vector2[]
-                {
-                    pos, new Vector2(pos.X + 15, pos.Y + 15), new Vector2(pos.X + 30, pos.Y),
-                    new Vector2(pos.X + 15, pos.Y - 15)
-                };
-                dl.AddConvexPolyFilled(ref diamond[0], 4, floatingPointingIconThingyColour);
+                DrawDiamond(floatingPointingIconThingyColour);
                 ImGui.End();
             }
 
@@ -1366,30 +1358,48 @@ namespace HuntHelper.Gui
             if (pointofFocusPosition.Y > screenSize.Y) yPos = yMax;
 
             helperArrowPosition.X = xPos;
-            helperArrowPosition.Y = yPos;
-
-            //diamond
-            var helperArrowDrawVector = new Vector2[] { helperArrowPosition,
-                    new Vector2(helperArrowPosition.X + 15, helperArrowPosition.Y + 15),
-                    new Vector2(helperArrowPosition.X +30, helperArrowPosition.Y),
-                    new Vector2(helperArrowPosition.X + 15, helperArrowPosition.Y - 15) };
+            helperArrowPosition.Y = yPos + windowOffsetY + 15; //idk where +15 comes from lmao
 
             //pointer arrow
             ImGui.SetNextWindowSize(helperArrowSize);
-            ImGui.SetNextWindowPos(new Vector2(helperArrowPosition.X, helperArrowPosition.Y - helperArrowSize.Y / 2));
+            ImGui.SetNextWindowPos(new Vector2(helperArrowPosition.X, (helperArrowPosition.Y - helperArrowSize.Y / 2)));
             if (ImGui.Begin($"DIRECTION##{mob.NameId}", ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoInputs))
             {
-                var dl = ImGui.GetWindowDrawList();
-
-
-                //if (helperArrowDrawVector.Length != 4) return;
-                dl.AddConvexPolyFilled(ref helperArrowDrawVector[0], 4, floatingPointingIconThingyColour);
+                DrawDiamond(floatingPointingIconThingyColour);
                 ImGui.End();
             }
-
-
             ImGui.PopStyleColor();//transparency
 
+        }
+
+        private void DrawDiamond(uint Colour)
+        {
+            var black = ImGui.ColorConvertFloat4ToU32(new Vector4(0, 0, 0, 1));
+            var (diamond, innerDiamond) = GetConvexPolyDiamondVectors();
+            var dl = ImGui.GetWindowDrawList();
+            dl.AddConvexPolyFilled(ref diamond[0], 4, black);
+            dl.AddConvexPolyFilled(ref innerDiamond[0], 4, Colour);
+        }
+        private (Vector2[] diamond, Vector2[] innerDiamond) GetConvexPolyDiamondVectors()
+        {
+            var innerOffset = 7.5f;
+            var pos = new Vector2(ImGui.GetWindowPos().X, ImGui.GetWindowPos().Y + 15);
+            var diamond = new Vector2[]
+            {
+                pos,
+                new Vector2(pos.X + 15, pos.Y + 15),
+                new Vector2(pos.X + 30, pos.Y),
+                new Vector2(pos.X + 15, pos.Y - 15)
+            };
+            var innerDiamond = new Vector2[]
+            {
+                new Vector2(pos.X + innerOffset, pos.Y),
+                new Vector2(pos.X + 15, pos.Y +innerOffset),
+                new Vector2(pos.X + 30-innerOffset, pos.Y),
+                new Vector2(pos.X + 15, pos.Y - innerOffset)
+            };
+
+            return (diamond, innerDiamond);
         }
         private void DrawMobIcon(BattleNpc mob)
         {
