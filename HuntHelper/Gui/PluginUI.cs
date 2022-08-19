@@ -20,6 +20,7 @@ using System.Speech.Synthesis;
 using System.Threading;
 using System.Threading.Tasks;
 using Dalamud.Game.Gui;
+using Dalamud.Logging;
 
 namespace HuntHelper.Gui
 {
@@ -232,6 +233,10 @@ namespace HuntHelper.Gui
             DrawDebugWindow();
             DrawSettingsWindow();
             DrawHuntMapWindow();
+            var currentMobs = _huntManager.GetAllCurrentMobsWithRank();
+            if (currentMobs.Count == 0) return;
+            currentMobs.ForEach((item) =>
+            PointToMobsBecauseBlind(item.Rank, item.Mob));
         }
 
         public void DrawDebugWindow()
@@ -1296,15 +1301,13 @@ namespace HuntHelper.Gui
             DrawPriorityMobInfo();
             DrawNearbyMobInfo();
 
-            _huntManager.GetAllCurrentMobsWithRank().ForEach((item) =>
-               PointToMobsBecauseBlind(item.Rank, item.Mob));
+            //draws 'quest-like' type pointers thingies --only when map window active
+            /*_huntManager.GetAllCurrentMobsWithRank().ForEach((item) =>
+                PointToMobsBecauseBlind(item.Rank, item.Mob));*/
         }
 
         private void PointToMobsBecauseBlind(HuntRank rank, BattleNpc mob)
         {
-            /*var (rank, mob) = _huntManager.GetPriorityMob();
-            if (mob == null) return;*/
-
             var floatingPointingIconThingyColour = ImGui.ColorConvertFloat4ToU32(new Vector4(0, 0.9f, 1, 1)); // blueish
             switch (rank)
             {
@@ -1326,50 +1329,49 @@ namespace HuntHelper.Gui
             var windowOffsetY = -100;
             //actual position
             //works but a bit buggy, if using when camera not facing, worldtoscreen sets pos to opposite-ish direction once camera turned far enough.
-            ImGui.PushStyleColor(ImGuiCol.WindowBg, ImGui.ColorConvertFloat4ToU32(new Vector4(0, 0, 0, 0)));
             ImGui.SetNextWindowSize(new Vector2(30));
             ImGui.SetNextWindowPos(new Vector2(pointofFocusPosition.X, pointofFocusPosition.Y + windowOffsetY));
-            if (ImGui.Begin($"ONTOP##{mob.NameId}", ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoInputs))
+            if (ImGui.Begin($"POINTER##{mob.NameId}", ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoInputs | ImGuiWindowFlags.NoBackground))
             {
                 DrawDiamond(floatingPointingIconThingyColour);
                 ImGui.End();
             }
 
             //pointer when off screen
+            //30 is the width/height of the diamond, that's why i'm using it everywhere ;d
+            //from GetConvexPolyDiamondVectors() - it's a bit of a mess
             var screenSize = ImGuiHelpers.MainViewport.Size;
-            if (!(pointofFocusPosition.X < 0) && !(pointofFocusPosition.X > screenSize.X) &&
-                !(pointofFocusPosition.Y < 0) && !(pointofFocusPosition.Y > screenSize.Y)) return;
+            if (!(pointofFocusPosition.X < 0) && !(pointofFocusPosition.X + 30 > screenSize.X) &&
+                !(pointofFocusPosition.Y + windowOffsetY < 0) && !(pointofFocusPosition.Y + 30 + windowOffsetY > screenSize.Y)) return;
 
             var helperArrowPosition = Vector2.Zero;
-            var helperArrowSize = new Vector2(30, 30);
+            var helperArrowSize = new Vector2(30);
 
-            var xMin = 20f;
-            var xMax = screenSize.X - 40;
-            var yMin = 20f;
-            var yMax = screenSize.Y - 40;
+            var xMin = 0f;
+            var xMax = screenSize.X - 30;
+            var yMin = 0f - windowOffsetY;
+            var yMax = screenSize.Y - 30 - windowOffsetY;
 
             var xPos = pointofFocusPosition.X;
             var yPos = pointofFocusPosition.Y;
 
             if (pointofFocusPosition.X < 0) xPos = xMin;
-            if (pointofFocusPosition.Y < 0) yPos = yMin;
+            if (pointofFocusPosition.Y + windowOffsetY < 0) yPos = yMin;
 
-            if (pointofFocusPosition.X > screenSize.X) xPos = xMax;
-            if (pointofFocusPosition.Y > screenSize.Y) yPos = yMax;
+            if (pointofFocusPosition.X + 30 > screenSize.X) xPos = xMax;
+            if (pointofFocusPosition.Y + 30 > screenSize.Y) yPos = yMax;
 
             helperArrowPosition.X = xPos;
-            helperArrowPosition.Y = yPos + windowOffsetY + 15; //idk where +15 comes from lmao
+            helperArrowPosition.Y = yPos; //idk where +15 comes from lmao
 
             //pointer arrow
             ImGui.SetNextWindowSize(helperArrowSize);
-            ImGui.SetNextWindowPos(new Vector2(helperArrowPosition.X, (helperArrowPosition.Y - helperArrowSize.Y / 2)));
-            if (ImGui.Begin($"DIRECTION##{mob.NameId}", ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoInputs))
+            ImGui.SetNextWindowPos(new Vector2(helperArrowPosition.X, (helperArrowPosition.Y + windowOffsetY + 15) - helperArrowSize.Y / 2));
+            if (ImGui.Begin($"DIRECTIONTOPOINTER##{mob.NameId}", ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoInputs | ImGuiWindowFlags.NoBackground))
             {
                 DrawDiamond(floatingPointingIconThingyColour);
                 ImGui.End();
             }
-            ImGui.PopStyleColor();//transparency
-
         }
 
         private void DrawDiamond(uint Colour)
@@ -1379,10 +1381,12 @@ namespace HuntHelper.Gui
             var dl = ImGui.GetWindowDrawList();
             dl.AddConvexPolyFilled(ref diamond[0], 4, black);
             dl.AddConvexPolyFilled(ref innerDiamond[0], 4, Colour);
+            /*dl.AddConvexPolyFilled(ref diamond[0], 4, Colour);
+            dl.AddConvexPolyFilled(ref innerDiamond[0], 4, black);*/
         }
         private (Vector2[] diamond, Vector2[] innerDiamond) GetConvexPolyDiamondVectors()
-        {
-            var innerOffset = 7.5f;
+        {//size is 30x30
+            var innerOffset = 5f;
             var pos = new Vector2(ImGui.GetWindowPos().X, ImGui.GetWindowPos().Y + 15);
             var diamond = new Vector2[]
             {
@@ -1394,9 +1398,9 @@ namespace HuntHelper.Gui
             var innerDiamond = new Vector2[]
             {
                 new Vector2(pos.X + innerOffset, pos.Y),
-                new Vector2(pos.X + 15, pos.Y +innerOffset),
+                new Vector2(pos.X + 15, pos.Y + 15 - innerOffset),
                 new Vector2(pos.X + 30-innerOffset, pos.Y),
-                new Vector2(pos.X + 15, pos.Y - innerOffset)
+                new Vector2(pos.X + 15, pos.Y - 15 + innerOffset)
             };
 
             return (diamond, innerDiamond);
