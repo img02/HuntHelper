@@ -821,7 +821,7 @@ namespace HuntHelper.Gui
                                                                 "pls ignore ugly checkbox position");
                                 ImGui.SameLine();
                                 ImGui.Checkbox("I'm blind and need visual help##A Rank", ref _pointToARank);
-                                ImGuiUtil.ImGui_HoveredToolTip("Draws a 'quest pointer' type thingy, it's a bit glitchy but works well enough");
+                                ImGuiUtil.ImGui_HoveredToolTip("Draws a 'quest pointer' type thingy, it's a bit glitchy but works well enough\nChange size in settings");
                                 ImGui.EndTabItem();
                             }
 
@@ -855,7 +855,7 @@ namespace HuntHelper.Gui
                                                                 "Enabling this will show a coloured FlyText notification near the middle of your screen.");
                                 ImGui.SameLine();
                                 ImGui.Checkbox("I'm blind and need visual help##B Rank", ref _pointToBRank);
-                                ImGuiUtil.ImGui_HoveredToolTip("Draws a 'quest pointer' type thingy, it's a bit glitchy but works well enough");
+                                ImGuiUtil.ImGui_HoveredToolTip("Draws a 'quest pointer' type thingy, it's a bit glitchy but works well enough\nChange size in settings");
                                 ImGui.EndTabItem();
                             }
 
@@ -889,7 +889,7 @@ namespace HuntHelper.Gui
                                                                 "Enabling this will show a coloured FlyText notification near the middle of your screen.");
                                 ImGui.SameLine();
                                 ImGui.Checkbox("I'm blind and need visual help##S Rank", ref _pointToSRank);
-                                ImGuiUtil.ImGui_HoveredToolTip("Draws a 'quest pointer' type thingy, it's a bit glitchy but works well enough");
+                                ImGuiUtil.ImGui_HoveredToolTip("Draws a 'quest pointer' type thingy, it's a bit glitchy but works well enough\nChange size in settings");
 
                                 /*ImGui.SameLine();
                                 ImGui.Checkbox("Save Spawn Data", ref _saveSpawnData);
