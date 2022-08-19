@@ -816,7 +816,9 @@ namespace HuntHelper.Gui
                                                                 "(e.g. Crit, Miss, Resist)\n\n" +
                                                                 "Enabling this will show a coloured FlyText notification near the middle of your screen.\n\n" +
                                                                 "pls ignore ugly checkbox position");
-
+                                ImGui.SameLine();
+                                ImGui.Checkbox("I'm blind and need visual help##A Rank", ref _pointToARank);
+                                ImGuiUtil.ImGui_HoveredToolTip("Draws a 'quest pointer' type thingy, it's a bit glitchy but works well enough");
                                 ImGui.EndTabItem();
                             }
 
@@ -848,7 +850,9 @@ namespace HuntHelper.Gui
                                 ImGuiUtil.ImGui_HelpMarker("FlyText is the type of text that appears when you attack something or are attacked.\n" +
                                                                 "(e.g. Crit, Miss, Resist)\n\n" +
                                                                 "Enabling this will show a coloured FlyText notification near the middle of your screen.");
-
+                                ImGui.SameLine();
+                                ImGui.Checkbox("I'm blind and need visual help##B Rank", ref _pointToBRank);
+                                ImGuiUtil.ImGui_HoveredToolTip("Draws a 'quest pointer' type thingy, it's a bit glitchy but works well enough");
                                 ImGui.EndTabItem();
                             }
 
@@ -881,9 +885,13 @@ namespace HuntHelper.Gui
                                                                 "(e.g. Crit, Miss, Resist)\n\n" +
                                                                 "Enabling this will show a coloured FlyText notification near the middle of your screen.");
                                 ImGui.SameLine();
+                                ImGui.Checkbox("I'm blind and need visual help##S Rank", ref _pointToARank);
+                                ImGuiUtil.ImGui_HoveredToolTip("Draws a 'quest pointer' type thingy, it's a bit glitchy but works well enough");
+
+                                /*ImGui.SameLine();
                                 ImGui.Checkbox("Save Spawn Data", ref _saveSpawnData);
                                 ImGui.SameLine();
-                                ImGuiUtil.ImGui_HelpMarker("Saves S Rank Information to desktop txt (ToDo - i'm never going to remember to do this)");
+                                ImGuiUtil.ImGui_HelpMarker("Saves S Rank Information to desktop txt (ToDo - let's be honest, i'm never going to remember to do this)");*/
 
                                 ImGui.EndTabItem();
                             }
