@@ -239,7 +239,7 @@ namespace HuntHelper.Gui
             var currentMobs = _huntManager.GetAllCurrentMobsWithRank();
             if (currentMobs.Count == 0) return;
             currentMobs.ForEach((item) =>
-            PointToMobsBecauseBlind(item.Rank, item.Mob));
+            PointToMobs(item.Rank, item.Mob));
         }
 
         public void DrawDebugWindow()
@@ -1296,7 +1296,11 @@ namespace HuntHelper.Gui
                 _huntManager.AddToTrain(mob, _territoryId, MapHelpers.GetMapID(_dataManager, _territoryId), _territoryName, _mapZoneMaxCoordSize);
             }
 
-            if (nearbyMobs.Count == 0) return;
+            if (nearbyMobs.Count == 0)
+            {
+                _huntManager.CurrentMobs.Clear();
+                return;
+            }
 
             _huntManager.AddNearbyMobs(nearbyMobs, _mapZoneMaxCoordSize, _territoryId, MapHelpers.GetMapID(_dataManager, _territoryId),
                 _ttsAEnabled, _ttsBEnabled, _ttsSEnabled, _ttsAMessage, _ttsBMessage, _ttsSMessage,
@@ -1317,7 +1321,7 @@ namespace HuntHelper.Gui
                 PointToMobsBecauseBlind(item.Rank, item.Mob));*/
         }
 
-        private void PointToMobsBecauseBlind(HuntRank rank, BattleNpc mob)
+        private void PointToMobs(HuntRank rank, BattleNpc mob)
         {
             //if background scan disabled, and main map not active - don't draw anything
             if (!_enableBackgroundScan && !MapVisible) return;
