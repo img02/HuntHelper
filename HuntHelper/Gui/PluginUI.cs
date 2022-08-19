@@ -885,7 +885,7 @@ namespace HuntHelper.Gui
                                                                 "(e.g. Crit, Miss, Resist)\n\n" +
                                                                 "Enabling this will show a coloured FlyText notification near the middle of your screen.");
                                 ImGui.SameLine();
-                                ImGui.Checkbox("I'm blind and need visual help##S Rank", ref _pointToARank);
+                                ImGui.Checkbox("I'm blind and need visual help##S Rank", ref _pointToSRank);
                                 ImGuiUtil.ImGui_HoveredToolTip("Draws a 'quest pointer' type thingy, it's a bit glitchy but works well enough");
 
                                 /*ImGui.SameLine();
