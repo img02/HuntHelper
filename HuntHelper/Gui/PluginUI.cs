@@ -241,8 +241,15 @@ namespace HuntHelper.Gui
             DrawHuntMapWindow();
             var currentMobs = _huntManager.GetAllCurrentMobsWithRank();
             if (currentMobs.Count == 0) return;
-            currentMobs.ForEach((item) =>
-            PointToMobs(item.Rank, item.Mob));
+            try
+            {
+                currentMobs.ForEach((item) =>
+                    PointToMobs(item.Rank, item.Mob));
+            }
+            catch (InvalidOperationException e)
+            {
+            }
+           
         }
 
         public void DrawDebugWindow()

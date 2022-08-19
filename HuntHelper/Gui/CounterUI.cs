@@ -117,7 +117,7 @@ public class CounterUI : IDisposable
 
     private void chatGui_ChatMessage(XivChatType type, uint senderId, ref Dalamud.Game.Text.SeStringHandling.SeString sender, ref Dalamud.Game.Text.SeStringHandling.SeString message, ref bool isHandled)
     {
-        if (!_countInBackground) return;
+        if (!_countInBackground && !WindowVisible) return;
 
         //PluginLog.Warning($"?? line: " + message + $" {type}");
         if ((ushort)type is not 2874 and not 2115 and not 17210 and not 57) return; //2874 = you killed, 2115 = gather attempt, 17210 = chocobo killed owo, 
