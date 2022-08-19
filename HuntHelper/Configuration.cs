@@ -91,6 +91,7 @@ namespace HuntHelper
         public bool PointToARank { get; set; } = false;
         public bool PointToBRank { get; set; } = false;
         public bool PointToSRank { get; set; } = false;
+        public float PointerDiamondSizeModifier { get; set; } = 1f;
 
         public int SFoundCount { get; set; } = 0;
         public int AFoundCount { get; set; } = 0;
