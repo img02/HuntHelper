@@ -88,6 +88,9 @@ namespace HuntHelper
         public bool FlyTextAEnabled { get; set; } = false;
         public bool FlyTextBEnabled { get; set; } = false;
         public bool FlyTextSEnabled { get; set; } = true;
+        public bool PointToARank { get; set; } = false;
+        public bool PointToBRank { get; set; } = false;
+        public bool PointToSRank { get; set; } = false;
 
         public int SFoundCount { get; set; } = 0;
         public int AFoundCount { get; set; } = 0;

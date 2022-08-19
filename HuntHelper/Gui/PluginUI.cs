@@ -129,6 +129,9 @@ namespace HuntHelper.Gui
         private bool _flyTxtAEnabled = true;
         private bool _flyTxtBEnabled = true;
         private bool _flyTxtSEnabled = true;
+        private bool _pointToARank = true;
+        private bool _pointToBRank = true;
+        private bool _pointToSRank = true;
 
         private bool _enableBackgroundScan = false;
 
@@ -880,7 +883,7 @@ namespace HuntHelper.Gui
                                 ImGui.SameLine();
                                 ImGui.Checkbox("Save Spawn Data", ref _saveSpawnData);
                                 ImGui.SameLine();
-                                ImGuiUtil.ImGui_HelpMarker("Saves S Rank Information to desktop txt (ToDo)");
+                                ImGuiUtil.ImGui_HelpMarker("Saves S Rank Information to desktop txt (ToDo - i'm never going to remember to do this)");
 
                                 ImGui.EndTabItem();
                             }
@@ -1125,11 +1128,9 @@ namespace HuntHelper.Gui
             _configuration.FlyTextAEnabled = _flyTxtAEnabled;
             _configuration.FlyTextBEnabled = _flyTxtBEnabled;
             _configuration.FlyTextSEnabled = _flyTxtSEnabled;
-            /*
-            _configuration.SFoundCount += _huntManager.ACount;
-            _configuration.AFoundCount += _huntManager.SCount;
-            _configuration.BFoundCount += _huntManager.BCount;
-            */
+            _configuration.PointToARank = _pointToARank;
+            _configuration.PointToBRank = _pointToBRank;
+            _configuration.PointToSRank = _pointToSRank;
 
             _configuration.Save();
         }
@@ -1196,10 +1197,12 @@ namespace HuntHelper.Gui
             _chatSEnabled = _configuration.ChatSEnabled;
             _enableBackgroundScan = _configuration.EnableBackgroundScan;
             _showOptionsWindow = _configuration.ShowOptionsWindow;
-
             _flyTxtAEnabled = _configuration.FlyTextAEnabled;
             _flyTxtBEnabled = _configuration.FlyTextBEnabled;
             _flyTxtSEnabled = _configuration.FlyTextSEnabled;
+            _pointToARank = _configuration.PointToARank;
+            _pointToBRank = _configuration.PointToBRank;
+            _pointToSRank = _configuration.PointToSRank;
 
             //if voice name available on user's pc, set as tts voice. --else default already set.
             if (_huntManager.TTS.GetInstalledVoices().Any(v => v.VoiceInfo.Name == _configuration.TTSVoiceName))
@@ -1308,19 +1311,22 @@ namespace HuntHelper.Gui
 
         private void PointToMobsBecauseBlind(HuntRank rank, BattleNpc mob)
         {
+            //if background scan disabled, and main map not active - don't draw anything
+            if (!_enableBackgroundScan && !MapVisible) return;
+
             var floatingPointingIconThingyColour = ImGui.ColorConvertFloat4ToU32(new Vector4(0, 0.9f, 1, 1)); // blueish
             switch (rank)
             {
                 case HuntRank.A:
-                    //if (!_pointToARank) return;
+                    if (!_pointToARank) return;
                     floatingPointingIconThingyColour = ImGui.ColorConvertFloat4ToU32(new Vector4(.9f, .24f, .24f, 1)); //redish-pink
                     break;
                 case HuntRank.B:
-                    //if (!_pointToBRank) return;
+                    if (!_pointToBRank) return;
                     break;
                 case HuntRank.S:
                 case HuntRank.SS:
-                    //if (!_pointToSRank) return;
+                    if (!_pointToSRank) return;
                     floatingPointingIconThingyColour = ImGui.ColorConvertFloat4ToU32(new Vector4(1, .93f, .12f, 1)); //yellowish-gold
                     break;
             }
