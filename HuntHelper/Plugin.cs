@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.Design;
-using Dalamud.Data;
+﻿using Dalamud.Data;
 using Dalamud.Game.ClientState;
 using Dalamud.Game.ClientState.Objects;
 using Dalamud.Game.Command;
@@ -8,8 +7,8 @@ using Dalamud.Game.Gui.FlyText;
 using Dalamud.Plugin;
 using HuntHelper.Gui;
 using HuntHelper.Managers.Hunts;
-using System.IO;
 using HuntHelper.Managers.MapData;
+using System.IO;
 
 namespace HuntHelper
 {
@@ -72,7 +71,7 @@ namespace HuntHelper
             this.HuntManager = new HuntManager(PluginInterface, TrainManager, chatGui, flyTextGui);
             this.MapDataManager = new MapDataManager(Path.Combine(PluginInterface.AssemblyLocation.Directory?.FullName!, @"Data\SpawnPointData.json"));
 
-            this.PluginUi = new PluginUI(this.Configuration, pluginInterface, clientState, objectTable, dataManager, HuntManager, MapDataManager);
+            this.PluginUi = new PluginUI(this.Configuration, pluginInterface, clientState, objectTable, dataManager, HuntManager, MapDataManager, GameGui);
             this.HuntTrainUI = new HuntTrainUI(TrainManager, Configuration);
             this.CounterUI = new CounterUI(ClientState, ChatGui, Configuration);
             this.SpawnPointFinderUI = new SpawnPointFinderUI(MapDataManager, Configuration);

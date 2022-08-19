@@ -1,6 +1,5 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
-using System.Numerics;
 
 namespace HuntHelper.Managers.MapData.Models;
 

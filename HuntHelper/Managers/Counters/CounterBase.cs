@@ -1,5 +1,4 @@
-﻿using Dalamud.Logging;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
 namespace HuntHelper.Managers.Counters;
 

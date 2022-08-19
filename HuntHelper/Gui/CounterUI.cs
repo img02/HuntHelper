@@ -1,5 +1,6 @@
 ﻿using Dalamud.Game.ClientState;
 using Dalamud.Game.Gui;
+using Dalamud.Game.Text;
 using Dalamud.Interface;
 using Dalamud.Interface.Components;
 using HuntHelper.Managers.Counters;
@@ -14,8 +15,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using Dalamud.Game.Text;
-using Dalamud.Logging;
 
 namespace HuntHelper.Gui;
 

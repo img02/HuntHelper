@@ -1,7 +1,7 @@
 ﻿using Dalamud.Game.ClientState.Objects.Types;
 using Dalamud.Game.Gui;
 using Dalamud.Game.Text.SeStringHandling;
-using Dalamud.Logging;
+using Dalamud.Game.Text.SeStringHandling.Payloads;
 using HuntHelper.Managers.Hunts.Models;
 using HuntHelper.Utilities;
 using Newtonsoft.Json;
@@ -10,8 +10,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Numerics;
-using System.Threading;
-using Dalamud.Game.Text.SeStringHandling.Payloads;
 
 namespace HuntHelper.Managers.Hunts;
 
