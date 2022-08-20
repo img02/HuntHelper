@@ -13,6 +13,7 @@ using HuntHelper.Utilities;
 using ImGuiNET;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Numerics;
@@ -1723,6 +1724,13 @@ namespace HuntHelper.Gui
 
                 ImGui.Dummy(new Vector2(52, 0));
                 ImGui.InputText("##url", ref url, 30, ImGuiInputTextFlags.ReadOnly);
+                if (ImGui.IsItemHovered()){
+                    if (ImGui.IsMouseClicked(ImGuiMouseButton.Left))
+                    {
+                        System.Diagnostics.Process.Start(new ProcessStartInfo(url){UseShellExecute = true});
+                    }
+                }
+
                 ImGui.Text("and place in:");
                 ImGui.Dummy(new Vector2(52, 0));
                 ImGui.InputText("##folder dir", ref imageDir, 30, ImGuiInputTextFlags.ReadOnly);
