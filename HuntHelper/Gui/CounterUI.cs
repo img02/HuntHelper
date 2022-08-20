@@ -15,6 +15,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using Dalamud.Game.ClientState.Objects;
+using Dalamud.Game.ClientState.Objects.Enums;
 
 namespace HuntHelper.Gui;
 
@@ -23,6 +25,7 @@ public class CounterUI : IDisposable
     private readonly ClientState _clientState;
     private readonly ChatGui _chatGui;
     private readonly Configuration _config;
+    private readonly ObjectTable _objectTable;
     private readonly List<CounterBase> _counters;
 
     private Vector2 _windowPos = new Vector2(50, 50);
@@ -31,11 +34,12 @@ public class CounterUI : IDisposable
 
     public bool WindowVisible = false;
 
-    public CounterUI(ClientState clientState, ChatGui chatGui, Configuration config)
+    public CounterUI(ClientState clientState, ChatGui chatGui, Configuration config, ObjectTable objectTable)
     {
         _clientState = clientState;
         _chatGui = chatGui;
         _config = config;
+        _objectTable = objectTable;
         _counters = new List<CounterBase>()
         {
             new MinhocaoCounter(),
@@ -82,36 +86,65 @@ public class CounterUI : IDisposable
         ImGui.SetNextWindowPos(_windowPos, ImGuiCond.FirstUseEver);
         if (ImGui.Begin("Counter", ref WindowVisible, ImGuiWindowFlags.NoScrollbar))
         {
-            var counter = _counters.FirstOrDefault(c => c.MapID == _clientState.TerritoryType);
-            if (counter == null) return;
-
-            if (ImGui.BeginTable("CounterTable", 2, ImGuiTableFlags.Borders))
+            if (_clientState.TerritoryType == (ushort) MapID.UltimaThule)
             {
-                ImGui.TableSetupColumn("name", ImGuiTableColumnFlags.None, ImGui.GetWindowPos().X * (3.0f / 4.0f));
-                ImGui.TableSetupColumn("count", ImGuiTableColumnFlags.None, ImGui.GetWindowPos().X / 4.0f);
-                foreach (var (name, count) in counter.Tally)
-                {
-                    ImGuiUtil.DoStuffWithMonoFont(() =>
-                    {
-                        ImGui.TableNextColumn();
-                        ImGui.TextUnformatted($"{name}: ");
-                        ImGui.TableNextColumn();
-                        ImGui.TextUnformatted($"{count}");
-                    });
-                }
-                ImGui.EndTable();
+                DrawWeeEaCounter();
+                return;
             }
-            ImGui.Dummy(Vector2.Zero);
-            ImGuiComponents.ToggleButton("##backgroundcounttoggle", ref _countInBackground);
-            ImGuiUtil.ImGui_HoveredToolTip("Allow counting when window closed.\n" +
-                                           "Status: " +
-                                           (_countInBackground ? "Enabled" : "Disabled"));
-            ImGui.SameLine();
-            if (ImGuiComponents.IconButton(FontAwesomeIcon.Trash)) counter.Reset();
-            ImGuiUtil.ImGui_HoveredToolTip("Reset");
+
+            DrawCounter();
 
 
             ImGui.End();
+        }
+    }
+
+    private void DrawCounter()
+    {
+        var counter = _counters.FirstOrDefault(c => c.MapID == _clientState.TerritoryType);
+        if (counter == null) return;
+
+        if (ImGui.BeginTable("CounterTable", 2, ImGuiTableFlags.Borders))
+        {
+            ImGui.TableSetupColumn("name", ImGuiTableColumnFlags.None, ImGui.GetWindowPos().X * (3.0f / 4.0f));
+            ImGui.TableSetupColumn("count", ImGuiTableColumnFlags.None, ImGui.GetWindowPos().X / 4.0f);
+            foreach (var (name, count) in counter.Tally)
+            {
+                ImGuiUtil.DoStuffWithMonoFont(() =>
+                {
+                    ImGui.TableNextColumn();
+                    ImGui.TextUnformatted($"{name}: ");
+                    ImGui.TableNextColumn();
+                    ImGui.TextUnformatted($"{count}");
+                });
+            }
+            ImGui.EndTable();
+        }
+        ImGui.Dummy(Vector2.Zero);
+        ImGuiComponents.ToggleButton("##backgroundcounttoggle", ref _countInBackground);
+        ImGuiUtil.ImGui_HoveredToolTip("Allow counting when window closed.\n" +
+                                       "Status: " +
+                                       (_countInBackground ? "Enabled" : "Disabled"));
+        ImGui.SameLine();
+        if (ImGuiComponents.IconButton(FontAwesomeIcon.Trash)) counter.Reset();
+        ImGuiUtil.ImGui_HoveredToolTip("Reset");
+    }
+
+    private void DrawWeeEaCounter()
+    {
+        var count = _objectTable.Count(obj => obj.DataId == Constants.WeeEa);
+
+        if (ImGui.BeginTable("CounterTable", 2, ImGuiTableFlags.Borders))
+        {
+            ImGui.TableSetupColumn("name", ImGuiTableColumnFlags.None, ImGui.GetWindowPos().X * (3.0f / 4.0f));
+            ImGui.TableSetupColumn("count", ImGuiTableColumnFlags.None, ImGui.GetWindowPos().X / 4.0f);
+
+            ImGui.TableNextColumn();
+            ImGui.TextUnformatted($"Wee Ea: ");
+            ImGui.TableNextColumn();
+            ImGui.TextUnformatted($"{count}");
+
+            ImGui.EndTable();
         }
     }
 

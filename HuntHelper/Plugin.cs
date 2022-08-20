@@ -74,7 +74,7 @@ namespace HuntHelper
 
             this.PluginUi = new PluginUI(this.Configuration, pluginInterface, clientState, objectTable, dataManager, HuntManager, MapDataManager, GameGui);
             this.HuntTrainUI = new HuntTrainUI(TrainManager, Configuration);
-            this.CounterUI = new CounterUI(ClientState, ChatGui, Configuration);
+            this.CounterUI = new CounterUI(ClientState, ChatGui, Configuration, ObjectTable);
             this.SpawnPointFinderUI = new SpawnPointFinderUI(MapDataManager, Configuration);
             this.PointerUI = new PointerUI(HuntManager, Configuration, GameGui);
 
