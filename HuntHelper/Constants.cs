@@ -43,4 +43,7 @@ public static class Constants
     //ss ids
     public const uint SS_Ker = 10615;
     public const uint SS_Forgiven_Rebellion = 8915;
+
+    //minion ids
+    public const uint WeeEa = 423;
 }

@@ -64,7 +64,7 @@ public class PointerUI
         ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, Vector2.Zero);
         ImGui.SetNextWindowSize(new Vector2(DiamondBaseWidth) * _config.PointerDiamondSizeModifier);
         ImGui.SetNextWindowPos(new Vector2(pointofFocusPosition.X, pointofFocusPosition.Y + windowOffsetY));
-        if (ImGui.Begin($"POINTER##{mob.NameId}", ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoInputs | ImGuiWindowFlags.NoBackground ))
+        if (ImGui.Begin($"POINTER##{mob.NameId}", ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoInputs | ImGuiWindowFlags.NoBackground))
         {
             DrawDiamond(floatingPointingIconThingyColour);
             ImGui.End();
@@ -113,8 +113,8 @@ public class PointerUI
         var black = ImGui.ColorConvertFloat4ToU32(new Vector4(0, 0, 0, 1));
         var (diamond, innerDiamond) = GetConvexPolyDiamondVectors();
         var dl = ImGui.GetWindowDrawList();
-        dl.AddConvexPolyFilled(ref diamond[0], 4, colour);
-        dl.AddConvexPolyFilled(ref innerDiamond[0], 4, black);
+        dl.AddConvexPolyFilled(ref diamond[0], 4, black);
+        dl.AddConvexPolyFilled(ref innerDiamond[0], 4, colour);
     }
 
     private (Vector2[] diamond, Vector2[] innerDiamond) GetConvexPolyDiamondVectors()
