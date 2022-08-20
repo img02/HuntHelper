@@ -61,21 +61,22 @@ public class PointerUI
         var windowOffsetY = -100;
         //actual position
         //works but a bit buggy, if using when camera not facing, worldtoscreen sets pos to opposite-ish direction once camera turned far enough.
-        ImGui.SetNextWindowSize(new Vector2(30) * _config.PointerDiamondSizeModifier);
+        ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, Vector2.Zero);
+        ImGui.SetNextWindowSize(new Vector2(DiamondBaseWidth) * _config.PointerDiamondSizeModifier);
         ImGui.SetNextWindowPos(new Vector2(pointofFocusPosition.X, pointofFocusPosition.Y + windowOffsetY));
-        if (ImGui.Begin($"POINTER##{mob.NameId}", ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoInputs | ImGuiWindowFlags.NoBackground))
+        if (ImGui.Begin($"POINTER##{mob.NameId}", ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoInputs | ImGuiWindowFlags.NoBackground ))
         {
             DrawDiamond(floatingPointingIconThingyColour);
             ImGui.End();
         }
-
+        ImGui.PopStyleVar(); // window padding
         //pointer when off screen
         var screenSize = ImGuiHelpers.MainViewport.Size;
         if (!(pointofFocusPosition.X < 0) && !(pointofFocusPosition.X + DiamondBaseWidth * _config.PointerDiamondSizeModifier > screenSize.X) &&
             !(pointofFocusPosition.Y + windowOffsetY < 0) && !(pointofFocusPosition.Y + DiamondBaseWidth * _config.PointerDiamondSizeModifier + windowOffsetY > screenSize.Y)) return;
 
         var helperArrowPosition = Vector2.Zero;
-        var helperArrowSize = new Vector2(30);
+        var helperArrowSize = new Vector2(DiamondBaseWidth);
 
         var xMin = 0f;
         var xMax = screenSize.X - DiamondBaseWidth * _config.PointerDiamondSizeModifier;
@@ -95,6 +96,7 @@ public class PointerUI
         helperArrowPosition.Y = yPos;
 
         //pointer arrow
+        ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, Vector2.Zero);
         ImGui.SetNextWindowSize(helperArrowSize * _config.PointerDiamondSizeModifier);
         ImGui.SetNextWindowPos(new Vector2(helperArrowPosition.X, (helperArrowPosition.Y + windowOffsetY + 15) - helperArrowSize.Y / 2)); //not sure why 15 is needed to align
         if (ImGui.Begin($"DIRECTIONTOPOINTER##{mob.NameId}", ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoInputs | ImGuiWindowFlags.NoBackground))
@@ -102,15 +104,17 @@ public class PointerUI
             DrawDiamond(floatingPointingIconThingyColour);
             ImGui.End();
         }
+        ImGui.PopStyleVar();
+
     }
 
-    private void DrawDiamond(uint Colour)
+    private void DrawDiamond(uint colour)
     {
         var black = ImGui.ColorConvertFloat4ToU32(new Vector4(0, 0, 0, 1));
         var (diamond, innerDiamond) = GetConvexPolyDiamondVectors();
         var dl = ImGui.GetWindowDrawList();
-        dl.AddConvexPolyFilled(ref diamond[0], 4, black);
-        dl.AddConvexPolyFilled(ref innerDiamond[0], 4, Colour);
+        dl.AddConvexPolyFilled(ref diamond[0], 4, colour);
+        dl.AddConvexPolyFilled(ref innerDiamond[0], 4, black);
     }
 
     private (Vector2[] diamond, Vector2[] innerDiamond) GetConvexPolyDiamondVectors()
