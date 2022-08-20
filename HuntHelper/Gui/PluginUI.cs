@@ -134,7 +134,7 @@ namespace HuntHelper.Gui
         private bool _pointToSRank = true;
 
         private float _diamondModifier = 2f;
-        private const float DiamondBaseWidth = 30f; //not customisable
+        
 
         private bool _enableBackgroundScan = false;
 
@@ -171,12 +171,12 @@ namespace HuntHelper.Gui
             set => _mapVisible = value;
         }
 
-        private bool settingsVisible = false;
+        private bool _settingsVisible = false;
 
         public bool SettingsVisible
         {
-            get => settingsVisible;
-            set => settingsVisible = value;
+            get => _settingsVisible;
+            set => _settingsVisible = value;
         }
 
 
@@ -239,17 +239,6 @@ namespace HuntHelper.Gui
             DrawDebugWindow();
             DrawSettingsWindow();
             DrawHuntMapWindow();
-            var currentMobs = _huntManager.GetAllCurrentMobsWithRank();
-            if (currentMobs.Count == 0) return;
-            try
-            {
-                currentMobs.ForEach((item) =>
-                    PointToMobs(item.Rank, item.Mob));
-            }
-            catch (InvalidOperationException e)
-            {
-            }
-           
         }
 
         public void DrawDebugWindow()
@@ -475,7 +464,10 @@ namespace HuntHelper.Gui
 
                 ImGui.CheckboxFlags("Hide Title Bar", ref _huntWindowFlag, 1);
 
-                ImGui.Checkbox("Background Scan", ref _enableBackgroundScan);
+                if (ImGui.Checkbox("Background Scan", ref _enableBackgroundScan))
+                {
+                    _configuration.EnableBackgroundScan = _enableBackgroundScan;
+                }
                 ImGuiUtil.ImGui_HoveredToolTip("Allows Hunt Helper to scan while GUI inactive.\n" +
                                                                   "Enables notifications, recording Train, etc. while this main map window is inactive.");
 
@@ -827,7 +819,10 @@ namespace HuntHelper.Gui
                                                                 "Enabling this will show a coloured FlyText notification near the middle of your screen.\n\n" +
                                                                 "pls ignore ugly checkbox position");
                                 ImGui.SameLine();
-                                ImGui.Checkbox("I'm blind and need visual help##A Rank", ref _pointToARank);
+                                if (ImGui.Checkbox("I'm blind and need visual help##A Rank", ref _pointToARank))
+                                {
+                                    _configuration.PointToARank = _pointToARank;
+                                }
                                 ImGuiUtil.ImGui_HoveredToolTip("Draws a 'quest pointer' type thingy, it's a bit glitchy but works well enough\nChange size in settings");
                                 ImGui.EndTabItem();
                             }
@@ -861,7 +856,10 @@ namespace HuntHelper.Gui
                                                                 "(e.g. Crit, Miss, Resist)\n\n" +
                                                                 "Enabling this will show a coloured FlyText notification near the middle of your screen.");
                                 ImGui.SameLine();
-                                ImGui.Checkbox("I'm blind and need visual help##B Rank", ref _pointToBRank);
+                                if (ImGui.Checkbox("I'm blind and need visual help##B Rank", ref _pointToBRank))
+                                {
+                                    _configuration.PointToBRank = _pointToBRank;
+                                }
                                 ImGuiUtil.ImGui_HoveredToolTip("Draws a 'quest pointer' type thingy, it's a bit glitchy but works well enough\nChange size in settings");
                                 ImGui.EndTabItem();
                             }
@@ -895,7 +893,11 @@ namespace HuntHelper.Gui
                                                                 "(e.g. Crit, Miss, Resist)\n\n" +
                                                                 "Enabling this will show a coloured FlyText notification near the middle of your screen.");
                                 ImGui.SameLine();
-                                ImGui.Checkbox("I'm blind and need visual help##S Rank", ref _pointToSRank);
+                                if (ImGui.Checkbox("I'm blind and need visual help##S Rank", ref _pointToSRank))
+                                {
+                                    _configuration.PointToSRank = _pointToSRank;
+                                }
+
                                 ImGuiUtil.ImGui_HoveredToolTip("Draws a 'quest pointer' type thingy, it's a bit glitchy but works well enough\nChange size in settings");
 
                                 /*ImGui.SameLine();
@@ -936,7 +938,12 @@ namespace HuntHelper.Gui
                                     });
                                 }
                                 ImGui.Text("Pointer Size:");
-                                ImGui.SameLine(); ImGui.DragFloat("##Diamond Pointer Size Modifier", ref _diamondModifier,0.01f,1,10,"%.2f");
+                                ImGui.SameLine();
+                                if (ImGui.DragFloat("##Diamond Pointer Size Modifier", ref _diamondModifier, 0.01f, 1,
+                                        10, "%.2f"))
+                                {
+                                    _configuration.PointerDiamondSizeModifier = _diamondModifier;
+                                }
                                 ImGuiUtil.ImGui_HoveredToolTip("Size modifier for the diamond pointer");
                                 ImGui.EndTabItem();
                             }
@@ -1074,7 +1081,7 @@ namespace HuntHelper.Gui
             }
 
             ImGui.SetNextWindowSize(new Vector2(300, 100), ImGuiCond.Always);
-            if (ImGui.Begin("help, i've fallen over", ref settingsVisible,
+            if (ImGui.Begin("help, i've fallen over", ref _settingsVisible,
                 ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse))
             {
                 ImGuiUtil.ImGui_CentreText("There's nothing here", _defaultTextColour);
@@ -1335,105 +1342,7 @@ namespace HuntHelper.Gui
                 PointToMobsBecauseBlind(item.Rank, item.Mob));*/
         }
 
-        private void PointToMobs(HuntRank rank, BattleNpc mob)
-        {
-            //if background scan disabled, and main map not active - don't draw anything
-            if (!_enableBackgroundScan && !MapVisible) return;
-
-            var floatingPointingIconThingyColour = ImGui.ColorConvertFloat4ToU32(new Vector4(0, 0.9f, 1, 1)); // blueish
-            switch (rank)
-            {
-                case HuntRank.A:
-                    if (!_pointToARank) return;
-                    floatingPointingIconThingyColour = ImGui.ColorConvertFloat4ToU32(new Vector4(.9f, .24f, .24f, 1)); //redish-pink
-                    break;
-                case HuntRank.B:
-                    if (!_pointToBRank) return;
-                    break;
-                case HuntRank.S:
-                case HuntRank.SS:
-                    if (!_pointToSRank) return;
-                    floatingPointingIconThingyColour = ImGui.ColorConvertFloat4ToU32(new Vector4(1, .93f, .12f, 1)); //yellowish-gold
-                    break;
-            }
-
-            _gameGui.WorldToScreen(mob.Position, out var pointofFocusPosition);
-            var windowOffsetY = -100;
-            //actual position
-            //works but a bit buggy, if using when camera not facing, worldtoscreen sets pos to opposite-ish direction once camera turned far enough.
-            ImGui.SetNextWindowSize(new Vector2(30) * _diamondModifier);
-            ImGui.SetNextWindowPos(new Vector2(pointofFocusPosition.X, pointofFocusPosition.Y + windowOffsetY));
-            if (ImGui.Begin($"POINTER##{mob.NameId}", ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoInputs | ImGuiWindowFlags.NoBackground))
-            {
-                DrawDiamond(floatingPointingIconThingyColour);
-                ImGui.End();
-            }
-
-            //pointer when off screen
-            var screenSize = ImGuiHelpers.MainViewport.Size;
-            if (!(pointofFocusPosition.X < 0) && !(pointofFocusPosition.X + DiamondBaseWidth * _diamondModifier > screenSize.X) &&
-                !(pointofFocusPosition.Y + windowOffsetY < 0) && !(pointofFocusPosition.Y + DiamondBaseWidth * _diamondModifier + windowOffsetY > screenSize.Y)) return;
-
-            var helperArrowPosition = Vector2.Zero;
-            var helperArrowSize = new Vector2(30);
-
-            var xMin = 0f;
-            var xMax = screenSize.X - DiamondBaseWidth * _diamondModifier;
-            var yMin = 0f - windowOffsetY;
-            var yMax = screenSize.Y - DiamondBaseWidth * _diamondModifier - windowOffsetY;
-
-            var xPos = pointofFocusPosition.X;
-            var yPos = pointofFocusPosition.Y;
-
-            if (pointofFocusPosition.X < 0) xPos = xMin;
-            if (pointofFocusPosition.Y + windowOffsetY < 0) yPos = yMin;
-
-            if (pointofFocusPosition.X + DiamondBaseWidth * _diamondModifier > screenSize.X) xPos = xMax;
-            if (pointofFocusPosition.Y + windowOffsetY + DiamondBaseWidth * _diamondModifier > screenSize.Y) yPos = yMax;
-
-            helperArrowPosition.X = xPos;
-            helperArrowPosition.Y = yPos;
-
-            //pointer arrow
-            ImGui.SetNextWindowSize(helperArrowSize * _diamondModifier);
-            ImGui.SetNextWindowPos(new Vector2(helperArrowPosition.X, (helperArrowPosition.Y + windowOffsetY + 15) - helperArrowSize.Y / 2)); //not sure why 15 is needed to align
-            if (ImGui.Begin($"DIRECTIONTOPOINTER##{mob.NameId}", ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoInputs | ImGuiWindowFlags.NoBackground))
-            {
-                DrawDiamond(floatingPointingIconThingyColour);
-                ImGui.End();
-            }
-        }
-
-        private void DrawDiamond(uint Colour)
-        {
-            var black = ImGui.ColorConvertFloat4ToU32(new Vector4(0, 0, 0, 1));
-            var (diamond, innerDiamond) = GetConvexPolyDiamondVectors();
-            var dl = ImGui.GetWindowDrawList();
-            dl.AddConvexPolyFilled(ref diamond[0], 4, black);
-            dl.AddConvexPolyFilled(ref innerDiamond[0], 4, Colour);
-        }
-
-        private (Vector2[] diamond, Vector2[] innerDiamond) GetConvexPolyDiamondVectors()
-        {//base size is 30x30
-            var innerOffset = 5f;
-            var pos = new Vector2(ImGui.GetWindowPos().X, ImGui.GetWindowPos().Y + DiamondBaseWidth / 2 * _diamondModifier);
-            var diamond = new Vector2[]
-            {
-                pos,
-                new Vector2(pos.X + DiamondBaseWidth / 2*_diamondModifier, pos.Y + DiamondBaseWidth / 2 *_diamondModifier),
-                new Vector2(pos.X + DiamondBaseWidth * _diamondModifier, pos.Y),
-                new Vector2(pos.X + DiamondBaseWidth / 2*_diamondModifier, pos.Y - DiamondBaseWidth / 2 * _diamondModifier)
-            };
-            var innerDiamond = new Vector2[]
-            {
-                new Vector2(pos.X + innerOffset, pos.Y),
-                new Vector2(pos.X + DiamondBaseWidth / 2 * _diamondModifier, pos.Y + DiamondBaseWidth / 2 * _diamondModifier - innerOffset),
-                new Vector2(pos.X + DiamondBaseWidth * _diamondModifier-innerOffset, pos.Y),
-                new Vector2(pos.X + DiamondBaseWidth / 2 * _diamondModifier, pos.Y - DiamondBaseWidth / 2 * _diamondModifier + innerOffset)
-            };
-
-            return (diamond, innerDiamond);
-        }
+       
         private void DrawMobIcon(BattleNpc mob)
         {
             var mobInGamePos = new Vector2(ConvertPosToCoordinate(mob.Position.X), ConvertPosToCoordinate(mob.Position.Z));
