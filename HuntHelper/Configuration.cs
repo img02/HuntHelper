@@ -3,6 +3,7 @@ using Dalamud.Plugin;
 using ImGuiNET;
 using System;
 using System.Numerics;
+using Newtonsoft.Json;
 
 namespace HuntHelper
 {
@@ -12,6 +13,9 @@ namespace HuntHelper
         public int Version { get; set; } = 0;
 
         #region Main Map Window
+
+        [JsonIgnore]
+        public bool MapWindowVisible { get; set; } = false;
 
         //initial window position
         public Vector2 MapWindowPos { get; set; } = new Vector2(25, 25);

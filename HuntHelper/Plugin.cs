@@ -33,6 +33,7 @@ namespace HuntHelper
         private PluginUI PluginUi { get; init; }
         private HuntTrainUI HuntTrainUI { get; init; }
         private CounterUI CounterUI { get; init; }
+        private PointerUI PointerUI{ get; init; }
         private SpawnPointFinderUI SpawnPointFinderUI { get; init; }
         private ClientState ClientState { get; init; }
         private ObjectTable ObjectTable { get; init; }
@@ -75,6 +76,7 @@ namespace HuntHelper
             this.HuntTrainUI = new HuntTrainUI(TrainManager, Configuration);
             this.CounterUI = new CounterUI(ClientState, ChatGui, Configuration);
             this.SpawnPointFinderUI = new SpawnPointFinderUI(MapDataManager, Configuration);
+            this.PointerUI = new PointerUI(HuntManager, Configuration, GameGui);
 
             this.CommandManager.AddHandler(MapWindowCommand, new CommandInfo(HuntMapCommand)
             {
@@ -152,7 +154,12 @@ namespace HuntHelper
         }
 
         private void DebugWindowCommand(string command, string args) => this.PluginUi.RandomDebugWindowVisisble = !PluginUi.RandomDebugWindowVisisble;
-        private void HuntMapCommand(string command, string args) => PluginUi.MapVisible = !PluginUi.MapVisible;
+        private void HuntMapCommand(string command, string args)
+        {
+            PluginUi.MapVisible = !PluginUi.MapVisible;
+            Configuration.MapWindowVisible = PluginUi.MapVisible;
+        }
+
         private void ApplyPresetOneCommand(string command, string args) => PluginUi.ApplyPreset(1);
         private void ApplyPresetTwoCommand(string command, string args) => PluginUi.ApplyPreset(2);
         private void SavePresetOneCommand(string command, string args) => PluginUi.SavePreset(1);
@@ -169,6 +176,7 @@ namespace HuntHelper
             this.HuntTrainUI.Draw();
             this.CounterUI.Draw();
             this.SpawnPointFinderUI.Draw();
+            this.PointerUI.Draw();
         }
 
         private void DrawConfigUI()
