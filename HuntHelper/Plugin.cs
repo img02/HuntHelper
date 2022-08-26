@@ -162,8 +162,8 @@ namespace HuntHelper
 
         private void ApplyPresetOneCommand(string command, string args) => PluginUi.ApplyPreset(1);
         private void ApplyPresetTwoCommand(string command, string args) => PluginUi.ApplyPreset(2);
-        private void SavePresetOneCommand(string command, string args) => PluginUi.SavePreset(1);
-        private void SavePresetTwoCommand(string command, string args) => PluginUi.SavePreset(2);
+        private void SavePresetOneCommand(string command, string args) => PluginUi.SavePresetByCommand(1);
+        private void SavePresetTwoCommand(string command, string args) => PluginUi.SavePresetByCommand(2);
         private void HuntTrainCommand(string command, string args) => HuntTrainUI.HuntTrainWindowVisible = !HuntTrainUI.HuntTrainWindowVisible;
         //gets next available hunt in the recorded train
         private void GetNextMobCommand(string command, string args) => HuntTrainUI.GetNextMobCommand();

@@ -1054,6 +1054,11 @@ namespace HuntHelper.Gui
             var winSize = presetNumber == 1 ? _presetOneWindowSize : _presetTwoWindowSize;
             _configuration.SaveMainMapPreset(winSize, _mapImageOpacityAsPercentage, _mapWindowOpacityAsPercentage, _useMapImages, _mapWindowPos, presetNumber);
         }
+        public void SavePresetByCommand(int presetNumber)
+        {
+            var winSize = _currentWindowSize;
+            _configuration.SaveMainMapPreset(winSize, _mapImageOpacityAsPercentage, _mapWindowOpacityAsPercentage, _useMapImages, _mapWindowPos, presetNumber);
+        }
 
         public void ApplyPreset(int presetNumber)
         {
