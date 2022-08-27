@@ -354,7 +354,7 @@ namespace HuntHelper.Gui
                     //if only something went wrong, such as only some maps images downloaded
                     if (_huntManager.HasDownloadErrors) MapImageDownloadWindow();
 
-                    if (!_huntManager.ImagesLoaded)
+                    if (!_huntManager.ImagesLoaded && !_huntManager.HasDownloadErrors)
                     {
                         //if images/map doesn't exist, or is empty - show map download window
                         if (!Directory.Exists(_huntManager.ImageFolderPath) || !Directory.EnumerateFiles(_huntManager.ImageFolderPath).Any()) MapImageDownloadWindow();
@@ -574,7 +574,7 @@ namespace HuntHelper.Gui
                                 ImGui.TableSetupColumn("test",
                                     ImGuiTableColumnFlags.WidthFixed);
 
-                                var intWidgetWidth = 36;
+                                var intWidgetWidth = 36f * ImGuiHelpers.GlobalScale;
 
                                 // Current Window Size
                                 ImGui.TableNextColumn();
@@ -685,7 +685,7 @@ namespace HuntHelper.Gui
                                 ImGui.Dummy(new Vector2(0, 2f));
                                 if (ImGui.BeginTable("Sizing Options Table", 3, ImGuiTableFlags.ScrollX | ImGuiTableFlags.ScrollY))
                                 {
-                                    var widgetWidth = 40f;
+                                    var widgetWidth = 40f * ImGuiHelpers.GlobalScale;
 
                                     ImGui.TableSetupColumn("1#visualsizing", ImGuiTableColumnFlags.WidthFixed);
                                     ImGui.TableSetupColumn("2#visualsizing", ImGuiTableColumnFlags.WidthFixed);
@@ -977,7 +977,7 @@ namespace HuntHelper.Gui
 
                             if (ImGui.BeginTabItem("Settings"))
                             {
-                                _bottomPanelHeight = tabBarHeight + 88f * ImGuiHelpers.GlobalScale;
+                                _bottomPanelHeight = tabBarHeight + 70f * ImGuiHelpers.GlobalScale;
                                 var tts = _huntManager.TTS;
                                 var voiceList = tts.GetInstalledVoices();
                                 var listOfVoiceNames = new string[voiceList.Count];
@@ -993,6 +993,8 @@ namespace HuntHelper.Gui
                                     ImGui.Dummy(new Vector2(0f, 5f));
                                     ImGui.Text("Select Voice:");
                                     ImGui.SameLine();
+
+                                    //ImGui.PushItemWidth(300f * ImGuiHelpers.GlobalScale);
                                     if (ImGui.Combo("##TTS Voice Combo", ref itemPos, listOfVoiceNames,
                                             listOfVoiceNames.Length))
                                     {
@@ -1063,9 +1065,9 @@ namespace HuntHelper.Gui
                     if (ImGui.BeginTabItem(
                             "On-screen Mob Info")) //what do i call this, mob context, mob text, hunt info data text idk
                     {
-                        _bottomPanelHeight = tabBarHeight + 128f * ImGuiHelpers.GlobalScale;
+                        _bottomPanelHeight = tabBarHeight + 90f * ImGuiHelpers.GlobalScale;
 
-                        ImGui.SetNextWindowContentSize(new Vector2(470 * ImGuiHelpers.GlobalScale, ImGui.GetContentRegionAvail().Y));
+                        ImGui.SetNextWindowContentSize(new Vector2(470 * ImGuiHelpers.GlobalScale, 0));
 
                         if (ImGui.BeginChild("##mobinfo child", ImGui.GetContentRegionAvail(), true, ImGuiWindowFlags.HorizontalScrollbar))
                         {
@@ -1795,7 +1797,7 @@ namespace HuntHelper.Gui
                         ImGui.TextUnformatted("Attempting to download, please wait.\n\n" +
                                                                     "If there seems to be a problem, please manually download from:"));
                 }
-                else if (_huntManager.HasDownloadErrors) //show this is any download errors
+                else if (_huntManager.HasDownloadErrors) //show this if any download errors
                 {
                     ImGuiUtil.DoStuffWithMonoFont(() => //successfully (manually) tested with failed image.
                     {
