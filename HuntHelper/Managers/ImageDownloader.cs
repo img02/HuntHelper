@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -34,13 +35,20 @@ public class ImageDownloader
     {
         var filename = url.Replace(Constants.BaseImageUrl, "");
 
-        using var httpc = new HttpClient();
-        var res = await httpc.GetAsync(url);
-        //res.EnsureSuccessStatusCode(); //throws if fail
-        if (!res.IsSuccessStatusCode) return $"Failed to download: {filename}";
+        try
+        {
+            using var httpc = new HttpClient();
+            var res = await httpc.GetAsync(url);
+            //res.EnsureSuccessStatusCode(); //throws if fail
+            if (!res.IsSuccessStatusCode) return $"Failed to download: {filename}";
 
-        var content = await res.Content.ReadAsByteArrayAsync();
-        await File.WriteAllBytesAsync(_savePath + filename, content);
-        return string.Empty;
+            var content = await res.Content.ReadAsByteArrayAsync();
+            await File.WriteAllBytesAsync(_savePath + filename, content);
+            return string.Empty;
+        }
+        catch (Exception e)
+        {
+            return e.Message;
+        }
     }
 }
