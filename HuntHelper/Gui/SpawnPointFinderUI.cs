@@ -75,16 +75,15 @@ public unsafe class SpawnPointFinderUI : IDisposable//idk what to call this
                                                          "Helpful for position-specific spawns such as\n" +
                                                          "Nandi, Gamma, Tarchia, Burfulululu, Narrow-Rift, etc\n\n" +
                                                          "Data persists and is saved to file,\n" +
-                                                         "Turning recording off will reset tracked data.\n" +
-                                                         "Importing will overwrite data for the relevant map.");
+                                                         "Turning recording off will reset tracked data.");
             ImGui.Dummy(Vector2.Zero);
             if (ImGui.BeginChild("sp table child##", new Vector2(ImGui.GetWindowSize().X, ImGui.GetWindowSize().Y * .82f), false, ImGuiWindowFlags.NoScrollbar))
             {
                 if (ImGui.BeginTable("sp table##", 3, ImGuiTableFlags.BordersH))
                 {
                     ImGui.TableSetupColumn("MapName", ImGuiTableColumnFlags.WidthStretch, 50);
-                    ImGui.TableSetupColumn("MapID", ImGuiTableColumnFlags.WidthFixed, 25);
-                    ImGui.TableSetupColumn("Buttons", ImGuiTableColumnFlags.WidthFixed, 40);
+                    ImGui.TableSetupColumn("MapID", ImGuiTableColumnFlags.WidthFixed, 25 * ImGuiHelpers.GlobalScale);
+                    ImGui.TableSetupColumn("Buttons", ImGuiTableColumnFlags.WidthFixed, 40 * ImGuiHelpers.GlobalScale);
 
                     var i = 1;
                     var j = -1;
@@ -146,7 +145,7 @@ public unsafe class SpawnPointFinderUI : IDisposable//idk what to call this
 
             }
             ImGui.SameLine();
-            ImGui.SetCursorPosX(ImGui.GetWindowSize().X - 64);
+            ImGui.SetCursorPosX(ImGui.GetWindowSize().X - 64 * ImGuiHelpers.GlobalScale);
             if (ImGuiComponents.IconButton(FontAwesomeIcon.SignOutAlt))
             {
                 var tempList = new List<MapSpawnPoints>();
