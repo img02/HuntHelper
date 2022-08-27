@@ -109,9 +109,9 @@ public class HuntTrainUI : IDisposable
         if (ImGui.Begin("Hunt Train##Window", ref _huntTrainWindowVisible, ImGuiWindowFlags.NoScrollbar))
         {
             var childSizeX = ImGui.GetWindowSize().X / numOfColumns;
-            var childSizeY = _mobList.Count * 23;
-            var lastSeenWidth = childSizeX; //math is hard, resizing is hard owie :(
-            var posWidth = childSizeX;
+            var childSizeY = _mobList.Count * 23 * ImGuiHelpers.GlobalScale;
+            var lastSeenWidth = childSizeX * ImGuiHelpers.GlobalScale; //math is hard, resizing is hard owie :(
+            var posWidth = childSizeX * ImGuiHelpers.GlobalScale;
             if (_showPos && _showLastSeen)
             {
                 lastSeenWidth = childSizeX * .75f;
@@ -123,19 +123,19 @@ public class HuntTrainUI : IDisposable
             #region hunt train main
 
             ImGui.BeginChild("HUNT TRAIN MAIN CHILD WINDOW ALL ENCOMPASSING LAYOUT FIXING CHILD OF WINDOW",
-                new Vector2(ImGui.GetWindowSize().X, (_mobList.Count + 1) * 24f), _useBorder); //23f is the size of a selectable from SelectableFromList();
+                new Vector2(ImGui.GetWindowSize().X, (_mobList.Count + 1) * 24f * ImGuiHelpers.GlobalScale), _useBorder); //23f is the size of a selectable from SelectableFromList();
 
             #region Headers
 
             ImGui.SameLine();
-            ImGui.BeginChild("NameHeader", new Vector2(childSizeX * 1.75f, 20), _useBorder,
+            ImGui.BeginChild("NameHeader", new Vector2(childSizeX * 1.75f, 20 * ImGuiHelpers.GlobalScale), _useBorder,
                 ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse);
             ImGui.Text("Name");
             ImGui.EndChild();
             if (_showPos)
             {
                 ImGui.SameLine();
-                ImGui.BeginChild("PositionHeader", new Vector2(posWidth, 20),
+                ImGui.BeginChild("PositionHeader", new Vector2(posWidth, 20 * ImGuiHelpers.GlobalScale),
                     _useBorder, ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse);
                 ImGui.Text("Position");
                 ImGui.EndChild();
@@ -144,7 +144,7 @@ public class HuntTrainUI : IDisposable
             if (_showLastSeen)
             {
                 ImGui.SameLine();
-                ImGui.BeginChild("LastSeenHeader", new Vector2(lastSeenWidth, 20),
+                ImGui.BeginChild("LastSeenHeader", new Vector2(lastSeenWidth, 20 * ImGuiHelpers.GlobalScale),
                     _useBorder, ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse);
                 ImGui.Text("Last Seen");
                 ImGui.EndChild();
@@ -244,7 +244,7 @@ public class HuntTrainUI : IDisposable
             ImGui.SameLine(); ImGui.Dummy(new Vector2(4, 0)); ImGui.SameLine();
 
             //position record button on far right
-            ImGui.SetCursorPosX(ImGui.GetWindowSize().X - 26);
+            ImGui.SetCursorPosX(ImGui.GetWindowSize().X - (26 * ImGuiHelpers.GlobalScale));
             if (!_trainManager.RecordTrain)
             {
                 if (ImGuiComponents.IconButton(FontAwesomeIcon.Play)) _trainManager.RecordTrain = true;
@@ -263,7 +263,7 @@ public class HuntTrainUI : IDisposable
             ImGui.SameLine();
 
             //gosh these buttons don't line up, off by like 1 pixel :(
-            ImGui.SetCursorPosX(ImGui.GetWindowSize().X - 54);
+            ImGui.SetCursorPosX(ImGui.GetWindowSize().X - (54 * ImGuiHelpers.GlobalScale));
             if (ImGuiComponents.IconButton(FontAwesomeIcon.SignOutAlt))
             {
                 //get export code
@@ -472,8 +472,8 @@ public class HuntTrainUI : IDisposable
             if (mob.Dead) ImGui.PushStyleColor(ImGuiCol.Text, _deadTextColour);
             else ImGui.PushStyleColor(ImGuiCol.Text, Vector4.One); //white
 
-            if (n == _selectedIndex) ImGui.Selectable($"{label}", true, ImGuiSelectableFlags.None, new Vector2(ImGui.GetContentRegionAvail().X, 23f));
-            else ImGui.Selectable($"{label}", false, ImGuiSelectableFlags.None, new Vector2(ImGui.GetContentRegionAvail().X, 23f));
+            if (n == _selectedIndex) ImGui.Selectable($"{label}", true, ImGuiSelectableFlags.None, new Vector2(ImGui.GetContentRegionAvail().X, 23f * ImGuiHelpers.GlobalScale));
+            else ImGui.Selectable($"{label}", false, ImGuiSelectableFlags.None, new Vector2(ImGui.GetContentRegionAvail().X, 23f * ImGuiHelpers.GlobalScale));
 
             /*if (ImGui.IsItemActive() && ImGui.IsMouseDoubleClicked(ImGuiMouseButton.Left)) //useless
             {

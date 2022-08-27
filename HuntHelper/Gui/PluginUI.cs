@@ -41,7 +41,7 @@ namespace HuntHelper.Gui
         private string WorldName => _clientState.LocalPlayer?.CurrentWorld?.GameData?.Name.ToString() ?? "Not Found";
         private ushort _territoryId;
 
-        private float _bottomPanelHeight = 30;
+        private float _bottomPanelHeight = 30 * ImGuiHelpers.GlobalScale;
 
         //base icon sizes - based on coord size? - not customizable
         private float _mobIconRadius;
@@ -135,7 +135,7 @@ namespace HuntHelper.Gui
         private bool _pointToSRank = true;
 
         private float _diamondModifier = 2f;
-        
+
 
         private bool _enableBackgroundScan = false;
 
@@ -394,11 +394,17 @@ namespace HuntHelper.Gui
                 if (_showDebug) ShowDebugInfo();
 
                 //button to toggle bottom panel thing
-                var cursorPos = new Vector2(8, ImGui.GetWindowSize().Y - 46); //positioned so it doesn't block map image credits!
+                //draw the button up a lil higher if dalamud scale set high, works fine up to 36pt, but sorta covers image credits :(
+                var cursorPos = new Vector2(8, ImGui.GetWindowSize().Y - 50 + (-3 * ImGuiHelpers.GlobalScale)); //positioned so it doesn't block map image credits!
                 ImGui.SetCursorPos(cursorPos);
 
                 ImGui.PushStyleColor(ImGuiCol.Button, new Vector4(.4f, .4f, .4f, 1f));
+
+                //default dalamud font scale = 12pt = 1
+                //ImGui.SetWindowFontScale(12/ImGuiHelpers.GlobalScale/12);
                 if (ImGuiComponents.IconButton(FontAwesomeIcon.Cog)) _showOptionsWindow = !_showOptionsWindow;
+                //ImGui.SetWindowFontScale(1);
+
                 ImGui.PopStyleColor();
                 if (_huntManager.ErrorPopUpVisible || _mapDataManager.ErrorPopUpVisible)
                 {
@@ -440,51 +446,62 @@ namespace HuntHelper.Gui
             var bottomDockingPos = Vector2.Add(ImGui.GetWindowPos(), new Vector2(0, ImGui.GetWindowSize().Y));
 
             ImGui.SetNextWindowSize(new Vector2(ImGui.GetWindowSize().X, _bottomPanelHeight), ImGuiCond.Always);
-            ImGui.SetNextWindowSizeConstraints(new Vector2(-1, 95), new Vector2(-1, 300));
+            ImGui.SetNextWindowSizeConstraints(new Vector2(-1, 95), new Vector2(-1, -1));
             ImGui.SetNextWindowPos(bottomDockingPos);
 
             //this gets a little glitchy when it clips out the bottom of the screen, but I already committed and refuse to back down
             //hide grip color
             ImGui.PushStyleColor(ImGuiCol.ResizeGrip, 0);
-            if (ImGui.Begin("Options Window", ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoMove))
+            if (ImGui.Begin("Options Window", ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoMove | ImGuiWindowFlags.HorizontalScrollbar))
             {
                 ImGui.SetWindowPos(bottomDockingPos);
                 ImGui.Dummy(new Vector2(0, 2f));
                 ImGui.Columns(2);
                 ImGui.SetColumnWidth(0, ImGui.GetWindowSize().X / 5);
                 ImGui.SetColumnWidth(1, ImGui.GetWindowSize().X);
-                ImGui.Checkbox("Map Image", ref _useMapImages);
-                ImGui.SameLine();
-                ImGuiUtil.ImGui_HelpMarker("Use a map image instead of blank background\n\n" +
-                                                "\t\t=======================================\n" +
-                                                "\t\tMap Images Created By Cable Monkey of Goblin\n" +
-                                                "         \t\t   http://cablemonkey.us/huntmap2/\n" +
-                                                "         \t\t   Same thing for spawn point data :D\n" +
-                                                "\t\t=======================================\n\n" +
-                                                "If map images aren't showing, please verify that you have the images downloaded in your plugins folder.");
 
-                ImGui.CheckboxFlags("Hide Title Bar", ref _huntWindowFlag, 1);
-
-                if (ImGui.Checkbox("Background Scan", ref _enableBackgroundScan))
+                if (ImGui.BeginChild("##Options left side", ImGui.GetContentRegionAvail(), false, ImGuiWindowFlags.HorizontalScrollbar))
                 {
-                    _configuration.EnableBackgroundScan = _enableBackgroundScan;
+                    ImGui.Checkbox("Map Image", ref _useMapImages);
+                    ImGui.SameLine();
+                    ImGuiUtil.ImGui_HelpMarker("Use a map image instead of blank background\n\n" +
+                                               "\t\t=======================================\n" +
+                                               "\t\tMap Images Created By Cable Monkey of Goblin\n" +
+                                               "         \t\t   http://cablemonkey.us/huntmap2/\n" +
+                                               "         \t\t   Same thing for spawn point data :D\n" +
+                                               "\t\t=======================================\n\n" +
+                                               "If map images aren't showing, please verify that you have the images downloaded in your plugins folder.");
+
+                    ImGui.CheckboxFlags("Hide Title Bar", ref _huntWindowFlag, 1);
+
+                    if (ImGui.Checkbox("Background Scan", ref _enableBackgroundScan))
+                    {
+                        _configuration.EnableBackgroundScan = _enableBackgroundScan;
+                    }
+
+                    ImGuiUtil.ImGui_HoveredToolTip("Allows Hunt Helper to scan while GUI inactive.\n" +
+                                                   "Enables notifications, recording Train, etc. while this main map window is inactive.");
+
+                    //ImGui.Dummy(new Vector2(0, 4f));
+
+                    if (ImGui.Button("Loaded Hunt Data")) _showDatabaseListWindow = !_showDatabaseListWindow;
+                    ImGui.SameLine();
+                    ImGuiUtil.ImGui_HelpMarker("Show the loaded hunt and spawn point data");
+                    DrawDataBaseWindow();
+
+                    /*ImGui.TextUnformatted($"{ImGui.GetWindowSize()}");
+                    ImGui.TextUnformatted($"{ImGui.GetContentRegionAvail()}");*/
+
+                    ImGui.EndChild();
                 }
-                ImGuiUtil.ImGui_HoveredToolTip("Allows Hunt Helper to scan while GUI inactive.\n" +
-                                                                  "Enables notifications, recording Train, etc. while this main map window is inactive.");
-
-                //ImGui.Dummy(new Vector2(0, 4f));
-
-                if (ImGui.Button("Loaded Hunt Data")) _showDatabaseListWindow = !_showDatabaseListWindow;
-                ImGui.SameLine();
-                ImGuiUtil.ImGui_HelpMarker("Show the loaded hunt and spawn point data");
-                DrawDataBaseWindow();
 
                 ImGui.NextColumn();
-                if (ImGui.BeginTabBar("Options", ImGuiTabBarFlags.None))
+                if (ImGui.BeginTabBar("Options", ImGuiTabBarFlags.FittingPolicyScroll))
                 {
+                    var tabBarHeight = 57f;
                     if (ImGui.BeginTabItem("General"))
                     {
-                        _bottomPanelHeight = 212f;
+                        _bottomPanelHeight = tabBarHeight + 155f * ImGuiHelpers.GlobalScale; //tab bar + spacing seems to be around ~57f. 155f is the sizeY of the largest content section
                         var widgetWidth = 69f;
 
                         var tableSizeX = ImGui.GetContentRegionAvail().X;
@@ -492,16 +509,19 @@ namespace HuntHelper.Gui
 
                         ImGui.Dummy(new Vector2(0, 8f));
 
+                        ImGui.SetNextWindowContentSize(new Vector2(260f * ImGuiHelpers.GlobalScale, 140f * ImGuiHelpers.GlobalScale));
 
-
-                        if (ImGui.BeginChild("general left side", new Vector2(1.2f * tableSizeX / 3, 0f)))
+                        if (ImGui.BeginChild("general left side", new Vector2((1.2f * tableSizeX / 3), 0f), true, ImGuiWindowFlags.HorizontalScrollbar))
                         {
                             if (ImGui.BeginTable("General Options table", 2))
                             {
+                                ImGui.TableSetupColumn("first", ImGuiTableColumnFlags.WidthFixed);
+                                ImGui.TableSetupColumn("second", ImGuiTableColumnFlags.WidthFixed);
                                 ImGui.TableNextColumn();
                                 ImGui.Checkbox("Zone Name", ref _showZoneName);
                                 ImGui.SameLine();
-                                ImGuiUtil.ImGui_HelpMarker("Shows Zone Name\nAdjust position below as % of window.");
+                                ImGuiUtil.ImGui_HelpMarker(
+                                    "Shows Zone Name\nAdjust position below as % of window.");
                                 ImGui.PushItemWidth(widgetWidth);
                                 ImGui.DragFloat("Zone X", ref _zoneInfoPosXPercentage, 0.05f, 0, 100, "%.2f",
                                     ImGuiSliderFlags.NoRoundToFormat);
@@ -539,18 +559,20 @@ namespace HuntHelper.Gui
                                 ImGui.EndTable();
                             }
 
+                            //ImGui.SameLine(); ImGui.Text($"{ImGui.GetWindowSize()}");
                             ImGui.EndChild();
                         }
 
 
                         ImGui.SameLine();
-                        if (ImGui.BeginChild("general right side resize section",
-                                new Vector2(1.8f * tableSizeX / 3 - 8f, tableSizeY - 24f), true))
+                        ImGui.SetNextWindowContentSize(new Vector2(270f * ImGuiHelpers.GlobalScale, 155f * ImGuiHelpers.GlobalScale));
+
+                        if (ImGui.BeginChild("general right side resize section", new Vector2((1.8f * tableSizeX / 3 - 8f), tableSizeY - 24f), true, ImGuiWindowFlags.HorizontalScrollbar))
                         {
                             if (ImGui.BeginTable("right side table", 4))
                             {
                                 ImGui.TableSetupColumn("test",
-                                    ImGuiTableColumnFlags.WidthFixed | ImGuiTableColumnFlags.NoResize);
+                                    ImGuiTableColumnFlags.WidthFixed);
 
                                 var intWidgetWidth = 36;
 
@@ -572,8 +594,11 @@ namespace HuntHelper.Gui
 
                                 ImGui.TableNextColumn();
                                 ImGui.Dummy(new Vector2(0f, 0f));
-                                ImGui.ColorEdit4("##Window Colour", ref _mapWindowColour, ImGuiColorEditFlags.PickerHueWheel | ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.NoAlpha);
-                                ImGui.SameLine(); ImGuiUtil.ImGui_HelpMarker("Window Colour - Opacity can be changed down below.");
+                                ImGui.ColorEdit4("##Window Colour", ref _mapWindowColour,
+                                    ImGuiColorEditFlags.PickerHueWheel | ImGuiColorEditFlags.NoInputs |
+                                    ImGuiColorEditFlags.NoAlpha);
+                                ImGui.SameLine();
+                                ImGuiUtil.ImGui_HelpMarker("Window Colour - Opacity can be changed down below.");
 
                                 ImGui.TableNextColumn();
 
@@ -636,28 +661,35 @@ namespace HuntHelper.Gui
                                 ImGui.Dummy(new Vector2(0, 0));
                                 ImGui.PushItemWidth(ImGui.GetContentRegionAvail().X - 16f);
                                 ImGui.SameLine();
-                                ImGui.DragFloat("##Map Window Opacity", ref _mapWindowOpacityAsPercentage, .2f, 0f, 100f,
+                                ImGui.DragFloat("##Map Window Opacity", ref _mapWindowOpacityAsPercentage, .2f, 0f,
+                                    100f,
                                     "Window Opacity - %.0f");
                             }
 
+                            //ImGui.SameLine(); ImGui.Text($"{ImGui.GetWindowSize()}");
                             ImGui.EndChild();
                         }
+
 
                         ImGui.EndTabItem();
                     }
 
                     if (ImGui.BeginTabItem("Visuals"))
                     {
-                        _bottomPanelHeight = 165f;
+                        _bottomPanelHeight = tabBarHeight + 108f * ImGuiHelpers.GlobalScale;
 
                         if (ImGui.BeginTabBar("Visuals sub-bar"))
                         {
                             if (ImGui.BeginTabItem("Sizing"))
                             {
                                 ImGui.Dummy(new Vector2(0, 2f));
-                                if (ImGui.BeginTable("Sizing Options Table", 3))
+                                if (ImGui.BeginTable("Sizing Options Table", 3, ImGuiTableFlags.ScrollX | ImGuiTableFlags.ScrollY))
                                 {
                                     var widgetWidth = 40f;
+
+                                    ImGui.TableSetupColumn("1#visualsizing", ImGuiTableColumnFlags.WidthFixed);
+                                    ImGui.TableSetupColumn("2#visualsizing", ImGuiTableColumnFlags.WidthFixed);
+                                    ImGui.TableSetupColumn("3#visualsizing", ImGuiTableColumnFlags.WidthFixed);
 
                                     ImGui.TableNextColumn();
                                     ImGui.PushItemWidth(widgetWidth);
@@ -739,9 +771,13 @@ namespace HuntHelper.Gui
                             {
                                 ImGui.Dummy(new Vector2(0, 2f));
 
-                                if (ImGui.BeginTable("Colour Options Table", 3))
+                                if (ImGui.BeginTable("Colour Options Table", 3, ImGuiTableFlags.ScrollX | ImGuiTableFlags.ScrollY))
                                 {
                                     ImGui.Dummy(new Vector2(0, 2f));
+
+                                    ImGui.TableSetupColumn("1#coloursizing", ImGuiTableColumnFlags.WidthFixed);
+                                    ImGui.TableSetupColumn("2#coloursizing", ImGuiTableColumnFlags.WidthFixed);
+                                    ImGui.TableSetupColumn("3#coloursizing", ImGuiTableColumnFlags.WidthFixed);
 
                                     ImGui.TableNextColumn();
                                     ImGui.ColorEdit4("Player Icon", ref _playerIconColour,
@@ -793,125 +829,155 @@ namespace HuntHelper.Gui
                             //ImGui.PushFont(UiBuilder.MonoFont); //aligns things, but then looks ugly so idk.. table?
                             if (ImGui.BeginTabItem(" A "))
                             {
-                                _bottomPanelHeight = 155f;
-
-                                ImGui.Dummy(new Vector2(0, 2f));
-                                ImGui.TextUnformatted("Chat Message");
-                                ImGui.SameLine();
-                                ImGui.InputText("##A Rank A Chat Msg", ref _chatAMessage, _inputTextMaxLength);
-                                ImGui.SameLine();
-                                ImGui.Checkbox("##A Rank A Chat Checkbox", ref _chatAEnabled);
-                                ImGui.SameLine();
-                                ImGuiUtil.ImGui_HelpMarker("Message to send to chat using /echo, usable tags: <flag> <name> <rank> <hpp>\n");
-
-                                ImGui.Dummy(new Vector2(0, 2f));
-                                ImGui.TextUnformatted("TTS   Message");
-                                ImGui.SameLine();
-                                ImGui.InputText("##A Rank A TTS Msg", ref _ttsAMessage, _inputTextMaxLength);
-                                ImGui.SameLine();
-                                ImGui.Checkbox("##A Rank A TTS Checkbox", ref _ttsAEnabled);
-                                ImGui.SameLine();
-                                ImGuiUtil.ImGui_HelpMarker("Message to use with Text-to-Speech, usable tags: <name> <rank>");
-
-                                ImGui.Checkbox("FlyText##A Rank", ref _flyTxtAEnabled);
-                                ImGui.SameLine();
-                                ImGuiUtil.ImGui_HelpMarker("FlyText is the type of text that appears when you attack something or are attacked.\n" +
-                                                                "(e.g. Crit, Miss, Resist)\n\n" +
-                                                                "Enabling this will show a coloured FlyText notification near the middle of your screen.\n\n" +
-                                                                "pls ignore ugly checkbox position");
-                                ImGui.SameLine();
-                                if (ImGui.Checkbox("I'm blind and need visual help##A Rank", ref _pointToARank))
+                                _bottomPanelHeight = tabBarHeight + 98f * ImGuiHelpers.GlobalScale;
+                                if (ImGui.BeginChild("##A child", ImGui.GetContentRegionAvail(), false, ImGuiWindowFlags.HorizontalScrollbar))
                                 {
-                                    _configuration.PointToARank = _pointToARank;
+                                    ImGui.Dummy(new Vector2(0, 2f));
+                                    ImGui.TextUnformatted("Chat Message");
+                                    ImGui.SameLine();
+                                    ImGui.InputText("##A Rank A Chat Msg", ref _chatAMessage, _inputTextMaxLength);
+                                    ImGui.SameLine();
+                                    ImGui.Checkbox("##A Rank A Chat Checkbox", ref _chatAEnabled);
+                                    ImGui.SameLine();
+                                    ImGuiUtil.ImGui_HelpMarker(
+                                        "Message to send to chat using /echo, usable tags: <flag> <name> <rank> <hpp>\n");
+
+                                    ImGui.Dummy(new Vector2(0, 2f));
+                                    ImGui.TextUnformatted("TTS   Message");
+                                    ImGui.SameLine();
+                                    ImGui.InputText("##A Rank A TTS Msg", ref _ttsAMessage, _inputTextMaxLength);
+                                    ImGui.SameLine();
+                                    ImGui.Checkbox("##A Rank A TTS Checkbox", ref _ttsAEnabled);
+                                    ImGui.SameLine();
+                                    ImGuiUtil.ImGui_HelpMarker(
+                                        "Message to use with Text-to-Speech, usable tags: <name> <rank>");
+
+                                    ImGui.Checkbox("FlyText##A Rank", ref _flyTxtAEnabled);
+                                    ImGui.SameLine();
+                                    ImGuiUtil.ImGui_HelpMarker(
+                                        "FlyText is the type of text that appears when you attack something or are attacked.\n" +
+                                        "(e.g. Crit, Miss, Resist)\n\n" +
+                                        "Enabling this will show a coloured FlyText notification near the middle of your screen.\n\n" +
+                                        "pls ignore ugly checkbox position");
+                                    ImGui.SameLine();
+                                    if (ImGui.Checkbox("I'm blind and need visual help##A Rank", ref _pointToARank))
+                                    {
+                                        _configuration.PointToARank = _pointToARank;
+                                    }
+
+                                    ImGuiUtil.ImGui_HoveredToolTip(
+                                        "Draws a 'quest pointer' type thingy, it's a bit glitchy but works well enough\nChange size in settings");
+
+                                    ImGui.EndChild();
                                 }
-                                ImGuiUtil.ImGui_HoveredToolTip("Draws a 'quest pointer' type thingy, it's a bit glitchy but works well enough\nChange size in settings");
+
                                 ImGui.EndTabItem();
                             }
 
                             if (ImGui.BeginTabItem(" B "))
                             {
-                                _bottomPanelHeight = 155f;
+                                _bottomPanelHeight = tabBarHeight + 98f * ImGuiHelpers.GlobalScale;
 
-                                ImGui.Dummy(new Vector2(0, 2f));
-                                ImGui.TextUnformatted("Chat Message");
-                                ImGui.SameLine();
-                                ImGui.InputText("##A Rank B Chat Msg", ref _chatBMessage, _inputTextMaxLength);
-                                ImGui.SameLine();
-                                ImGui.Checkbox("##A Rank B Chat Checkbox", ref _chatBEnabled);
-                                ImGui.SameLine();
-                                ImGuiUtil.ImGui_HelpMarker(
-                                    "Message to send to chat using /echo, usable tags: <flag> <name> <rank> <hpp>.");
-
-                                ImGui.Dummy(new Vector2(0, 2f));
-                                ImGui.TextUnformatted("TTS   Message");
-                                ImGui.SameLine();
-                                ImGui.InputText("##A Rank B TTS Msg", ref _ttsBMessage, _inputTextMaxLength);
-                                ImGui.SameLine();
-                                ImGui.Checkbox("##A Rank B TTS Checkbox", ref _ttsBEnabled);
-                                ImGui.SameLine();
-                                ImGuiUtil.ImGui_HelpMarker("Message to use with Text-to-Speech, usable tags: <name> <rank>");
-
-                                ImGui.Checkbox("FlyText##B Rank", ref _flyTxtBEnabled);
-                                ImGui.SameLine();
-                                ImGuiUtil.ImGui_HelpMarker("FlyText is the type of text that appears when you attack something or are attacked.\n" +
-                                                                "(e.g. Crit, Miss, Resist)\n\n" +
-                                                                "Enabling this will show a coloured FlyText notification near the middle of your screen.");
-                                ImGui.SameLine();
-                                if (ImGui.Checkbox("I'm blind and need visual help##B Rank", ref _pointToBRank))
+                                if (ImGui.BeginChild("##B child", ImGui.GetContentRegionAvail(), false,
+                                        ImGuiWindowFlags.HorizontalScrollbar))
                                 {
-                                    _configuration.PointToBRank = _pointToBRank;
+                                    ImGui.Dummy(new Vector2(0, 2f));
+                                    ImGui.TextUnformatted("Chat Message");
+                                    ImGui.SameLine();
+                                    ImGui.InputText("##A Rank B Chat Msg", ref _chatBMessage, _inputTextMaxLength);
+                                    ImGui.SameLine();
+                                    ImGui.Checkbox("##A Rank B Chat Checkbox", ref _chatBEnabled);
+                                    ImGui.SameLine();
+                                    ImGuiUtil.ImGui_HelpMarker(
+                                        "Message to send to chat using /echo, usable tags: <flag> <name> <rank> <hpp>.");
+
+                                    ImGui.Dummy(new Vector2(0, 2f));
+                                    ImGui.TextUnformatted("TTS   Message");
+                                    ImGui.SameLine();
+                                    ImGui.InputText("##A Rank B TTS Msg", ref _ttsBMessage, _inputTextMaxLength);
+                                    ImGui.SameLine();
+                                    ImGui.Checkbox("##A Rank B TTS Checkbox", ref _ttsBEnabled);
+                                    ImGui.SameLine();
+                                    ImGuiUtil.ImGui_HelpMarker(
+                                        "Message to use with Text-to-Speech, usable tags: <name> <rank>");
+
+                                    ImGui.Checkbox("FlyText##B Rank", ref _flyTxtBEnabled);
+                                    ImGui.SameLine();
+                                    ImGuiUtil.ImGui_HelpMarker(
+                                        "FlyText is the type of text that appears when you attack something or are attacked.\n" +
+                                        "(e.g. Crit, Miss, Resist)\n\n" +
+                                        "Enabling this will show a coloured FlyText notification near the middle of your screen.");
+                                    ImGui.SameLine();
+                                    if (ImGui.Checkbox("I'm blind and need visual help##B Rank", ref _pointToBRank))
+                                    {
+                                        _configuration.PointToBRank = _pointToBRank;
+                                    }
+
+                                    ImGuiUtil.ImGui_HoveredToolTip(
+                                        "Draws a 'quest pointer' type thingy, it's a bit glitchy but works well enough\nChange size in settings");
+
+                                    ImGui.EndChild();
                                 }
-                                ImGuiUtil.ImGui_HoveredToolTip("Draws a 'quest pointer' type thingy, it's a bit glitchy but works well enough\nChange size in settings");
+
                                 ImGui.EndTabItem();
                             }
 
                             if (ImGui.BeginTabItem(" S "))
                             {
-                                _bottomPanelHeight = 155f;
+                                _bottomPanelHeight = tabBarHeight + 98f * ImGuiHelpers.GlobalScale;
 
-                                ImGui.Dummy(new Vector2(0, 2f));
-                                ImGui.TextUnformatted("Chat Message");
-                                ImGui.SameLine();
-                                ImGui.InputText("##A Rank S Chat Msg", ref _chatSMessage, _inputTextMaxLength);
-                                ImGui.SameLine();
-                                ImGui.Checkbox("##A Rank S Chat Checkbox", ref _chatSEnabled);
-                                ImGui.SameLine();
-                                ImGuiUtil.ImGui_HelpMarker(
-                                    "Message to send to chat using /echo, usable tags: <flag> <name> <rank> <hpp>.");
-
-                                ImGui.Dummy(new Vector2(0, 2f));
-                                ImGui.TextUnformatted("TTS   Message");
-                                ImGui.SameLine();
-                                ImGui.InputText("##A Rank S TTS Msg", ref _ttsSMessage, _inputTextMaxLength);
-                                ImGui.SameLine();
-                                ImGui.Checkbox("##A Rank S TTS Checkbox", ref _ttsSEnabled);
-                                ImGui.SameLine();
-                                ImGuiUtil.ImGui_HelpMarker("Message to use with Text-to-Speech, usable tags: <name> <rank>");
-
-                                ImGui.Checkbox("FlyText##S Rank", ref _flyTxtSEnabled);
-                                ImGui.SameLine();
-                                ImGuiUtil.ImGui_HelpMarker("FlyText is the type of text that appears when you attack something or are attacked.\n" +
-                                                                "(e.g. Crit, Miss, Resist)\n\n" +
-                                                                "Enabling this will show a coloured FlyText notification near the middle of your screen.");
-                                ImGui.SameLine();
-                                if (ImGui.Checkbox("I'm blind and need visual help##S Rank", ref _pointToSRank))
+                                if (ImGui.BeginChild("##S child", ImGui.GetContentRegionAvail(), false,
+                                        ImGuiWindowFlags.HorizontalScrollbar))
                                 {
-                                    _configuration.PointToSRank = _pointToSRank;
+                                    ImGui.Dummy(new Vector2(0, 2f));
+                                    ImGui.TextUnformatted("Chat Message");
+                                    ImGui.SameLine();
+                                    ImGui.InputText("##A Rank S Chat Msg", ref _chatSMessage, _inputTextMaxLength);
+                                    ImGui.SameLine();
+                                    ImGui.Checkbox("##A Rank S Chat Checkbox", ref _chatSEnabled);
+                                    ImGui.SameLine();
+                                    ImGuiUtil.ImGui_HelpMarker(
+                                        "Message to send to chat using /echo, usable tags: <flag> <name> <rank> <hpp>.");
+
+                                    ImGui.Dummy(new Vector2(0, 2f));
+                                    ImGui.TextUnformatted("TTS   Message");
+                                    ImGui.SameLine();
+                                    ImGui.InputText("##A Rank S TTS Msg", ref _ttsSMessage, _inputTextMaxLength);
+                                    ImGui.SameLine();
+                                    ImGui.Checkbox("##A Rank S TTS Checkbox", ref _ttsSEnabled);
+                                    ImGui.SameLine();
+                                    ImGuiUtil.ImGui_HelpMarker(
+                                        "Message to use with Text-to-Speech, usable tags: <name> <rank>");
+
+                                    ImGui.Checkbox("FlyText##S Rank", ref _flyTxtSEnabled);
+                                    ImGui.SameLine();
+                                    ImGuiUtil.ImGui_HelpMarker(
+                                        "FlyText is the type of text that appears when you attack something or are attacked.\n" +
+                                        "(e.g. Crit, Miss, Resist)\n\n" +
+                                        "Enabling this will show a coloured FlyText notification near the middle of your screen.");
+                                    ImGui.SameLine();
+                                    if (ImGui.Checkbox("I'm blind and need visual help##S Rank", ref _pointToSRank))
+                                    {
+                                        _configuration.PointToSRank = _pointToSRank;
+                                    }
+
+                                    ImGuiUtil.ImGui_HoveredToolTip(
+                                        "Draws a 'quest pointer' type thingy, it's a bit glitchy but works well enough\nChange size in settings");
+
+                                    /*ImGui.SameLine();
+                                    ImGui.Checkbox("Save Spawn Data", ref _saveSpawnData);
+                                    ImGui.SameLine();
+                                    ImGuiUtil.ImGui_HelpMarker("Saves S Rank Information to desktop txt (ToDo - let's be honest, i'm never going to remember to do this)");*/
+
+                                    ImGui.EndChild();
                                 }
-
-                                ImGuiUtil.ImGui_HoveredToolTip("Draws a 'quest pointer' type thingy, it's a bit glitchy but works well enough\nChange size in settings");
-
-                                /*ImGui.SameLine();
-                                ImGui.Checkbox("Save Spawn Data", ref _saveSpawnData);
-                                ImGui.SameLine();
-                                ImGuiUtil.ImGui_HelpMarker("Saves S Rank Information to desktop txt (ToDo - let's be honest, i'm never going to remember to do this)");*/
 
                                 ImGui.EndTabItem();
                             }
 
                             if (ImGui.BeginTabItem("Settings"))
                             {
-                                _bottomPanelHeight = 145f;
+                                _bottomPanelHeight = tabBarHeight + 88f * ImGuiHelpers.GlobalScale;
                                 var tts = _huntManager.TTS;
                                 var voiceList = tts.GetInstalledVoices();
                                 var listOfVoiceNames = new string[voiceList.Count];
@@ -919,52 +985,75 @@ namespace HuntHelper.Gui
                                 {
                                     listOfVoiceNames[i] = voiceList[i].VoiceInfo.Name;
                                 }
-                                var itemPos = Array.IndexOf(listOfVoiceNames, _ttsVoiceName);
-                                ImGui.Dummy(new Vector2(0f, 5f));
-                                ImGui.Text("Select Voice:"); ImGui.SameLine();
-                                if (ImGui.Combo("##TTS Voice Combo", ref itemPos, listOfVoiceNames, listOfVoiceNames.Length))
-                                {
-                                    tts.SelectVoice(listOfVoiceNames[itemPos]);
-                                    _ttsVoiceName = listOfVoiceNames[itemPos];
-                                    _huntManager.TTSName = _ttsVoiceName;
 
-                                    //creating new speechsynthesizer because it does not play audio asynchronously
-                                    var tempTTS = new SpeechSynthesizer();
-                                    tempTTS.SelectVoice(_ttsVoiceName);
-                                    var prompt = tempTTS.SpeakAsync($"BOO! {tts.Voice.Name} Selected");
-                                    Task.Run(() =>
-                                    {
-                                        while (!prompt.IsCompleted) { };
-                                        tempTTS.Dispose();
-                                    });
-                                }
-                                ImGui.Text("Pointer Size:");
-                                ImGui.SameLine();
-                                if (ImGui.DragFloat("##Diamond Pointer Size Modifier", ref _diamondModifier, 0.01f, 1,
-                                        10, "%.2f"))
+                                var itemPos = Array.IndexOf(listOfVoiceNames, _ttsVoiceName);
+
+                                if (ImGui.BeginChild("##settings tts child", ImGui.GetContentRegionAvail(), false, ImGuiWindowFlags.HorizontalScrollbar))
                                 {
-                                    _configuration.PointerDiamondSizeModifier = _diamondModifier;
+                                    ImGui.Dummy(new Vector2(0f, 5f));
+                                    ImGui.Text("Select Voice:");
+                                    ImGui.SameLine();
+                                    if (ImGui.Combo("##TTS Voice Combo", ref itemPos, listOfVoiceNames,
+                                            listOfVoiceNames.Length))
+                                    {
+                                        tts.SelectVoice(listOfVoiceNames[itemPos]);
+                                        _ttsVoiceName = listOfVoiceNames[itemPos];
+                                        _huntManager.TTSName = _ttsVoiceName;
+
+                                        //creating new speechsynthesizer because it does not play audio asynchronously
+                                        var tempTTS = new SpeechSynthesizer();
+                                        tempTTS.SelectVoice(_ttsVoiceName);
+                                        var prompt = tempTTS.SpeakAsync($"BOO! {tts.Voice.Name} Selected");
+                                        Task.Run(() =>
+                                        {
+                                            while (!prompt.IsCompleted)
+                                            {
+                                            }
+
+                                            ;
+                                            tempTTS.Dispose();
+                                        });
+                                    }
+
+                                    ImGui.Text("Pointer Size:");
+                                    ImGui.SameLine();
+                                    if (ImGui.DragFloat("##Diamond Pointer Size Modifier", ref _diamondModifier, 0.01f,
+                                            1,
+                                            10, "%.2f"))
+                                    {
+                                        _configuration.PointerDiamondSizeModifier = _diamondModifier;
+                                    }
+
+                                    ImGuiUtil.ImGui_HoveredToolTip("Size modifier for the diamond pointer");
+                                    ImGui.EndChild();
                                 }
-                                ImGuiUtil.ImGui_HoveredToolTip("Size modifier for the diamond pointer");
+
                                 ImGui.EndTabItem();
                             }
 
                             if (ImGui.BeginTabItem("Available Tags"))
                             {
-                                _bottomPanelHeight = 170f;
+                                _bottomPanelHeight = tabBarHeight + 113 * ImGuiHelpers.GlobalScale;
 
-                                ImGui.TextUnformatted("Available Tags:");
-                                ImGui.SameLine(); ImGuiUtil.ImGui_HelpMarker("DOUBLE CLICK to easily highlight a tag option for copy and paste.  \n-- ONLY <name> and <rank> work with TTS");
-                                var tags =
-                                    "Hunt: <flag> <name> <rank> <hpp>\n\n" +
-                                    "Cosmetic: <goldstar> <silverstar> <warning> <nocircle> <controllerbutton0> <controllerbutton1>\n" +
-                                    " <priorityworld> <elementallevel> <exclamationrectangle> <notoriousmonster> <alarm> <fanfestival>";
+                                if (ImGui.BeginChild("##tags child", ImGui.GetContentRegionAvail(), false,
+                                        ImGuiWindowFlags.HorizontalScrollbar))
+                                {
+                                    ImGui.TextUnformatted("Available Tags:");
+                                    ImGui.SameLine();
+                                    ImGuiUtil.ImGui_HelpMarker(
+                                        "DOUBLE CLICK to easily highlight a tag option for copy and paste.  \n-- ONLY <name> and <rank> work with TTS");
+                                    var tags =
+                                        "Hunt: <flag> <name> <rank> <hpp>\n\n" +
+                                        "Cosmetic: <goldstar> <silverstar> <warning> <nocircle> <controllerbutton0> <controllerbutton1>\n" +
+                                        " <priorityworld> <elementallevel> <exclamationrectangle> <notoriousmonster> <alarm> <fanfestival>";
 
-                                var contentRegion = ImGui.GetContentRegionAvail();
-                                ImGui.InputTextMultiline("##cosmetic tag info", ref tags, 500, new Vector2(contentRegion.X - 10, 80), ImGuiInputTextFlags.ReadOnly);
+                                    ImGui.InputTextMultiline("##cosmetic tag info", ref tags, 500,
+                                        new Vector2(600f * ImGuiHelpers.GlobalScale, 80 * ImGuiHelpers.GlobalScale), ImGuiInputTextFlags.ReadOnly);
+                                    ImGui.EndChild();
+                                }
+
                                 ImGui.EndTabItem();
                             }
-
                             ImGui.EndTabBar();
                         }
 
@@ -974,53 +1063,63 @@ namespace HuntHelper.Gui
                     if (ImGui.BeginTabItem(
                             "On-screen Mob Info")) //what do i call this, mob context, mob text, hunt info data text idk
                     {
-                        _bottomPanelHeight = 185f;
+                        _bottomPanelHeight = tabBarHeight + 128f * ImGuiHelpers.GlobalScale;
 
-                        if (ImGui.BeginTable("Mob info Table", 2))
+                        ImGui.SetNextWindowContentSize(new Vector2(470 * ImGuiHelpers.GlobalScale, ImGui.GetContentRegionAvail().Y));
+
+                        if (ImGui.BeginChild("##mobinfo child", ImGui.GetContentRegionAvail(), true, ImGuiWindowFlags.HorizontalScrollbar))
                         {
-                            ImGui.TableNextColumn();
-                            ImGui.Checkbox("Priority Mob", ref _priorityMobEnabled);
-                            ImGui.SameLine();
-                            ImGuiUtil.ImGui_HelpMarker("The big thing that labels highest rank mob in zone, S/SS > A > B\n\n" +
-                                                            "Ctrl+Click to enter manually, Shift+Click for fast drag.");
-                            ImGui.DragFloat("X##Priority Mob", ref _priorityMobInfoPosXPercentage, 0.05f, 0, 100,
-                                "%.2f", ImGuiSliderFlags.NoRoundToFormat);
-                            ImGui.DragFloat("Y##Priority Mob", ref _priorityMobInfoPosYPercentage, 0.05f, 0, 100,
-                                "%.2f", ImGuiSliderFlags.NoRoundToFormat);
-                            ImGui.ColorEdit4("Main##PriorityMain", ref _priorityMobTextColour,
-                                ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
-                            ImGui.SameLine();
-                            ImGui.ColorEdit4("Alt##PriorityAlt", ref _priorityMobTextColourAlt,
-                                ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
-                            ImGui.SameLine();
-                            ImGui.ColorEdit4("Background##PriorityAlt", ref _priorityMobColourBackground,
-                                ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
-                            ImGui.SameLine();
-                            ImGuiUtil.ImGui_HelpMarker(
-                                "Main = without map, Alt = with map images, Background = background duh \n\n- Turn up Alpha A: for solid colour.");
+                            if (ImGui.BeginTable("Mob info Table", 2))
+                            {
 
-                            ImGui.TableNextColumn();
-                            ImGui.Checkbox("Nearby Mob List", ref _nearbyMobListEnabled);
-                            ImGui.SameLine();
-                            ImGuiUtil.ImGui_HelpMarker("A list of all nearby mobs.\n\n" +
-                                                            "Ctrl+Click to enter manually, Shift+Click for fast drag.");
-                            ImGui.DragFloat("X##Nearby Mobs", ref _nearbyMobListPosXPercentage, 0.05f, 0, 100, "%.2f",
-                                ImGuiSliderFlags.NoRoundToFormat);
-                            ImGui.DragFloat("Y##Nearby Mobs", ref _nearbyMobListPosYPercentage, 0.05f, 0, 100, "%.2f",
-                                ImGuiSliderFlags.NoRoundToFormat);
-                            ImGui.ColorEdit4("Main##Nearby Mobs", ref _nearbyMobListColour,
-                                ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
-                            ImGui.SameLine();
-                            ImGui.ColorEdit4("Alt##Nearby Alt", ref _nearbyMobListColourAlt,
-                                ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
-                            ImGui.SameLine();
-                            ImGui.ColorEdit4("Background##Nearby Mobs", ref _nearbyMobListColourBackground,
-                                ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
-                            ImGui.SameLine();
-                            ImGuiUtil.ImGui_HelpMarker(
-                                "Main = without map, Alt = with map images, Background = background duh \n\n- Turn up Alpha A: for solid colour.");
+                                ImGui.TableNextColumn();
+                                ImGui.Checkbox("Priority Mob", ref _priorityMobEnabled);
+                                ImGui.SameLine();
+                                ImGuiUtil.ImGui_HelpMarker(
+                                    "The big thing that labels highest rank mob in zone, S/SS > A > B\n\n" +
+                                    "Ctrl+Click to enter manually, Shift+Click for fast drag.");
+                                ImGui.DragFloat("X##Priority Mob", ref _priorityMobInfoPosXPercentage, 0.05f, 0, 100,
+                                    "%.2f", ImGuiSliderFlags.NoRoundToFormat);
+                                ImGui.DragFloat("Y##Priority Mob", ref _priorityMobInfoPosYPercentage, 0.05f, 0, 100,
+                                    "%.2f", ImGuiSliderFlags.NoRoundToFormat);
+                                ImGui.ColorEdit4("Main##PriorityMain", ref _priorityMobTextColour,
+                                    ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
+                                ImGui.SameLine();
+                                ImGui.ColorEdit4("Alt##PriorityAlt", ref _priorityMobTextColourAlt,
+                                    ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
+                                ImGui.SameLine();
+                                ImGui.ColorEdit4("Background##PriorityAlt", ref _priorityMobColourBackground,
+                                    ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
+                                ImGui.SameLine();
+                                ImGuiUtil.ImGui_HelpMarker(
+                                    "Main = without map, Alt = with map images, Background = background duh \n\n- Turn up Alpha A: for solid colour.");
 
-                            ImGui.EndTable();
+                                ImGui.TableNextColumn();
+                                ImGui.Checkbox("Nearby Mob List", ref _nearbyMobListEnabled);
+                                ImGui.SameLine();
+                                ImGuiUtil.ImGui_HelpMarker("A list of all nearby mobs.\n\n" +
+                                                           "Ctrl+Click to enter manually, Shift+Click for fast drag.");
+                                ImGui.DragFloat("X##Nearby Mobs", ref _nearbyMobListPosXPercentage, 0.05f, 0, 100,
+                                    "%.2f",
+                                    ImGuiSliderFlags.NoRoundToFormat);
+                                ImGui.DragFloat("Y##Nearby Mobs", ref _nearbyMobListPosYPercentage, 0.05f, 0, 100,
+                                    "%.2f",
+                                    ImGuiSliderFlags.NoRoundToFormat);
+                                ImGui.ColorEdit4("Main##Nearby Mobs", ref _nearbyMobListColour,
+                                    ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
+                                ImGui.SameLine();
+                                ImGui.ColorEdit4("Alt##Nearby Alt", ref _nearbyMobListColourAlt,
+                                    ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
+                                ImGui.SameLine();
+                                ImGui.ColorEdit4("Background##Nearby Mobs", ref _nearbyMobListColourBackground,
+                                    ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
+                                ImGui.SameLine();
+                                ImGuiUtil.ImGui_HelpMarker(
+                                    "Main = without map, Alt = with map images, Background = background duh \n\n- Turn up Alpha A: for solid colour.");
+
+                                ImGui.EndTable();
+                            }
+                            ImGui.EndChild();
                         }
 
                         ImGui.EndTabItem();
@@ -1029,7 +1128,7 @@ namespace HuntHelper.Gui
 
                     if (ImGui.BeginTabItem("Stats"))
                     {
-                        _bottomPanelHeight = 120f;
+                        _bottomPanelHeight = 120f * ImGuiHelpers.GlobalScale;
 
                         ImGuiUtil.DoStuffWithMonoFont(() =>
                             {
@@ -1237,7 +1336,7 @@ namespace HuntHelper.Gui
             _pointToARank = _configuration.PointToARank;
             _pointToBRank = _configuration.PointToBRank;
             _pointToSRank = _configuration.PointToSRank;
-            _diamondModifier= _configuration.PointerDiamondSizeModifier;
+            _diamondModifier = _configuration.PointerDiamondSizeModifier;
 
             //if voice name available on user's pc, set as tts voice. --else default already set.
             if (_huntManager.TTS.GetInstalledVoices().Any(v => v.VoiceInfo.Name == _configuration.TTSVoiceName))
@@ -1348,7 +1447,7 @@ namespace HuntHelper.Gui
                 PointToMobsBecauseBlind(item.Rank, item.Mob));*/
         }
 
-       
+
         private void DrawMobIcon(BattleNpc mob)
         {
             var mobInGamePos = new Vector2(ConvertPosToCoordinate(mob.Position.X), ConvertPosToCoordinate(mob.Position.Z));
@@ -1412,7 +1511,7 @@ namespace HuntHelper.Gui
                 //now before drawing child, work out position based on cursor pos, window pos (top left) and mouse pos
                 //to have detection for mouseover tooltip
                 var labelVector = ImGui.GetCursorPos() + ImGui.GetWindowPos() + new Vector2(140, 20);//adding half of child x,y size to get middle of element
-                //fixed sizing.... mouse over tooltip in case long-ass mob name clips 
+                                                                                                     //fixed sizing.... mouse over tooltip in case long-ass mob name clips 
                 if (ImGui.GetMousePos().X - labelVector.X is < 140 and > -140 &&  //Why didn't I try isitem/windowhovered? bcoz i'm stupid
                     ImGui.GetMousePos().Y - labelVector.Y is < 20 and > -20)
                 {
@@ -1729,10 +1828,11 @@ namespace HuntHelper.Gui
 
                 ImGui.Dummy(new Vector2(52, 0));
                 ImGui.InputText("##url", ref url, 30, ImGuiInputTextFlags.ReadOnly);
-                if (ImGui.IsItemHovered()){
+                if (ImGui.IsItemHovered())
+                {
                     if (ImGui.IsMouseClicked(ImGuiMouseButton.Left))
                     {
-                        System.Diagnostics.Process.Start(new ProcessStartInfo(url){UseShellExecute = true});
+                        System.Diagnostics.Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
                     }
                 }
 
