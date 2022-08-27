@@ -154,8 +154,8 @@ namespace HuntHelper
         {
             if (presetNumber is < 1 or > 2) return;
             var toUpdate = presetNumber == 1 ? PresetOne : PresetTwo;
-            toUpdate.MapOpacity = mapOpacity;
             toUpdate.WindowOpacity = windowOpacity;
+            toUpdate.MapOpacity = mapOpacity;
             toUpdate.UseMap = useMap;
             toUpdate.WindowSize = windowSize;
             toUpdate.WindowPosition = winPos;

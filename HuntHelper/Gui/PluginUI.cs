@@ -1152,13 +1152,17 @@ namespace HuntHelper.Gui
 
         public void SavePreset(int presetNumber)
         {
+            if (presetNumber is <= 0 or > 2) return;
             var winSize = presetNumber == 1 ? _presetOneWindowSize : _presetTwoWindowSize;
-            _configuration.SaveMainMapPreset(winSize, _mapImageOpacityAsPercentage, _mapWindowOpacityAsPercentage, _useMapImages, _mapWindowPos, presetNumber);
+            _configuration.SaveMainMapPreset(winSize, _mapWindowOpacityAsPercentage, _mapImageOpacityAsPercentage, _useMapImages, _mapWindowPos, presetNumber);
         }
         public void SavePresetByCommand(int presetNumber)
         {
             var winSize = _currentWindowSize;
-            _configuration.SaveMainMapPreset(winSize, _mapImageOpacityAsPercentage, _mapWindowOpacityAsPercentage, _useMapImages, _mapWindowPos, presetNumber);
+            if (presetNumber == 1) _presetOneWindowSize = winSize;
+            else if (presetNumber == 2) _presetOneWindowSize = winSize;
+            else return;
+            _configuration.SaveMainMapPreset(winSize, _mapWindowOpacityAsPercentage, _mapImageOpacityAsPercentage, _useMapImages, _mapWindowPos, presetNumber);
         }
 
         public void ApplyPreset(int presetNumber)
