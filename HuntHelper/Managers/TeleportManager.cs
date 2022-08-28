@@ -212,12 +212,9 @@ public unsafe class TeleportManager
 
         #endregion
     };
-
-    private Telepo* _tele;
+    
     public bool TeleportPluginNotFound = false;
-
-    public TeleportManager()=> _tele = Telepo.Instance();
-
+    
     public void TeleportToHunt(HuntTrainMob mob)
     {
         if (!Aetherytes.Exists(a => a.TerritoryID == mob.TerritoryID)) return;

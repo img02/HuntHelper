@@ -47,7 +47,6 @@ namespace HuntHelper
         private GameGui GameGui { get; init; }
 
         public static ICallGateSubscriber<uint, byte, bool> TeleportIpc { get; private set; }
-        public static ICallGateSubscriber<bool> ShowTeleportChatMessageIpc { get; private set; }
 
         public Plugin(
             DalamudPluginInterface pluginInterface,
@@ -83,7 +82,6 @@ namespace HuntHelper
             this.PointerUI = new PointerUI(HuntManager, Configuration, GameGui);
 
             TeleportIpc = PluginInterface.GetIpcSubscriber<uint, byte, bool>("Teleport");
-            ShowTeleportChatMessageIpc = PluginInterface.GetIpcSubscriber<bool>("Teleport.ChatMessage");
 
             this.CommandManager.AddHandler(MapWindowCommand, new CommandInfo(HuntMapCommand)
             {
