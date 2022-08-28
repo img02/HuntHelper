@@ -5,6 +5,7 @@ using Dalamud.Game.Command;
 using Dalamud.Game.Gui;
 using Dalamud.Game.Gui.FlyText;
 using Dalamud.Plugin;
+using Dalamud.Plugin.Ipc;
 using HuntHelper.Gui;
 using HuntHelper.Managers.Hunts;
 using HuntHelper.Managers.MapData;
@@ -33,7 +34,7 @@ namespace HuntHelper
         private PluginUI PluginUi { get; init; }
         private HuntTrainUI HuntTrainUI { get; init; }
         private CounterUI CounterUI { get; init; }
-        private PointerUI PointerUI{ get; init; }
+        private PointerUI PointerUI { get; init; }
         private SpawnPointFinderUI SpawnPointFinderUI { get; init; }
         private ClientState ClientState { get; init; }
         private ObjectTable ObjectTable { get; init; }
@@ -44,6 +45,9 @@ namespace HuntHelper
         private MapDataManager MapDataManager { get; init; }
         private FlyTextGui FlyTextGui { get; init; }
         private GameGui GameGui { get; init; }
+
+        public static ICallGateSubscriber<uint, byte, bool> TeleportIpc { get; private set; }
+        public static ICallGateSubscriber<bool> ShowTeleportChatMessageIpc { get; private set; }
 
         public Plugin(
             DalamudPluginInterface pluginInterface,
@@ -77,6 +81,9 @@ namespace HuntHelper
             this.CounterUI = new CounterUI(ClientState, ChatGui, Configuration, ObjectTable);
             this.SpawnPointFinderUI = new SpawnPointFinderUI(MapDataManager, Configuration);
             this.PointerUI = new PointerUI(HuntManager, Configuration, GameGui);
+
+            TeleportIpc = PluginInterface.GetIpcSubscriber<uint, byte, bool>("Teleport");
+            ShowTeleportChatMessageIpc = PluginInterface.GetIpcSubscriber<bool>("Teleport.ChatMessage");
 
             this.CommandManager.AddHandler(MapWindowCommand, new CommandInfo(HuntMapCommand)
             {

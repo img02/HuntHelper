@@ -317,12 +317,36 @@ public class HuntTrainUI : IDisposable
             DrawImportWindowModal();
             #endregion
 
+            if (_teleportManager.TeleportPluginNotFound) ImGui.OpenPopup("Teleporter Plugin Not Found##ModalPopupWindowThingymajig");
+            DrawTeleportPluginNotFoundModal();
             ImGui.PopStyleVar(); //pop itemspacing
             ImGui.End();
         }
         ImGui.PopStyleVar();//pop window padding
     }
 
+    private void DrawTeleportPluginNotFoundModal()
+    {
+        var center = ImGui.GetWindowPos() + ImGui.GetWindowSize() / 2;
+        ImGui.SetNextWindowPos(center, ImGuiCond.Appearing, new Vector2(0.5f, 0.5f));
+        ImGui.SetNextWindowSize(new Vector2(315*ImGuiHelpers.GlobalScale, 120 * ImGuiHelpers.GlobalScale), ImGuiCond.Always);
+        ImGui.PushStyleColor(ImGuiCol.ResizeGrip, 0);
+        ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, new Vector2(8,8));
+        if (ImGui.BeginPopupModal("Teleporter Plugin Not Found##ModalPopupWindowThingymajig"))
+        {
+            ImGui.TextWrapped("Teleporting requires the Teleporter Plugin by Pohky.\nPlease install it via /xlplugins or uncheck teleport options.");
+            ImGui.Dummy(Vector2.One);
+            ImGui.SetCursorPosX(ImGui.GetWindowSize().X-80f*ImGuiHelpers.GlobalScale);
+            if (ImGui.Button("okey-dokey"))
+            {
+                _teleportManager.TeleportPluginNotFound = false;
+                ImGui.CloseCurrentPopup();
+            }
+            ImGui.EndPopup();
+        }
+        ImGui.PopStyleVar();
+        ImGui.PopStyleColor();
+    }
     private void DrawDeleteModal()
     {
         var center = ImGui.GetWindowPos() + ImGui.GetWindowSize() / 2;
