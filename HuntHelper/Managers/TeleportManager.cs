@@ -217,6 +217,7 @@ public unsafe class TeleportManager
 
     public void TeleportToHunt(HuntTrainMob mob)
     {
+        if (!Aetherytes.Exists(a => a.TerritoryID == mob.TerritoryID)) return;
         var aeth = GetNearestAetheryte(mob.TerritoryID, mob.Position);
         _tele->Teleport(aeth.AetheryteID, aeth.Subindex);
     }
