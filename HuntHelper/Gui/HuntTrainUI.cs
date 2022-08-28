@@ -10,6 +10,7 @@ using System.Linq;
 using System.Numerics;
 using System.Threading;
 using System.Threading.Tasks;
+using HuntHelper.Managers;
 
 namespace HuntHelper.Gui;
 
@@ -28,11 +29,13 @@ public class HuntTrainUI : IDisposable
     #region user customisable - config
     private Vector2 _huntTrainWindowSize = new Vector2(310, 270);
     private Vector2 _huntTrainWindowPos = new Vector2(150, 150);
-
-    private bool _showPos = true;
+    
     private bool _showLastSeen = true;
     private bool _useBorder = false;
     private bool _openMap = false;
+    private bool _teleportMe = false;
+    private bool _teleportMeOnCommand = false;
+    private bool _showTeleButtons = false;
     #endregion
 
     private Vector4 _deadTextColour = new Vector4(.6f, .7f, .6f, 1f);
@@ -45,6 +48,8 @@ public class HuntTrainUI : IDisposable
     private bool _importAll = false;
     private bool _importNew = true;
     private bool _importUpdateTime = true;
+
+    private TeleportManager _teleportManager;
 
     public bool HuntTrainWindowVisible
     {
@@ -59,6 +64,7 @@ public class HuntTrainUI : IDisposable
         _config = config;
         _importedTrain = _trainManager.ImportedTrain;
         LoadSettings();
+        _teleportManager = new TeleportManager();
     }
 
     public void Draw()
@@ -73,13 +79,14 @@ public class HuntTrainUI : IDisposable
 
     private void LoadSettings()
     {
-        //HuntTrainWindowVisible = _config.HuntTrainWindowVisible;
         _huntTrainWindowSize = _config.HuntTrainWindowSize;
         _huntTrainWindowPos = _config.HuntTrainWindowPos;
-        _showPos = _config.HuntTrainShowPos;
         _showLastSeen = _config.HuntTrainShowLastSeen;
         _useBorder = _config.HuntTrainUseBorder;
         _openMap = _config.HuntTrainNextOpensMap;
+        _teleportMe = _config.HuntTrainNextTeleportMe;
+        _teleportMeOnCommand= _config.HuntTrainNextTeleportMeOnCommand;
+        _showTeleButtons = _config.HuntTrainShowTeleportButtons;
     }
 
     public void SaveSettings()
@@ -87,10 +94,12 @@ public class HuntTrainUI : IDisposable
         //_config.HuntTrainWindowVisible = HuntTrainWindowVisible;
         _config.HuntTrainWindowSize = _huntTrainWindowSize;
         _config.HuntTrainWindowPos = _huntTrainWindowPos;
-        _config.HuntTrainShowPos = _showPos;
         _config.HuntTrainShowLastSeen = _showLastSeen;
         _config.HuntTrainUseBorder = _useBorder;
         _config.HuntTrainNextOpensMap = _openMap;
+        _config.HuntTrainNextTeleportMe = _teleportMe;
+        _config.HuntTrainNextTeleportMeOnCommand = _teleportMeOnCommand;
+        _config.HuntTrainShowTeleportButtons = _showTeleButtons;
     }
 
 
@@ -100,8 +109,8 @@ public class HuntTrainUI : IDisposable
         if (!HuntTrainWindowVisible) return;
 
         var numOfColumns = 2;
-        if (_showPos) numOfColumns++;
         if (_showLastSeen) numOfColumns++;
+        if (_showTeleButtons) numOfColumns++;
 
         ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, new Vector2(0, 0));
         ImGui.SetNextWindowSize(_huntTrainWindowSize, ImGuiCond.FirstUseEver);
@@ -111,11 +120,13 @@ public class HuntTrainUI : IDisposable
             var childSizeX = ImGui.GetWindowSize().X / numOfColumns;
             var childSizeY = _mobList.Count * 23 * ImGuiHelpers.GlobalScale;
             var lastSeenWidth = childSizeX * ImGuiHelpers.GlobalScale; //math is hard, resizing is hard owie :(
-            var posWidth = childSizeX * ImGuiHelpers.GlobalScale;
-            if (_showPos && _showLastSeen)
+            var teleWidth = childSizeX * ImGuiHelpers.GlobalScale;
+            var nameWidth = childSizeX * 1.75f * ImGuiHelpers.GlobalScale;
+            if (_showTeleButtons && _showLastSeen)
             {
+                nameWidth = childSizeX * 2.25f;
                 lastSeenWidth = childSizeX * .75f;
-                posWidth = childSizeX * 1.25f;
+                teleWidth = childSizeX * .75f;
             }
 
             ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing, new Vector2(0, 0));
@@ -128,16 +139,17 @@ public class HuntTrainUI : IDisposable
             #region Headers
 
             ImGui.SameLine();
-            ImGui.BeginChild("NameHeader", new Vector2(childSizeX * 1.75f, 20 * ImGuiHelpers.GlobalScale), _useBorder,
+            ImGui.BeginChild("NameHeader", new Vector2(nameWidth, 20 * ImGuiHelpers.GlobalScale), _useBorder,
                 ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse);
             ImGui.Text("Name");
             ImGui.EndChild();
-            if (_showPos)
+            if (_showTeleButtons)
             {
                 ImGui.SameLine();
-                ImGui.BeginChild("PositionHeader", new Vector2(posWidth, 20 * ImGuiHelpers.GlobalScale),
+                ImGui.BeginChild("TeleButtonHeader", new Vector2(teleWidth, 20 * ImGuiHelpers.GlobalScale),
                     _useBorder, ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse);
-                ImGui.Text("Position");
+                ImGui.Text("Teleport");
+                ImGuiUtil.ImGui_HoveredToolTip("Teleport will initiate even if you are closer to the mob / on the same map. pls adjust thx");
                 ImGui.EndChild();
             }
 
@@ -168,17 +180,25 @@ public class HuntTrainUI : IDisposable
 
             ImGui.Separator();
 
-            ImGui.BeginChild("Name", new Vector2(childSizeX * 1.75f, childSizeY), _useBorder,
+            ImGui.BeginChild("Name", new Vector2(nameWidth, childSizeY), _useBorder,
                 ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse);
             SelectableFromList(HuntTrainMobAttribute.Name);
             ImGui.EndChild();
 
-            if (_showPos)
+            if (_showTeleButtons)
             {
                 ImGui.SameLine();
-                ImGui.BeginChild("Position", new Vector2(posWidth, childSizeY), _useBorder,
+                ImGui.BeginChild("Tele", new Vector2(teleWidth, childSizeY), _useBorder,
                     ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse);
-                SelectableFromList(HuntTrainMobAttribute.Position);
+                foreach (var m in _mobList)
+                {
+                    if (ImGui.Button($"tele##{m.MapID}{m.Position}"))
+                    {
+                        _teleportManager.TeleportToHunt(m);
+                        _trainManager.OpenMap(m, _openMap);
+                    }
+                    if (ImGui.IsItemHovered()) ImGuiUtil.ImGui_HoveredToolTip($"{m.Name}");
+                }
                 ImGui.EndChild();
             }
 
@@ -215,15 +235,23 @@ public class HuntTrainUI : IDisposable
                 if (ImGui.BeginTable("settingsalignment", 2))
                 {
                     ImGui.TableNextColumn();
-                    ImGui.Checkbox("Pos", ref _showPos);
+                    ImGui.Checkbox("Border", ref _useBorder);
                     ImGui.TableNextColumn();
                     ImGui.Checkbox("Last seen", ref _showLastSeen);
                     ImGuiUtil.ImGui_HoveredToolTip("Show how long since the hunt was found.");
                     ImGui.TableNextColumn();
-                    ImGui.Checkbox("Border", ref _useBorder);
-                    ImGui.TableNextColumn();
                     ImGui.Checkbox("Open Map", ref _openMap); //assuming this is allowed as it requires user interaction, but opening map on S rank spawn would be passive and so 'automated'
                     ImGuiUtil.ImGui_HoveredToolTip("Open the relevant map when /hhn used or when name clicked.");
+                    ImGui.TableNextColumn();
+                    ImGui.Checkbox("Tele Buttons", ref _showTeleButtons);
+                    ImGuiUtil.ImGui_HoveredToolTip("Show teleport buttons.\nProbably best to use this instead of tele on click.");
+                    ImGui.TableNextColumn();
+                    ImGui.Checkbox("Teleport on click", ref _teleportMe);
+                    ImGuiUtil.ImGui_HoveredToolTip("Initiate teleport to closest Aetheryte when hunt is clicked.\n" +
+                                                   "this will begin tele if you try to reorder or click just for chat link, so you know, be a bit careful");
+                    ImGui.TableNextColumn();
+                    ImGui.Checkbox("Teleport on command", ref _teleportMeOnCommand);
+                    ImGuiUtil.ImGui_HoveredToolTip("Initiate teleport to closest Aetheryte when /hhn used.");
                     ImGui.EndTable();
                 }
 
@@ -456,7 +484,11 @@ public class HuntTrainUI : IDisposable
     {
         if (_selectedIndex < _mobList.Count) _mobList[_selectedIndex].Dead = true;
         SelectNext();
-        if (!_mobList[_selectedIndex].Dead) _trainManager.SendTrainFlag(_selectedIndex, _openMap);
+        if (!_mobList[_selectedIndex].Dead)
+        {
+            _trainManager.SendTrainFlag(_selectedIndex, _openMap);
+           if (_teleportMeOnCommand) _teleportManager.TeleportToHunt(_mobList[_selectedIndex]);
+        }
         else _trainManager.SendTrainFlag(-1, false);
     }
 
@@ -474,13 +506,12 @@ public class HuntTrainUI : IDisposable
 
             if (n == _selectedIndex) ImGui.Selectable($"{label}", true, ImGuiSelectableFlags.None, new Vector2(ImGui.GetContentRegionAvail().X, 23f * ImGuiHelpers.GlobalScale));
             else ImGui.Selectable($"{label}", false, ImGuiSelectableFlags.None, new Vector2(ImGui.GetContentRegionAvail().X, 23f * ImGuiHelpers.GlobalScale));
-
-            /*if (ImGui.IsItemActive() && ImGui.IsMouseDoubleClicked(ImGuiMouseButton.Left)) //useless
+     
+            if (ImGui.IsItemActive() && ImGui.IsMouseClicked(ImGuiMouseButton.Left))
             {
-                mob.Dead = !mob.Dead;
-            }*/
-            //how to check if mouse held?
-            if (ImGui.IsItemActive() && ImGui.IsMouseClicked(ImGuiMouseButton.Left)) _trainManager.SendTrainFlag(n, _openMap);
+                _trainManager.SendTrainFlag(n, _openMap);
+                if (_teleportMe) _teleportManager.TeleportToHunt(mob);
+            }
 
             if (ImGui.BeginPopupContextItem($"ContextMenu##{mob.Name}", ImGuiPopupFlags.MouseButtonRight))
             {

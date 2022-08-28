@@ -87,6 +87,13 @@ public class TrainManager
 
     }
 
+    public void OpenMap(HuntTrainMob mob, bool openMap)
+    {
+        if (!openMap) return;
+        var mlp = (MapLinkPayload)mob.MapLink.Payloads[0];
+        _gameGui.OpenMapWithMapLink(mlp);
+    }
+
     public void Import(string importCode)
     {
         ImportedTrain.Clear(); //should be empty already
