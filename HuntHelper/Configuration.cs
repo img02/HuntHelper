@@ -107,14 +107,14 @@ namespace HuntHelper
         #endregion
 
         #region Hunt Train Window
-        //public bool HuntTrainWindowVisible { get; set; } = false;
         public Vector2 HuntTrainWindowSize { get; set; } = new Vector2(250, 400);
         public Vector2 HuntTrainWindowPos { get; set; } = new Vector2(150, 150);
-        public bool HuntTrainShowPos { get; set; } = false;
         public bool HuntTrainShowLastSeen { get; set; } = false;
         public bool HuntTrainUseBorder { get; set; } = false;
-
         public bool HuntTrainNextOpensMap { get; set; } = false;
+        public bool HuntTrainNextTeleportMe { get; set; } = false;
+        public bool HuntTrainNextTeleportMeOnCommand { get; set; } = false;
+        public bool HuntTrainShowTeleportButtons { get; set; } = false;
 
         #endregion
 
