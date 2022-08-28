@@ -6,7 +6,7 @@ Dalamud plugin for Hunting
 https://user-images.githubusercontent.com/70348218/184215756-fd223aad-ec4d-44cc-a02b-8b4eda07425e.mov
 
 Record hunt trains and save taken spawn positions.  
-![record spawn points and hunt trains](https://user-images.githubusercontent.com/70348218/184554083-89d5ca17-c430-4a81-8e55-caa94c88fc90.png)
+![record spawn points and hunt trains](https://user-images.githubusercontent.com/70348218/187097275-8daee2fc-e5a3-4e22-88ad-58c988445d5e.png)
 
 
 ![take_spawn_points](https://user-images.githubusercontent.com/70348218/184554115-6f7d0c28-ed9c-4f3b-b35b-8b2c9405d9ea.png)
