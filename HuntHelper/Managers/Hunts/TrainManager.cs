@@ -10,6 +10,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Numerics;
+using Dalamud.Data;
+using Lumina.Excel.GeneratedSheets;
 
 namespace HuntHelper.Managers.Hunts;
 
@@ -17,6 +19,7 @@ public class TrainManager
 {
     private readonly ChatGui _chatGui;
     private readonly GameGui _gameGui;
+    private readonly DataManager _dataManager;
 
     private readonly string _huntTrainFilePath;
 
@@ -24,13 +27,14 @@ public class TrainManager
     public readonly List<HuntTrainMob> ImportedTrain;
     public bool RecordTrain = false;
 
-    public TrainManager(ChatGui chatGui, GameGui gameGui, string huntTrainFilePath)
+    public TrainManager(ChatGui chatGui, GameGui gameGui, DataManager dataManager, string huntTrainFilePath)
     {
         HuntTrain = new List<HuntTrainMob>();
         ImportedTrain = new List<HuntTrainMob>();
 
         _chatGui = chatGui;
         _gameGui = gameGui;
+        _dataManager = dataManager;
 
         _huntTrainFilePath = huntTrainFilePath;
         LoadHuntTrainRecord();
@@ -41,7 +45,7 @@ public class TrainManager
         if (HuntTrain.Any(m => m.Name == mob.Name.ToString())) return;
         var position = new Vector2(MapHelpers.ConvertToMapCoordinate(mob.Position.X, zoneMapCoordSize),
             MapHelpers.ConvertToMapCoordinate(mob.Position.Z, zoneMapCoordSize));
-        var trainMob = new HuntTrainMob(mob.Name.TextValue, territoryid, mapid, mapName, position, DateTime.UtcNow, false);
+        var trainMob = new HuntTrainMob(mob.Name.TextValue, mob.NameId, territoryid, mapid, mapName, position, DateTime.UtcNow, false);
         HuntTrain.Add(trainMob);
     }
 
@@ -99,6 +103,7 @@ public class TrainManager
         ImportedTrain.Clear(); //should be empty already
         var temp = ExportImport.Import(importCode, ImportedTrain);
         if (temp.Count > 0) ImportedTrain.AddRange(temp);
+        LocaliseNames(ImportedTrain);
     }
 
     public void ImportTrainAll()
@@ -146,5 +151,11 @@ public class TrainManager
     {
         var serialised = JsonConvert.SerializeObject(HuntTrain, Formatting.Indented);
         File.WriteAllText(_huntTrainFilePath, serialised);
+    }
+
+
+    private void LocaliseNames(List<HuntTrainMob> trainList)
+    {
+        trainList.ForEach(m => m.Name = _dataManager.Excel.GetSheet<BNpcName>()?.GetRow(m.MobID)?.Singular.ToString() ?? m.Name);
     }
 }

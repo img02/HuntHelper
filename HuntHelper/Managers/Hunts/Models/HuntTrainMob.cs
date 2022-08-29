@@ -7,8 +7,9 @@ namespace HuntHelper.Managers.Hunts.Models;
 
 public class HuntTrainMob
 {
-    public string Name { get; init; }
-    public string MapName { get; init; }
+    public string Name { get; set; }
+    public uint MobID { get; init; }
+    public string MapName { get; init; } //map name never actually gets used...
     public DateTime LastSeenUTC { get; set; }
     public Vector2 Position { get; set; }
     [JsonIgnore]
@@ -18,10 +19,11 @@ public class HuntTrainMob
     public uint TerritoryID { get; init; }
     public uint MapID { get; init; }
 
-    [JsonConstructor] //only display name, map- maybe lastseen as tooltip?       >>>> or to the side and minute since last seen XXm ago. <<<gud idea
-    public HuntTrainMob(string name, uint territoryId, uint mapId, string mapName, Vector2 position, DateTime lastSeenUTC, bool dead = false)
+    [JsonConstructor] 
+    public HuntTrainMob(string name, uint mobId, uint territoryId, uint mapId, string mapName, Vector2 position, DateTime lastSeenUTC, bool dead = false)
     {
         Name = name;
+        MobID = mobId;
         MapName = mapName;
         Position = position;
         LastSeenUTC = lastSeenUTC;

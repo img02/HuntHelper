@@ -113,7 +113,9 @@ public class HuntManager
         if (_trainManager.UpdateLastSeen(mob)) return;
         if (!_trainManager.RecordTrain) return;
         //only record A ranks
+#if !DEBUG //record all ranks while debugging coz weird ppl still kill ARR A ranks which makes it hard to find hunts to test with.
         if (GetHuntRank(mob.NameId) != HuntRank.A) return;
+#endif
         _trainManager.AddMob(mob, territoryid, mapid, mapName, zoneMapCoordSize);
     }
 
@@ -166,7 +168,7 @@ public class HuntManager
         }
     }
 
-    #region rework later?
+#region rework later?
 
     //sent fly text in-game on the player  -- move these sestring colours from here and chatmsg to consts or something
     private void SendFlyText(HuntRank rank, BattleNpc mob, bool enabled)
@@ -307,7 +309,7 @@ public class HuntManager
         return msg;
     }
 
-    #endregion
+#endregion
 
     public List<BattleNpc> GetCurrentMobs()
     {
