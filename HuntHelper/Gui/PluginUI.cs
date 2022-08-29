@@ -3,6 +3,7 @@ using Dalamud.Game.ClientState;
 using Dalamud.Game.ClientState.Objects;
 using Dalamud.Game.ClientState.Objects.Enums;
 using Dalamud.Game.ClientState.Objects.Types;
+using Dalamud.Game.Gui;
 using Dalamud.Interface;
 using Dalamud.Interface.Components;
 using Dalamud.Plugin;
@@ -20,8 +21,6 @@ using System.Numerics;
 using System.Speech.Synthesis;
 using System.Threading;
 using System.Threading.Tasks;
-using Dalamud.Game.Gui;
-using Dalamud.Logging;
 
 namespace HuntHelper.Gui
 {

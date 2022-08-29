@@ -1,11 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using Dalamud.Logging;
+using Dalamud.Plugin.Ipc.Exceptions;
+using HuntHelper.Managers.Hunts.Models;
+using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using Dalamud.Logging;
-using Dalamud.Plugin.Ipc.Exceptions;
-using FFXIVClientStructs.FFXIV.Client.Game.UI;
-using HuntHelper.Managers.Hunts.Models;
-using static FFXIVClientStructs.FFXIV.Client.UI.Misc.RaptureMacroModule;
 
 namespace HuntHelper.Managers;
 
@@ -212,20 +210,20 @@ public unsafe class TeleportManager
 
         #endregion
     };
-    
+
     public bool TeleportPluginNotFound = false;
-    
+
     public void TeleportToHunt(HuntTrainMob mob)
     {
         if (!Aetherytes.Exists(a => a.TerritoryID == mob.TerritoryID)) return;
         var aeth = GetNearestAetheryte(mob.TerritoryID, mob.Position);
         try
         {
-            var result = Plugin.TeleportIpc.InvokeFunc(aeth.AetheryteID, aeth.SubIndex);
+            Plugin.TeleportIpc.InvokeFunc(aeth.AetheryteID, aeth.SubIndex);
         }
         catch (IpcNotReadyError)
         {
-            PluginLog.Error("Teleport IPC not found.");
+            PluginLog.Error("Teleport IPC not found. Must have Teleporter Plugin installed to use this feature.");
             TeleportPluginNotFound = true;
         }
     }

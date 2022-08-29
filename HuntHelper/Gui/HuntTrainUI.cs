@@ -1,5 +1,6 @@
 ﻿using Dalamud.Interface;
 using Dalamud.Interface.Components;
+using HuntHelper.Managers;
 using HuntHelper.Managers.Hunts;
 using HuntHelper.Managers.Hunts.Models;
 using HuntHelper.Utilities;
@@ -10,7 +11,6 @@ using System.Linq;
 using System.Numerics;
 using System.Threading;
 using System.Threading.Tasks;
-using HuntHelper.Managers;
 
 namespace HuntHelper.Gui;
 
@@ -29,7 +29,7 @@ public class HuntTrainUI : IDisposable
     #region user customisable - config
     private Vector2 _huntTrainWindowSize = new Vector2(310, 270);
     private Vector2 _huntTrainWindowPos = new Vector2(150, 150);
-    
+
     private bool _showLastSeen = true;
     private bool _useBorder = false;
     private bool _openMap = false;
@@ -85,7 +85,7 @@ public class HuntTrainUI : IDisposable
         _useBorder = _config.HuntTrainUseBorder;
         _openMap = _config.HuntTrainNextOpensMap;
         _teleportMe = _config.HuntTrainNextTeleportMe;
-        _teleportMeOnCommand= _config.HuntTrainNextTeleportMeOnCommand;
+        _teleportMeOnCommand = _config.HuntTrainNextTeleportMeOnCommand;
         _showTeleButtons = _config.HuntTrainShowTeleportButtons;
     }
 
@@ -329,14 +329,14 @@ public class HuntTrainUI : IDisposable
     {
         var center = ImGui.GetWindowPos() + ImGui.GetWindowSize() / 2;
         ImGui.SetNextWindowPos(center, ImGuiCond.Appearing, new Vector2(0.5f, 0.5f));
-        ImGui.SetNextWindowSize(new Vector2(315*ImGuiHelpers.GlobalScale, 120 * ImGuiHelpers.GlobalScale), ImGuiCond.Always);
+        ImGui.SetNextWindowSize(new Vector2(315 * ImGuiHelpers.GlobalScale, 120 * ImGuiHelpers.GlobalScale), ImGuiCond.Always);
         ImGui.PushStyleColor(ImGuiCol.ResizeGrip, 0);
-        ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, new Vector2(8,8));
+        ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, new Vector2(8, 8));
         if (ImGui.BeginPopupModal("Teleporter Plugin Not Found##ModalPopupWindowThingymajig"))
         {
             ImGui.TextWrapped("Teleporting requires the Teleporter Plugin by Pohky.\nPlease install it via /xlplugins or uncheck teleport options.");
             ImGui.Dummy(Vector2.One);
-            ImGui.SetCursorPosX(ImGui.GetWindowSize().X-80f*ImGuiHelpers.GlobalScale);
+            ImGui.SetCursorPosX(ImGui.GetWindowSize().X - 80f * ImGuiHelpers.GlobalScale);
             if (ImGui.Button("okey-dokey"))
             {
                 _teleportManager.TeleportPluginNotFound = false;
@@ -511,7 +511,7 @@ public class HuntTrainUI : IDisposable
         if (!_mobList[_selectedIndex].Dead)
         {
             _trainManager.SendTrainFlag(_selectedIndex, _openMap);
-           if (_teleportMeOnCommand) _teleportManager.TeleportToHunt(_mobList[_selectedIndex]);
+            if (_teleportMeOnCommand) _teleportManager.TeleportToHunt(_mobList[_selectedIndex]);
         }
         else _trainManager.SendTrainFlag(-1, false);
     }
@@ -530,7 +530,7 @@ public class HuntTrainUI : IDisposable
 
             if (n == _selectedIndex) ImGui.Selectable($"{label}", true, ImGuiSelectableFlags.None, new Vector2(ImGui.GetContentRegionAvail().X, 23f * ImGuiHelpers.GlobalScale));
             else ImGui.Selectable($"{label}", false, ImGuiSelectableFlags.None, new Vector2(ImGui.GetContentRegionAvail().X, 23f * ImGuiHelpers.GlobalScale));
-     
+
             if (ImGui.IsItemActive() && ImGui.IsMouseClicked(ImGuiMouseButton.Left))
             {
                 _trainManager.SendTrainFlag(n, _openMap);

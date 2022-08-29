@@ -1,4 +1,5 @@
 ﻿using Dalamud.Game.ClientState;
+using Dalamud.Game.ClientState.Objects;
 using Dalamud.Game.Gui;
 using Dalamud.Game.Text;
 using Dalamud.Interface;
@@ -15,8 +16,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using Dalamud.Game.ClientState.Objects;
-using Dalamud.Game.ClientState.Objects.Enums;
 
 namespace HuntHelper.Gui;
 
@@ -86,7 +85,7 @@ public class CounterUI : IDisposable
         ImGui.SetNextWindowPos(_windowPos, ImGuiCond.FirstUseEver);
         if (ImGui.Begin("Counter", ref WindowVisible, ImGuiWindowFlags.NoScrollbar))
         {
-            if (_clientState.TerritoryType == (ushort) MapID.UltimaThule)
+            if (_clientState.TerritoryType == (ushort)MapID.UltimaThule)
             {
                 DrawWeeEaCounter();
                 return;
