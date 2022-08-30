@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
+
 namespace HuntHelper.Managers.Counters;
 
 public abstract class CounterBase
@@ -33,6 +34,9 @@ public abstract class CounterBase
 
     public void TryAddFromLogLine(string msg)
     {
+        /*PluginLog.Error($"|{msg}|");
+        PluginLog.Error($"|{RegexPattern}|");
+        PluginLog.Error($"{Regex.IsMatch(msg, RegexPattern)}");*/
         if (Regex.IsMatch(msg, RegexPattern)) FindNameAndAdd(msg);
     }
 
@@ -40,11 +44,10 @@ public abstract class CounterBase
     {
         foreach (var name in NamesToMatch)
         {
-            if (msg.ToLowerInvariant().Contains(name.ToLowerInvariant()))
-            {
-                AddOne(name);
-                return; //if a matching name is found, stop looking.
-            }
+            //PluginLog.Error(name);
+            if (!Regex.IsMatch(msg.ToLowerInvariant(), name.ToLowerInvariant())) continue;
+            AddOne(name);
+            return; //if a matching name is found, stop looking.
         }
     }
     private void AddCountRequirements()

@@ -1,10 +1,7 @@
 ﻿using Dalamud.Data;
+using Lumina.Data;
 using Lumina.Excel.GeneratedSheets;
 using System;
-using System.Speech.Synthesis;
-using Dalamud;
-using Dalamud.Logging;
-using Lumina.Data;
 
 namespace HuntHelper.Utilities;
 
