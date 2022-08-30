@@ -168,7 +168,7 @@ public class HuntManager
         }
     }
 
-#region rework later?
+    #region rework later?
 
     //sent fly text in-game on the player  -- move these sestring colours from here and chatmsg to consts or something
     private void SendFlyText(HuntRank rank, BattleNpc mob, bool enabled)
@@ -309,7 +309,7 @@ public class HuntManager
         return msg;
     }
 
-#endregion
+    #endregion
 
     public List<BattleNpc> GetCurrentMobs()
     {

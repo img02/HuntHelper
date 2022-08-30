@@ -1,17 +1,17 @@
-﻿using Dalamud.Game.ClientState.Objects.Types;
+﻿using Dalamud.Data;
+using Dalamud.Game.ClientState.Objects.Types;
 using Dalamud.Game.Gui;
 using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Game.Text.SeStringHandling.Payloads;
 using HuntHelper.Managers.Hunts.Models;
 using HuntHelper.Utilities;
+using Lumina.Excel.GeneratedSheets;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Numerics;
-using Dalamud.Data;
-using Lumina.Excel.GeneratedSheets;
 
 namespace HuntHelper.Managers.Hunts;
 
@@ -42,7 +42,7 @@ public class TrainManager
 
     public void AddMob(BattleNpc mob, uint territoryid, uint mapid, string mapName, float zoneMapCoordSize)
     {   //if already exists in train, return
-        if (HuntTrain.Any(m => m.Name == mob.Name.ToString())) return;
+        if (HuntTrain.Any(m => m.MobID == mob.NameId)) return;
         var position = new Vector2(MapHelpers.ConvertToMapCoordinate(mob.Position.X, zoneMapCoordSize),
             MapHelpers.ConvertToMapCoordinate(mob.Position.Z, zoneMapCoordSize));
         var trainMob = new HuntTrainMob(mob.Name.TextValue, mob.NameId, territoryid, mapid, mapName, position, DateTime.UtcNow, false);
@@ -52,7 +52,7 @@ public class TrainManager
 
     public bool UpdateLastSeen(BattleNpc mob)
     {
-        var existing = HuntTrain.FirstOrDefault(m => m.Name == mob.Name.ToString());
+        var existing = HuntTrain.FirstOrDefault(m => m.MobID == mob.NameId);
         if (existing == null) return false;
         existing.LastSeenUTC = DateTime.UtcNow;
         return true;
@@ -116,11 +116,11 @@ public class TrainManager
     {
         foreach (var m in ImportedTrain)
         {
-            if (HuntTrain.All(mob => mob.Name != m.Name)) HuntTrain.Add(m);
+            if (HuntTrain.All(mob => mob.MobID != m.MobID)) HuntTrain.Add(m);
 
             if (updateOldTime)
             {   //inefficient?
-                var toUpdate = HuntTrain.FirstOrDefault(mob => mob.Name == m.Name);
+                var toUpdate = HuntTrain.FirstOrDefault(mob => mob.MobID == m.MobID);
                 if (toUpdate == null) continue;
                 if (m.LastSeenUTC > toUpdate.LastSeenUTC) toUpdate.LastSeenUTC = m.LastSeenUTC;
             }

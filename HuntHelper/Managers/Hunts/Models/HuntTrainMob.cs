@@ -19,7 +19,7 @@ public class HuntTrainMob
     public uint TerritoryID { get; init; }
     public uint MapID { get; init; }
 
-    [JsonConstructor] 
+    [JsonConstructor]
     public HuntTrainMob(string name, uint mobId, uint territoryId, uint mapId, string mapName, Vector2 position, DateTime lastSeenUTC, bool dead = false)
     {
         Name = name;
