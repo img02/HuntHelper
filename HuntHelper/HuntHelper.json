@@ -13,7 +13,7 @@
     "mob"
   ],
   "InternalName": "Hunt Helper",
-  "AssemblyVersion": "0.0.0.3",
+  "AssemblyVersion": "0.0.0.4",
   "RepoUrl": "https://github.com/imaginary-png/HuntHelper",
   "ApplicableVersion": "any",
   "DalamudApiLevel": 7,
