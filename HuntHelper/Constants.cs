@@ -1,44 +1,122 @@
-﻿namespace HuntHelper;
+﻿using Dalamud;
+
+namespace HuntHelper;
 
 public static class Constants
 {
     public const string BaseImageUrl = "https://raw.githubusercontent.com/imaginary-png/HuntHelper-Resources/main/Images/Maps/";
     public const string RepoUrl = "https://github.com/imaginary-png/HuntHelper-Resources/";
 
-    //arr
-    public static readonly string[] Minhocao = { "Earth Sprite" };
-    //hw
-    public static readonly string[] Leucrotta = { "Allagan Chimera", "Lesser Hydra", "Meracydian Vouivre" };
-    public static readonly string[] Gandawera = { "Aurum Regis Ore", "Seventh Heaven" };
-    //sb
-    public static readonly string[] Okina = { "Naked Yumemi", "Yumemi" }; //naked goes first here, otherwise minor issue w/ matching 'naked yumemi' to 'yumemi'
-    public static readonly string[] Udumbara = { "Leshy", "Diakka" };
-    public static readonly string[] SaltAndLight = { "Throw" };
-    //shb
-    public static readonly string[] ForgivenPedantry = { "Dwarven Cotton Boll" };
-    public static readonly string[] Ixtab = { "Cracked Ronkan Doll", "Cracked Ronkan Thorn", "Cracked Ronkan Vessel" };
-    //ew
-    public static readonly string[] Sphatika = { "Asvattha", "Pisaca", "Vajralangula" };
-    public static readonly string[] Ruinator = { "Thinker", "Wanderer", "Weeper" };
+    #region English
+    //en
+    private static readonly string[] Minhocao_en = { "Earth Sprite" };
+    private static readonly string[] Leucrotta_en = { "Allagan Chimera", "Lesser Hydra", "Meracydian Vouivre" };
+    private static readonly string[] Gandawera_en = { "Aurum Regis Ore", "Seventh Heaven" };
+    private static readonly string[] Okina_en = { "Naked Yumemi", "Yumemi" }; //naked goes first here, otherwise minor issue w/ matching 'naked yumemi' to 'yumemi'
+    private static readonly string[] Udumbara_en = { "Leshy", "Diakka" };
+    private static readonly string[] SaltAndLight_en = { "Throw" };
+    private static readonly string[] ForgivenPedantry_en = { "Dwarven Cotton Boll" };
+    private static readonly string[] Ixtab_en = { "Cracked Ronkan Doll", "Cracked Ronkan Thorn", "Cracked Ronkan Vessel" };
+    private static readonly string[] Sphatika_en = { "Asvattha", "Pisaca", "Vajralangula" };
+    private static readonly string[] Ruinator_en = { "Thinker", "Wanderer", "Weeper" };
 
-    //arr
-    public const string MinhocaoRegex = $"{BattleRegexBase}earth sprite.";
-    //hw
-    public const string LeucrottaRegex = $"{BattleRegexBase}(Allagan chimera|lesser hydra|Meracydian vouivre).";
-    public const string GandaweraRegex = $"{GatheringRegexBase}(aurum regis ore|seventh heaven)";
-    //sb
-    public const string OkinaRegex = $"{BattleRegexBase}(Yumemi|Naked Yumemi).";
-    public const string UdumbaraRegex = $"{BattleRegexBase}(Leshy|Diakka).";
-    public const string SaltAndLightRegex = $"You throw away.*";
-    //sbh
-    public const string ForgivenPedantryRegex = $"{GatheringRegexBase}dwarven cotton (boll|bolls)";
-    public const string IxtabRegex = $"{BattleRegexBase}Cracked (Ronkan Doll|Ronkan Thorn|Ronkan Vessel).";
-    //ew
-    public const string SphatikaRegex = $"{BattleRegexBase}(Asvattha|Pisaca|Vajralangula).";
-    public const string RuinatorRegex = $"{BattleRegexBase}(Thinker|Wanderer|Weeper).";
+    private const string MinhocaoRegex_en = $"{BattleRegexBase_en}earth sprite.";
+    private const string LeucrottaRegex_en = $"{BattleRegexBase_en}(Allagan chimera|lesser hydra|Meracydian vouivre).";
+    private const string GandaweraRegex_en = $"{GatheringRegexBase_en}(aurum regis ore|seventh heaven)";
+    private const string OkinaRegex_en = $"{BattleRegexBase_en}(Yumemi|Naked Yumemi).";
+    private const string UdumbaraRegex_en = $"{BattleRegexBase_en}(Leshy|Diakka).";
+    private const string SaltAndLightRegex_en = $"You throw away.*";
+    private const string ForgivenPedantryRegex_en = $"{GatheringRegexBase_en}dwarven cotton (boll|bolls)";
+    private const string IxtabRegex_en = $"{BattleRegexBase_en}Cracked (Ronkan Doll|Ronkan Thorn|Ronkan Vessel).";
+    private const string SphatikaRegex_en = $"{BattleRegexBase_en}(Asvattha|Pisaca|Vajralangula).";
+    private const string RuinatorRegex_en = $"{BattleRegexBase_en}(Thinker|Wanderer|Weeper).";
+    private const string BattleRegexBase_en = "(?i)(defeat|defeats) the ";
+    private const string GatheringRegexBase_en = "(?i)You obtain.*";
+    #endregion
 
-    private const string BattleRegexBase = "(?i)(defeat|defeats) the ";
-    private const string GatheringRegexBase = "(?i)You obtain.*";
+    #region Japanese
+    //jp
+    private static readonly string[] Minhocao_ja = { "アーススプライト" };
+    private static readonly string[] Leucrotta_ja = { "アラガン・キマイラ", "レッサーハイドラ", "メラシディアン・ヴィーヴル" };
+    private static readonly string[] Gandawera_ja = { "皇金鉱", "アストラルフラワー" };
+    private static readonly string[] Okina_ja = { "カラナシ・ユメミ", "ユメミガイ" };
+    private static readonly string[] Udumbara_ja = { "レーシー", "ディアッカ" };
+    private static readonly string[] SaltAndLight_ja = { "捨てた。" };
+    private static readonly string[] ForgivenPedantry_ja = { "ドワーフ綿花" };
+    private static readonly string[] Ixtab_ja = { "クラックド・ロンカドール", "クラックド・ロンカソーン", "クラックド・ロンカヴェッセル" };
+    private static readonly string[] Sphatika_ja = { "アシュヴァッタ", "ピシャーチャ", "ヴァジュララングラ" };
+    private static readonly string[] Ruinator_ja = { "シンカー", "ワンダラー", "ウィーパー" };
+
+
+    private const string MinhocaoRegex_ja = $"アーススプライト{BattleRegexBase_ja}";
+    private const string LeucrottaRegex_ja = $"(アラガン・キマイラ|レッサーハイドラ|メラシディアン・ヴィーヴル){BattleRegexBase_ja}";
+    private const string GandaweraRegex_ja = $"(?i)(皇金鉱|アストラルフラワー){GatheringRegexBase_ja}";
+    private const string OkinaRegex_ja = $"{BattleRegexBase_ja}(カラナシ・ユメミ|ユメミガイ).";
+    private const string UdumbaraRegex_ja = $"(レーシー|ディアッカ){BattleRegexBase_ja}";
+    private const string SaltAndLightRegex_ja = $".*を捨てた。";
+    private const string ForgivenPedantryRegex_ja = $"ドワーフ綿花{GatheringRegexBase_ja}";
+    private const string IxtabRegex_ja = $"(クラックド・ロンカドール|クラックド・ロンカソーン|クラックド・ロンカヴェッセル){BattleRegexBase_ja}";
+    private const string SphatikaRegex_ja = $"(アシュヴァッタ|ピシャーチャ|ヴァジュララングラ){BattleRegexBase_ja}";
+    private const string RuinatorRegex_ja = $"(シンカー|ワンダラー|ウィーパー){BattleRegexBase_ja}";
+    private const string BattleRegexBase_ja = "を倒した。"; //XXXは、シンカーを倒した。
+    private const string GatheringRegexBase_ja = "を入手した。";
+    #endregion
+
+
+    #region German
+    //de
+    private static readonly string[] Minhocao_de = { "Erd-Exergon" };
+    private static readonly string[] Leucrotta_de = { "allagisch[a] Chimära", "klein[a] Hydra", "meracydisch[a] Vivel" };
+    private static readonly string[] Gandawera_de = { "Königsgold-Erz", "Siebter Himmel-Blume" };
+    private static readonly string[] Okina_de = { "Nackt-Yumemi", "Yumemi" };
+    private static readonly string[] Udumbara_de = { "Leschij", "Diakka" };
+    private static readonly string[] SaltAndLight_de = { "wirfst" };
+    private static readonly string[] ForgivenPedantry_de = { "Zwergenwolle" };
+    private static readonly string[] Ixtab_de = { "kaputt[a] Ronka-Totem", "kaputt[a] Ruinenquadroquader", "kaputt[a] Ruinenquader" };
+    private static readonly string[] Sphatika_de = { "Asvattha", "Pisaca", "Vajralangula" };
+    private static readonly string[] Ruinator_de = { "Denker", "Streuner", "Schluchzer" };
+
+    private const string MinhocaoRegex_de = $"{BattleRegexBase_de}Erd-Exergon besiegt.";
+    private const string LeucrottaRegex_de = $"{BattleRegexBase_de}(allagisch[a] Chimära|klein[a] Hydra|meracydisch[a] Vivel) besiegt.";
+    private const string GandaweraRegex_de = $"(?i)(Königsgold-Erz|Siebter Himmel-Blume){GatheringRegexBase_de}";
+    private const string OkinaRegex_de = $"{BattleRegexBase_de}(Yumemi|Nackt-Yumemi) besiegt.";
+    private const string UdumbaraRegex_de = $"{BattleRegexBase_de}(Leschij|Diakka) besiegt.";
+    private const string SaltAndLightRegex_de = $"Du wirfst.*"; //Du wirfst einen  Königsgold-Erzklumpen weg.
+    private const string ForgivenPedantryRegex_de = $".*Zwergenwolle{GatheringRegexBase_de}";
+    private const string IxtabRegex_de = $"{BattleRegexBase_de}(kaputt[a] Ronka-Totem|kaputt[a] Ruinenquadroquader|kaputt[a] Ruinenquader) besiegt.";
+    private const string SphatikaRegex_de = $"{BattleRegexBase_de}(Asvattha|Pisaca|Vajralangula) besiegt.";
+    private const string RuinatorRegex_de = $"{BattleRegexBase_de}(Denker|Streuner|Schluchzer) besiegt.";
+    private const string BattleRegexBase_de = "(?i)(hast|hat) .*"; //Du hast den Denker besiegt. - den das ?
+    private const string GatheringRegexBase_de = ".* erhalten.";
+    #endregion
+
+    #region French
+    //fr
+    private static readonly string[] Minhocao_fr = { "élémentaire de terre" };
+    private static readonly string[] Leucrotta_fr = { "chimère allagoise", "hydre mineure", "vouivre méracydienne" };
+    private static readonly string[] Gandawera_fr = { "Minerai d'aurum regis", "Fleur astrale | fleurs astrales" }; //sb
+    private static readonly string[] Okina_fr = { "yumemi nu", "Yumemi" };
+    private static readonly string[] Udumbara_fr = { "liéchi", "Diakka" };
+    private static readonly string[] SaltAndLight_fr = { "jetez" }; //shb
+    private static readonly string[] ForgivenPedantry_fr = { "Fleur de coton nain" };
+    private static readonly string[] Ixtab_fr = { "poupée ronka fissurée", "épine ronka fissurée", "réceptacle ronka fissuré" };//lol//ew
+    private static readonly string[] Sphatika_fr = { "Asvattha", "pishacha", "Vajralangula" };
+    private static readonly string[] Ruinator_fr = { "penseur", "vagabond", "lamenteur" };
+
+    private const string MinhocaoRegex_fr = $"{BattleRegexBase_fr}élémentaire de terre.";
+    private const string LeucrottaRegex_fr = $"{BattleRegexBase_fr}(chimère allagoise|hydre mineure|vouivre méracydienne).";
+    private const string GandaweraRegex_fr = $"{GatheringRegexBase_fr}(Minerai d'aurum regis|Fleur astrale|fleurs astrales).";
+    private const string OkinaRegex_fr = $"{BattleRegexBase_fr}(yumemi nu|Yumemi).";
+    private const string UdumbaraRegex_fr = $"{BattleRegexBase_fr}(liéchi|Diakka).";
+    private const string SaltAndLightRegex_fr = $"Vous jetez.*"; //Vous jetez un  morceau de minerai d'aurum regis
+    private const string ForgivenPedantryRegex_fr = $"{GatheringRegexBase_fr}Fleur de coton nain";
+    private const string IxtabRegex_fr = $"{BattleRegexBase_fr}(poupée ronka fissurée|épine ronka fissurée|réceptacle ronka fissuré).";
+    private const string SphatikaRegex_fr = $"{BattleRegexBase_fr}(Asvattha|pishacha|Vajralangula).";
+    private const string RuinatorRegex_fr = $"{BattleRegexBase_fr}(penseur|vagabond|lamenteur).";
+    private const string BattleRegexBase_fr = "(?i)(a|avez) vaincu .*"; //Vous avez vaincu l'élémentaire de terre.
+    private const string GatheringRegexBase_fr = "(?i)Vous obtenez.*";
+    #endregion
+
 
     //ss ids
     public const uint SS_Ker = 10615;
@@ -46,4 +124,107 @@ public static class Constants
 
     //minion ids
     public const uint WeeEa = 423;
+
+
+    public static string[] Minhocao { get; private set; } = Minhocao_en;
+    public static string[] Leucrotta { get; private set; } = Leucrotta_en;
+    public static string[] Gandawera { get; private set; } = Gandawera_en;
+    public static string[] Okina { get; private set; } = Okina_en;
+    public static string[] Udumbara { get; private set; } = Udumbara_en;
+    public static string[] SaltAndLight { get; private set; } = SaltAndLight_en;
+    public static string[] ForgivenPedantry { get; private set; } = ForgivenPedantry_en;
+    public static string[] Ixtab { get; private set; } = Ixtab_en;
+    public static string[] Sphatika { get; private set; } = Sphatika_en;
+    public static string[] Ruinator { get; private set; } = Ruinator_en;
+
+    public static string MinhocaoRegex { get; private set; } = MinhocaoRegex_en;
+    public static string LeucrottaRegex { get; private set; } = LeucrottaRegex_en;
+    public static string GandaweraRegex { get; private set; } = GandaweraRegex_en;
+    public static string OkinaRegex { get; private set; } = OkinaRegex_en;
+    public static string UdumbaraRegex { get; private set; } = UdumbaraRegex_en;
+    public static string SaltAndLightRegex { get; private set; } = SaltAndLightRegex_en;
+    public static string ForgivenPedantryRegex { get; private set; } = ForgivenPedantryRegex_en;
+    public static string IxtabRegex { get; private set; } = IxtabRegex_en;
+    public static string SphatikaRegex { get; private set; } = SphatikaRegex_en;
+    public static string RuinatorRegex { get; private set; } = RuinatorRegex_en;
+
+    public static void SetCounterLanguage(ClientLanguage lang)
+    {
+        if (lang == ClientLanguage.English) return;
+        if (lang == ClientLanguage.French)
+        {
+            Minhocao = Minhocao_fr;
+            Leucrotta = Leucrotta_fr;
+            Gandawera = Gandawera_fr;
+            Okina = Okina_fr;
+            Udumbara = Udumbara_fr;
+            SaltAndLight = SaltAndLight_fr;
+            ForgivenPedantry = ForgivenPedantry_fr;
+            Ixtab = Ixtab_fr;
+            Sphatika = Sphatika_fr;
+            Ruinator = Ruinator_fr;
+
+            MinhocaoRegex = MinhocaoRegex_fr;
+            LeucrottaRegex = LeucrottaRegex_fr;
+            GandaweraRegex = GandaweraRegex_fr;
+            OkinaRegex = OkinaRegex_fr;
+            UdumbaraRegex = UdumbaraRegex_fr;
+            SaltAndLightRegex = SaltAndLightRegex_fr;
+            ForgivenPedantryRegex = ForgivenPedantryRegex_fr;
+            IxtabRegex = IxtabRegex_fr;
+            SphatikaRegex = SphatikaRegex_fr;
+            RuinatorRegex = RuinatorRegex_fr;
+        }
+
+        if (lang == ClientLanguage.German)
+        {
+            Minhocao = Minhocao_de;
+            Leucrotta = Leucrotta_de;
+            Gandawera = Gandawera_de;
+            Okina = Okina_de;
+            Udumbara = Udumbara_de;
+            SaltAndLight = SaltAndLight_de;
+            ForgivenPedantry = ForgivenPedantry_de;
+            Ixtab = Ixtab_de;
+            Sphatika = Sphatika_de;
+            Ruinator = Ruinator_de;
+
+            MinhocaoRegex = MinhocaoRegex_de;
+            LeucrottaRegex = LeucrottaRegex_de;
+            GandaweraRegex = GandaweraRegex_de;
+            OkinaRegex = OkinaRegex_de;
+            UdumbaraRegex = UdumbaraRegex_de;
+            SaltAndLightRegex = SaltAndLightRegex_de;
+            ForgivenPedantryRegex = ForgivenPedantryRegex_de;
+            IxtabRegex = IxtabRegex_de;
+            SphatikaRegex = SphatikaRegex_de;
+            RuinatorRegex = RuinatorRegex_de;
+        }
+
+        if (lang == ClientLanguage.Japanese)
+        {
+            Minhocao = Minhocao_ja;
+            Leucrotta = Leucrotta_ja;
+            Gandawera = Gandawera_ja;
+            Okina = Okina_ja;
+            Udumbara = Udumbara_ja;
+            SaltAndLight = SaltAndLight_ja;
+            ForgivenPedantry = ForgivenPedantry_ja;
+            Ixtab = Ixtab_ja;
+            Sphatika = Sphatika_ja;
+            Ruinator = Ruinator_ja;
+
+            MinhocaoRegex = MinhocaoRegex_ja;
+            LeucrottaRegex = LeucrottaRegex_ja;
+            GandaweraRegex = GandaweraRegex_ja;
+            OkinaRegex = OkinaRegex_ja;
+            UdumbaraRegex = UdumbaraRegex_ja;
+            SaltAndLightRegex = SaltAndLightRegex_ja;
+            ForgivenPedantryRegex = ForgivenPedantryRegex_ja;
+            IxtabRegex = IxtabRegex_ja;
+            SphatikaRegex = SphatikaRegex_ja;
+            RuinatorRegex = RuinatorRegex_ja;
+        }
+
+    }
 }

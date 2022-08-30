@@ -113,7 +113,9 @@ public class HuntManager
         if (_trainManager.UpdateLastSeen(mob)) return;
         if (!_trainManager.RecordTrain) return;
         //only record A ranks
+#if !DEBUG //record all ranks while debugging coz weird ppl still kill ARR A ranks which makes it hard to find hunts to test with.
         if (GetHuntRank(mob.NameId) != HuntRank.A) return;
+#endif
         _trainManager.AddMob(mob, territoryid, mapid, mapName, zoneMapCoordSize);
     }
 

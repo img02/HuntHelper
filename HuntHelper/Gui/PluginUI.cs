@@ -361,7 +361,8 @@ namespace HuntHelper.Gui
                     }
                     else
                     {
-                        var mapImg = _huntManager.GetMapImage(_territoryName);
+                        var mapNameEng = MapHelpers.GetMapNameInEnglish(_dataManager, _territoryId);
+                        var mapImg = _huntManager.GetMapImage(mapNameEng);
                         if (mapImg != null)
                         {
                             ImGui.SetCursorPos(Vector2.Zero);

@@ -2,6 +2,7 @@
 
 public class MinhocaoCounter : CounterBase
 {
+
     public MinhocaoCounter() : base(Constants.Minhocao)
     {
         MapID = (ushort)HuntHelper.MapID.NorthernThanalan;
