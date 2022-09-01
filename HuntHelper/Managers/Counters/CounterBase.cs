@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using Dalamud.Logging;
 
 namespace HuntHelper.Managers.Counters;
 
@@ -34,9 +35,11 @@ public abstract class CounterBase
 
     public void TryAddFromLogLine(string msg)
     {
-        /*PluginLog.Error($"|{msg}|");
+#if DEBUG
+        PluginLog.Error($"|{msg}|");
         PluginLog.Error($"|{RegexPattern}|");
-        PluginLog.Error($"{Regex.IsMatch(msg, RegexPattern)}");*/
+        PluginLog.Error($"{Regex.IsMatch(msg, RegexPattern)}");
+#endif
         if (Regex.IsMatch(msg, RegexPattern)) FindNameAndAdd(msg);
     }
 

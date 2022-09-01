@@ -31,6 +31,11 @@
     <None Remove="Data\HW-A.json" />
     <None Remove="Data\HW-B.json" />
     <None Remove="Data\HW-S.json" />
+    <None Remove="Data\Localisation\de.json" />
+    <None Remove="Data\Localisation\en.json" />
+    <None Remove="Data\Localisation\fr.json" />
+    <None Remove="Data\Localisation\fr_test.json" />
+    <None Remove="Data\Localisation\ja.json" />
     <None Remove="Data\SB-A.json" />
     <None Remove="Data\SB-B.json" />
     <None Remove="Data\SB-S.json" />
@@ -66,6 +71,21 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Data\HW-S.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\Localisation\de.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\Localisation\fr.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\Localisation\fr_test.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\Localisation\ja.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\Localisation\en.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Data\SB-A.json">
@@ -128,6 +148,10 @@
     </Reference>
   </ItemGroup>
 
-  <ProjectExtensions><VisualStudio><UserProperties /></VisualStudio></ProjectExtensions>
+  <ItemGroup>
+    <Folder Include="Gui\Resource\" />
+  </ItemGroup>
+
+  <ProjectExtensions><VisualStudio><UserProperties data_4arr-a_1json__JsonSchema="https://github.com/go-vela/types/releases/latest/download/schema.json" /></VisualStudio></ProjectExtensions>
 
 </Project>

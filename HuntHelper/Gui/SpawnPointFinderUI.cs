@@ -1,6 +1,7 @@
 ﻿using Dalamud.Interface;
 using Dalamud.Interface.Components;
 using Dalamud.Logging;
+using Dalamud.Data;
 using HuntHelper.Managers.MapData;
 using HuntHelper.Managers.MapData.Models;
 using HuntHelper.Utilities;
@@ -10,12 +11,14 @@ using System.Collections.Generic;
 using System.Numerics;
 using System.Threading;
 using System.Threading.Tasks;
+using HuntHelper.Gui.Resource;
 
 namespace HuntHelper.Gui;
 //https://github.com/mellinoe/ImGui.NET/issues/107#issuecomment-467146212
 public unsafe class SpawnPointFinderUI : IDisposable//idk what to call this
 {
     private readonly MapDataManager _mapDataManager;
+    private readonly DataManager _dataManager;
     private readonly Configuration _config;
     private readonly List<MapSpawnPoints> _spawnPoints;
     private ImGuiTextFilterPtr _filter;
@@ -23,15 +26,16 @@ public unsafe class SpawnPointFinderUI : IDisposable//idk what to call this
     private bool _recordAll = false;
     private readonly List<MapSpawnPoints> _importList;
     private Task _copyTextTask = Task.CompletedTask;
-    private string _copyText = "Copy export code clipboard";
-    private string _copyTextAllExport = "Export all currently recorded map data";
+    private string _copyText = GuiResources.SpawnPointerFinderGuiText["CopyText"];
+    private string _copyTextAllExport = GuiResources.SpawnPointerFinderGuiText["CopyTextAllExport"];
     private int _tooltipChangeTime = 400;
 
     public bool WindowVisible = false;
 
-    public SpawnPointFinderUI(MapDataManager mapDataManager, Configuration config)
+    public SpawnPointFinderUI(MapDataManager mapDataManager, DataManager dataManager, Configuration config)
     {
         _mapDataManager = mapDataManager;
+        _dataManager = dataManager;
         _config = config;
         _spawnPoints = _mapDataManager.SpawnPointsList;
         LoadSettings();
@@ -68,14 +72,10 @@ public unsafe class SpawnPointFinderUI : IDisposable//idk what to call this
         ImGui.SetNextWindowSize(new Vector2(250, 540), ImGuiCond.FirstUseEver);
         ImGui.SetNextWindowPos(new Vector2(50, 50), ImGuiCond.FirstUseEver);
 
-        if (ImGui.Begin("Spawn Point Refinement##idkwhattocallthis", ref WindowVisible, ImGuiWindowFlags.NoScrollbar))
+        if (ImGui.Begin($"{GuiResources.SpawnPointerFinderGuiText["MainWindowTitle"]}##idkwhattocallthis", ref WindowVisible, ImGuiWindowFlags.NoScrollbar))
         {
-            _filter.Draw("Search by name", 120);
-            ImGui.SameLine(); ImGuiUtil.ImGui_HelpMarker("Used for recording taken spawn positions.\n" +
-                                                         "Helpful for position-specific spawns such as\n" +
-                                                         "Nandi, Gamma, Tarchia, Burfulululu, Narrow-Rift, etc\n\n" +
-                                                         "Data persists and is saved to file,\n" +
-                                                         "Turning recording off will reset tracked data.");
+            _filter.Draw(GuiResources.SpawnPointerFinderGuiText["FilterLabel"], 120);
+            ImGui.SameLine(); ImGuiUtil.ImGui_HelpMarker(GuiResources.SpawnPointerFinderGuiText["FilterToolTip"]);
             ImGui.Dummy(Vector2.Zero);
             if (ImGui.BeginChild("sp table child##", new Vector2(ImGui.GetWindowSize().X, ImGui.GetWindowSize().Y * .82f), false, ImGuiWindowFlags.NoScrollbar))
             {
@@ -90,15 +90,15 @@ public unsafe class SpawnPointFinderUI : IDisposable//idk what to call this
                     var k = 100;
                     foreach (var msp in _spawnPoints)
                     {
-                        if (_filter.PassFilter(msp.MapName))
+                        if (_filter.PassFilter(MapHelpers.GetMapName(_dataManager ,msp.MapID)))
                         {
                             ImGui.TableNextColumn();
-                            ImGui.TextUnformatted($"{msp.MapName}");
+                            ImGui.TextUnformatted($"{MapHelpers.GetMapName(_dataManager, msp.MapID)}");
                             ImGui.TableNextColumn();
                             if (!msp.Recording)
                             {
                                 if (ImGuiComponents.IconButton(i++, FontAwesomeIcon.Video)) msp.Recording = true;
-                                ImGuiUtil.ImGui_HoveredToolTip("Start Recording");
+                                ImGuiUtil.ImGui_HoveredToolTip(GuiResources.SpawnPointerFinderGuiText["StartRecording"]);
                             }
                             else
                             {
@@ -107,7 +107,7 @@ public unsafe class SpawnPointFinderUI : IDisposable//idk what to call this
                                     msp.Recording = false;
                                     _mapDataManager.ClearTakenSpawnPoints(msp.MapID);
                                 }
-                                ImGuiUtil.ImGui_HoveredToolTip("Stop Recording -- This will WIPE all data.");
+                                ImGuiUtil.ImGui_HoveredToolTip(GuiResources.SpawnPointerFinderGuiText["StopRecording"]);
 
                             }
                             ImGui.TableNextColumn();
@@ -132,7 +132,7 @@ public unsafe class SpawnPointFinderUI : IDisposable//idk what to call this
                     _recordAll = true;
                     _mapDataManager.SpawnPointsList.ForEach(msp => msp.Recording = true);
                 }
-                ImGuiUtil.ImGui_HoveredToolTip("Start Recording All");
+                ImGuiUtil.ImGui_HoveredToolTip(GuiResources.SpawnPointerFinderGuiText["StartRecordingAll"]);
             }
             else
             {
@@ -141,7 +141,7 @@ public unsafe class SpawnPointFinderUI : IDisposable//idk what to call this
                     _recordAll = false;
                     _mapDataManager.ClearAllTakenSpawnPoints();
                 }
-                ImGuiUtil.ImGui_HoveredToolTip("Stop Recording All -- This will WIPE all data.");
+                ImGuiUtil.ImGui_HoveredToolTip(GuiResources.SpawnPointerFinderGuiText["StopRecordingAll"]);
 
             }
             ImGui.SameLine();
@@ -162,9 +162,9 @@ public unsafe class SpawnPointFinderUI : IDisposable//idk what to call this
             {
                 var importCode = ImGui.GetClipboardText();
                 _mapDataManager.Import(importCode);
-                ImGui.OpenPopup("Import##modal");
+                ImGui.OpenPopup($"{GuiResources.SpawnPointerFinderGuiText["ImportWindowTitle"]}##modal");
             }
-            ImGuiUtil.ImGui_HoveredToolTip("Import map data");
+            ImGuiUtil.ImGui_HoveredToolTip(GuiResources.SpawnPointerFinderGuiText["ImportButtonToolTip"]);
 
             DrawImportModal();
             ImGui.End();
@@ -177,44 +177,43 @@ public unsafe class SpawnPointFinderUI : IDisposable//idk what to call this
         ImGui.SetNextWindowPos(center, ImGuiCond.Appearing, new Vector2(0.5f, 0.5f));
         ImGui.SetNextWindowSize(new Vector2(200, 150), ImGuiCond.FirstUseEver);
 
-        if (ImGui.BeginPopupModal("Import##modal"))
+        if (ImGui.BeginPopupModal($"{GuiResources.SpawnPointerFinderGuiText["ImportWindowTitle"]}##modal"))
         {
             if (_importList.Count == 0)
             {
-                PluginLog.Error($"{_mapDataManager.ImportedList.Count}");
-                ImGui.TextWrapped("Nothing to import - or incorrect code");
+                ImGui.TextWrapped(GuiResources.SpawnPointerFinderGuiText["ErrorMessage"]);
                 ImGui.Dummy(new Vector2(0, 25));
                 ImGui.Dummy(new Vector2(6, 0)); ImGui.SameLine();
-                if (ImGui.Button("Close", new Vector2(80, 0))) ImGui.CloseCurrentPopup();
+                if (ImGui.Button(GuiResources.SpawnPointerFinderGuiText["CloseButton"], new Vector2(80, 0))) ImGui.CloseCurrentPopup();
                 return;
             }
 
-            ImGui.TextUnformatted("Imported Maps:");
+            ImGui.TextUnformatted(GuiResources.SpawnPointerFinderGuiText["ImportMessage"]);
             ImGui.Separator(); ImGui.Dummy(Vector2.Zero);
 
             foreach (var msp in _importList)
             {
-                ImGui.TextUnformatted(msp.MapName);
+                ImGui.TextUnformatted(MapHelpers.GetMapName(_dataManager, msp.MapID));
             }
             ImGui.Dummy(Vector2.Zero); ImGui.Separator(); ImGui.Dummy(Vector2.Zero);
 
-            if (ImGui.Button("Overwrite"))
+            if (ImGui.Button(GuiResources.SpawnPointerFinderGuiText["OverwriteButton"]))
             {
                 _mapDataManager.ImportOverwrite();
                 ImGui.CloseCurrentPopup();
             }
-            ImGuiUtil.ImGui_HoveredToolTip("Import and Overwrite current data for these maps");
+            ImGuiUtil.ImGui_HoveredToolTip(GuiResources.SpawnPointerFinderGuiText["OverwriteButtonToolTip"]);
             ImGui.SameLine();
-            if (ImGui.Button("Only New"))
+            if (ImGui.Button(GuiResources.SpawnPointerFinderGuiText["ImportNewButton"]))
             {
                 _mapDataManager.ImportOnlyNew();
                 ImGui.CloseCurrentPopup();
             }
-            ImGuiUtil.ImGui_HoveredToolTip("Import only new data");
+            ImGuiUtil.ImGui_HoveredToolTip(GuiResources.SpawnPointerFinderGuiText["ImportNewButtonToolTip"]);
 
             ImGui.SetCursorPosX(90);
             ImGui.SetCursorPosY(ImGui.GetCursorPos().Y + 12);
-            if (ImGui.Button("Cancel")) ImGui.CloseCurrentPopup();
+            if (ImGui.Button(GuiResources.SpawnPointerFinderGuiText["CancelButton"])) ImGui.CloseCurrentPopup();
             ImGui.EndPopup();
         }
     }
@@ -226,12 +225,11 @@ public unsafe class SpawnPointFinderUI : IDisposable//idk what to call this
         {
             var temp = _copyText;
             var tempAll = _copyTextAllExport;
-            _copyText = "Copied!";
-            _copyTextAllExport = "copied";
+            _copyText = GuiResources.SpawnPointerFinderGuiText["CopyTextCopied"];
+            _copyTextAllExport = GuiResources.SpawnPointerFinderGuiText["CopyTextCopied"];
             Thread.Sleep(_tooltipChangeTime);
             _copyText = temp;
             _copyTextAllExport = tempAll;
         });
     }
-
 }

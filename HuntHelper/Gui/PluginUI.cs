@@ -21,6 +21,7 @@ using System.Numerics;
 using System.Speech.Synthesis;
 using System.Threading;
 using System.Threading.Tasks;
+using HuntHelper.Gui.Resource;
 
 namespace HuntHelper.Gui
 {
@@ -218,7 +219,6 @@ namespace HuntHelper.Gui
                 {
                     if (_backgroundLoopCancelTokenSource.Token.IsCancellationRequested) return;
                     UpdateMobInfo();
-                    //_huntManager.TTS.SpeakAsync($"loop");
                     Thread.Sleep(1000);
                 }
                 Thread.Sleep(1000);
@@ -408,7 +408,7 @@ namespace HuntHelper.Gui
                 ImGui.PopStyleColor();
                 if (_huntManager.ErrorPopUpVisible || _mapDataManager.ErrorPopUpVisible)
                 {
-                    ImGui.Begin("Error loading data");
+                    ImGui.Begin(GuiResources.MapGuiText["ErrorLoadingDataMessage"]);
                     ImGui.Text(_huntManager.ErrorMessage);
                     ImGui.Text(_mapDataManager.ErrorMessage);
                     ImGui.End();
@@ -462,31 +462,24 @@ namespace HuntHelper.Gui
 
                 if (ImGui.BeginChild("##Options left side", ImGui.GetContentRegionAvail(), false, ImGuiWindowFlags.HorizontalScrollbar))
                 {
-                    ImGui.Checkbox("Map Image", ref _useMapImages);
+                    ImGui.Checkbox(GuiResources.MapGuiText["MapImageCheckbox"], ref _useMapImages);
                     ImGui.SameLine();
-                    ImGuiUtil.ImGui_HelpMarker("Use a map image instead of blank background\n\n" +
-                                               "\t\t=======================================\n" +
-                                               "\t\tMap Images Created By Cable Monkey of Goblin\n" +
-                                               "         \t\t   http://cablemonkey.us/huntmap2/\n" +
-                                               "         \t\t   Same thing for spawn point data :D\n" +
-                                               "\t\t=======================================\n\n" +
-                                               "If map images aren't showing, please verify that you have the images downloaded in your plugins folder.");
+                    ImGuiUtil.ImGui_HelpMarker(GuiResources.MapGuiText["MapImageCheckboxToolTip"]);
 
-                    ImGui.CheckboxFlags("Hide Title Bar", ref _huntWindowFlag, 1);
+                    ImGui.CheckboxFlags(GuiResources.MapGuiText["TitleBarCheckbox"], ref _huntWindowFlag, 1);
 
-                    if (ImGui.Checkbox("Background Scan", ref _enableBackgroundScan))
+                    if (ImGui.Checkbox(GuiResources.MapGuiText["BackgroundScanCheckbox"], ref _enableBackgroundScan))
                     {
                         _configuration.EnableBackgroundScan = _enableBackgroundScan;
                     }
 
-                    ImGuiUtil.ImGui_HoveredToolTip("Allows Hunt Helper to scan while GUI inactive.\n" +
-                                                   "Enables notifications, recording Train, etc. while this main map window is inactive.");
+                    ImGuiUtil.ImGui_HoveredToolTip(GuiResources.MapGuiText["BackgroundScanCheckboxToolTip"]);
 
                     //ImGui.Dummy(new Vector2(0, 4f));
 
-                    if (ImGui.Button("Loaded Hunt Data")) _showDatabaseListWindow = !_showDatabaseListWindow;
+                    if (ImGui.Button(GuiResources.MapGuiText["LoadedHuntDataButton"])) _showDatabaseListWindow = !_showDatabaseListWindow;
                     ImGui.SameLine();
-                    ImGuiUtil.ImGui_HelpMarker("Show the loaded hunt and spawn point data");
+                    ImGuiUtil.ImGui_HelpMarker(GuiResources.MapGuiText["LoadedHuntDataButtonToolTip"]);
                     DrawDataBaseWindow();
 
                     /*ImGui.TextUnformatted($"{ImGui.GetWindowSize()}");
@@ -499,7 +492,7 @@ namespace HuntHelper.Gui
                 if (ImGui.BeginTabBar("Options", ImGuiTabBarFlags.FittingPolicyScroll))
                 {
                     var tabBarHeight = 57f;
-                    if (ImGui.BeginTabItem("General"))
+                    if (ImGui.BeginTabItem(GuiResources.MapGuiText["GeneralTab"]))
                     {
                         _bottomPanelHeight = tabBarHeight + 155f * ImGuiHelpers.GlobalScale; //tab bar + spacing seems to be around ~57f. 155f is the sizeY of the largest content section
                         var widgetWidth = 69f;
@@ -518,43 +511,41 @@ namespace HuntHelper.Gui
                                 ImGui.TableSetupColumn("first", ImGuiTableColumnFlags.WidthFixed);
                                 ImGui.TableSetupColumn("second", ImGuiTableColumnFlags.WidthFixed);
                                 ImGui.TableNextColumn();
-                                ImGui.Checkbox("Zone Name", ref _showZoneName);
+                                ImGui.Checkbox(GuiResources.MapGuiText["ZoneNameCheckbox"], ref _showZoneName);
                                 ImGui.SameLine();
-                                ImGuiUtil.ImGui_HelpMarker(
-                                    "Shows Zone Name\nAdjust position below as % of window.");
+                                ImGuiUtil.ImGui_HelpMarker(GuiResources.MapGuiText["ZoneNameCheckboxToolTip"]);
                                 ImGui.PushItemWidth(widgetWidth);
-                                ImGui.DragFloat("Zone X", ref _zoneInfoPosXPercentage, 0.05f, 0, 100, "%.2f",
+                                ImGui.DragFloat($"{GuiResources.MapGuiText["ZoneLabel"]} X", ref _zoneInfoPosXPercentage, 0.05f, 0, 100, "%.2f",
                                     ImGuiSliderFlags.NoRoundToFormat);
                                 ImGui.SameLine();
-                                ImGuiUtil.ImGui_HelpMarker("Ctrl+Click to enter manually, Shift+Drag to speed up.");
-                                ImGui.DragFloat("Zone Y", ref _zoneInfoPosYPercentage, 0.05f, 0, 100, "%.2f",
+                                ImGuiUtil.ImGui_HelpMarker(GuiResources.MapGuiText["DragWidgetToolTip"]);
+                                ImGui.DragFloat($"{GuiResources.MapGuiText["ZoneLabel"]} Y", ref _zoneInfoPosYPercentage, 0.05f, 0, 100, "%.2f",
                                     ImGuiSliderFlags.NoRoundToFormat);
 
-                                ImGui.ColorEdit4("Colour##Zone", ref _zoneTextColour,
+                                ImGui.ColorEdit4($"{GuiResources.MapGuiText["ColourLabel"]}##Zone", ref _zoneTextColour,
                                     ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
-                                ImGui.ColorEdit4("Alt##Zone", ref _zoneTextColourAlt,
+                                ImGui.ColorEdit4($"{GuiResources.MapGuiText["AlternateColourLabel"]}##Zone", ref _zoneTextColourAlt,
                                     ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
 
                                 ImGui.SameLine();
-                                ImGuiUtil.ImGui_HelpMarker("Alternate colour for when map image is used.");
+                                ImGuiUtil.ImGui_HelpMarker(GuiResources.MapGuiText["AlternateColourToolTip"]);
 
                                 ImGui.TableNextColumn();
-                                ImGui.Checkbox("World Name", ref _showWorldName);
+                                ImGui.Checkbox(GuiResources.MapGuiText["WorldNameCheckbox"], ref _showWorldName);
                                 ImGui.SameLine();
-                                ImGuiUtil.ImGui_HelpMarker(
-                                    "Shows World Name\nAdjust position below as % of window");
+                                ImGuiUtil.ImGui_HelpMarker(GuiResources.MapGuiText["WorldNameCheckboxToolTip"]);
                                 ImGui.PushItemWidth(widgetWidth);
-                                ImGui.DragFloat("World X", ref _worldInfoPosXPercentage, 0.05f, 0, 100f, "%.2f",
+                                ImGui.DragFloat($"{GuiResources.MapGuiText["WorldLabel"]} X", ref _worldInfoPosXPercentage, 0.05f, 0, 100f, "%.2f",
                                     ImGuiSliderFlags.NoRoundToFormat);
-                                ImGui.DragFloat("World Y", ref _worldInfoPosYPercentage, 0.05f, 0, 100f, "%.2f",
+                                ImGui.DragFloat($"{GuiResources.MapGuiText["WorldLabel"]} Y", ref _worldInfoPosYPercentage, 0.05f, 0, 100f, "%.2f",
                                     ImGuiSliderFlags.NoRoundToFormat);
 
-                                ImGui.ColorEdit4("Colour##World", ref _worldTextColour,
+                                ImGui.ColorEdit4($"{GuiResources.MapGuiText["ColourLabel"]}##World", ref _worldTextColour,
                                     ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
-                                ImGui.ColorEdit4("Alt##World", ref _worldTextColourAlt,
+                                ImGui.ColorEdit4($"{GuiResources.MapGuiText["AlternateColourLabel"]}##World", ref _worldTextColourAlt,
                                     ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
                                 ImGui.SameLine();
-                                ImGuiUtil.ImGui_HelpMarker("Alternate colour for when map image is used.");
+                                ImGuiUtil.ImGui_HelpMarker(GuiResources.MapGuiText["AlternateColourToolTip"]);
 
                                 ImGui.EndTable();
                             }
@@ -581,9 +572,9 @@ namespace HuntHelper.Gui
                                 ImGui.Dummy(new Vector2(0f, 0f));
                                 ImGui.Dummy(new Vector2(0f, 0f));
                                 ImGui.SameLine();
-                                ImGui.Text("Window Size");
+                                ImGui.Text(GuiResources.MapGuiText["WindowSize"]);
                                 ImGui.SameLine();
-                                ImGuiUtil.ImGui_HelpMarker("Current Window Size");
+                                ImGuiUtil.ImGui_HelpMarker(GuiResources.MapGuiText["WindowSizeToolTip"]);
 
                                 ImGui.TableNextColumn();
                                 ImGui.TableSetupColumn("test", ImGuiTableColumnFlags.WidthFixed, 5f);
@@ -598,7 +589,7 @@ namespace HuntHelper.Gui
                                     ImGuiColorEditFlags.PickerHueWheel | ImGuiColorEditFlags.NoInputs |
                                     ImGuiColorEditFlags.NoAlpha);
                                 ImGui.SameLine();
-                                ImGuiUtil.ImGui_HelpMarker("Window Colour - Opacity can be changed down below.");
+                                ImGuiUtil.ImGui_HelpMarker(GuiResources.MapGuiText["WindowColourToolTip"]);
 
                                 ImGui.TableNextColumn();
 
@@ -607,20 +598,20 @@ namespace HuntHelper.Gui
                                 ImGui.Dummy(new Vector2(0f, 0f));
                                 ImGui.Dummy(new Vector2(0f, 0f));
                                 ImGui.SameLine();
-                                ImGui.Text("Preset 1");
+                                ImGui.Text(GuiResources.MapGuiText["PresetOne"]);
                                 ImGui.SameLine();
                                 ImGuiUtil.ImGui_HelpMarker(
-                                    "Save a preset for quick switching - Size, opacity, position, and use map\n\nApply with command: /hh1\nSave with /hh1save or -->");
+                                    "");
 
                                 ImGui.TableNextColumn();
                                 ImGui.Dummy(new Vector2(0f, 0f));
                                 ImGui.PushItemWidth(intWidgetWidth);
-                                ImGui.InputInt("", ref _presetOneWindowSize, 0);
+                                ImGui.InputInt(GuiResources.MapGuiText["SavePresetToolTip"], ref _presetOneWindowSize, 0);
                                 ImGui.PopID();
 
                                 ImGui.TableNextColumn();
                                 ImGui.Dummy(new Vector2(0f, 0f));
-                                if (ImGui.Button("Save")) SavePreset(1);
+                                if (ImGui.Button(GuiResources.MapGuiText["SaveButton"])) SavePreset(1);
                                 ImGui.PopID();
                                 ImGui.TableNextColumn();
 
@@ -629,10 +620,9 @@ namespace HuntHelper.Gui
                                 ImGui.Dummy(new Vector2(0f, 0f));
                                 ImGui.Dummy(new Vector2(0f, 0f));
                                 ImGui.SameLine();
-                                ImGui.Text("Preset 2");
+                                ImGui.Text(GuiResources.MapGuiText["PresetTwo"]);
                                 ImGui.SameLine();
-                                ImGuiUtil.ImGui_HelpMarker(
-                                    "Save a preset for quick switching - Size, opacity, position, and use map\n\nApply with command: /hh2\nSave with /hh2save or -->");
+                                ImGuiUtil.ImGui_HelpMarker(GuiResources.MapGuiText["SavePresetToolTip"]);
 
                                 ImGui.TableNextColumn();
                                 ImGui.Dummy(new Vector2(0f, 0f));
@@ -642,7 +632,7 @@ namespace HuntHelper.Gui
 
                                 ImGui.TableNextColumn();
                                 ImGui.Dummy(new Vector2(0f, 0f));
-                                if (ImGui.Button("Save")) SavePreset(2);
+                                if (ImGui.Button(GuiResources.MapGuiText["SaveButton"])) SavePreset(2);
                                 ImGui.PopID();
                                 ImGui.EndTable();
 
@@ -653,7 +643,7 @@ namespace HuntHelper.Gui
                                 ImGui.PushItemWidth(ImGui.GetContentRegionAvail().X - 16f);
                                 ImGui.SameLine();
                                 ImGui.DragFloat("##Map Opacity", ref _mapImageOpacityAsPercentage, .2f, 0f, 100f,
-                                    "Map Opacity - %.0f");
+                                    $"{GuiResources.MapGuiText["MapOpacityLabel"]} - %.0f");
 
                                 //Map Window Opacity Slider
                                 //ImGui.Separator();
@@ -663,7 +653,7 @@ namespace HuntHelper.Gui
                                 ImGui.SameLine();
                                 ImGui.DragFloat("##Map Window Opacity", ref _mapWindowOpacityAsPercentage, .2f, 0f,
                                     100f,
-                                    "Window Opacity - %.0f");
+                                    $"{GuiResources.MapGuiText["WindowOpacity"]} - %.0f");
                             }
 
                             //ImGui.SameLine(); ImGui.Text($"{ImGui.GetWindowSize()}");
@@ -674,13 +664,13 @@ namespace HuntHelper.Gui
                         ImGui.EndTabItem();
                     }
 
-                    if (ImGui.BeginTabItem("Visuals"))
+                    if (ImGui.BeginTabItem(GuiResources.MapGuiText["VisualsTab"]))
                     {
                         _bottomPanelHeight = tabBarHeight + 108f * ImGuiHelpers.GlobalScale;
 
                         if (ImGui.BeginTabBar("Visuals sub-bar"))
                         {
-                            if (ImGui.BeginTabItem("Sizing"))
+                            if (ImGui.BeginTabItem(GuiResources.MapGuiText["SizingTab"]))
                             {
                                 ImGui.Dummy(new Vector2(0, 2f));
                                 if (ImGui.BeginTable("Sizing Options Table", 3, ImGuiTableFlags.ScrollX | ImGuiTableFlags.ScrollY))
@@ -693,35 +683,33 @@ namespace HuntHelper.Gui
 
                                     ImGui.TableNextColumn();
                                     ImGui.PushItemWidth(widgetWidth);
-                                    ImGui.InputFloat("Player Modifier", ref _playerIconRadiusModifier, 0, 0, "%.2f");
+                                    ImGui.InputFloat(GuiResources.MapGuiText["PlayerModifier"], ref _playerIconRadiusModifier, 0, 0, "%.2f");
                                     ImGui.SameLine();
-                                    ImGuiUtil.ImGui_HelpMarker("Player Icon Radius Modifier: Default 1");
+                                    ImGuiUtil.ImGui_HelpMarker(GuiResources.MapGuiText["PlayerModifierToolTip"]);
 
                                     ImGui.TableNextColumn();
                                     ImGui.PushItemWidth(widgetWidth);
-                                    ImGui.InputFloat("Mob Modifier", ref _mobIconRadiusModifier, 0, 0, "%.2f");
+                                    ImGui.InputFloat(GuiResources.MapGuiText["MobModifier"], ref _mobIconRadiusModifier, 0, 0, "%.2f");
                                     ImGui.SameLine();
-                                    ImGuiUtil.ImGui_HelpMarker("Mob Icon Radius Modifier, default: 2");
+                                    ImGuiUtil.ImGui_HelpMarker(GuiResources.MapGuiText["MobModifierToolTip"]);
 
                                     ImGui.TableNextColumn();
                                     ImGui.PushItemWidth(widgetWidth);
-                                    ImGui.InputFloat("Spawn Point Modifier", ref _spawnPointRadiusModifier, 0, 0,
+                                    ImGui.InputFloat(GuiResources.MapGuiText["SpawnPointModifier"], ref _spawnPointRadiusModifier, 0, 0,
                                         "%.2f");
                                     ImGui.SameLine();
-                                    ImGuiUtil.ImGui_HelpMarker("Spawn Point Radius Modifier, default: 1.0");
+                                    ImGuiUtil.ImGui_HelpMarker(GuiResources.MapGuiText["SpawnPointToolTip"]);
 
                                     ImGui.TableNextColumn();
-                                    ImGui.InputFloat("All Modifier", ref _allRadiusModifier, 0, 0, "%.2f");
+                                    ImGui.InputFloat(GuiResources.MapGuiText["AllModifier"], ref _allRadiusModifier, 0, 0, "%.2f");
                                     ImGui.SameLine();
-                                    ImGuiUtil.ImGui_HelpMarker(
-                                        "Increase all icons proportionally, default: 1\nBy Default, A Mob icon is 1.5x a Spawn Point, a Player icon is 0.2x a Spawn Point");
+                                    ImGuiUtil.ImGui_HelpMarker(GuiResources.MapGuiText["AllModifierToolTip"]);
 
                                     ImGui.TableNextColumn();
-                                    ImGui.InputFloat("Detection Circle Modifier", ref _detectionCircleModifier, 0, 0,
+                                    ImGui.InputFloat(GuiResources.MapGuiText["DetectionCircleModifier"], ref _detectionCircleModifier, 0, 0,
                                         "%.2f");
                                     ImGui.SameLine();
-                                    ImGuiUtil.ImGui_HelpMarker(
-                                        "Default represents 2 in-game coordinates. Modify if you feel this is inaccurate, default: 1.0");
+                                    ImGuiUtil.ImGui_HelpMarker(GuiResources.MapGuiText["DetectionCircleModifierToolTip"]);
 
                                     ImGui.TableNextColumn();
                                     ImGui.Dummy(new Vector2(0, 26f));
@@ -729,23 +717,23 @@ namespace HuntHelper.Gui
                                     ImGui.TableNextColumn();
                                     ImGui.Separator();
                                     ImGui.Dummy(new Vector2(0, 1f));
-                                    ImGui.InputFloat("Detection Circle Thickness", ref _detectionCircleThickness, 0, 0,
+                                    ImGui.InputFloat(GuiResources.MapGuiText["DetectionCircleThickness"], ref _detectionCircleThickness, 0, 0,
                                         "%.2f");
                                     ImGui.SameLine();
-                                    ImGuiUtil.ImGui_HelpMarker("default: 3.0");
+                                    ImGuiUtil.ImGui_HelpMarker(GuiResources.MapGuiText["DetectionCircleThicknessToolTip"]);
 
                                     ImGui.TableNextColumn();
                                     ImGui.Separator();
                                     ImGui.Dummy(new Vector2(0, 1f));
-                                    ImGui.InputFloat("Direction Line Thickness", ref _directionLineThickness, 0, 0,
+                                    ImGui.InputFloat(GuiResources.MapGuiText["DirectionLineThickness"], ref _directionLineThickness, 0, 0,
                                         "%.2f");
                                     ImGui.SameLine();
-                                    ImGuiUtil.ImGui_HelpMarker("default: 3.0");
+                                    ImGuiUtil.ImGui_HelpMarker(GuiResources.MapGuiText["DirectionLineThicknessToolTip"]);
 
                                     ImGui.TableNextColumn();
                                     ImGui.Separator();
                                     ImGui.Dummy(new Vector2(0, 1f));
-                                    if (ImGui.Button("Reset"))
+                                    if (ImGui.Button(GuiResources.MapGuiText["ResetButton"]))
                                     {
                                         _allRadiusModifier = 1.0f;
                                         _mobIconRadiusModifier = 2f;
@@ -757,7 +745,7 @@ namespace HuntHelper.Gui
                                     }
 
                                     ImGui.SameLine();
-                                    ImGuiUtil.ImGui_HelpMarker("Reset all sizes to default.");
+                                    ImGuiUtil.ImGui_HelpMarker(GuiResources.MapGuiText["ResetButtonToolTip"]);
 
                                     ImGui.PopItemWidth();
 
@@ -767,7 +755,7 @@ namespace HuntHelper.Gui
                                 ImGui.EndTabItem();
                             }
 
-                            if (ImGui.BeginTabItem($"Colours"))
+                            if (ImGui.BeginTabItem(GuiResources.MapGuiText["ColoursTab"]))
                             {
                                 ImGui.Dummy(new Vector2(0, 2f));
 
@@ -780,35 +768,34 @@ namespace HuntHelper.Gui
                                     ImGui.TableSetupColumn("3#coloursizing", ImGuiTableColumnFlags.WidthFixed);
 
                                     ImGui.TableNextColumn();
-                                    ImGui.ColorEdit4("Player Icon", ref _playerIconColour,
+                                    ImGui.ColorEdit4(GuiResources.MapGuiText["PlayerIcon"], ref _playerIconColour,
                                         ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
 
                                     ImGui.TableNextColumn();
-                                    ImGui.ColorEdit4("Mob Icon", ref _mobColour,
+                                    ImGui.ColorEdit4(GuiResources.MapGuiText["MobIcon"], ref _mobColour,
                                         ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
 
                                     ImGui.TableNextColumn();
-                                    ImGui.ColorEdit4("Spawn Point", ref _spawnPointColour,
+                                    ImGui.ColorEdit4(GuiResources.MapGuiText["SpawnPoint"], ref _spawnPointColour,
                                         ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
 
                                     ImGui.Dummy(new Vector2(0, 4f));
 
                                     ImGui.TableNextColumn();
-                                    ImGui.ColorEdit4("Player Background", ref _playerIconBackgroundColour,
+                                    ImGui.ColorEdit4(GuiResources.MapGuiText["PlayerBackground"], ref _playerIconBackgroundColour,
                                         ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
                                     ImGui.SameLine();
-                                    ImGuiUtil.ImGui_HelpMarker(
-                                        "Background of the player / detection circle.\nChange the Alpha A: for opacity.");
+                                    ImGuiUtil.ImGui_HelpMarker(GuiResources.MapGuiText["PlayerBackgroundToolTip"]);
 
 
                                     ImGui.Dummy(new Vector2(0, 4f));
 
                                     ImGui.TableNextColumn();
-                                    ImGui.ColorEdit4("Direction Line", ref _directionLineColour,
+                                    ImGui.ColorEdit4(GuiResources.MapGuiText["DirectionLineColourPicker"], ref _directionLineColour,
                                         ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
 
                                     ImGui.TableNextColumn();
-                                    ImGui.ColorEdit4("Detection Circle", ref _detectionCircleColour,
+                                    ImGui.ColorEdit4(GuiResources.MapGuiText["DetectionCircleColourPicker"], ref _detectionCircleColour,
                                         ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
 
                                     ImGui.EndTable();
@@ -822,7 +809,7 @@ namespace HuntHelper.Gui
 
                         ImGui.EndTabItem();
                     }
-                    if (ImGui.BeginTabItem($"Notifications"))
+                    if (ImGui.BeginTabItem(GuiResources.MapGuiText["NotificationTab"]))
                     {
                         if (ImGui.BeginTabBar("Notifications sub-bar"))
                         {
@@ -833,40 +820,33 @@ namespace HuntHelper.Gui
                                 if (ImGui.BeginChild("##A child", ImGui.GetContentRegionAvail(), false, ImGuiWindowFlags.HorizontalScrollbar))
                                 {
                                     ImGui.Dummy(new Vector2(0, 2f));
-                                    ImGui.TextUnformatted("Chat Message");
+                                    ImGui.TextUnformatted(GuiResources.MapGuiText["ChatMessageLabel"]);
                                     ImGui.SameLine();
                                     ImGui.InputText("##A Rank A Chat Msg", ref _chatAMessage, _inputTextMaxLength);
                                     ImGui.SameLine();
                                     ImGui.Checkbox("##A Rank A Chat Checkbox", ref _chatAEnabled);
                                     ImGui.SameLine();
-                                    ImGuiUtil.ImGui_HelpMarker(
-                                        "Message to send to chat using /echo, usable tags: <flag> <name> <rank> <hpp>\n");
+                                    ImGuiUtil.ImGui_HelpMarker(GuiResources.MapGuiText["ChatMessageLabelToolTip"]);
 
                                     ImGui.Dummy(new Vector2(0, 2f));
-                                    ImGui.TextUnformatted("TTS   Message");
+                                    ImGui.TextUnformatted(GuiResources.MapGuiText["TTSMessageLabel"]);
                                     ImGui.SameLine();
                                     ImGui.InputText("##A Rank A TTS Msg", ref _ttsAMessage, _inputTextMaxLength);
                                     ImGui.SameLine();
                                     ImGui.Checkbox("##A Rank A TTS Checkbox", ref _ttsAEnabled);
                                     ImGui.SameLine();
-                                    ImGuiUtil.ImGui_HelpMarker(
-                                        "Message to use with Text-to-Speech, usable tags: <name> <rank>");
+                                    ImGuiUtil.ImGui_HelpMarker(GuiResources.MapGuiText["TTSMessageLabelToolTip"]);
 
                                     ImGui.Checkbox("FlyText##A Rank", ref _flyTxtAEnabled);
                                     ImGui.SameLine();
-                                    ImGuiUtil.ImGui_HelpMarker(
-                                        "FlyText is the type of text that appears when you attack something or are attacked.\n" +
-                                        "(e.g. Crit, Miss, Resist)\n\n" +
-                                        "Enabling this will show a coloured FlyText notification near the middle of your screen.\n\n" +
-                                        "pls ignore ugly checkbox position");
+                                    ImGuiUtil.ImGui_HelpMarker(GuiResources.MapGuiText["FlyTextToolTip"]);
                                     ImGui.SameLine();
-                                    if (ImGui.Checkbox("I'm blind and need visual help##A Rank", ref _pointToARank))
+                                    if (ImGui.Checkbox($"{GuiResources.MapGuiText["VisualHelpLabel"]}##A Rank", ref _pointToARank))
                                     {
                                         _configuration.PointToARank = _pointToARank;
                                     }
 
-                                    ImGuiUtil.ImGui_HoveredToolTip(
-                                        "Draws a 'quest pointer' type thingy, it's a bit glitchy but works well enough\nChange size in settings");
+                                    ImGuiUtil.ImGui_HoveredToolTip(GuiResources.MapGuiText["VisualHelpToolTip"]);
 
                                     ImGui.EndChild();
                                 }
@@ -882,39 +862,33 @@ namespace HuntHelper.Gui
                                         ImGuiWindowFlags.HorizontalScrollbar))
                                 {
                                     ImGui.Dummy(new Vector2(0, 2f));
-                                    ImGui.TextUnformatted("Chat Message");
+                                    ImGui.TextUnformatted(GuiResources.MapGuiText["ChatMessageLabel"]);
                                     ImGui.SameLine();
                                     ImGui.InputText("##A Rank B Chat Msg", ref _chatBMessage, _inputTextMaxLength);
                                     ImGui.SameLine();
                                     ImGui.Checkbox("##A Rank B Chat Checkbox", ref _chatBEnabled);
                                     ImGui.SameLine();
-                                    ImGuiUtil.ImGui_HelpMarker(
-                                        "Message to send to chat using /echo, usable tags: <flag> <name> <rank> <hpp>.");
+                                    ImGuiUtil.ImGui_HelpMarker(GuiResources.MapGuiText["ChatMessageLabelToolTip"]);
 
                                     ImGui.Dummy(new Vector2(0, 2f));
-                                    ImGui.TextUnformatted("TTS   Message");
+                                    ImGui.TextUnformatted(GuiResources.MapGuiText["TTSMessageLabel"]);
                                     ImGui.SameLine();
                                     ImGui.InputText("##A Rank B TTS Msg", ref _ttsBMessage, _inputTextMaxLength);
                                     ImGui.SameLine();
                                     ImGui.Checkbox("##A Rank B TTS Checkbox", ref _ttsBEnabled);
                                     ImGui.SameLine();
-                                    ImGuiUtil.ImGui_HelpMarker(
-                                        "Message to use with Text-to-Speech, usable tags: <name> <rank>");
+                                    ImGuiUtil.ImGui_HelpMarker(GuiResources.MapGuiText["TTSMessageLabelToolTip"]);
 
                                     ImGui.Checkbox("FlyText##B Rank", ref _flyTxtBEnabled);
                                     ImGui.SameLine();
-                                    ImGuiUtil.ImGui_HelpMarker(
-                                        "FlyText is the type of text that appears when you attack something or are attacked.\n" +
-                                        "(e.g. Crit, Miss, Resist)\n\n" +
-                                        "Enabling this will show a coloured FlyText notification near the middle of your screen.");
+                                    ImGuiUtil.ImGui_HelpMarker(GuiResources.MapGuiText["FlyTextToolTip"]);
                                     ImGui.SameLine();
-                                    if (ImGui.Checkbox("I'm blind and need visual help##B Rank", ref _pointToBRank))
+                                    if (ImGui.Checkbox($"{GuiResources.MapGuiText["VisualHelpLabel"]}##B Rank", ref _pointToBRank))
                                     {
                                         _configuration.PointToBRank = _pointToBRank;
                                     }
 
-                                    ImGuiUtil.ImGui_HoveredToolTip(
-                                        "Draws a 'quest pointer' type thingy, it's a bit glitchy but works well enough\nChange size in settings");
+                                    ImGuiUtil.ImGui_HoveredToolTip(GuiResources.MapGuiText["VisualHelpToolTip"]);
 
                                     ImGui.EndChild();
                                 }
@@ -930,39 +904,33 @@ namespace HuntHelper.Gui
                                         ImGuiWindowFlags.HorizontalScrollbar))
                                 {
                                     ImGui.Dummy(new Vector2(0, 2f));
-                                    ImGui.TextUnformatted("Chat Message");
+                                    ImGui.TextUnformatted(GuiResources.MapGuiText["ChatMessageLabel"]);
                                     ImGui.SameLine();
                                     ImGui.InputText("##A Rank S Chat Msg", ref _chatSMessage, _inputTextMaxLength);
                                     ImGui.SameLine();
                                     ImGui.Checkbox("##A Rank S Chat Checkbox", ref _chatSEnabled);
                                     ImGui.SameLine();
-                                    ImGuiUtil.ImGui_HelpMarker(
-                                        "Message to send to chat using /echo, usable tags: <flag> <name> <rank> <hpp>.");
+                                    ImGuiUtil.ImGui_HelpMarker(GuiResources.MapGuiText["ChatMessageLabelToolTip"]);
 
                                     ImGui.Dummy(new Vector2(0, 2f));
-                                    ImGui.TextUnformatted("TTS   Message");
+                                    ImGui.TextUnformatted(GuiResources.MapGuiText["TTSMessageLabel"]);
                                     ImGui.SameLine();
                                     ImGui.InputText("##A Rank S TTS Msg", ref _ttsSMessage, _inputTextMaxLength);
                                     ImGui.SameLine();
                                     ImGui.Checkbox("##A Rank S TTS Checkbox", ref _ttsSEnabled);
                                     ImGui.SameLine();
-                                    ImGuiUtil.ImGui_HelpMarker(
-                                        "Message to use with Text-to-Speech, usable tags: <name> <rank>");
+                                    ImGuiUtil.ImGui_HelpMarker(GuiResources.MapGuiText["TTSMessageLabelToolTip"]);
 
                                     ImGui.Checkbox("FlyText##S Rank", ref _flyTxtSEnabled);
                                     ImGui.SameLine();
-                                    ImGuiUtil.ImGui_HelpMarker(
-                                        "FlyText is the type of text that appears when you attack something or are attacked.\n" +
-                                        "(e.g. Crit, Miss, Resist)\n\n" +
-                                        "Enabling this will show a coloured FlyText notification near the middle of your screen.");
+                                    ImGuiUtil.ImGui_HelpMarker(GuiResources.MapGuiText["FlyTextToolTip"]);
                                     ImGui.SameLine();
-                                    if (ImGui.Checkbox("I'm blind and need visual help##S Rank", ref _pointToSRank))
+                                    if (ImGui.Checkbox($"{GuiResources.MapGuiText["VisualHelpLabel"]}##S Rank", ref _pointToSRank))
                                     {
                                         _configuration.PointToSRank = _pointToSRank;
                                     }
 
-                                    ImGuiUtil.ImGui_HoveredToolTip(
-                                        "Draws a 'quest pointer' type thingy, it's a bit glitchy but works well enough\nChange size in settings");
+                                    ImGuiUtil.ImGui_HoveredToolTip(GuiResources.MapGuiText["VisualHelpToolTip"]);
 
                                     /*ImGui.SameLine();
                                     ImGui.Checkbox("Save Spawn Data", ref _saveSpawnData);
@@ -975,7 +943,7 @@ namespace HuntHelper.Gui
                                 ImGui.EndTabItem();
                             }
 
-                            if (ImGui.BeginTabItem("Settings"))
+                            if (ImGui.BeginTabItem(GuiResources.MapGuiText["SettingsTab"]))
                             {
                                 _bottomPanelHeight = tabBarHeight + 70f * ImGuiHelpers.GlobalScale;
                                 var tts = _huntManager.TTS;
@@ -991,7 +959,7 @@ namespace HuntHelper.Gui
                                 if (ImGui.BeginChild("##settings tts child", ImGui.GetContentRegionAvail(), false, ImGuiWindowFlags.HorizontalScrollbar))
                                 {
                                     ImGui.Dummy(new Vector2(0f, 5f));
-                                    ImGui.Text("Select Voice:");
+                                    ImGui.Text(GuiResources.MapGuiText["SelectVoiceLabel"]);
                                     ImGui.SameLine();
 
                                     //ImGui.PushItemWidth(300f * ImGuiHelpers.GlobalScale);
@@ -1005,45 +973,38 @@ namespace HuntHelper.Gui
                                         //creating new speechsynthesizer because it does not play audio asynchronously
                                         var tempTTS = new SpeechSynthesizer();
                                         tempTTS.SelectVoice(_ttsVoiceName);
-                                        var prompt = tempTTS.SpeakAsync($"BOO! {tts.Voice.Name} Selected");
+                                        var prompt = tempTTS.SpeakAsync($"{tts.Voice.Name} {GuiResources.MapGuiText["VoiceSelectedMessage"]}");
                                         Task.Run(() =>
                                         {
-                                            while (!prompt.IsCompleted)
-                                            {
-                                            }
-
-                                            ;
+                                            while (!prompt.IsCompleted);
                                             tempTTS.Dispose();
                                         });
                                     }
 
-                                    ImGui.Text("Pointer Size:");
+                                    ImGui.Text(GuiResources.MapGuiText["PointerSizeLabel"]);
                                     ImGui.SameLine();
-                                    if (ImGui.DragFloat("##Diamond Pointer Size Modifier", ref _diamondModifier, 0.01f,
-                                            1,
-                                            10, "%.2f"))
+                                    if (ImGui.DragFloat("##Diamond Pointer Size Modifier", ref _diamondModifier, 0.01f, 1, 10, "%.2f"))
                                     {
                                         _configuration.PointerDiamondSizeModifier = _diamondModifier;
                                     }
 
-                                    ImGuiUtil.ImGui_HoveredToolTip("Size modifier for the diamond pointer");
+                                    ImGuiUtil.ImGui_HoveredToolTip(GuiResources.MapGuiText["PointerSizeToolTip"]);
                                     ImGui.EndChild();
                                 }
 
                                 ImGui.EndTabItem();
                             }
 
-                            if (ImGui.BeginTabItem("Available Tags"))
+                            if (ImGui.BeginTabItem(GuiResources.MapGuiText["AvailableTagsTab"]))
                             {
                                 _bottomPanelHeight = tabBarHeight + 113 * ImGuiHelpers.GlobalScale;
 
                                 if (ImGui.BeginChild("##tags child", ImGui.GetContentRegionAvail(), false,
                                         ImGuiWindowFlags.HorizontalScrollbar))
                                 {
-                                    ImGui.TextUnformatted("Available Tags:");
+                                    ImGui.TextUnformatted($"{GuiResources.MapGuiText["AvailableTagsTab"]}:");
                                     ImGui.SameLine();
-                                    ImGuiUtil.ImGui_HelpMarker(
-                                        "DOUBLE CLICK to easily highlight a tag option for copy and paste.  \n-- ONLY <name> and <rank> work with TTS");
+                                    ImGuiUtil.ImGui_HelpMarker(GuiResources.MapGuiText["AvailableTagsToolTip"]);
                                     var tags =
                                         "Hunt: <flag> <name> <rank> <hpp>\n\n" +
                                         "Cosmetic: <goldstar> <silverstar> <warning> <nocircle> <controllerbutton0> <controllerbutton1>\n" +
@@ -1062,8 +1023,7 @@ namespace HuntHelper.Gui
                         ImGui.EndTabItem();
                     }
 
-                    if (ImGui.BeginTabItem(
-                            "On-screen Mob Info")) //what do i call this, mob context, mob text, hunt info data text idk
+                    if (ImGui.BeginTabItem(GuiResources.MapGuiText["OnScreenMobInfoTab"]))
                     {
                         _bottomPanelHeight = tabBarHeight + 90f * ImGuiHelpers.GlobalScale;
 
@@ -1075,49 +1035,45 @@ namespace HuntHelper.Gui
                             {
 
                                 ImGui.TableNextColumn();
-                                ImGui.Checkbox("Priority Mob", ref _priorityMobEnabled);
+                                ImGui.Checkbox(GuiResources.MapGuiText["PriorityMobLabel"], ref _priorityMobEnabled);
                                 ImGui.SameLine();
-                                ImGuiUtil.ImGui_HelpMarker(
-                                    "The big thing that labels highest rank mob in zone, S/SS > A > B\n\n" +
-                                    "Ctrl+Click to enter manually, Shift+Click for fast drag.");
+                                ImGuiUtil.ImGui_HelpMarker(GuiResources.MapGuiText["PriorityMobToolTip"]);
                                 ImGui.DragFloat("X##Priority Mob", ref _priorityMobInfoPosXPercentage, 0.05f, 0, 100,
                                     "%.2f", ImGuiSliderFlags.NoRoundToFormat);
                                 ImGui.DragFloat("Y##Priority Mob", ref _priorityMobInfoPosYPercentage, 0.05f, 0, 100,
                                     "%.2f", ImGuiSliderFlags.NoRoundToFormat);
-                                ImGui.ColorEdit4("Main##PriorityMain", ref _priorityMobTextColour,
+                                ImGui.ColorEdit4($"{GuiResources.MapGuiText["ColourLabel"]}##PriorityMain", ref _priorityMobTextColour,
                                     ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
                                 ImGui.SameLine();
-                                ImGui.ColorEdit4("Alt##PriorityAlt", ref _priorityMobTextColourAlt,
+                                ImGui.ColorEdit4($"{GuiResources.MapGuiText["AlternateColourLabel"]}##PriorityAlt", ref _priorityMobTextColourAlt,
                                     ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
                                 ImGui.SameLine();
-                                ImGui.ColorEdit4("Background##PriorityAlt", ref _priorityMobColourBackground,
+                                ImGui.ColorEdit4($"{GuiResources.MapGuiText["Background"]}##PriorityAlt", ref _priorityMobColourBackground,
                                     ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
                                 ImGui.SameLine();
-                                ImGuiUtil.ImGui_HelpMarker(
-                                    "Main = without map, Alt = with map images, Background = background duh \n\n- Turn up Alpha A: for solid colour.");
+                                ImGuiUtil.ImGui_HelpMarker(GuiResources.MapGuiText["MobInfoColourToolTip"]);
 
                                 ImGui.TableNextColumn();
                                 ImGui.Checkbox("Nearby Mob List", ref _nearbyMobListEnabled);
                                 ImGui.SameLine();
-                                ImGuiUtil.ImGui_HelpMarker("A list of all nearby mobs.\n\n" +
-                                                           "Ctrl+Click to enter manually, Shift+Click for fast drag.");
+                                ImGuiUtil.ImGui_HelpMarker(GuiResources.MapGuiText["NearbyMobListToolTip"] +
+                                                           GuiResources.MapGuiText["DragWidgetToolTip"]);
                                 ImGui.DragFloat("X##Nearby Mobs", ref _nearbyMobListPosXPercentage, 0.05f, 0, 100,
                                     "%.2f",
                                     ImGuiSliderFlags.NoRoundToFormat);
                                 ImGui.DragFloat("Y##Nearby Mobs", ref _nearbyMobListPosYPercentage, 0.05f, 0, 100,
                                     "%.2f",
                                     ImGuiSliderFlags.NoRoundToFormat);
-                                ImGui.ColorEdit4("Main##Nearby Mobs", ref _nearbyMobListColour,
+                                ImGui.ColorEdit4($"{GuiResources.MapGuiText["ColourLabel"]}##Nearby Mobs", ref _nearbyMobListColour,
                                     ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
                                 ImGui.SameLine();
-                                ImGui.ColorEdit4("Alt##Nearby Alt", ref _nearbyMobListColourAlt,
+                                ImGui.ColorEdit4($"{GuiResources.MapGuiText["AlternateColourLabel"]}##Nearby Alt", ref _nearbyMobListColourAlt,
                                     ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
                                 ImGui.SameLine();
-                                ImGui.ColorEdit4("Background##Nearby Mobs", ref _nearbyMobListColourBackground,
+                                ImGui.ColorEdit4($"{GuiResources.MapGuiText["Background"]}##Nearby Mobs", ref _nearbyMobListColourBackground,
                                     ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
                                 ImGui.SameLine();
-                                ImGuiUtil.ImGui_HelpMarker(
-                                    "Main = without map, Alt = with map images, Background = background duh \n\n- Turn up Alpha A: for solid colour.");
+                                ImGuiUtil.ImGui_HelpMarker(GuiResources.MapGuiText["MobInfoColourToolTip"]);
 
                                 ImGui.EndTable();
                             }
@@ -1128,13 +1084,13 @@ namespace HuntHelper.Gui
                     }
 
 
-                    if (ImGui.BeginTabItem("Stats"))
+                    if (ImGui.BeginTabItem(GuiResources.MapGuiText["StatsTab"]))
                     {
                         _bottomPanelHeight = 120f * ImGuiHelpers.GlobalScale;
 
                         ImGuiUtil.DoStuffWithMonoFont(() =>
                             {
-                                ImGui.TextUnformatted($"Hunts found:");
+                                ImGui.TextUnformatted(GuiResources.MapGuiText["StatsTabMessage"]);
                                 ImGui.TextUnformatted($"S: {_configuration.SFoundCount:00000}");
                                 ImGui.TextUnformatted($"A: {_configuration.AFoundCount:00000}");
                                 ImGui.TextUnformatted($"B: {_configuration.BFoundCount:00000}");
@@ -1195,9 +1151,7 @@ namespace HuntHelper.Gui
             if (ImGui.Begin("help, i've fallen over", ref _settingsVisible,
                 ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse))
             {
-                ImGuiUtil.ImGui_CentreText("There's nothing here", _defaultTextColour);
-                ImGuiUtil.ImGui_CentreText("Options are available from the main map window,", _defaultTextColour);
-                ImGuiUtil.ImGui_CentreText("click the button in the bottom left corner.", _defaultTextColour);
+                ImGuiUtil.ImGui_CentreText(GuiResources.MapGuiText["DefaultSettingsWindowMessage"], _defaultTextColour);
             }
             ImGui.End();
         }
@@ -1372,16 +1326,16 @@ namespace HuntHelper.Gui
             if (!_showDatabaseListWindow) return;
 
             ImGui.SetNextWindowSize(new Vector2(450, 800));
-            ImGui.Begin("Loaded Hunt Data", ref _showDatabaseListWindow);
+            ImGui.Begin(GuiResources.MapGuiText["LoadedHuntDataWindowTitle"], ref _showDatabaseListWindow);
             if (ImGui.BeginTabBar("info"))
             {
-                if (ImGui.BeginTabItem("database"))
+                if (ImGui.BeginTabItem(GuiResources.MapGuiText["LoadedHuntDataDatabaseTab"]))
                 {
                     ImGuiUtil.DoStuffWithMonoFont(() => ImGuiUtil.ImGui_CentreText(_huntManager.GetDatabaseAsString()));
                     ImGui.EndTabItem();
                 }
 
-                if (ImGui.BeginTabItem("spawn points"))
+                if (ImGui.BeginTabItem(GuiResources.MapGuiText["LoadedHuntDataSpawnPointsTab"]))
                 {
                     ImGui.TextUnformatted(_mapDataManager.ToString());
                     ImGui.TextUnformatted("ik it's ugly, i'm sorry");
@@ -1567,10 +1521,10 @@ namespace HuntHelper.Gui
                     {
                         ImGui_ToolTip(new string[]
                         {
-                            $"   {rank} Rank | {_huntManager.GetHPP(mob):0.00}%%  ",
+                            $"   {rank} {GuiResources.MapGuiText["RankLabel"]} | {_huntManager.GetHPP(mob):0.00}%%  ",
                             $"{mob.Name}",
                             "----------------------",
-                            $"Click to send flag"
+                            GuiResources.MapGuiText["NearbyMobListFlagToolTip"]
                         });
 
                         MouseClickToSendChatFlag(mob);
@@ -1791,24 +1745,23 @@ namespace HuntHelper.Gui
         private void MapImageDownloadWindow()
         {
             ImGui.SetNextWindowSize(new Vector2(710, 240));
-            if (ImGui.Begin("Images do not exist, download?", ref _useMapImages))
+            if (ImGui.Begin(GuiResources.MapGuiText["ImageDownloadWindowTitle"], ref _useMapImages))
             {
                 var url = Constants.RepoUrl;
                 var imageDir = _huntManager.ImageFolderPath;
                 if (_huntManager.DownloadingImages) //show this is in process of downloading
                 {
                     ImGuiUtil.DoStuffWithMonoFont(() =>
-                        ImGui.TextUnformatted("Attempting to download, please wait.\n\n" +
-                                                                    "If there seems to be a problem, please manually download from:"));
+                        ImGui.TextUnformatted(GuiResources.MapGuiText["ImageDownloadingMessage"]));
                 }
                 else if (_huntManager.HasDownloadErrors) //show this if any download errors
                 {
                     ImGuiUtil.DoStuffWithMonoFont(() => //successfully (manually) tested with failed image.
                     {
-                        ImGui.Text("The following errors occurred:");
+                        ImGui.Text(GuiResources.MapGuiText["ImageDownloadErrorMessageOne"]);
                         _huntManager.DownloadErrors.ForEach(e => ImGui.Text(e));
-                        ImGui.Text("Please download the images manually,\n or try deleting the Images/Map folder + RESET PLUGIN, and attempt download again:\n");
-                        if (ImGui.Button("Okay, Don't Show Me This Again. Thanks."))
+                        ImGui.Text(GuiResources.MapGuiText["ImageDownloadErrorMessageTwo"]);
+                        if (ImGui.Button(GuiResources.MapGuiText["ImageDownloadErrorButton"]))
                         {
                             _huntManager.HasDownloadErrors = false;
                             _huntManager.DownloadErrors.Clear();
@@ -1820,13 +1773,11 @@ namespace HuntHelper.Gui
                     ImGuiUtil.DoStuffWithMonoFont(() =>
                     {
                         ImGui.Dummy(Vector2.Zero);
-                        ImGui.Text($"Could not find map images");
-                        ImGui.Text($"This is expected if this is your first time.");
-                        ImGui.Text($"Would you like to try to download them? (~23.2MB)");
+                        ImGui.TextWrapped(GuiResources.MapGuiText["ImageDownloadPromptMessage"]);
                         ImGui.SameLine();
-                        if (ImGui.Button("Download##download")) _huntManager.DownloadImages(_mapDataManager.SpawnPointsList);
+                        if (ImGui.Button($"{GuiResources.MapGuiText["ImageDownloadButton"]}##download")) _huntManager.DownloadImages(_mapDataManager.SpawnPointsList);
+                        ImGui.Text(GuiResources.MapGuiText["ImageDownloadManualMessageOne"]);
                         ImGui.Text($"");
-                        ImGui.Text($"Or you can view and manually download from:");
                         ImGui.Dummy(Vector2.Zero);
 
                     });
@@ -1842,7 +1793,7 @@ namespace HuntHelper.Gui
                     }
                 }
 
-                ImGui.Text("and place in:");
+                ImGui.Text(GuiResources.MapGuiText["ImageDownloadManualMessageTwo"]);
                 ImGui.Dummy(new Vector2(52, 0));
                 ImGui.InputText("##folder dir", ref imageDir, 30, ImGuiInputTextFlags.ReadOnly);
                 ImGui.End();
