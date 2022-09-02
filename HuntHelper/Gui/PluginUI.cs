@@ -600,13 +600,12 @@ namespace HuntHelper.Gui
                                 ImGui.SameLine();
                                 ImGui.Text(GuiResources.MapGuiText["PresetOne"]);
                                 ImGui.SameLine();
-                                ImGuiUtil.ImGui_HelpMarker(
-                                    "");
+                                ImGuiUtil.ImGui_HelpMarker(GuiResources.MapGuiText["SavePresetToolTip"]);
 
                                 ImGui.TableNextColumn();
                                 ImGui.Dummy(new Vector2(0f, 0f));
                                 ImGui.PushItemWidth(intWidgetWidth);
-                                ImGui.InputInt(GuiResources.MapGuiText["SavePresetToolTip"], ref _presetOneWindowSize, 0);
+                                ImGui.InputInt("", ref _presetOneWindowSize, 0);
                                 ImGui.PopID();
 
                                 ImGui.TableNextColumn();
@@ -1042,7 +1041,7 @@ namespace HuntHelper.Gui
                                     "%.2f", ImGuiSliderFlags.NoRoundToFormat);
                                 ImGui.DragFloat("Y##Priority Mob", ref _priorityMobInfoPosYPercentage, 0.05f, 0, 100,
                                     "%.2f", ImGuiSliderFlags.NoRoundToFormat);
-                                ImGui.ColorEdit4($"{GuiResources.MapGuiText["ColourLabel"]}##PriorityMain", ref _priorityMobTextColour,
+                                ImGui.ColorEdit4($"{GuiResources.MapGuiText["MainTextColourLabel"]}##PriorityMain", ref _priorityMobTextColour,
                                     ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
                                 ImGui.SameLine();
                                 ImGui.ColorEdit4($"{GuiResources.MapGuiText["AlternateColourLabel"]}##PriorityAlt", ref _priorityMobTextColourAlt,
@@ -1064,7 +1063,7 @@ namespace HuntHelper.Gui
                                 ImGui.DragFloat("Y##Nearby Mobs", ref _nearbyMobListPosYPercentage, 0.05f, 0, 100,
                                     "%.2f",
                                     ImGuiSliderFlags.NoRoundToFormat);
-                                ImGui.ColorEdit4($"{GuiResources.MapGuiText["ColourLabel"]}##Nearby Mobs", ref _nearbyMobListColour,
+                                ImGui.ColorEdit4($"{GuiResources.MapGuiText["MainTextColourLabel"]}##Nearby Mobs", ref _nearbyMobListColour,
                                     ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
                                 ImGui.SameLine();
                                 ImGui.ColorEdit4($"{GuiResources.MapGuiText["AlternateColourLabel"]}##Nearby Alt", ref _nearbyMobListColourAlt,
