@@ -79,10 +79,10 @@
     <Content Include="Data\Localisation\fr.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Data\Localisation\fr_test.json">
+    <Content Include="Data\Localisation\ja.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Data\Localisation\ja.json">
+    <Content Include="Data\Localisation\fr_test.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Data\Localisation\en.json">

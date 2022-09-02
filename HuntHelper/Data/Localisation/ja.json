@@ -13,11 +13,11 @@
 	"Map": {
 		"ErrorLoadingDataMessage":"Error loading data",	
 		
-		"MapImageCheckbox":"Map Image",	
-		"MapImageCheckboxToolTip":"Use a map image instead of blank background\n\n\t\t=======================================\n\t\tMap Images Created By Cable Monkey of Goblin\n         \t\t   http://cablemonkey.us/huntmap2/\n         \t\t   Same thing for spawn point data :D\n\t\t=======================================\n\nIf map images aren't showing, please verify that you have the images downloaded in your plugins folder.",	
+		"MapImageCheckbox":"Map Imageああ",	
+		"MapImageCheckboxToolTip":"Use だだだだだだだだあだだof Goblin\n         \t\t   http://cablemonkey.us/huntmap2/\n         \t\t   Same thing for spawn point data :D\n\t\t=======================================\n\nIf map images aren't showing, please verify that you have the images downloaded in your plugins folder.",	
 		"TitleBarCheckbox":"Hide Title Bar",	
 		"BackgroundScanCheckbox":"Background Scan",	
-		"BackgroundScanCheckboxToolTip":"Allows Hunt Helper to scan while GUI inactive.\nEnables notifications, recording Train, etc. while this main map window is inactive.",	
+		"BackgroundScanCheckboxToolTip":"Allows Hunt Helpeだあだだだだだあｄさ GUI inactive.\nEnables notifications, recording Train, etc. while this main map window is inactive.",	
 		"LoadedHuntDataButton":"Loaded Hunt Data",	
 		"LoadedHuntDataButtonToolTip":"Show the loaded hunt and spawn point data",	
 		
@@ -75,7 +75,7 @@
 		"ChatMessageLabelToolTip":"Message to send to chat using /echo, usable tags: <flag> <name> <rank> <hpp>\n",	
 		"TTSMessageLabel":"TTS   Message",
 		"TTSMessageLabelToolTip": "Message to use with Text-to-Speech, usable tags: <name> <rank>", 
-    "FlyTextToolTip":"FlyText is the type of text that appears when you attack something or are attacked.\n(e.g. Crit, Miss, Resist)\n\nEnabling this will show a coloured FlyText notification near the middle of your screen.",	
+		"FlyTextToolTip":"FlyText is the type of text that appears when you attack something or are attacked.\n(e.g. Crit, Miss, Resist)\n\nEnabling this will show a coloured FlyText notification near the middle of your screen.",	
 		"VisualHelpLabel":"Visual Help",	
 		"VisualHelpToolTip":"Draws a 'quest pointer' type thingy, it's a bit glitchy but works well enough\nChange size in settings",	
 		
@@ -117,59 +117,59 @@
 		"ImageDownloadManualMessageOne":"Or you can view and manually download from:",	
 		"ImageDownloadManualMessageTwo":"and place in:"	
 	},
-	
+
 	"HuntTrain": {
-		"CopyText" : "Copy export code clipboard.\nWarning: The code will be too long to be pasted into in-game chat. Share via Discord.",
-		"CopyTextCopied":"Copied!",
-		"MainWindowTitle":"Hunt Train",
-		"NameHeader":"Name",
-		"TeleportHeader":"Teleport",
-		"TeleportToolTip":"Teleport will initiate even if you are closer to the mob / on the same map. pls adjust thx",
-		"LastSeenHeader":"Last Seen",
-		"HowTo":"HOW TO:\n\nBackground\nClick on any of the rows to send the relevant Map Link into chat. (Drag to reorder the list)\n\nClick on the checkbox to mark a mob as dead.\n\nRight-click -- Select - change the selected mob\n            -- Remove - Removes the mob from the list (This permanently deletes data on that mob)\n\nUse the command \"/hhn\" to automatically mark the current selected as dead, and send the next Map link into chat.\n(you will have to click the first one manually)\n\n*Does not allow duplicates (currently does not handle instances or different worlds) - Only records A ranks.\n*Drag reordering can glitch a bit if you drag from near the top of an item.",
-		"TeleportButton":"tele",		
-		"Settings":"Settings",		
-		"Border":"Border",		
-		"LastSeen":"Last seen",		
-		"LastSeenToolTip":"Show how long since the hunt was found.",		
-		"OpenMap":"Open Map",		
-		"OpenMapToolTip":"Open the relevant map when /hhn used or when name clicked.",		
-		"TeleButtons":"Tele Buttons",		
-		"TeleButtonsToolTip":"Show teleport buttons.\nProbably best to use this instead of tele on click.",		
-		"TeleportOnClick":"Teleport on click",		
-		"TeleportOnClickToolTip":"Initiate teleport to closest Aetheryte when hunt is clicked.\nthis will begin tele if you try to reorder or click just for chat link, so you know, be a bit careful",		
-		"TeleportOnCommand":"Initiate teleport to closest Aetheryte when /hhn used.",		
-		"RemoveDeadButton":"Remove Dead",		
-		"ResetDeadButton":"Reset Dead Status",		
-		"StartRecordingButton":"Start Recording",		
-		"EndRecordingButton":"Stop Recording",		
-		"DeleteTrainButton":"Delete Train",		
-		"ImportButton":"Import",	
-		"ContextMenuSelect":"   Select",
-		"ContextMenuRemove":"   Remove",
-		
-		
-		"TeleportWindowTitle":"Teleporter Plugin Not Found",
-		"TeleportWindowMessage":"Teleporting requires the Teleporter Plugin by Pohky.\nPlease install it via /xlplugins or uncheck teleport options.",
-		"TeleportWindowButton":"okey-dokey",
-		
-		
-		"DeleteWindowTitle":"Delete",
-		"DeleteWindowMessage":"Are you sure you want to DELETE train data?",
-		"DeleteWindowDeleteButton":"Delete",
-		"CancelButton":"Cancel",
-		
-		
-		"ImportWindowTitle":"Import",
-		"ImportWindowErrorMessage":"Nothing to import - or incorrect code\n\nThe export code is too long to be shared via in-game chat. Please share through Discord or something.",
-		"ImportWindowCloseButton":"Close",
-		"ImportWindowImportedMessage":"Imported data mob count: ",
-		"ImportAllCheckbox":"Import All ",
-		"ImportAllCheckboxToolTip":"Overwrites current data with imported data",
-		"ImportNewCheckbox":"Import New ",
-		"ImportNewCheckboxToolTip":"Only imports new mobs",
-		"UpdateLastSeenCheckbox":"Update Last Seen Time ",
-		"UpdateLastSeenCheckboxToolTip":"Imports new mobs and updates old mobs Last Seen times, if applicable"		
+		"CopyText": "Copy export code clipboard.\nWarning: The code will be too long to be pasted into in-game chat. Share via Discord.",
+		"CopyTextCopied": "Copied!",
+		"MainWindowTitle": "Hunt Train",
+		"NameHeader": "Name",
+		"TeleportHeader": "Teleport",
+		"TeleportToolTip": "Teleport will initiate even if you are closer to the mob / on the same map. pls adjust thx",
+		"LastSeenHeader": "Last Seen",
+		"HowTo": "HOW TO:\n\nBackground\nClick on any of the rows to send the relevant Map Link into chat. (Drag to reorder the list)\n\nClick on the checkbox to mark a mob as dead.\n\nUse the command \"/hhn\" to automatically mark the current selected as dead, and send the next Map link into chat.\n(you will have to click the first one manually)\n\n*Does not allow duplicates (currently does not handle instances or different worlds) - Only records A ranks.",
+		"TeleportButton": "tele",
+		"Settings": "Settings",
+		"Border": "Border",
+		"LastSeen": "Last seen",
+		"LastSeenToolTip": "Show how long since the hunt was found.",
+		"OpenMap": "Open Map",
+		"OpenMapToolTip": "Open the relevant map when /hhn used or when name clicked.",
+		"TeleButtons": "Tele Buttons",
+		"TeleButtonsToolTip": "Show teleport buttons.\nProbably best to use this instead of tele on click.",
+		"TeleportOnClick": "Teleport on click",
+		"TeleportOnClickToolTip": "Initiate teleport to closest Aetheryte when hunt is clicked.\nThis will begin tele even if you try to reorder or click just for chat link.",
+		"TeleportOnCommand": "Initiate teleport to closest Aetheryte when /hhn used.",
+		"RemoveDeadButton": "Remove Dead",
+		"ResetDeadButton": "Reset Dead Status",
+		"StartRecordingButton": "Start Recording",
+		"EndRecordingButton": "Stop Recording",
+		"DeleteTrainButton": "Delete Train",
+		"ImportButton": "Import",
+		"ContextMenuSelect": "   Select",
+		"ContextMenuRemove": "   Remove",
+
+
+		"TeleportWindowTitle": "Teleporter Plugin Not Found",
+		"TeleportWindowMessage": "Teleporting requires the Teleporter Plugin by Pohky.\nPlease install it via /xlplugins or uncheck teleport options.",
+		"TeleportWindowButton": "okey-dokey",
+
+
+		"DeleteWindowTitle": "Delete",
+		"DeleteWindowMessage": "Are you sure you want to DELETE train data?",
+		"DeleteWindowDeleteButton": "Delete",
+		"CancelButton": "Cancel",
+
+
+		"ImportWindowTitle": "Import",
+		"ImportWindowErrorMessage": "Nothing to import - or incorrect code\n\nThe export code is too long to be shared via in-game chat. Please share through Discord or something.",
+		"ImportWindowCloseButton": "Close",
+		"ImportWindowImportedMessage": "Imported data mob count: ",
+		"ImportAllCheckbox": "Import All ",
+		"ImportAllCheckboxToolTip": "Overwrites current data with imported data",
+		"ImportNewCheckbox": "Import New ",
+		"ImportNewCheckboxToolTip": "Only imports new mobs",
+		"UpdateLastSeenCheckbox": "Update Last Seen Time ",
+		"UpdateLastSeenCheckboxToolTip": "Imports new mobs and updates old mobs Last Seen times, if applicable"
 	},
 	
 	"SpawnPointFinder": {

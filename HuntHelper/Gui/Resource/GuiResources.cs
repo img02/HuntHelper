@@ -61,6 +61,7 @@ public class GuiResources
                 }
             }
             PluginLog.Debug($"we gucci");
+            PluginLog.Log($"Loaded language file: {path}");
             return true;
         }
         catch (Exception e)

@@ -202,15 +202,15 @@ namespace HuntHelper
                 this.SpawnPointFinderUI.Draw();
                 this.PointerUI.Draw();
             }
-            catch (Exception e)
+            catch (Exception e)  
             {
                 PluginLog.Error(e.Message);
+                if(e.StackTrace != null) PluginLog.Error(e.StackTrace);
                 PluginUi.MapVisible = false;
                 Configuration.MapWindowVisible = false;
                 HuntTrainUI.HuntTrainWindowVisible = false;
                 CounterUI.WindowVisible = false;
                 SpawnPointFinderUI.WindowVisible = false;
-
             }
         }
 

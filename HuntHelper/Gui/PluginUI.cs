@@ -1099,6 +1099,19 @@ namespace HuntHelper.Gui
                         );
                         ImGui.EndTabItem();
                     }
+
+                    if (ImGui.BeginTabItem("Translate"))
+                    {
+                        ImGui.TextWrapped("If you want to help translate this plugin");
+                        var url = "https://github.com/imaginary-png/HuntHelper/tree/main/Translate";
+                        ImGui.InputText(" -- click me", ref url, 100, ImGuiInputTextFlags.ReadOnly );
+                        if (ImGui.IsItemClicked())
+                        {
+                            System.Diagnostics.Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
+                        }
+                        ImGui.TextWrapped("or dm me @ img#7855");
+                        ImGui.EndTabItem();
+                    }
                     ImGui.EndTabBar();
                 }
             }
