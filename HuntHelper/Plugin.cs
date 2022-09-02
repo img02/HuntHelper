@@ -4,12 +4,18 @@ using Dalamud.Game.ClientState.Objects;
 using Dalamud.Game.Command;
 using Dalamud.Game.Gui;
 using Dalamud.Game.Gui.FlyText;
+using Dalamud.Logging;
 using Dalamud.Plugin;
 using Dalamud.Plugin.Ipc;
 using HuntHelper.Gui;
 using HuntHelper.Managers.Hunts;
 using HuntHelper.Managers.MapData;
+using Newtonsoft.Json;
+using System.Collections.Generic;
+using System;
 using System.IO;
+using Dalamud;
+using HuntHelper.Gui.Resource;
 
 namespace HuntHelper
 {
@@ -47,6 +53,7 @@ namespace HuntHelper
         private GameGui GameGui { get; init; }
 
         public static ICallGateSubscriber<uint, byte, bool> TeleportIpc { get; private set; }
+        public static string PluginDir { get; set; } = string.Empty;
 
         public Plugin(
             DalamudPluginInterface pluginInterface,
@@ -61,7 +68,15 @@ namespace HuntHelper
             this.PluginInterface = pluginInterface;
             this.CommandManager = commandManager;
 
+            PluginDir = PluginInterface.AssemblyLocation.Directory?.FullName!;
+
             this.ClientState = clientState;
+
+            if (!GuiResources.LoadGuiText(ClientState.ClientLanguage))
+            {
+                PluginLog.Error("Unable to find localisation file. What did you do?! gonna crash ok");
+            }
+
             this.ObjectTable = objectTable;
             this.DataManager = dataManager;
             this.ChatGui = chatGui;
@@ -80,38 +95,38 @@ namespace HuntHelper
             this.PluginUi = new PluginUI(this.Configuration, pluginInterface, clientState, objectTable, dataManager, HuntManager, MapDataManager, GameGui);
             this.HuntTrainUI = new HuntTrainUI(TrainManager, Configuration);
             this.CounterUI = new CounterUI(ClientState, ChatGui, Configuration, ObjectTable);
-            this.SpawnPointFinderUI = new SpawnPointFinderUI(MapDataManager, Configuration);
+            this.SpawnPointFinderUI = new SpawnPointFinderUI(MapDataManager, DataManager, Configuration);
             this.PointerUI = new PointerUI(HuntManager, Configuration, GameGui);
 
             TeleportIpc = PluginInterface.GetIpcSubscriber<uint, byte, bool>("Teleport");
 
             this.CommandManager.AddHandler(MapWindowCommand, new CommandInfo(HuntMapCommand)
             {
-                HelpMessage = "Opens the Hunt Map"
+                HelpMessage = GuiResources.PluginText["/hh helpmessage"]
             });
             this.CommandManager.AddHandler(MapWindowPresetOne, new CommandInfo(ApplyPresetOneCommand)
             {
-                HelpMessage = "Applies Preset One"
+                HelpMessage = GuiResources.PluginText["/hh1 helpmessage"]
             });
             this.CommandManager.AddHandler(MapWindowPresetTwo, new CommandInfo(ApplyPresetTwoCommand)
             {
-                HelpMessage = "Applies Preset Two"
+                HelpMessage = GuiResources.PluginText["/hh2 helpmessage"]
             });
             this.CommandManager.AddHandler(MapWindowPresetOneSave, new CommandInfo(SavePresetOneCommand)
             {
-                HelpMessage = "Save Preset One"
+                HelpMessage = GuiResources.PluginText["/hh1save helpmessage"]
             });
             this.CommandManager.AddHandler(MapWindowPresetTwoSave, new CommandInfo(SavePresetTwoCommand)
             {
-                HelpMessage = "Save Preset Two"
+                HelpMessage = GuiResources.PluginText["/hh2save helpmessage"]
             });
             this.CommandManager.AddHandler(HuntTrainWindowCommand, new CommandInfo(HuntTrainCommand)
             {
-                HelpMessage = $"Opens the Hunt Train Window."
+                HelpMessage = GuiResources.PluginText["/hht helpmessage"]
             });
             this.CommandManager.AddHandler(NextHuntInTrainCommand, new CommandInfo(GetNextMobCommand)
             {
-                HelpMessage = "Sends the flag for the next train mob into chat"
+                HelpMessage = GuiResources.PluginText["/hhn helpmessage"]
             });
 #if DEBUG
             this.CommandManager.AddHandler(DebugCommand, new CommandInfo(DebugWindowCommand)
@@ -121,11 +136,11 @@ namespace HuntHelper
 #endif
             this.CommandManager.AddHandler(CounterCommand, new CommandInfo(CounterWindowCommand)
             {
-                HelpMessage = "Counter window -- for counter-based S ranks"
+                HelpMessage = GuiResources.PluginText["/hhc helpmessage"]
             });
             this.CommandManager.AddHandler(SpawnPointCommand, new CommandInfo(SpawnPointWindowCommand)
             {
-                HelpMessage = "spawn point tracking window"
+                HelpMessage = GuiResources.PluginText["/hhr helpmessage"]
             });
 
             this.PluginInterface.UiBuilder.Draw += DrawUI;
@@ -179,16 +194,31 @@ namespace HuntHelper
 
         private void DrawUI()
         {
-            this.PluginUi.Draw();
-            this.HuntTrainUI.Draw();
-            this.CounterUI.Draw();
-            this.SpawnPointFinderUI.Draw();
-            this.PointerUI.Draw();
+            try
+            {
+                this.PluginUi.Draw();
+                this.HuntTrainUI.Draw();
+                this.CounterUI.Draw();
+                this.SpawnPointFinderUI.Draw();
+                this.PointerUI.Draw();
+            }
+            catch (Exception e)  
+            {
+                PluginLog.Error(e.Message);
+                if(e.StackTrace != null) PluginLog.Error(e.StackTrace);
+                PluginUi.MapVisible = false;
+                Configuration.MapWindowVisible = false;
+                HuntTrainUI.HuntTrainWindowVisible = false;
+                CounterUI.WindowVisible = false;
+                SpawnPointFinderUI.WindowVisible = false;
+            }
         }
 
         private void DrawConfigUI()
         {
             this.PluginUi.SettingsVisible = true;
         }
+
+
     }
 }

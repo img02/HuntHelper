@@ -11,6 +11,7 @@ using System.Linq;
 using System.Numerics;
 using System.Threading;
 using System.Threading.Tasks;
+using HuntHelper.Gui.Resource;
 
 namespace HuntHelper.Gui;
 
@@ -21,8 +22,7 @@ public class HuntTrainUI : IDisposable
 
     private bool _huntTrainWindowVisible = false;
 
-    private string _copyText = "Copy export code clipboard.\n" +
-                               "Warning: The code will be too long to be pasted into in-game chat. Share via Discord.";
+    private string _copyText = GuiResources.HuntTrainGuiText["CopyText"];
     private Task _copyTextTask = Task.CompletedTask;
     private int _tooltipChangeTime = 400;
 
@@ -115,7 +115,7 @@ public class HuntTrainUI : IDisposable
         ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, new Vector2(0, 0));
         ImGui.SetNextWindowSize(_huntTrainWindowSize, ImGuiCond.FirstUseEver);
         ImGui.SetWindowPos(_huntTrainWindowPos);
-        if (ImGui.Begin("Hunt Train##Window", ref _huntTrainWindowVisible, ImGuiWindowFlags.NoScrollbar))
+        if (ImGui.Begin($"{GuiResources.HuntTrainGuiText["MainWindowTitle"]}##Window", ref _huntTrainWindowVisible, ImGuiWindowFlags.NoScrollbar))
         {
             var childSizeX = ImGui.GetWindowSize().X / numOfColumns;
             var childSizeY = _mobList.Count * 23 * ImGuiHelpers.GlobalScale;
@@ -141,15 +141,15 @@ public class HuntTrainUI : IDisposable
             ImGui.SameLine();
             ImGui.BeginChild("NameHeader", new Vector2(nameWidth, 20 * ImGuiHelpers.GlobalScale), _useBorder,
                 ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse);
-            ImGui.Text("Name");
+            ImGui.Text(GuiResources.HuntTrainGuiText["NameHeader"]);
             ImGui.EndChild();
             if (_showTeleButtons)
             {
                 ImGui.SameLine();
                 ImGui.BeginChild("TeleButtonHeader", new Vector2(teleWidth, 20 * ImGuiHelpers.GlobalScale),
                     _useBorder, ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse);
-                ImGui.Text("Teleport");
-                ImGuiUtil.ImGui_HoveredToolTip("Teleport will initiate even if you are closer to the mob / on the same map. pls adjust thx");
+                ImGui.Text(GuiResources.HuntTrainGuiText["TeleportHeader"]);
+                ImGuiUtil.ImGui_HoveredToolTip($"{GuiResources.HuntTrainGuiText["TeleportToolTip"]}");
                 ImGui.EndChild();
             }
 
@@ -158,21 +158,12 @@ public class HuntTrainUI : IDisposable
                 ImGui.SameLine();
                 ImGui.BeginChild("LastSeenHeader", new Vector2(lastSeenWidth, 20 * ImGuiHelpers.GlobalScale),
                     _useBorder, ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse);
-                ImGui.Text("Last Seen");
+                ImGui.Text(GuiResources.HuntTrainGuiText["LastSeenHeader"]);
                 ImGui.EndChild();
             }
 
             ImGui.SameLine();
-            ImGuiUtil.ImGui_HelpMarker("HOW TO:\n\n" +
-                                          "Background\n" +
-                                          "Click on any of the rows to send the relevant Map Link into chat. (Drag to reorder the list)\n\n" +
-                                          "Click on the checkbox to mark a mob as dead.\n\n" +
-                                          "Right-click -- Select - change the selected mob\n" +
-                                          "            -- Remove - Removes the mob from the list (This permanently deletes data on that mob)\n\n" +
-                                          "Use the command \"/hhn\" to automatically mark the current selected as dead, and send the next Map link into chat.\n" +
-                                          "(you will have to click the first one manually)\n\n" +
-                                          "*Does not allow duplicates (currently does not handle instances or different worlds) - Only records A ranks.\n" +
-                                          "*Drag reordering can glitch a bit if you drag from near the top of an item. ");
+            ImGuiUtil.ImGui_HelpMarker(GuiResources.HuntTrainGuiText["HowTo"]);
             ImGui.SameLine();
             ImGui.TextColored(new Vector4(1f, .3f, .3f, 1f), "  <<<");
 
@@ -192,7 +183,7 @@ public class HuntTrainUI : IDisposable
                     ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse);
                 foreach (var m in _mobList)
                 {
-                    if (ImGui.Button($"tele##{m.MapID}{m.Position}"))
+                    if (ImGui.Button($"{GuiResources.HuntTrainGuiText["TeleportButton"]}##{m.MapID}{m.Position}"))
                     {
                         _teleportManager.TeleportToHunt(m);
                         _trainManager.OpenMap(m, _openMap);
@@ -230,28 +221,27 @@ public class HuntTrainUI : IDisposable
             ImGui.EndChild(); //main hunt train data section
             #endregion
 
-            if (ImGui.TreeNode("options##treeeee", "Settings"))
+            if (ImGui.TreeNode($"options##treeeee", $"{GuiResources.HuntTrainGuiText["Settings"]}"))
             {
                 if (ImGui.BeginTable("settingsalignment", 2))
                 {
                     ImGui.TableNextColumn();
-                    ImGui.Checkbox("Border", ref _useBorder);
+                    ImGui.Checkbox(GuiResources.HuntTrainGuiText["Border"], ref _useBorder);
                     ImGui.TableNextColumn();
-                    ImGui.Checkbox("Last seen", ref _showLastSeen);
-                    ImGuiUtil.ImGui_HoveredToolTip("Show how long since the hunt was found.");
+                    ImGui.Checkbox(GuiResources.HuntTrainGuiText["LastSeen"], ref _showLastSeen);
+                    ImGuiUtil.ImGui_HoveredToolTip(GuiResources.HuntTrainGuiText["LastSeenToolTip"]);
                     ImGui.TableNextColumn();
-                    ImGui.Checkbox("Open Map", ref _openMap); //assuming this is allowed as it requires user interaction, but opening map on S rank spawn would be passive and so 'automated'
-                    ImGuiUtil.ImGui_HoveredToolTip("Open the relevant map when /hhn used or when name clicked.");
+                    ImGui.Checkbox(GuiResources.HuntTrainGuiText["OpenMap"], ref _openMap); //assuming this is allowed as it requires user interaction, but opening map on S rank spawn would be passive and so 'automated'
+                    ImGuiUtil.ImGui_HoveredToolTip(GuiResources.HuntTrainGuiText["OpenMapToolTip"]);
                     ImGui.TableNextColumn();
-                    ImGui.Checkbox("Tele Buttons", ref _showTeleButtons);
-                    ImGuiUtil.ImGui_HoveredToolTip("Show teleport buttons.\nProbably best to use this instead of tele on click.");
+                    ImGui.Checkbox(GuiResources.HuntTrainGuiText["TeleButtons"], ref _showTeleButtons);
+                    ImGuiUtil.ImGui_HoveredToolTip(GuiResources.HuntTrainGuiText["TeleButtonsToolTip"]);
                     ImGui.TableNextColumn();
-                    ImGui.Checkbox("Teleport on click", ref _teleportMe);
-                    ImGuiUtil.ImGui_HoveredToolTip("Initiate teleport to closest Aetheryte when hunt is clicked.\n" +
-                                                   "this will begin tele if you try to reorder or click just for chat link, so you know, be a bit careful");
+                    ImGui.Checkbox(GuiResources.HuntTrainGuiText["TeleportOnClick"], ref _teleportMe);
+                    ImGuiUtil.ImGui_HoveredToolTip(GuiResources.HuntTrainGuiText["TeleportOnClickToolTip"]);
                     ImGui.TableNextColumn();
-                    ImGui.Checkbox("Teleport on command", ref _teleportMeOnCommand);
-                    ImGuiUtil.ImGui_HoveredToolTip("Initiate teleport to closest Aetheryte when /hhn used.");
+                    ImGui.Checkbox(GuiResources.HuntTrainGuiText["TeleportOnCommand"], ref _teleportMeOnCommand);
+                    ImGuiUtil.ImGui_HoveredToolTip(GuiResources.HuntTrainGuiText["TeleportOnCommand"]);
                     ImGui.EndTable();
                 }
 
@@ -264,11 +254,11 @@ public class HuntTrainUI : IDisposable
             #region Buttons
 
             if (ImGuiComponents.IconButton(FontAwesomeIcon.History)) _trainManager.TrainRemoveDead();
-            ImGuiUtil.ImGui_HoveredToolTip("Remove Dead");
+            ImGuiUtil.ImGui_HoveredToolTip(GuiResources.HuntTrainGuiText["RemoveDeadButton"]);
             ImGui.SameLine(); ImGui.Dummy(new Vector2(4, 0)); ImGui.SameLine();
 
             if (ImGuiComponents.IconButton(FontAwesomeIcon.Syringe)) _trainManager.TrainUnkillAll();
-            ImGuiUtil.ImGui_HoveredToolTip("Reset Dead Status");
+            ImGuiUtil.ImGui_HoveredToolTip(GuiResources.HuntTrainGuiText["ResetDeadButton"]);
             ImGui.SameLine(); ImGui.Dummy(new Vector2(4, 0)); ImGui.SameLine();
 
             //position record button on far right
@@ -276,18 +266,18 @@ public class HuntTrainUI : IDisposable
             if (!_trainManager.RecordTrain)
             {
                 if (ImGuiComponents.IconButton(FontAwesomeIcon.Play)) _trainManager.RecordTrain = true;
-                ImGuiUtil.ImGui_HoveredToolTip("Start Recording");
+                ImGuiUtil.ImGui_HoveredToolTip(GuiResources.HuntTrainGuiText["StartRecordingButton"]);
             }
             else
             {
                 if (ImGuiComponents.IconButton(FontAwesomeIcon.Pause)) _trainManager.RecordTrain = false;
-                ImGuiUtil.ImGui_HoveredToolTip("Stop Recording");
+                ImGuiUtil.ImGui_HoveredToolTip(GuiResources.HuntTrainGuiText["StopRecordingButton"]);
             }
 
             ImGui.Dummy(new Vector2(0, 20f));
 
-            if (ImGuiComponents.IconButton(FontAwesomeIcon.Skull)) ImGui.OpenPopup("Delete##modal");
-            ImGuiUtil.ImGui_HoveredToolTip("Delete Train");
+            if (ImGuiComponents.IconButton(FontAwesomeIcon.Skull)) ImGui.OpenPopup($"{GuiResources.HuntTrainGuiText["DeleteWindowTitle"]}##modal");
+            ImGuiUtil.ImGui_HoveredToolTip(GuiResources.HuntTrainGuiText["DeleteTrainButton"]);
             ImGui.SameLine();
 
             //gosh these buttons don't line up, off by like 1 pixel :(
@@ -308,16 +298,16 @@ public class HuntTrainUI : IDisposable
             {
                 var importCode = ImGui.GetClipboardText();
                 _trainManager.Import(importCode);
-                ImGui.OpenPopup("Import##popup");
+                ImGui.OpenPopup($"{GuiResources.HuntTrainGuiText["ImportWindowTitle"]}##popup");
             }
 
-            ImGuiUtil.ImGui_HoveredToolTip("Import");
+            ImGuiUtil.ImGui_HoveredToolTip(GuiResources.HuntTrainGuiText["ImportButton"]);
 
             DrawDeleteModal();
             DrawImportWindowModal();
             #endregion
 
-            if (_teleportManager.TeleportPluginNotFound) ImGui.OpenPopup("Teleporter Plugin Not Found##ModalPopupWindowThingymajig");
+            if (_teleportManager.TeleportPluginNotFound) ImGui.OpenPopup($"{GuiResources.HuntTrainGuiText["TeleportWindowTitle"]}##ModalPopupWindowThingymajig");
             DrawTeleportPluginNotFoundModal();
             ImGui.PopStyleVar(); //pop itemspacing
             ImGui.End();
@@ -332,12 +322,12 @@ public class HuntTrainUI : IDisposable
         ImGui.SetNextWindowSize(new Vector2(315 * ImGuiHelpers.GlobalScale, 120 * ImGuiHelpers.GlobalScale), ImGuiCond.Always);
         ImGui.PushStyleColor(ImGuiCol.ResizeGrip, 0);
         ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, new Vector2(8, 8));
-        if (ImGui.BeginPopupModal("Teleporter Plugin Not Found##ModalPopupWindowThingymajig"))
+        if (ImGui.BeginPopupModal($"{GuiResources.HuntTrainGuiText["TeleportWindowTitle"]}##ModalPopupWindowThingymajig"))
         {
-            ImGui.TextWrapped("Teleporting requires the Teleporter Plugin by Pohky.\nPlease install it via /xlplugins or uncheck teleport options.");
+            ImGui.TextWrapped(GuiResources.HuntTrainGuiText["TeleportWindowMessage"]);
             ImGui.Dummy(Vector2.One);
             ImGui.SetCursorPosX(ImGui.GetWindowSize().X - 80f * ImGuiHelpers.GlobalScale);
-            if (ImGui.Button("okey-dokey"))
+            if (ImGui.Button(GuiResources.HuntTrainGuiText["TeleportWindowButton"]))
             {
                 _teleportManager.TeleportPluginNotFound = false;
                 ImGui.CloseCurrentPopup();
@@ -347,19 +337,20 @@ public class HuntTrainUI : IDisposable
         ImGui.PopStyleVar();
         ImGui.PopStyleColor();
     }
+
     private void DrawDeleteModal()
     {
         var center = ImGui.GetWindowPos() + ImGui.GetWindowSize() / 2;
         ImGui.SetNextWindowPos(center, ImGuiCond.Appearing, new Vector2(0.5f, 0.5f));
         ImGui.SetNextWindowSize(new Vector2(400, 200));
 
-        if (ImGui.BeginPopupModal("Delete##modal"))
+        if (ImGui.BeginPopupModal($"{GuiResources.HuntTrainGuiText["DeleteWindowTitle"]}##modal"))
         {
-            ImGui.TextWrapped("Are you sure you want to DELETE train data?");
+            ImGui.TextWrapped(GuiResources.HuntTrainGuiText["DeleteWindowMessage"]);
 
             ImGui.Dummy(new Vector2(0, 25));
             ImGui.Dummy(new Vector2(6, 0)); ImGui.SameLine();
-            if (ImGui.Button("Delete"))
+            if (ImGui.Button(GuiResources.HuntTrainGuiText["DeleteWindowDeleteButton"]))
             {
                 _trainManager.TrainDelete();
                 ImGui.CloseCurrentPopup();
@@ -367,7 +358,7 @@ public class HuntTrainUI : IDisposable
 
             ImGui.SameLine(); ImGui.Dummy(new Vector2(16, 0));
             ImGui.SameLine();
-            if (ImGui.Button("Cancel"))
+            if (ImGui.Button(GuiResources.HuntTrainGuiText["CancelButton"]))
             {
                 ImGui.CloseCurrentPopup();
             }
@@ -380,22 +371,20 @@ public class HuntTrainUI : IDisposable
         ImGui.SetNextWindowPos(center, ImGuiCond.Appearing, new Vector2(0.5f, 0.5f));
         ImGui.SetNextWindowSize(new Vector2(400, 700), ImGuiCond.FirstUseEver);
 
-        if (ImGui.BeginPopupModal("Import##popup"))
+        if (ImGui.BeginPopupModal($"{GuiResources.HuntTrainGuiText["ImportWindowTitle"]}##popup"))
         {
 
             //if count is zero -> show message
             if (_importedTrain.Count == 0)
             {
-                ImGui.TextWrapped("Nothing to import - or incorrect code\n\n" +
-                           "The export code is too long to be shared via in-game chat. Please share through Discord or something.");
+                ImGui.TextWrapped(GuiResources.HuntTrainGuiText["ImportWindowErrorMessage"]);
                 ImGui.Dummy(new Vector2(0, 25));
                 ImGui.Dummy(new Vector2(6, 0)); ImGui.SameLine();
-                if (ImGui.Button("Close", new Vector2(80, 0))) ImGui.CloseCurrentPopup();
+                if (ImGui.Button(GuiResources.HuntTrainGuiText["ImportWindowCloseButton"], new Vector2(80, 0))) ImGui.CloseCurrentPopup();
                 return;
             }
 
-
-            ImGui.Text($"Imported data for {_importedTrain.Count} mobs.");
+            ImGui.Text($"{GuiResources.HuntTrainGuiText["ImportWindowImportedMessage"]}{_importedTrain.Count}");
 
             if (ImGui.BeginChild("tablechild", new Vector2(ImGui.GetWindowSize().X, (ImGui.GetTextLineHeightWithSpacing() + 5) * (_importedTrain.Count + 1))))
             {
@@ -403,9 +392,9 @@ public class HuntTrainUI : IDisposable
                 if (ImGui.BeginTable("ImportTable", 2, ImGuiTableFlags.BordersH))
                 {
                     ImGui.TableNextColumn();
-                    ImGui.TextUnformatted($"Name");
+                    ImGui.TextUnformatted(GuiResources.HuntTrainGuiText["NameHeader"]);
                     ImGui.TableNextColumn();
-                    ImGui.TextUnformatted($"Last Seen");
+                    ImGui.TextUnformatted(GuiResources.HuntTrainGuiText["LastSeenHeader"]);
                     foreach (var m in _importedTrain)
                     {   //green text if new mob, grey text if exists.
                         ImGui.PushStyleColor(ImGuiCol.Text,
@@ -424,42 +413,38 @@ public class HuntTrainUI : IDisposable
                 ImGui.EndChild();
             }
 
-            if (ImGui.Checkbox("Import All ", ref _importAll))
+            if (ImGui.Checkbox(GuiResources.HuntTrainGuiText["ImportAllCheckbox"], ref _importAll))
             {
                 _importNew = false;
                 _importUpdateTime = false;
             }
-            ImGui.SameLine(); ImGuiUtil.ImGui_HelpMarker("Overwrites current data with imported data");
+            ImGui.SameLine(); ImGuiUtil.ImGui_HelpMarker(GuiResources.HuntTrainGuiText["ImportAllCheckboxToolTip"]);
             ImGui.Dummy(new Vector2(0, 6f));
             ImGui.Separator();
             ImGui.Dummy(new Vector2(0, 6f));
 
-            if (ImGui.Checkbox("Import New ", ref _importNew))
+            if (ImGui.Checkbox(GuiResources.HuntTrainGuiText["ImportNewCheckbox"], ref _importNew))
             {
                 _importAll = false;
                 if (!_importNew) _importUpdateTime = false;
             }
-            ImGui.SameLine(); ImGuiUtil.ImGui_HelpMarker("Only imports new mobs");
+            ImGui.SameLine(); ImGuiUtil.ImGui_HelpMarker(GuiResources.HuntTrainGuiText["ImportNewCheckboxToolTip"]);
 
 
             ImGui.SameLine(); ImGui.Dummy(new Vector2(16, 0));
             ImGui.SameLine();
 
-            if (ImGui.Checkbox("Update Last Seen Time ", ref _importUpdateTime))
+            if (ImGui.Checkbox(GuiResources.HuntTrainGuiText["UpdateLastSeenCheckbox"], ref _importUpdateTime))
             {
                 _importNew = true;
                 _importAll = false;
             };
-            ImGui.SameLine(); ImGuiUtil.ImGui_HelpMarker("Imports new mobs and updates old mobs Last Seen times, if applicable");
-
-
+            ImGui.SameLine(); ImGuiUtil.ImGui_HelpMarker(GuiResources.HuntTrainGuiText["UpdateLastSeenCheckboxToolTip"]);
 
             ImGui.Dummy(new Vector2(0, 100));
-
-
             ImGui.Dummy(new Vector2(6, 0));
             ImGui.SameLine();
-            if (ImGui.Button("Import", new Vector2(80, 0)))
+            if (ImGui.Button(GuiResources.HuntTrainGuiText["ImportButton"], new Vector2(80, 0)))
             {
                 if (!_importNew && !_importUpdateTime && !_importAll) return;
                 ImportTrainData();
@@ -468,7 +453,7 @@ public class HuntTrainUI : IDisposable
             }
             ImGui.SameLine(); ImGui.Dummy(new Vector2(6, 0));
             ImGui.SameLine();
-            if (ImGui.Button("Cancel", new Vector2(80, 0)))
+            if (ImGui.Button(GuiResources.HuntTrainGuiText["CancelButton"], new Vector2(80, 0)))
             {
                 _importedTrain.Clear();
                 ImGui.CloseCurrentPopup();
@@ -497,7 +482,7 @@ public class HuntTrainUI : IDisposable
         _copyTextTask = Task.Run(() =>
         {
             var temp = _copyText;
-            _copyText = "Copied!";
+            _copyText = GuiResources.HuntTrainGuiText["CopyTextCopied"];
             Thread.Sleep(_tooltipChangeTime);
             _copyText = temp;
         });
@@ -540,9 +525,9 @@ public class HuntTrainUI : IDisposable
             if (ImGui.BeginPopupContextItem($"ContextMenu##{mob.Name}", ImGuiPopupFlags.MouseButtonRight))
             {
                 ImGui.PushStyleColor(ImGuiCol.Text, Vector4.One); //white
-                if (ImGui.MenuItem("   Select", true)) _selectedIndex = n;
+                if (ImGui.MenuItem(GuiResources.HuntTrainGuiText["ContextMenuSelect"], true)) _selectedIndex = n;
                 ImGui.MenuItem("   ---", false);
-                if (ImGui.MenuItem("   Remove", true)) toRemove = mob;
+                if (ImGui.MenuItem(GuiResources.HuntTrainGuiText["ContextMenuRemove"], true)) toRemove = mob;
                 ImGui.EndPopup();
                 ImGui.PopStyleColor();
             }

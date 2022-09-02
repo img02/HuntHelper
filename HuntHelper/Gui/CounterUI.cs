@@ -16,6 +16,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using HuntHelper.Gui.Resource;
 
 namespace HuntHelper.Gui;
 
@@ -83,7 +84,7 @@ public class CounterUI : IDisposable
 
         ImGui.SetNextWindowSize(_windowSize, ImGuiCond.FirstUseEver);
         ImGui.SetNextWindowPos(_windowPos, ImGuiCond.FirstUseEver);
-        if (ImGui.Begin("Counter", ref WindowVisible, ImGuiWindowFlags.NoScrollbar))
+        if (ImGui.Begin(GuiResources.CounterGuiText["MainWindowTitle"], ref WindowVisible, ImGuiWindowFlags.NoScrollbar))
         {
             if (_clientState.TerritoryType == (ushort)MapID.UltimaThule)
             {
@@ -121,12 +122,14 @@ public class CounterUI : IDisposable
         }
         ImGui.Dummy(Vector2.Zero);
         ImGuiComponents.ToggleButton("##backgroundcounttoggle", ref _countInBackground);
-        ImGuiUtil.ImGui_HoveredToolTip("Allow counting when window closed.\n" +
-                                       "Status: " +
-                                       (_countInBackground ? "Enabled" : "Disabled"));
+        ImGuiUtil.ImGui_HoveredToolTip($"{GuiResources.CounterGuiText["BackgroundToggleToolTipInfo"]}\n" +
+                                       GuiResources.CounterGuiText["BackgroundToggleToolTipStatus"] +
+                                       (_countInBackground ? 
+                                           GuiResources.CounterGuiText["BackgroundToggleToolTipEnabled"] :
+                                           GuiResources.CounterGuiText["BackgroundToggleToolTipDisabled"]));
         ImGui.SameLine();
         if (ImGuiComponents.IconButton(FontAwesomeIcon.Trash)) counter.Reset();
-        ImGuiUtil.ImGui_HoveredToolTip("Reset");
+        ImGuiUtil.ImGui_HoveredToolTip(GuiResources.CounterGuiText["Reset"]);
     }
 
     private void DrawWeeEaCounter()
@@ -139,7 +142,7 @@ public class CounterUI : IDisposable
             ImGui.TableSetupColumn("count", ImGuiTableColumnFlags.None, ImGui.GetWindowPos().X / 4.0f);
 
             ImGui.TableNextColumn();
-            ImGui.TextUnformatted($"Wee Ea: ");
+            ImGui.TextUnformatted(GuiResources.CounterGuiText["WeeEa"]);
             ImGui.TableNextColumn();
             ImGui.TextUnformatted($"{count}");
 
