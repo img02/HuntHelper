@@ -34,7 +34,6 @@
     <None Remove="Data\Localisation\de.json" />
     <None Remove="Data\Localisation\en.json" />
     <None Remove="Data\Localisation\fr.json" />
-    <None Remove="Data\Localisation\fr_test.json" />
     <None Remove="Data\Localisation\ja.json" />
     <None Remove="Data\SB-A.json" />
     <None Remove="Data\SB-B.json" />
