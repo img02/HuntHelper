@@ -13,11 +13,11 @@
 	"Map": {
 		"ErrorLoadingDataMessage":"Error loading data",	
 		
-		"MapImageCheckbox":"Map Imageああ",	
-		"MapImageCheckboxToolTip":"Use だだだだだだだだあだだof Goblin\n         \t\t   http://cablemonkey.us/huntmap2/\n         \t\t   Same thing for spawn point data :D\n\t\t=======================================\n\nIf map images aren't showing, please verify that you have the images downloaded in your plugins folder.",	
+		"MapImageCheckbox":"Map Image",	
+		"MapImageCheckboxToolTip":"Use a map image instead of blank background\n\n\t\t=======================================\n\t\tMap Images Created By Cable Monkey of Goblin\n         \t\t   http://cablemonkey.us/huntmap2/\n         \t\t   Same thing for spawn point data :D\n\t\t=======================================\n\nIf map images aren't showing, please verify that you have the images downloaded in your plugins folder.",	
 		"TitleBarCheckbox":"Hide Title Bar",	
 		"BackgroundScanCheckbox":"Background Scan",	
-		"BackgroundScanCheckboxToolTip":"Allows Hunt Helpeだあだだだだだあｄさ GUI inactive.\nEnables notifications, recording Train, etc. while this main map window is inactive.",	
+		"BackgroundScanCheckboxToolTip":"Allows Hunt Helper to scan while GUI inactive.\nEnables notifications, recording Train, etc. while this main map window is inactive.",	
 		"LoadedHuntDataButton":"Loaded Hunt Data",	
 		"LoadedHuntDataButtonToolTip":"Show the loaded hunt and spawn point data",	
 		
