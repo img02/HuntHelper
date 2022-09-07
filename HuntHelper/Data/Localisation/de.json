@@ -172,30 +172,30 @@
 		"UpdateLastSeenCheckbox": "Update Last Seen Time ",
 		"UpdateLastSeenCheckboxToolTip": "Imports new mobs and updates old mobs Last Seen times, if applicable"
 	},
-	
+
 	"SpawnPointFinder": {
-		"CopyText":"Copy export code clipboard",
-		"CopyTextCopied":"Copied!",
-		"CopyTextAllExport":"Export all currently recorded map data",
-		
-		"MainWindowTitle":"Spawn Point Refinement",
-		"FilterLabel":"Search by name",
-		"FilterToolTip":"Used for recording taken spawn positions.\nHelpful for position-specific spawns such as\nNandi, Gamma, Tarchia, Burfulululu, Narrow-Rift, etc\n\nData persists and is saved to file,\nTurning recording off will reset tracked data.",
-		"StartRecording":"Start Recording",
-		"StopRecording":"Stop Recording -- This will WIPE all data.",
-		"StartRecordingAll":"Start Recording All",
-		"StopRecordingAll":"Stop Recording All -- This will WIPE all data.",
-		"ImportButtonToolTip":"Import map data",
-		
-		"ImportWindowTitle":"Import",
-		"ErrorMessage":"Nothing to import - or incorrect code",
-		"CloseButton":"Close",
-		"ImportMessage":"Imported Maps:",
-		"OverwriteButton":"Overwrite",
-		"OverwriteButtonToolTip":"Import and Overwrite current data for these maps",
-		"ImportNewButton":"Only New",
-		"ImportNewButtonToolTip":"Import only new data",
-		"CancelButton":"Cancel"
+		"CopyText": "Copy export code clipboard",
+		"CopyTextCopied": "Copied!",
+		"CopyTextAllExport": "Export all currently recorded map data",
+
+		"MainWindowTitle": "Spawn Point Refinement",
+		"FilterLabel": "Search by name",
+    "FilterToolTip": "Used for recording taken spawn positions.\nHelpful for position-specific spawns such as\nNandi, Gamma, Tarchia, Burfulululu, Narrow-Rift, etc\n\nData persists and is saved to file,\nTurning recording off will reset tracked data.\nYou can manually toggle a spawn point by double clicking on the map.",
+		"StartRecording": "Start Recording",
+		"StopRecording": "Stop Recording -- This will WIPE all data.",
+		"StartRecordingAll": "Start Recording All",
+		"StopRecordingAll": "Stop Recording All -- This will WIPE all data.",
+		"ImportButtonToolTip": "Import map data",
+
+		"ImportWindowTitle": "Import",
+		"ErrorMessage": "Nothing to import - or incorrect code",
+		"CloseButton": "Close",
+		"ImportMessage": "Imported Maps:",
+		"OverwriteButton": "Overwrite",
+		"OverwriteButtonToolTip": "Import and Overwrite current data for these maps",
+		"ImportNewButton": "Only New",
+		"ImportNewButtonToolTip": "Import only new data",
+		"CancelButton": "Cancel"
 	},
 	
 	"Counter": {

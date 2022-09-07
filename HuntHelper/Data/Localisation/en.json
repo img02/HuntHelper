@@ -180,7 +180,7 @@
 		
 		"MainWindowTitle":"Spawn Point Refinement",
 		"FilterLabel":"Search by name",
-		"FilterToolTip":"Used for recording taken spawn positions.\nHelpful for position-specific spawns such as\nNandi, Gamma, Tarchia, Burfulululu, Narrow-Rift, etc\n\nData persists and is saved to file,\nTurning recording off will reset tracked data.",
+		"FilterToolTip":"Used for recording taken spawn positions.\nHelpful for position-specific spawns such as\nNandi, Gamma, Tarchia, Burfulululu, Narrow-Rift, etc\n\nData persists and is saved to file,\nTurning recording off will reset tracked data.\nYou can manually toggle a spawn point by double clicking on the map.",
 		"StartRecording":"Start Recording",
 		"StopRecording":"Stop Recording -- This will WIPE all data.",
 		"StartRecordingAll":"Start Recording All",

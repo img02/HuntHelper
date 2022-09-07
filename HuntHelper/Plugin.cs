@@ -37,7 +37,7 @@ namespace HuntHelper
         private DalamudPluginInterface PluginInterface { get; init; }
         private CommandManager CommandManager { get; init; }
         private Configuration Configuration { get; init; }
-        private PluginUI PluginUi { get; init; }
+        private MapUI MapUi { get; init; }
         private HuntTrainUI HuntTrainUI { get; init; }
         private CounterUI CounterUI { get; init; }
         private PointerUI PointerUI { get; init; }
@@ -92,7 +92,7 @@ namespace HuntHelper
             this.HuntManager = new HuntManager(PluginInterface, TrainManager, chatGui, flyTextGui);
             this.MapDataManager = new MapDataManager(Path.Combine(PluginInterface.AssemblyLocation.Directory?.FullName!, @"Data\SpawnPointData.json"));
 
-            this.PluginUi = new PluginUI(this.Configuration, pluginInterface, clientState, objectTable, dataManager, HuntManager, MapDataManager, GameGui);
+            this.MapUi = new MapUI(this.Configuration, pluginInterface, clientState, objectTable, dataManager, HuntManager, MapDataManager, GameGui);
             this.HuntTrainUI = new HuntTrainUI(TrainManager, Configuration);
             this.CounterUI = new CounterUI(ClientState, ChatGui, Configuration, ObjectTable);
             this.SpawnPointFinderUI = new SpawnPointFinderUI(MapDataManager, DataManager, Configuration);
@@ -157,7 +157,7 @@ namespace HuntHelper
             //this.HuntTrainUI.Dispose();
             this.SpawnPointFinderUI.Dispose();
             this.CounterUI.Dispose();
-            this.PluginUi.Dispose();
+            this.MapUi.Dispose();
 #if DEBUG
             this.CommandManager.RemoveHandler(DebugCommand);
 #endif
@@ -175,17 +175,17 @@ namespace HuntHelper
             this.FlyTextGui.Dispose();
         }
 
-        private void DebugWindowCommand(string command, string args) => this.PluginUi.RandomDebugWindowVisisble = !PluginUi.RandomDebugWindowVisisble;
+        private void DebugWindowCommand(string command, string args) => this.MapUi.RandomDebugWindowVisisble = !MapUi.RandomDebugWindowVisisble;
         private void HuntMapCommand(string command, string args)
         {
-            PluginUi.MapVisible = !PluginUi.MapVisible;
-            Configuration.MapWindowVisible = PluginUi.MapVisible;
+            MapUi.MapVisible = !MapUi.MapVisible;
+            Configuration.MapWindowVisible = MapUi.MapVisible;
         }
 
-        private void ApplyPresetOneCommand(string command, string args) => PluginUi.ApplyPreset(1);
-        private void ApplyPresetTwoCommand(string command, string args) => PluginUi.ApplyPreset(2);
-        private void SavePresetOneCommand(string command, string args) => PluginUi.SavePresetByCommand(1);
-        private void SavePresetTwoCommand(string command, string args) => PluginUi.SavePresetByCommand(2);
+        private void ApplyPresetOneCommand(string command, string args) => MapUi.ApplyPreset(1);
+        private void ApplyPresetTwoCommand(string command, string args) => MapUi.ApplyPreset(2);
+        private void SavePresetOneCommand(string command, string args) => MapUi.SavePresetByCommand(1);
+        private void SavePresetTwoCommand(string command, string args) => MapUi.SavePresetByCommand(2);
         private void HuntTrainCommand(string command, string args) => HuntTrainUI.HuntTrainWindowVisible = !HuntTrainUI.HuntTrainWindowVisible;
         //gets next available hunt in the recorded train
         private void GetNextMobCommand(string command, string args) => HuntTrainUI.GetNextMobCommand();
@@ -196,7 +196,7 @@ namespace HuntHelper
         {
             try
             {
-                this.PluginUi.Draw();
+                this.MapUi.Draw();
                 this.HuntTrainUI.Draw();
                 this.CounterUI.Draw();
                 this.SpawnPointFinderUI.Draw();
@@ -206,7 +206,7 @@ namespace HuntHelper
             {
                 PluginLog.Error(e.Message);
                 if(e.StackTrace != null) PluginLog.Error(e.StackTrace);
-                PluginUi.MapVisible = false;
+                MapUi.MapVisible = false;
                 Configuration.MapWindowVisible = false;
                 HuntTrainUI.HuntTrainWindowVisible = false;
                 CounterUI.WindowVisible = false;
@@ -216,7 +216,7 @@ namespace HuntHelper
 
         private void DrawConfigUI()
         {
-            this.PluginUi.SettingsVisible = true;
+            this.MapUi.SettingsVisible = true;
         }
 
 
