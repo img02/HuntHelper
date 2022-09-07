@@ -25,7 +25,7 @@ using HuntHelper.Gui.Resource;
 
 namespace HuntHelper.Gui
 {
-    class PluginUI : IDisposable
+    class MapUI : IDisposable
     {
         private readonly Configuration _configuration;
         private readonly DalamudPluginInterface _pluginInterface;
@@ -181,7 +181,7 @@ namespace HuntHelper.Gui
         }
 
 
-        public PluginUI(Configuration configuration, DalamudPluginInterface pluginInterface,
+        public MapUI(Configuration configuration, DalamudPluginInterface pluginInterface,
             ClientState clientState, ObjectTable objectTable, DataManager dataManager,
             HuntManager huntManager, MapDataManager mapDataManager, GameGui gameGui)
         {
@@ -1376,6 +1376,15 @@ namespace HuntHelper.Gui
                     sp.Taken && recordingSpawnPos
                         ? ImGui.ColorConvertFloat4ToU32(new Vector4(1f, 0f, 0f, 1f)) //red for taken spawn point
                         : ImGui.ColorConvertFloat4ToU32(_spawnPointColour));
+                DoubleClickToToggleSpawnPointTaken(drawPos, sp);
+            }
+        }
+
+        private void DoubleClickToToggleSpawnPointTaken(Vector2 spPos, SpawnPointPosition sp)
+        {
+            if (Vector2.Distance(ImGui.GetMousePos(), spPos) < _spawnPointIconRadius && _mapDataManager.IsRecording(_clientState.TerritoryType))
+            {
+                if (ImGui.IsMouseDoubleClicked(ImGuiMouseButton.Left)) sp.Taken = !sp.Taken;
             }
         }
 
