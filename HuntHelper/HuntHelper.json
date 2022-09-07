@@ -1,8 +1,8 @@
 {
   "Author": "imaginary-png",
   "Name": "Hunt Helper",
-  "Punchline": "basically a hunt radar + train recorder + notifications +++.",
-  "Description": "Hunt map with spawns points, A-Rank train recorder (w/ export/import sharing), TTS, Chat MapLink notifications, and more",
+  "Punchline": "basically a hunt radar + train recorder + notifications + s rank utils +++.",
+  "Description": "Hunt map with spawns points, A-Rank train recorder (w/ export/import sharing), TTS, Chat notifications, Counters for S-Rank Spawns",
   "Tags": [
     "hunt",
     "radar",
@@ -13,7 +13,7 @@
     "mob"
   ],
   "InternalName": "Hunt Helper",
-  "AssemblyVersion": "0.0.0.6",
+  "AssemblyVersion": "0.0.0.7",
   "RepoUrl": "https://github.com/imaginary-png/HuntHelper",
   "ApplicableVersion": "any",
   "DalamudApiLevel": 7,
