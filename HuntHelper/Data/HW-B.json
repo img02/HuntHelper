@@ -30,6 +30,12 @@
 		"IsEnabled": "true"
 	},
 	{
+		"Name": "Thextera",
+		"ModelID": 4353,
+		"Rank": "B",
+		"IsEnabled": "true"
+	},
+	{
 		"Name": "Pterygotus",
 		"ModelID": 4354,
 		"Rank": "B",
