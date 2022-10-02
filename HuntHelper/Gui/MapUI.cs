@@ -50,7 +50,7 @@ namespace HuntHelper.Gui
 
         #region  User Customisable stuff - load and save to config
 
-        //map opacity - should be between 0-1f;
+        //map opacity - should be between 0-100f;
         private float _mapImageOpacityAsPercentage = 100f;
 
         // icon colours
