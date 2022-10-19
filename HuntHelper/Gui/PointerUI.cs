@@ -42,19 +42,24 @@ public class PointerUI
         switch (rank)
         {
             case HuntRank.A:
-                if (!_config.PointToARank) return ImGui.ColorConvertFloat4ToU32(new Vector4(.9f, .24f, .24f, 1)); //redish-pink
+                if (_config.PointToARank) return ImGui.ColorConvertFloat4ToU32(new Vector4(.9f, .24f, .24f, 1)); //redish-pink
                 break;
             case HuntRank.S:
             case HuntRank.SS:
-                if (!_config.PointToSRank) return ImGui.ColorConvertFloat4ToU32(new Vector4(1, .93f, .12f, 1)); //yellowish-gold
+                if (_config.PointToSRank) return ImGui.ColorConvertFloat4ToU32(new Vector4(1, .93f, .12f, 1)); //yellowish-gold
                 break;
-        }   //else assume B Rank
-        return ImGui.ColorConvertFloat4ToU32(new Vector4(0, 0.9f, 1, 1)); // blueish
+            case HuntRank.B:
+                if (_config.PointToBRank) return ImGui.ColorConvertFloat4ToU32(new Vector4(0, 0.9f, 1, 1)); // blueish
+                break;
+        }
+
+        return 0;
     }
 
     private void PointToMobs(HuntRank rank, BattleNpc mob)
     {
         var floatingPointingIconThingyColour = GetPointerColour(rank);
+        if (floatingPointingIconThingyColour == 0) return;
 
         _gameGui.WorldToScreen(mob.Position, out var pointofFocusPosition);
         var windowOffsetY = -100;
