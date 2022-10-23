@@ -169,43 +169,32 @@ public unsafe class TeleportManager
         //End Walker
         //thavnair
         new AetheryteData() {AetheryteID = 169, SubIndex = 0, TerritoryID = 957, Position = new Vector2(25.4f,34f)}, //Yedlihmad
-        new AetheryteData()
-            {AetheryteID = 170, SubIndex = 0, TerritoryID = 957, Position = new Vector2(10.9f,22.2f)}, //The Great Work
-        new AetheryteData()
-            {AetheryteID = 171, SubIndex = 0, TerritoryID = 957, Position = new Vector2(29.5f ,16.5f)}, //Palaka's Stand
+        new AetheryteData() {AetheryteID = 170, SubIndex = 0, TerritoryID = 957, Position = new Vector2(10.9f,22.2f)}, //The Great Work
+        new AetheryteData() {AetheryteID = 171, SubIndex = 0, TerritoryID = 957, Position = new Vector2(29.5f ,16.5f)}, //Palaka's Stand
 
         //garlemald
-        new AetheryteData()
-            {AetheryteID = 172, SubIndex = 0, TerritoryID = 958, Position = new Vector2(13.3f ,31f)}, //Camp Broken Glass
+        new AetheryteData() {AetheryteID = 172, SubIndex = 0, TerritoryID = 958, Position = new Vector2(13.3f ,31f)}, //Camp Broken Glass
         new AetheryteData() {AetheryteID = 173, SubIndex = 0, TerritoryID = 958, Position = new Vector2(31.8f,17.9f)}, //Tertium
 
         //labyrinthos
-        new AetheryteData()
-            {AetheryteID = 166, SubIndex = 0, TerritoryID = 956, Position = new Vector2(30.3f, 11.9f)}, //The Archeion
-        new AetheryteData()
-            {AetheryteID = 167, SubIndex = 0, TerritoryID = 956, Position = new Vector2(21.6f, 20.5f)}, //Sharlayan Hamlet
+        new AetheryteData() {AetheryteID = 166, SubIndex = 0, TerritoryID = 956, Position = new Vector2(30.3f, 11.9f)}, //The Archeion
+        new AetheryteData() {AetheryteID = 167, SubIndex = 0, TerritoryID = 956, Position = new Vector2(21.6f, 20.5f)}, //Sharlayan Hamlet
         new AetheryteData() {AetheryteID = 168, SubIndex = 0, TerritoryID = 956, Position = new Vector2(6.9f, 27.5f)}, //Aporia
 
         //mare lamentorum
-        new AetheryteData()
-            {AetheryteID = 174, SubIndex = 0, TerritoryID = 959, Position = new Vector2(10.1f,34.5f)}, //Sinus Lacrimarum
-        //new AetheryteData() { AetheryteID = 175, Subindex = 0, TerritoryID = 959, Position = new Vector2()}, //Bestways Burrow, this is actually super far away and no-one should ever teleport here while hunting tbh imo tbf
+        new AetheryteData() {AetheryteID = 174, SubIndex = 0, TerritoryID = 959, Position = new Vector2(10.1f,34.5f)}, //Sinus Lacrimarum
+        new AetheryteData() { AetheryteID = 175, SubIndex = 0, TerritoryID = 959, Position = new Vector2()}, //Bestways Burrow
 
         //ultima thule
         new AetheryteData() {AetheryteID = 179, SubIndex = 0, TerritoryID = 960, Position = new Vector2(10.5f, 26.8f)}, //Reah Tahra
-        new AetheryteData()
-            {AetheryteID = 180, SubIndex = 0, TerritoryID = 960, Position = new Vector2(22.6f , 8.3f)}, //Abode of the Ea
-        new AetheryteData()
-            {AetheryteID = 181, SubIndex = 0, TerritoryID = 960, Position = new Vector2(31.2f, 28.1f)}, //Base Omicron
+        new AetheryteData() {AetheryteID = 180, SubIndex = 0, TerritoryID = 960, Position = new Vector2(22.6f , 8.3f)}, //Abode of the Ea
+        new AetheryteData() {AetheryteID = 181, SubIndex = 0, TerritoryID = 960, Position = new Vector2(31.2f, 28.1f)}, //Base Omicron
 
         //elpis
 
-        new AetheryteData()
-            {AetheryteID = 176, SubIndex = 0, TerritoryID = 961, Position = new Vector2(24.6f, 24f)}, //Anagnorisis
-        new AetheryteData()
-            {AetheryteID = 177, SubIndex = 0, TerritoryID = 961, Position = new Vector2(8.7f, 32.3f)}, //The Twelve Wonders
-        new AetheryteData()
-            {AetheryteID = 178, SubIndex = 0, TerritoryID = 961, Position = new Vector2(10.8f, 17f)} //Poieten Oikos
+        new AetheryteData() {AetheryteID = 176, SubIndex = 0, TerritoryID = 961, Position = new Vector2(24.6f, 24f)}, //Anagnorisis
+        new AetheryteData() {AetheryteID = 177, SubIndex = 0, TerritoryID = 961, Position = new Vector2(8.7f, 32.3f)}, //The Twelve Wonders
+        new AetheryteData() {AetheryteID = 178, SubIndex = 0, TerritoryID = 961, Position = new Vector2(10.8f, 17f)} //Poieten Oikos
         
 
         #endregion
