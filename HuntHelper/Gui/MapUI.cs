@@ -1555,11 +1555,8 @@ namespace HuntHelper.Gui
                     ImGui.SetCursorPosY(ImGui.GetCursorPosY() - 2.5f);
                     ImGuiUtil.ImGui_CentreText($"{rank} | {mob.Name} | {_huntManager.GetHPP(mob):0}%% \n", colour);
                     ImGui.SetCursorPosY(ImGui.GetCursorPosY() - 2.5f);
-                    ImGuiUtil.ImGui_CentreText($"({ConvertPosToCoordinate(mob.Position.X):0.0}, {ConvertPosToCoordinate(mob.Position.Y):0.0})", colour);
+                    ImGuiUtil.ImGui_CentreText($"({ConvertPosToCoordinate(mob.Position.X):0.0}, {ConvertPosToCoordinate(mob.Position.Z):0.0})", colour);
                     ImGui.SetCursorPosY(ImGui.GetCursorPosY() + 5f);
-
-                    /*ImGui.TextColored(colour, $"{hunt.Rank} Rank - {mob.Name}\n" +
-                                              $" ({ConvertPosToCoordinate(mob.Position.X):0.0}, {ConvertPosToCoordinate(mob.Position.Y):0.0})");*/
                     ImGui.Separator();
                 }
                 ImGui.EndChild();
