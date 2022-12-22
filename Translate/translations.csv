@@ -1,208 +1,208 @@
-GUI,Key,English,Japanese,German,French
-Plugin,,,,,
-,/hh helpmessage,Opens the Hunt Map,,,
-,/hh1 helpmessage,Applies Preset One,,,
-,/hh2 helpmessage,Applies Preset Two,,,
-,/hh1save helpmessage,Save Preset One,,,
-,/hh2save helpmessage,Save Preset Two,,,
-,/hht helpmessage,Opens the Hunt Train Window,,,
-,/hhn helpmessage,Sends the flag for the next train mob into chat,,,
-,/hhc helpmessage,Counter window -- for counter-based S ranks,,,
-,/hhr helpmessage,Spawn point tracking window,,,
-,,,,,
-Map,,,,,
-,ErrorLoadingDataMessage,Error loading data,,,
-,,,,,
-,MapImageCheckbox,Map Image,,,
-,MapImageCheckboxToolTip,"Use a map image instead of blank background - Map Images Created By Cable Monkey of Goblin - http://cablemonkey.us/huntmap2/ -  Same thing for spawn point data :D - If map images aren't showing, please verify that you have the images downloaded in your plugins folder.",,,
-,TitleBarCheckbox,Hide Title Bar,,,
-,BackgroundScanCheckbox,Background Scan,,,
-,BackgroundScanCheckboxToolTip,"Allows Hunt Helper to scan while GUI inactive. Enables notifications, recording Train, etc. while this main map window is inactive.",,,
-,LoadedHuntDataButton,Loaded Hunt Data,,,
-,LoadedHuntDataButtonToolTip,Show the loaded hunt and spawn point data,,,
-,,,,,
-,GeneralTab,General,,,
-,ZoneNameCheckbox,Zone Name,,,
-,ZoneNameCheckboxToolTip,Shows Zone Name\nAdjust position below as % of window.,,,
-,ZoneLabel,Zone,,,
-,DragWidgetToolTip,"Ctrl+Click to enter manually, Shift+Drag to speed up.",,,
-,ColourLabel,Colour,,,
-,AlternateColourLabel,Alt,,,
-,AlternateColourToolTip,Alternate colour for when map image is used.,,,
-,WorldNameCheckbox,World Name,,,
-,WorldNameCheckboxToolTip,Shows World Name\nAdjust position below as % of window,,,
-,WorldLabel,World,,,
-,WindowSize,Window Size,,,
-,WindowSizeToolTip,Current Window Size,,,
-,WindowColourToolTip,Window Colour - Opacity can be changed down below.,,,
-,PresetOne,Preset 1,,,
-,PresetTwo,Preset 2,,,
-,SavePresetToolTip,"Save a preset for quick switching - Size, opacity, position, and use map. Apply with command: /hh1 - Save with /hh1save or -->",,,
-,SaveButton,Save,,,
-,MapOpacityLabel,Map Opacity,,,
-,WindowOpacity,Window Opacity,,,
-,,,,,
-,VisualsTab,Visuals,,,
-,SizingTab,Sizing,,,
-,PlayerModifier,Player Modifier,,,
-,PlayerModifierToolTip,"Player Icon Radius Modifier, Default 1",,,
-,MobModifier,Mob Modifier,,,
-,MobModifierToolTip,"Mob Icon Radius Modifier, default: 2",,,
-,SpawnPointModifier,Spawn Point Modifier,,,
-,SpawnPointToolTip,"Spawn Point Radius Modifier, default: 1",,,
-,AllModifier,All Modifier,,,
-,AllModifierToolTip,"Increase all icons proportionally, default: 1 - By Default, A Mob icon is 1.5x a Spawn Point, a Player icon is 0.2x a Spawn Point",,,
-,DetectionCircleModifier,Detection Circle Modifier,,,
-,DetectionCircleModifierToolTip,"Default represents 2 in-game coordinates. Modify if you feel this is inaccurate, default: 1",,,
-,DetectionCircleThickness,Detection Circle Thickness,,,
-,DetectionCircleThicknessToolTip,default: 3,,,
-,DirectionLineThickness,Direction Line Thickness,,,
-,DirectionLineThicknessToolTip,default: 3,,,
-,ResetButton,Reset,,,
-,ResetButtonToolTip,Reset all sizes to default.,,,
-,,,,,
-,ColoursTab,Colours,,,
-,PlayerIcon,Player Icon,,,
-,MobIcon,Mob Icon,,,
-,SpawnPoint,Spawn Point,,,
-,PlayerBackground,Player Background,,,
-,PlayerBackgroundToolTip,Background of the player / detection circle.\nChange the Alpha A: for opacity,,,
-,DirectionLineColourPicker,Direction Line,,,
-,DetectionCircleColourPicker,Detection Circle,,,
-,,,,,
-,NotificationTab,Notifications,,,
-,ChatMessageLabel,Chat Message,,,
-,ChatMessageLabelToolTip,"Message to send to chat using /echo, usable tags: <flag> <name> <rank> <hpp>",,,
-,TTSMessageLabel,TTS   Message,,,
-,TTSMessageLabelToolTip,"Message to use with Text-to-Speech, usable tags: <name> <rank> ",,,
-,FlyTextToolTip,"FlyText is the type of text that appears when you attack something or are attacked. (e.g. Crit, Miss, Resist)\n\nEnabling this will show a coloured FlyText notification near the middle of your screen.",,,
-,VisualHelpLabel,Visual Help,,,
-,VisualHelpToolTip,"Draws a 'quest pointer' type thingy, it's a bit glitchy but works well enough. Change size in settings",,,
-,,,,,
-,SettingsTab,Settings,,,
-,SelectVoiceLabel,Select Voice,,,
-,VoiceSelectedMessage,Selected,,,
-,PointerSizeLabel,Pointer Size,,,
-,PointerSizeToolTip,Size modifier for the diamond pointer,,,
-,,,,,
-,AvailableTagsTab,Available Tags,,,
-,AvailableTagsToolTip,DOUBLE CLICK to easily highlight a tag option for copy and paste.  -- ONLY <name> and <rank> work with TTS,,,
-,,,,,
-,OnScreenMobInfoTab,On-screen Mob Info,,,
-,PriorityMobLabel,Priority Mob,,,
-,PriorityMobToolTip,"The big thing that labels highest rank mob in zone, S/SS > A > B - Ctrl+Click to enter manually, Shift+Click for fast drag.",,,
-,MainTextColourLabel,Main,,,
-,Background,Background,,,
-,MobInfoColourToolTip,"Main = without map, Alt = with map images, - Turn up Alpha A: for solid colour.",,,
-,NearbyMobListToolTip,A list of all nearby mobs.,,,
-,,,,,
-,StatsTab,Stats,,,
-,StatsTabMessage,Hunts found,,,
-,,,,,
-,DefaultSettingsWindowMessage,"There's nothing here\nOptions are available from the main map window,",,,
-,,,,,
-,LoadedHuntDataWindowTitle,Loaded Hunt Data,,,
-,LoadedHuntDataDatabaseTab,database,,,
-,LoadedHuntDataSpawnPointsTab,spawn points,,,
-,,,,,
-,RankLabel,Rank,,,
-,NearbyMobListFlagToolTip,Click to send flag,,,
-,,,,,
-,ImageDownloadWindowTitle,"Images do not exist, download?",,,
-,ImageDownloadingMessage,"Attempting to download, please wait.\n\nIf there seems to be a problem, please manually download from",,,
-,ImageDownloadErrorMessageOne,The following errors occurred,,,
-,ImageDownloadErrorMessageTwo,"Please download the images manually, or try deleting the Images/Map folder + RESET PLUGIN, and attempt download again",,,
-,ImageDownloadErrorButton,"Okay, Don't Show Me This Again. Thanks.",,,
-,ImageDownloadPromptMessage,Could not find map images This is expected if this is your first time.\nWould you like to try to download them? (~23.2MB),,,
-,ImageDownloadButton,Download,,,
-,ImageDownloadManualMessageOne,Or you can view and manually download from,,,
-,ImageDownloadManualMessageTwo,and place in,,,
-,,,,,
-,,,,,
-HuntTrain,,,,,
-,CopyText,Copy export code clipboard.\nWarning: The code will be too long to be pasted into in-game chat. Share via Discord.,,,
-,CopyTextCopied,Copied!,,,
-,MainWindowTitle,Hunt Train,,,
-,NameHeader,Name,,,
-,TeleportHeader,Teleport,,,
-,TeleportToolTip,Teleport will initiate even if you are closer to the mob / on the same map. pls adjust thx,,,
-,LastSeenHeader,Last Seen,,,
-,HowTo,"HOW TO: Background - Click on any of the rows to send the relevant Map Link into chat. (Drag to reorder the list). Click on the checkbox to mark a mob as dead. Use the command \/hhn to automatically mark the current selected as dead, and send the next Map link into chat. (you will have to click the first one manually) *Does not allow duplicates (currently does not handle instances or different worlds) - Only records A ranks.",,,
-,TeleportButton,tele,,,
-,Settings,Settings,,,
-,Border,Border,,,
-,LastSeen,Last seen,,,
-,LastSeenToolTip,Show how long since the hunt was found.,,,
-,OpenMap,Open Map,,,
-,OpenMapToolTip,Open the relevant map when /hhn used or when name clicked.,,,
-,TeleButtons,Tele Buttons,,,
-,TeleButtonsToolTip,Show teleport buttons. Probably best to use this instead of tele on click.,,,
-,TeleportOnClick,Teleport on click,,,
-,TeleportOnClickToolTip,Initiate teleport to closest Aetheryte when hunt is clicked. This will begin tele even if you try to reorder or click just for chat link.,,,
-,TeleportOnCommand,Initiate teleport to closest Aetheryte when /hhn used.,,,
-,RemoveDeadButton,Remove Dead,,,
-,ResetDeadButton,Reset Dead Status,,,
-,StartRecordingButton,Start Recording,,,
-,StopRecordingButton,Stop Recording,,,
-,DeleteTrainButton,Delete Train,,,
-,ImportButton,Import,,,
-,ContextMenuSelect, Select,,,
-,ContextMenuRemove, Remove,,,
-,,,,,
-,,,,,
-,TeleportWindowTitle,Teleporter Plugin Not Found,,,
-,TeleportWindowMessage,Teleporting requires the Teleporter Plugin by Pohky. Please install it via /xlplugins or uncheck teleport options.,,,
-,TeleportWindowButton,okey-dokey,,,
-,,,,,
-,,,,,
-,DeleteWindowTitle,Delete,,,
-,DeleteWindowMessage,Are you sure you want to DELETE train data?,,,
-,DeleteWindowDeleteButton,Delete,,,
-,CancelButton,Cancel,,,
-,,,,,
-,,,,,
-,ImportWindowTitle,Import,,,
-,ImportWindowErrorMessage,Nothing to import - or incorrect code. The export code is too long to be shared via in-game chat. Please share through Discord or something.,,,
-,ImportWindowCloseButton,Close,,,
-,ImportWindowImportedMessage,Imported data mob count,,,
-,ImportAllCheckbox,Import All ,,,
-,ImportAllCheckboxToolTip,Overwrites current data with imported data,,,
-,ImportNewCheckbox,Import New ,,,
-,ImportNewCheckboxToolTip,Only imports new mobs,,,
-,UpdateLastSeenCheckbox,Update Last Seen Time ,,,
-,UpdateLastSeenCheckboxToolTip,"Imports new mobs and updates old mobs Last Seen times, if applicable",,,
-,,,,,
-,,,,,
-SpawnPointFinder,,,,,
-,CopyText,Copy export code clipboard,,,
-,CopyTextCopied,Copied!,,,
-,CopyTextAllExport,Export all currently recorded map data,,,
-,,,,,
-,MainWindowTitle,Spawn Point Refinement,,,
-,FilterLabel,Search by name,,,
-,FilterToolTip,"Used for recording taken spawn positions. Helpful for position-specific spawns such as Nandi, Gamma, Tarchia, Burfulululu, Narrow-Rift, etc. Data persists and is saved to file, Turning recording off will reset tracked data.",,,
-,StartRecording,Start Recording,,,
-,StopRecording,Stop Recording -- This will WIPE all data.,,,
-,StartRecordingAll,Start Recording All,,,
-,StopRecordingAll,Stop Recording All -- This will WIPE all data.,,,
-,ImportButtonToolTip,Import map data,,,
-,,,,,
-,ImportWindowTitle,Import,,,
-,ErrorMessage,Nothing to import - or incorrect code,,,
-,CloseButton,Close,,,
-,ImportMessage,Imported Maps,,,
-,OverwriteButton,Overwrite,,,
-,OverwriteButtonToolTip,Import and Overwrite current data for these maps,,,
-,ImportNewButton,Only New,,,
-,ImportNewButtonToolTip,Import only new data,,,
-,CancelButton,Cancel,,,
-,,,,,
-,,,,,
-Counter,,,,,
-,MainWindowTitle,Counter,,,
-,BackgroundToggleToolTipInfo,Allow counting when window closed.,,,
-,BackgroundToggleToolTipStatus,Status,,,
-,BackgroundToggleToolTipEnabled,Enabled,,,
-,BackgroundToggleToolTipDisabled,Disabled,,,
-,Reset,Reset,,,
-,WeeEa,Wee Ea,,,
+GUI,Key,English,Japanese,German,French,Simplified Chinese
+Plugin,,,,,,
+,/hh helpmessage,Opens the Hunt Map,,,,开启狩猎地图
+,/hh1 helpmessage,Applies Preset One,,,,应用预设1
+,/hh2 helpmessage,Applies Preset Two,,,,应用预设2
+,/hh1save helpmessage,Save Preset One,,,,保存预设1
+,/hh2save helpmessage,Save Preset Two,,,,保存预设2
+,/hht helpmessage,Opens the Hunt Train Window,,,,开启狩猎车界面
+,/hhn helpmessage,Sends the flag for the next train mob into chat,,,,发送狩猎车下一站坐标至聊天
+,/hhc helpmessage,Counter window -- for counter-based S ranks,,,,计数器窗口 -- 面相农怪触发的S
+,/hhr helpmessage,Spawn point tracking window,,,,刷新点追踪窗口
+,,,,,,
+Map,,,,,,
+,ErrorLoadingDataMessage,Error loading data,,,,加载数据错误
+,,,,,,
+,MapImageCheckbox,Map Image,,,,地图图片
+,MapImageCheckboxToolTip,"Use a map image instead of blank background - Map Images Created By Cable Monkey of Goblin - http://cablemonkey.us/huntmap2/ -  Same thing for spawn point data :D - If map images aren't showing, please verify that you have the images downloaded in your plugins folder.",,,,使用地图图片替代空白背景 - 地图图片由 Cable Monkey of Goblin创建
+,TitleBarCheckbox,Hide Title Bar,,,,隐藏标题栏
+,BackgroundScanCheckbox,Background Scan,,,,后台扫描
+,BackgroundScanCheckboxToolTip,"Allows Hunt Helper to scan while GUI inactive. Enables notifications, recording Train, etc. while this main map window is inactive.",,,,允许GUI在未开启时扫描。在地图窗口未开启时启用通知，狩猎车录制等等。
+,LoadedHuntDataButton,Loaded Hunt Data,,,,加载狩猎数据
+,LoadedHuntDataButtonToolTip,Show the loaded hunt and spawn point data,,,,显示已加载的狩猎和刷新点数据
+,,,,,,
+,GeneralTab,General,,,,常规
+,ZoneNameCheckbox,Zone Name,,,,区域名
+,ZoneNameCheckboxToolTip,Shows Zone Name\nAdjust position below as % of window.,,,,显示区域名\n调整位置位于窗口之下的%
+,ZoneLabel,Zone,,,,区域
+,DragWidgetToolTip,"Ctrl+Click to enter manually, Shift+Drag to speed up.",,,,Ctrl+单击手动输入，Shift+拖拽加速
+,ColourLabel,Colour,,,,颜色
+,AlternateColourLabel,Alt,,,,替换色
+,AlternateColourToolTip,Alternate colour for when map image is used.,,,,当启用地图图片时的替换颜色
+,WorldNameCheckbox,World Name,,,,服务器名
+,WorldNameCheckboxToolTip,Shows World Name\nAdjust position below as % of window,,,,显示服务器名\n调整位置位于窗口之下的%
+,WorldLabel,World,,,,服务器
+,WindowSize,Window Size,,,,窗口尺寸
+,WindowSizeToolTip,Current Window Size,,,,当前窗口尺寸
+,WindowColourToolTip,Window Colour - Opacity can be changed down below.,,,,窗口颜色-下方可更改不透明度
+,PresetOne,Preset 1,,,,预设1
+,PresetTwo,Preset 2,,,,预设2
+,SavePresetToolTip,"Save a preset for quick switching - Size, opacity, position, and use map. Apply with command: /hh1 - Save with /hh1save or -->",,,,保存用于快速切换的预设-窗口大小，不透明度，位置和是否使用地图。使用指令来应用：/hh1 - /hh1save来保存，或-->
+,SaveButton,Save,,,,保存
+,MapOpacityLabel,Map Opacity,,,,地图不透明度
+,WindowOpacity,Window Opacity,,,,窗口不透明度
+,,,,,,
+,VisualsTab,Visuals,,,,可视化
+,SizingTab,Sizing,,,,尺寸
+,PlayerModifier,Player Modifier,,,,玩家缩放
+,PlayerModifierToolTip,"Player Icon Radius Modifier, Default 1",,,,玩家图标半径修改，默认1
+,MobModifier,Mob Modifier,,,,狩猎怪缩放
+,MobModifierToolTip,"Mob Icon Radius Modifier, default: 2",,,,狩猎怪图标半径修改，默认2
+,SpawnPointModifier,Spawn Point Modifier,,,,刷新点缩放
+,SpawnPointToolTip,"Spawn Point Radius Modifier, default: 1",,,,刷新点图标半径修改，默认1
+,AllModifier,All Modifier,,,,全部缩放
+,AllModifierToolTip,"Increase all icons proportionally, default: 1 - By Default, A Mob icon is 1.5x a Spawn Point, a Player icon is 0.2x a Spawn Point",,,,按比例放大所有图标，默认1 - 默认下狩猎怪是1.5倍刷新点，玩家是0.2倍刷新点
+,DetectionCircleModifier,Detection Circle Modifier,,,,探测圈缩放
+,DetectionCircleModifierToolTip,"Default represents 2 in-game coordinates. Modify if you feel this is inaccurate, default: 1",,,,默认重放2个游戏内坐标，如果认为不准确就修改，默认1
+,DetectionCircleThickness,Detection Circle Thickness,,,,探测圈宽度
+,DetectionCircleThicknessToolTip,default: 3,,,,默认3
+,DirectionLineThickness,Direction Line Thickness,,,,面向线宽度
+,DirectionLineThicknessToolTip,default: 3,,,,默认3
+,ResetButton,Reset,,,,重设
+,ResetButtonToolTip,Reset all sizes to default.,,,,重设所有到默认设置
+,,,,,,
+,ColoursTab,Colours,,,,颜色
+,PlayerIcon,Player Icon,,,,玩家图标
+,MobIcon,Mob Icon,,,,狩猎怪图标
+,SpawnPoint,Spawn Point,,,,刷新点图标
+,PlayerBackground,Player Background,,,,玩家背景
+,PlayerBackgroundToolTip,Background of the player / detection circle.\nChange the Alpha A: for opacity,,,,玩家/探测圈背景。\n修改Alpha A来设置透明度
+,DirectionLineColourPicker,Direction Line,,,,面向线
+,DetectionCircleColourPicker,Detection Circle,,,,探测线
+,,,,,,
+,NotificationTab,Notifications,,,,通知
+,ChatMessageLabel,Chat Message,,,,聊天信息
+,ChatMessageLabelToolTip,"Message to send to chat using /echo, usable tags: <flag> <name> <rank> <hpp>",,,,使用/echo发送到聊天的信息，可用标签<flag> <name> <rank> <hpp>
+,TTSMessageLabel,TTS   Message,,,,TTS信息
+,TTSMessageLabelToolTip,"Message to use with Text-to-Speech, usable tags: <name> <rank> ",,,,发送使用文字转语音的信息，可用标签<name><rank>
+,FlyTextToolTip,"FlyText is the type of text that appears when you attack something or are attacked. (e.g. Crit, Miss, Resist)\n\nEnabling this will show a coloured FlyText notification near the middle of your screen.",,,,弹出文本是当你攻击或被攻击时出现的文字。（例如：暴击，失误，复活）\n\n启用此选项将在屏幕中央显示多彩的弹出文本通知
+,VisualHelpLabel,Visual Help,,,,视觉辅助
+,VisualHelpToolTip,"Draws a 'quest pointer' type thingy, it's a bit glitchy but works well enough. Change size in settings",,,,绘制一个类似“任务指针”的东西，有点小问题但是够用。设置里修改尺寸。
+,,,,,,
+,SettingsTab,Settings,,,,设置
+,SelectVoiceLabel,Select Voice,,,,选择声音
+,VoiceSelectedMessage,Selected,,,,已选择
+,PointerSizeLabel,Pointer Size,,,,指针尺寸
+,PointerSizeToolTip,Size modifier for the diamond pointer,,,,钻石指针的大小缩放
+,,,,,,
+,AvailableTagsTab,Available Tags,,,,可用标签
+,AvailableTagsToolTip,DOUBLE CLICK to easily highlight a tag option for copy and paste.  -- ONLY <name> and <rank> work with TTS,,,,双击来高亮标签便于复制和粘贴。 --在TTS中只有 <name> 和 <rank> 有效
+,,,,,,
+,OnScreenMobInfoTab,On-screen Mob Info,,,,界面狩猎信息
+,PriorityMobLabel,Priority Mob,,,,狩猎怪优先级
+,PriorityMobToolTip,"The big thing that labels highest rank mob in zone, S/SS > A > B - Ctrl+Click to enter manually, Shift+Click for fast drag.",,,,区域内的狩猎怪优先级标签， S/SS > A > B - Ctrl+单击手动输入，Shift+单击快速拖拽
+,MainTextColourLabel,Main,,,,主要
+,Background,Background,,,,背景
+,MobInfoColourToolTip,"Main = without map, Alt = with map images, - Turn up Alpha A: for solid colour.",,,,主要=无地图，替换=有地图图片， - 提高Alpha A来改透明度
+,NearbyMobListToolTip,A list of all nearby mobs.,,,,附近狩猎怪的列表
+,,,,,,
+,StatsTab,Stats,,,,统计
+,StatsTabMessage,Hunts found,,,,已找到的怪物
+,,,,,,
+,DefaultSettingsWindowMessage,"There's nothing here\nOptions are available from the main map window,",,,,啥也没有\n设置在在主地图窗口
+,,,,,,
+,LoadedHuntDataWindowTitle,Loaded Hunt Data,,,,加载狩猎数据
+,LoadedHuntDataDatabaseTab,database,,,,数据库
+,LoadedHuntDataSpawnPointsTab,spawn points,,,,触发点
+,,,,,,
+,RankLabel,Rank,,,,级别
+,NearbyMobListFlagToolTip,Click to send flag,,,,点击以发送坐标
+,,,,,,
+,ImageDownloadWindowTitle,"Images do not exist, download?",,,,没有图片，要下载吗？
+,ImageDownloadingMessage,"Attempting to download, please wait.\n\nIf there seems to be a problem, please manually download from",,,,尝试下载，请稍等\n\n如果有问题，请从以下链接手动下载
+,ImageDownloadErrorMessageOne,The following errors occurred,,,,发生以下错误
+,ImageDownloadErrorMessageTwo,"Please download the images manually, or try deleting the Images/Map folder + RESET PLUGIN, and attempt download again",,,,请手动下载图片，或尝试删除Images/Map文件夹并重置插件，并尝试再次下载
+,ImageDownloadErrorButton,"Okay, Don't Show Me This Again. Thanks.",,,,好，不要再显示了，谢谢。
+,ImageDownloadPromptMessage,Could not find map images This is expected if this is your first time.\nWould you like to try to download them? (~23.2MB),,,,找不到地图图片，可能这是你初次使用。\n要下载吗？(~23.2MB)
+,ImageDownloadButton,Download,,,,下载
+,ImageDownloadManualMessageOne,Or you can view and manually download from,,,,或者你可以从这里查看或者手动下载
+,ImageDownloadManualMessageTwo,and place in,,,,在
+,,,,,,
+,,,,,,
+HuntTrain,,,,,,
+,CopyText,Copy export code clipboard.\nWarning: The code will be too long to be pasted into in-game chat. Share via Discord.,,,,复制输出代码剪贴板。\n警告：该代码很长，无法粘贴到游戏中的聊天记录。通过 Discord 分享。
+,CopyTextCopied,Copied!,,,,已复制
+,MainWindowTitle,Hunt Train,,,,狩猎车
+,NameHeader,Name,,,,名称
+,TeleportHeader,Teleport,,,,传送
+,TeleportToolTip,Teleport will initiate even if you are closer to the mob / on the same map. pls adjust thx,,,,即使你和狩猎怪附近或同一张图也会传送，请调整。
+,LastSeenHeader,Last Seen,,,,上次发现
+,HowTo,"HOW TO: Background - Click on any of the rows to send the relevant Map Link into chat. (Drag to reorder the list). Click on the checkbox to mark a mob as dead. Use the command \/hhn to automatically mark the current selected as dead, and send the next Map link into chat. (you will have to click the first one manually) *Does not allow duplicates (currently does not handle instances or different worlds) - Only records A ranks.",,,,如何使用：背景 - 点任何一行来发送相关地图链接到聊天。（拖拽来录制列表）。点击确认框来标记已死亡的狩猎怪。使用指令\/hhn来自动标记死亡当前选择的怪物，并发送下一个地图链接到聊天。（第一次不得不手动点）*不允许重复（当前不处理多线或多服务器）-只记录A怪*
+,TeleportButton,tele,,,,传送
+,Settings,Settings,,,,设置
+,Border,Border,,,,边界
+,LastSeen,Last seen,,,,上次发现
+,LastSeenToolTip,Show how long since the hunt was found.,,,,显示距离上次发现过了多久
+,OpenMap,Open Map,,,,开启地图
+,OpenMapToolTip,Open the relevant map when /hhn used or when name clicked.,,,,当/hhn启用或单击名称时开启相关地图
+,TeleButtons,Tele Buttons,,,,传送键
+,TeleButtonsToolTip,Show teleport buttons. Probably best to use this instead of tele on click.,,,,显示传送按键，可能相比点击传送更好
+,TeleportOnClick,Teleport on click,,,,点击传送
+,TeleportOnClickToolTip,Initiate teleport to closest Aetheryte when hunt is clicked. This will begin tele even if you try to reorder or click just for chat link.,,,,当点击狩猎时，启动传送到最近的以太水晶。这将开始传送，即使你试图重新排序或点击只是为了聊天链接。
+,TeleportOnCommand,Initiate teleport to closest Aetheryte when /hhn used.,,,,当使用/hhn时，启动传送到最近的以太水晶。
+,RemoveDeadButton,Remove Dead,,,,移除已死亡
+,ResetDeadButton,Reset Dead Status,,,,重设死亡统计
+,StartRecordingButton,Start Recording,,,,开始录制
+,StopRecordingButton,Stop Recording,,,,停止录制
+,DeleteTrainButton,Delete Train,,,,删除狩猎车序
+,ImportButton,Import,,,,导入
+,ContextMenuSelect, Select,,,,选择
+,ContextMenuRemove, Remove,,,,删除
+,,,,,,
+,,,,,,
+,TeleportWindowTitle,Teleporter Plugin Not Found,,,,未找到Teleporter插件
+,TeleportWindowMessage,Teleporting requires the Teleporter Plugin by Pohky. Please install it via /xlplugins or uncheck teleport options.,,,,传送功能依赖Pohky的Teleporter插件。请通过/xlplugins安装或者取消传送选项。
+,TeleportWindowButton,okey-dokey,,,,懂了
+,,,,,,
+,,,,,,
+,DeleteWindowTitle,Delete,,,,删除
+,DeleteWindowMessage,Are you sure you want to DELETE train data?,,,,你确定你要*删除*狩猎车序？
+,DeleteWindowDeleteButton,Delete,,,,删除
+,CancelButton,Cancel,,,,取消
+,,,,,,
+,,,,,,
+,ImportWindowTitle,Import,,,,导入
+,ImportWindowErrorMessage,Nothing to import - or incorrect code. The export code is too long to be shared via in-game chat. Please share through Discord or something.,,,,没有可导入，或者错误的代码。导入代码很长，无法粘贴到游戏中的聊天记录。通过 Discord 或其他分享。
+,ImportWindowCloseButton,Close,,,,关闭
+,ImportWindowImportedMessage,Imported data mob count,,,,导入狩猎数据计数
+,ImportAllCheckbox,Import All ,,,,导入所有
+,ImportAllCheckboxToolTip,Overwrites current data with imported data,,,,覆盖当前已导入数据
+,ImportNewCheckbox,Import New ,,,,导入新增
+,ImportNewCheckboxToolTip,Only imports new mobs,,,,只导入新怪
+,UpdateLastSeenCheckbox,Update Last Seen Time ,,,,上传上次发现时间
+,UpdateLastSeenCheckboxToolTip,"Imports new mobs and updates old mobs Last Seen times, if applicable",,,,导入新怪并上传上次发现的时间，如果可用的话。
+,,,,,,
+,,,,,,
+SpawnPointFinder,,,,,,
+,CopyText,Copy export code clipboard,,,,复制导出代码
+,CopyTextCopied,Copied!,,,,已复制
+,CopyTextAllExport,Export all currently recorded map data,,,,导出所有现在已记录的地图数据
+,,,,,,
+,MainWindowTitle,Spawn Point Refinement,,,,排点
+,FilterLabel,Search by name,,,,按名称搜索
+,FilterToolTip,"Used for recording taken spawn positions. Helpful for position-specific spawns such as Nandi, Gamma, Tarchia, Burfulululu, Narrow-Rift, etc. Data persists and is saved to file, Turning recording off will reset tracked data.",,,,用于记录排点。 有助于特定点位的触发，例如 南迪、伽马、多智兽、布弗鲁、狭缝 等。数据持续存在并保存到文件中，关闭记录将重置跟踪数据。
+,StartRecording,Start Recording,,,,开始录制
+,StopRecording,Stop Recording -- This will WIPE all data.,,,,停止录制 -- 这将清空所有数据
+,StartRecordingAll,Start Recording All,,,,开始录制所有
+,StopRecordingAll,Stop Recording All -- This will WIPE all data.,,,,停止录制所有 -- 这将清空所有数据
+,ImportButtonToolTip,Import map data,,,,导入地图数据
+,,,,,,
+,ImportWindowTitle,Import,,,,导入
+,ErrorMessage,Nothing to import - or incorrect code,,,,无数据导入 - 或代码错误
+,CloseButton,Close,,,,关闭
+,ImportMessage,Imported Maps,,,,导入地图
+,OverwriteButton,Overwrite,,,,覆盖
+,OverwriteButtonToolTip,Import and Overwrite current data for these maps,,,,导入并覆盖这些地图的现有数据
+,ImportNewButton,Only New,,,,只新
+,ImportNewButtonToolTip,Import only new data,,,,只导入新数据
+,CancelButton,Cancel,,,,取消
+,,,,,,
+,,,,,,
+Counter,,,,,,
+,MainWindowTitle,Counter,,,,计数
+,BackgroundToggleToolTipInfo,Allow counting when window closed.,,,,允许在窗口关闭的时候计数
+,BackgroundToggleToolTipStatus,Status,,,,统计
+,BackgroundToggleToolTipEnabled,Enabled,,,,启用
+,BackgroundToggleToolTipDisabled,Disabled,,,,禁用
+,Reset,Reset,,,,重设
+,WeeEa,Wee Ea,,,,小异亚
