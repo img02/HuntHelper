@@ -96,27 +96,33 @@ public unsafe class SpawnPointFinderUI : IDisposable//idk what to call this
                             ImGui.TextUnformatted($"{MapHelpers.GetMapName(_dataManager, msp.MapID)}");
                             ImGui.TableNextColumn();
                             if (!msp.Recording)
-                            {
-                                if (ImGuiComponents.IconButton(i++, FontAwesomeIcon.Video)) msp.Recording = true;
+                            { //using id overload bugged - now adds some other weird icon to the end ? gotta use push/pop id
+                                ImGui.PushID(i++);
+                                if (ImGuiComponents.IconButton(FontAwesomeIcon.Video)) msp.Recording = true;
+                                ImGui.PopID(); 
                                 ImGuiUtil.ImGui_HoveredToolTip(GuiResources.SpawnPointerFinderGuiText["StartRecording"]);
                             }
                             else
                             {
-                                if (ImGuiComponents.IconButton(j--, FontAwesomeIcon.VideoSlash))
+                                ImGui.PushID(j--);
+                                if (ImGuiComponents.IconButton(FontAwesomeIcon.VideoSlash))
                                 {
                                     msp.Recording = false;
                                     _mapDataManager.ClearTakenSpawnPoints(msp.MapID);
                                 }
+                                ImGui.PopID();
                                 ImGuiUtil.ImGui_HoveredToolTip(GuiResources.SpawnPointerFinderGuiText["StopRecording"]);
 
                             }
                             ImGui.TableNextColumn();
-                            if (ImGuiComponents.IconButton(k++, FontAwesomeIcon.SignOutAlt))
+                            ImGui.PushID(k++);
+                            if (ImGuiComponents.IconButton(FontAwesomeIcon.SignOutAlt))
                             {
                                 var exportList = new List<MapSpawnPoints>() { msp };
                                 ImGui.SetClipboardText(ExportImport.Export(exportList));
                                 ChangeCopyText();
                             }
+                            ImGui.PopID();;
                             ImGuiUtil.ImGui_HoveredToolTip(_copyText);
                         }
                     }
@@ -126,8 +132,8 @@ public unsafe class SpawnPointFinderUI : IDisposable//idk what to call this
             }
             ImGui.Separator();
             if (!_recordAll)
-            {
-                if (ImGuiComponents.IconButton(999, FontAwesomeIcon.Video))
+            {   
+                if (ImGuiComponents.IconButton(FontAwesomeIcon.Video))
                 {
                     _recordAll = true;
                     _mapDataManager.SpawnPointsList.ForEach(msp => msp.Recording = true);
@@ -136,7 +142,7 @@ public unsafe class SpawnPointFinderUI : IDisposable//idk what to call this
             }
             else
             {
-                if (ImGuiComponents.IconButton(-999, FontAwesomeIcon.VideoSlash))
+                if (ImGuiComponents.IconButton(FontAwesomeIcon.VideoSlash))
                 {
                     _recordAll = false;
                     _mapDataManager.ClearAllTakenSpawnPoints();

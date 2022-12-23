@@ -31,6 +31,7 @@
     <None Remove="Data\HW-A.json" />
     <None Remove="Data\HW-B.json" />
     <None Remove="Data\HW-S.json" />
+    <None Remove="Data\Localisation\cn_simp.json" />
     <None Remove="Data\Localisation\de.json" />
     <None Remove="Data\Localisation\en.json" />
     <None Remove="Data\Localisation\fr.json" />
@@ -70,6 +71,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Data\HW-S.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\Localisation\cn_simp.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Data\Localisation\fr.json">
