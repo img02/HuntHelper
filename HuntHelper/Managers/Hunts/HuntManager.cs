@@ -181,18 +181,18 @@ public class HuntManager
             case HuntRank.A:            //didn't hyphen 'rank' here.. think it looks better
                 rankSB.AddUiForeground("A RANK", _aTextColour); // pinkish-red - same as chat msg
                 nameSB.AddUiForeground($"{mob.Name}", _aFlyTextColour); //tinted pinkish-red
-                _flyTextGui.AddFlyText(FlyTextKind.NamedDirectHit, 1, 1, 1, rankSB.BuiltString, nameSB.BuiltString, 16, 2);//last 2 nums don't seem to change anything
+                _flyTextGui.AddFlyText(FlyTextKind.NamedDirectHit, 1, 1, 1, rankSB.BuiltString, nameSB.BuiltString, 16, 2, 0);//last 2 nums don't seem to change anything
                 break;
             case HuntRank.B:
                 rankSB.AddUiForeground("B RANK", _bTextColour); // blue - same as chat msg
                 nameSB.AddUiForeground($"{mob.Name}", _bFlyTextColour); //tinted blue
-                _flyTextGui.AddFlyText(FlyTextKind.NamedDirectHit, 1, 1, 1, rankSB.BuiltString, nameSB.BuiltString, 16, 2);
+                _flyTextGui.AddFlyText(FlyTextKind.NamedDirectHit, 1, 1, 1, rankSB.BuiltString, nameSB.BuiltString, 16, 2, 0);
                 break;
             case HuntRank.S:
             case HuntRank.SS:
                 rankSB.AddUiForeground("S RANK", _sFlyTextColour); // dark-red - different from chat msg (goldish) because it stands out more.
                 nameSB.AddUiForeground($"{mob.Name}", _sTextColour); //same gold as chat msg
-                _flyTextGui.AddFlyText(FlyTextKind.NamedDirectHit, 1, 1, 1, rankSB.BuiltString, nameSB.BuiltString, 16, 2);
+                _flyTextGui.AddFlyText(FlyTextKind.NamedDirectHit, 1, 1, 1, rankSB.BuiltString, nameSB.BuiltString, 16, 2, 0);
                 break;
         }
     }
