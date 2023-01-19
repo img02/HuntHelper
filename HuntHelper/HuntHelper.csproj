@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Authors>https://github.com/imaginary-png</Authors>
     <Company></Company>
-    <Version>1.0.0.0</Version>
+    <Version>1.0.0.1</Version>
     <Description>Hunt map with spawns points, A-Rank train recorder (w/ export/import sharing), TTS, Chat notifications, Counters for S-Rank</Description>
     <Copyright></Copyright>
     <PackageProjectUrl>https://github.com/imaginary-png/HuntHelper</PackageProjectUrl>
