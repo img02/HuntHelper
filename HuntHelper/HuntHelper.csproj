@@ -35,7 +35,7 @@
     <None Remove="Data\Localisation\french.json" />
     <None Remove="Data\Localisation\German.json" />
     <None Remove="Data\Localisation\japanese.json" />
-    <None Remove="Data\Localisation\simplified chinese.json" />
+    <None Remove="Data\Localisation\simplified chinese (WIP).json" />
     <None Remove="Data\SB-A.json" />
     <None Remove="Data\SB-B.json" />
     <None Remove="Data\SB-S.json" />
@@ -73,7 +73,7 @@
     <Content Include="Data\HW-S.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Data\Localisation\simplified chinese.json">
+    <Content Include="Data\Localisation\simplified chinese %28WIP%29.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Data\Localisation\french.json">
