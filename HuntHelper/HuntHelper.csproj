@@ -31,11 +31,11 @@
     <None Remove="Data\HW-A.json" />
     <None Remove="Data\HW-B.json" />
     <None Remove="Data\HW-S.json" />
-    <None Remove="Data\Localisation\cn_simp.json" />
-    <None Remove="Data\Localisation\de.json" />
-    <None Remove="Data\Localisation\en.json" />
-    <None Remove="Data\Localisation\fr.json" />
-    <None Remove="Data\Localisation\ja.json" />
+    <None Remove="Data\Localisation\english.json" />
+    <None Remove="Data\Localisation\french.json" />
+    <None Remove="Data\Localisation\German.json" />
+    <None Remove="Data\Localisation\japanese.json" />
+    <None Remove="Data\Localisation\simplified chinese.json" />
     <None Remove="Data\SB-A.json" />
     <None Remove="Data\SB-B.json" />
     <None Remove="Data\SB-S.json" />
@@ -73,19 +73,19 @@
     <Content Include="Data\HW-S.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Data\Localisation\cn_simp.json">
+    <Content Include="Data\Localisation\simplified chinese.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Data\Localisation\fr.json">
+    <Content Include="Data\Localisation\french.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Data\Localisation\de.json">
+    <Content Include="Data\Localisation\german.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Data\Localisation\ja.json">
+    <Content Include="Data\Localisation\japanese.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Data\Localisation\en.json">
+    <Content Include="Data\Localisation\english.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Data\SB-A.json">

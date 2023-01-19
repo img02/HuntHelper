@@ -21,6 +21,7 @@ using System.Numerics;
 using System.Speech.Synthesis;
 using System.Threading;
 using System.Threading.Tasks;
+using Dalamud.Logging;
 using HuntHelper.Gui.Resource;
 
 namespace HuntHelper.Gui
@@ -1348,11 +1349,17 @@ namespace HuntHelper.Gui
             _huntManager.BCount = _configuration.BFoundCount;
             _huntManager.SCount = _configuration.SFoundCount;
 
-            //defaults to using client lang file, on first load/save updates lang in config
+            //gui language loading 
+            //if missing file, default config lang back to client lang
+            if (!GuiResources.GetAvailableLanguages().Contains(_configuration.Language))
+            {
+                _configuration.Language = GuiResources.Language;
+            }
             if (_configuration.Language == string.Empty)
             {
                 _guiLanguage = GuiResources.Language;
-            } //if language in config differs from client language, reload correct text
+            }
+            //if language in config differs from client language, reload correct text
             else if (_configuration.Language != GuiResources.Language)
             {
                 GuiResources.LoadGuiText(_configuration.Language);
