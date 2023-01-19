@@ -40,6 +40,9 @@ namespace HuntHelper.Gui
         private string _territoryName;
         private string WorldName => _clientState.LocalPlayer?.CurrentWorld?.GameData?.Name.ToString() ?? "Not Found";
         private ushort _territoryId;
+        
+        //used for combo box for language selection window
+        private string _guiLanguage = GuiResources.Language;
 
         private float _bottomPanelHeight = 30 * ImGuiHelpers.GlobalScale;
 
@@ -179,7 +182,6 @@ namespace HuntHelper.Gui
             get => _settingsVisible;
             set => _settingsVisible = value;
         }
-
 
         public MapUI(Configuration configuration, DalamudPluginInterface pluginInterface,
             ClientState clientState, ObjectTable objectTable, DataManager dataManager,
@@ -1082,7 +1084,6 @@ namespace HuntHelper.Gui
                         ImGui.EndTabItem();
                     }
 
-
                     if (ImGui.BeginTabItem(GuiResources.MapGuiText["StatsTab"]))
                     {
                         _bottomPanelHeight = 120f * ImGuiHelpers.GlobalScale;
@@ -1099,8 +1100,30 @@ namespace HuntHelper.Gui
                         ImGui.EndTabItem();
                     }
 
+                    if (ImGui.BeginTabItem("Language"))
+                    {
+                        _bottomPanelHeight = 120f * ImGuiHelpers.GlobalScale;
+                        var languages = GuiResources.GetAvailableLanguages();
+                        var index = Array.IndexOf(languages, _guiLanguage);
+
+                        ImGui.PushItemWidth(200f);
+                        if (ImGui.Combo("##language selection", ref index, languages, languages.Length ))
+                        {
+                            _guiLanguage = languages[index];
+                        }
+                        ImGui.PopItemWidth();
+                        ImGui.SameLine();
+
+                        if (ImGui.Button("OK##change language"))
+                        {
+                           GuiResources.LoadGuiText(_guiLanguage);
+                        }
+                        ImGui.EndTabItem();
+                    }
+
                     if (ImGui.BeginTabItem("Translate"))
                     {
+                        _bottomPanelHeight = 120f * ImGuiHelpers.GlobalScale;
                         ImGui.TextWrapped("If you want to help translate this plugin");
                         var url = "https://github.com/imaginary-png/HuntHelper/tree/main/Translate";
                         ImGui.InputText(" -- click me", ref url, 100, ImGuiInputTextFlags.ReadOnly );
@@ -1118,6 +1141,7 @@ namespace HuntHelper.Gui
             ImGui.End();
         }
 
+        
         public void SavePreset(int presetNumber)
         {
             if (presetNumber is <= 0 or > 2) return;
@@ -1237,6 +1261,8 @@ namespace HuntHelper.Gui
             _configuration.PointToSRank = _pointToSRank;
             _configuration.PointerDiamondSizeModifier = _diamondModifier;
 
+            _configuration.Language = GuiResources.Language;
+
             _configuration.Save();
         }
 
@@ -1321,6 +1347,17 @@ namespace HuntHelper.Gui
             _huntManager.ACount = _configuration.AFoundCount;
             _huntManager.BCount = _configuration.BFoundCount;
             _huntManager.SCount = _configuration.SFoundCount;
+
+            //defaults to using client lang file, on first load/save updates lang in config
+            if (_configuration.Language == string.Empty)
+            {
+                _guiLanguage = GuiResources.Language;
+            } //if language in config differs from client language, reload correct text
+            else if (_configuration.Language != GuiResources.Language)
+            {
+                GuiResources.LoadGuiText(_configuration.Language);
+                _guiLanguage = _configuration.Language;
+            }
         }
 
 
