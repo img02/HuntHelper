@@ -51,18 +51,9 @@ public class GuiResources
         var localisationFolder = Path.Combine(Plugin.PluginDir, @"Data\Localisation\");
         var paths = Directory.GetFileSystemEntries(localisationFolder, "*.json");
         var files = paths.Select(p => Path.GetFileNameWithoutExtension(p).ToLowerInvariant()).ToArray();
-
-        //PluginLog.Debug($"HuntHelper: Found {files.Length} language files");
-        foreach (var file in files)
-        {
-           //PluginLog.Debug(file);
-        }
-
-        //search through PATH/Data/Localisation folder, return list of json files minus extensions
         return files;
     }
-
-    // refactor out functionality to this, use this to load from files. language should be file name, then add '.json' and find relevant file
+    
     public static bool LoadGuiText(string language)
     {
         var path = Path.Combine(Plugin.PluginDir, @"Data\Localisation\", $"{language}.json");
