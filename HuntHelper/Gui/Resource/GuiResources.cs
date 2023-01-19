@@ -24,10 +24,10 @@ public class GuiResources
 
         var dict = new Dictionary<string, Dictionary<string, string>>();
         var language =
-            lang == ClientLanguage.English ? "en" :
-            lang == ClientLanguage.French ? "fr" :
-            lang == ClientLanguage.German ? "de" :
-            "ja";
+            lang == ClientLanguage.English ? "english" :
+            lang == ClientLanguage.French ? "french" :
+            lang == ClientLanguage.German ? "german" :
+            "japanese";
 
         return LoadGuiText(language);
     }
@@ -50,7 +50,7 @@ public class GuiResources
     {
         var localisationFolder = Path.Combine(Plugin.PluginDir, @"Data\Localisation\");
         var paths = Directory.GetFileSystemEntries(localisationFolder, "*.json");
-        var files = paths.Select(p => Path.GetFileNameWithoutExtension(p)).ToArray();
+        var files = paths.Select(p => Path.GetFileNameWithoutExtension(p).ToLowerInvariant()).ToArray();
 
         //PluginLog.Debug($"HuntHelper: Found {files.Length} language files");
         foreach (var file in files)
