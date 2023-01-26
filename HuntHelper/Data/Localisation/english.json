@@ -37,7 +37,7 @@
 		"WindowColourToolTip": "Window Colour - Opacity can be changed down below.",
 		"PresetOne": "Preset 1",
 		"PresetTwo": "Preset 2",
-		"SavePresetToolTip": "Save a preset for quick switching - Size, opacity, position, and use map\n\nApply with command: /hh1\nSave with /hh1save or -->",
+		"SavePresetToolTip": "Save a preset for quick switching - Size, opacity, position, and use map\n\nApply with command: /hh1 /hh2\nSave with /hh1save /hh2save or -->",
 		"SaveButton": "Save",
 		"MapOpacityLabel": "Map Opacity",
 		"WindowOpacity": "Window Opacity",

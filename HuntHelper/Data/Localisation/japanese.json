@@ -8,7 +8,7 @@
 		"/hht helpmessage": "Opens the Hunt Train Window",
 		"/hhn helpmessage": "Sends the flag for the next train mob into chat",
 		"/hhc helpmessage": "Counter window -- for counter-based S ranks",
-		"/hhr helpmessage": "Spawn point tracking window"		
+		"/hhr helpmessage": "Spawn point tracking window"
 	},
 	"Map": {
 		"ErrorLoadingDataMessage": "Error loading data",
@@ -37,7 +37,7 @@
 		"WindowColourToolTip": "Window Colour - Opacity can be changed down below.",
 		"PresetOne": "Preset 1",
 		"PresetTwo": "Preset 2",
-		"SavePresetToolTip": "Save a preset for quick switching - Size, opacity, position, and use map\n\nApply with command: /hh1\nSave with /hh1save or -->",
+		"SavePresetToolTip": "Save a preset for quick switching - Size, opacity, position, and use map\n\nApply with command: /hh1 /hh2\nSave with /hh1save /hh2save or -->",
 		"SaveButton": "Save",
 		"MapOpacityLabel": "Map Opacity",
 		"WindowOpacity": "Window Opacity",
@@ -180,7 +180,7 @@
 
 		"MainWindowTitle": "Spawn Point Refinement",
 		"FilterLabel": "Search by name",
-    "FilterToolTip": "Used for recording taken spawn positions.\nHelpful for position-specific spawns such as\nNandi, Gamma, Tarchia, Burfulululu, Narrow-Rift, etc\n\nData persists and is saved to file,\nTurning recording off will reset tracked data.\nYou can manually toggle a spawn point by double clicking on the map.",
+		"FilterToolTip": "Used for recording taken spawn positions.\nHelpful for position-specific spawns such as\nNandi, Gamma, Tarchia, Burfulululu, Narrow-Rift, etc\n\nData persists and is saved to file,\nTurning recording off will reset tracked data.\nYou can manually toggle a spawn point by double clicking on the map.",
 		"StartRecording": "Start Recording",
 		"StopRecording": "Stop Recording -- This will WIPE all data.",
 		"StartRecordingAll": "Start Recording All",
@@ -197,15 +197,15 @@
 		"ImportNewButtonToolTip": "Import only new data",
 		"CancelButton": "Cancel"
 	},
-	
+
 	"Counter": {
-		"MainWindowTitle":"Counter",
-		"BackgroundToggleToolTipInfo":"Allow counting when window closed.",
-		"BackgroundToggleToolTipStatus":"Status: ",
-		"BackgroundToggleToolTipEnabled":"Enabled",
-		"BackgroundToggleToolTipDisabled":"Disabled",
-		"Reset":"Reset",
-		"WeeEa":"Wee Ea: "
+		"MainWindowTitle": "Counter",
+		"BackgroundToggleToolTipInfo": "Allow counting when window closed.",
+		"BackgroundToggleToolTipStatus": "Status: ",
+		"BackgroundToggleToolTipEnabled": "Enabled",
+		"BackgroundToggleToolTipDisabled": "Disabled",
+		"Reset": "Reset",
+		"WeeEa": "Wee Ea: "
 	}
-	
+
 }

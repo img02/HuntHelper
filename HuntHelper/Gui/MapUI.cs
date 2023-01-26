@@ -1354,7 +1354,7 @@ namespace HuntHelper.Gui
             if (!GuiResources.GetAvailableLanguages().Contains(_configuration.Language))
             {
                 _configuration.Language = GuiResources.Language;
-            }
+            } //redundant
             if (_configuration.Language == string.Empty)
             {
                 _guiLanguage = GuiResources.Language;
