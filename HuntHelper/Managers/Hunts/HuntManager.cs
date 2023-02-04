@@ -49,6 +49,8 @@ public class HuntManager
     public bool ErrorPopUpVisible = false;
     public string ErrorMessage = string.Empty;
 
+
+    public bool DontUseSynthesizer = false;
     public SpeechSynthesizer TTS { get; init; } //aint really used anymore except for setting default voice on load
     public string TTSName { get; set; }
 
@@ -85,8 +87,14 @@ public class HuntManager
         ImportedTrain = new List<HuntTrainMob>();
 
         ImageFolderPath = Path.Combine(_pluginInterface.AssemblyLocation.Directory?.FullName!, @"Images\Maps\");
+
+        // Starting this makes the plugin fail to load
+        try{
         TTS = new SpeechSynthesizer();
         TTSName = TTS.Voice.Name;
+        }catch{
+            DontUseSynthesizer = true;
+        }
 
         LoadHuntData();
     }
@@ -291,6 +299,7 @@ public class HuntManager
         if (!enabled) return;
         var message = FormatMessageFlags(msg, mob);
         //changed to creating a new tts each time because SpeakAsync just queues up to play...
+        if(DontUseSynthesizer) return;
         var tts = new SpeechSynthesizer();
         tts.SelectVoice(TTSName);
         var prompt = tts.SpeakAsync(message);
@@ -401,6 +410,7 @@ public class HuntManager
             kvp.Value.Dispose();
         }
         _trainManager.SaveHuntTrainRecord();
+        if(!DontUseSynthesizer)
         TTS.Dispose();
     }
 

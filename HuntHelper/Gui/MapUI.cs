@@ -197,7 +197,7 @@ namespace HuntHelper.Gui
             _huntManager = huntManager;
             _mapDataManager = mapDataManager;
             _gameGui = gameGui;
-
+            if(!huntManager.DontUseSynthesizer)
             _ttsVoiceName = huntManager.TTS.Voice.Name; // load default voice first, then from settings if avail.
             _territoryName = string.Empty;
 
@@ -945,7 +945,7 @@ namespace HuntHelper.Gui
                                 ImGui.EndTabItem();
                             }
 
-                            if (ImGui.BeginTabItem(GuiResources.MapGuiText["SettingsTab"]))
+                            if (!_huntManager.DontUseSynthesizer && ImGui.BeginTabItem(GuiResources.MapGuiText["SettingsTab"]))
                             {
                                 _bottomPanelHeight = tabBarHeight + 70f * ImGuiHelpers.GlobalScale;
                                 var tts = _huntManager.TTS;
@@ -1338,7 +1338,7 @@ namespace HuntHelper.Gui
             _diamondModifier = _configuration.PointerDiamondSizeModifier;
 
             //if voice name available on user's pc, set as tts voice. --else default already set.
-            if (_huntManager.TTS.GetInstalledVoices().Any(v => v.VoiceInfo.Name == _configuration.TTSVoiceName))
+            if (!_huntManager.DontUseSynthesizer && _huntManager.TTS.GetInstalledVoices().Any(v => v.VoiceInfo.Name == _configuration.TTSVoiceName))
             {
                 _ttsVoiceName = _configuration.TTSVoiceName;
                 _huntManager.TTS.SelectVoice(_ttsVoiceName);
