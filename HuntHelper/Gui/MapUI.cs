@@ -197,7 +197,7 @@ namespace HuntHelper.Gui
             _huntManager = huntManager;
             _mapDataManager = mapDataManager;
             _gameGui = gameGui;
-
+            if(!huntManager.DontUseSynthesizer)
             _ttsVoiceName = huntManager.TTS.Voice.Name; // load default voice first, then from settings if avail.
             _territoryName = string.Empty;
 
@@ -958,7 +958,7 @@ namespace HuntHelper.Gui
 
                                 var itemPos = Array.IndexOf(listOfVoiceNames, _ttsVoiceName);
 
-                                if (ImGui.BeginChild("##settings tts child", ImGui.GetContentRegionAvail(), false, ImGuiWindowFlags.HorizontalScrollbar))
+                                if (!_huntManager.DontUseSynthesizer && ImGui.BeginChild("##settings tts child", ImGui.GetContentRegionAvail(), false, ImGuiWindowFlags.HorizontalScrollbar))
                                 {
                                     ImGui.Dummy(new Vector2(0f, 5f));
                                     ImGui.Text(GuiResources.MapGuiText["SelectVoiceLabel"]);
