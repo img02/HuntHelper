@@ -945,7 +945,7 @@ namespace HuntHelper.Gui
                                 ImGui.EndTabItem();
                             }
 
-                            if (ImGui.BeginTabItem(GuiResources.MapGuiText["SettingsTab"]))
+                            if (!_huntManager.DontUseSynthesizer && ImGui.BeginTabItem(GuiResources.MapGuiText["SettingsTab"]))
                             {
                                 _bottomPanelHeight = tabBarHeight + 70f * ImGuiHelpers.GlobalScale;
                                 var tts = _huntManager.TTS;
@@ -958,7 +958,7 @@ namespace HuntHelper.Gui
 
                                 var itemPos = Array.IndexOf(listOfVoiceNames, _ttsVoiceName);
 
-                                if (!_huntManager.DontUseSynthesizer && ImGui.BeginChild("##settings tts child", ImGui.GetContentRegionAvail(), false, ImGuiWindowFlags.HorizontalScrollbar))
+                                if (ImGui.BeginChild("##settings tts child", ImGui.GetContentRegionAvail(), false, ImGuiWindowFlags.HorizontalScrollbar))
                                 {
                                     ImGui.Dummy(new Vector2(0f, 5f));
                                     ImGui.Text(GuiResources.MapGuiText["SelectVoiceLabel"]);

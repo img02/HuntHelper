@@ -410,6 +410,7 @@ public class HuntManager
             kvp.Value.Dispose();
         }
         _trainManager.SaveHuntTrainRecord();
+        if(!DontUseSynthesizer)
         TTS.Dispose();
     }
 
