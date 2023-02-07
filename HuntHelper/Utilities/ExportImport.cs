@@ -14,26 +14,9 @@ public static class ExportImport
         var byteArr = Compress(JsonConvert.SerializeObject(objectToSerialise));
         return Convert.ToBase64String(byteArr);
     }
+    
 
-    //ImportList? --replaced with below
-    public static void ImportList<T>(string importCode, List<T> listToDeserialiseTo)
-    {
-        try
-        {
-            var decompressed = Decompress(importCode);
-            var result = JsonConvert.DeserializeObject<List<T>>(decompressed);
-            if (result == null) return;
-            listToDeserialiseTo.AddRange(result);
-        }
-        catch (Exception e)
-        {
-            /*PluginLog.Error(e.Message);
-            PluginLog.Error(e.StackTrace);*/
-            return;
-        }
-    }
-
-    //if failed, returns original (prob empty?) object. Is this bad? lmao
+    //if failed, returns original object. 
     public static T Import<T>(string importCode, T objectToDeserialiseTo)
     {
         try
@@ -50,7 +33,7 @@ public static class ExportImport
         }
     }
 
-    //shamelessly copied from https://github.com/goatcorp/Dalamud/blob/2085cb03cad9554f82cb520d6216ba09fc550266/Dalamud/Utility/Util.cs#L442
+    //copied from https://github.com/goatcorp/Dalamud/blob/2085cb03cad9554f82cb520d6216ba09fc550266/Dalamud/Utility/Util.cs#L442
     private static byte[] Compress(string toCompress)
     {
         var byteArr = Encoding.UTF8.GetBytes(toCompress);

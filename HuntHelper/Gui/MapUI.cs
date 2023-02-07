@@ -152,7 +152,7 @@ namespace HuntHelper.Gui
 
         public float SingleCoordSize => ImGui.GetWindowSize().X / _mapZoneMaxCoordSize;
         //message input lengths
-        private uint _inputTextMaxLength = 300; //idk - how many chars do you need lol
+        private uint _inputTextMaxLength = 300; 
         private readonly Vector4 _defaultTextColour = Vector4.One; //white
 
         //window bools
