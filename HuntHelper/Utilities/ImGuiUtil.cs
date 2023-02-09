@@ -2,6 +2,7 @@
 using ImGuiNET;
 using System;
 using System.Numerics;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace HuntHelper.Utilities;
 
@@ -9,25 +10,26 @@ public class ImGuiUtil
 {
     public static void ImGui_CentreText(string text, Vector4 colour, float offset = 1f)
     {
-        var windowWidth = ImGui.GetWindowSize().X;
-        var textWidth = ImGui.CalcTextSize(text).X;
-        ImGui.SetCursorPosX((windowWidth - textWidth) * 0.5f * offset);
+        ImGui_CenterCursor(text, offset);
         ImGui.TextColored(colour, text);
     }
     public static void ImGui_CentreText(string text, float offset = 1f)
     {
-        var windowWidth = ImGui.GetWindowSize().X;
-        var textWidth = ImGui.CalcTextSize(text).X;
-        ImGui.SetCursorPosX((windowWidth - textWidth) * 0.5f * offset);
+        ImGui_CenterCursor(text, offset);  
         ImGui.TextUnformatted(text);
     }
 
     public static void ImGui_RightAlignText(string text)
     {
+        ImGui_CenterCursor(text, 1.9f);
+        ImGui.TextUnformatted(text);
+    }
+
+    private static void ImGui_CenterCursor(string text, float offset)
+    {
         var windowWidth = ImGui.GetWindowSize().X;
         var textWidth = ImGui.CalcTextSize(text).X;
-        ImGui.SetCursorPosX((windowWidth - textWidth) * .95f);
-        ImGui.TextUnformatted(text);
+        ImGui.SetCursorPosX((windowWidth - textWidth) * 0.5f * offset);
     }
 
     public static void ImGui_HelpMarker(string text)
