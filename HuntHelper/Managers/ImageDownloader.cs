@@ -23,9 +23,6 @@ public class ImageDownloader
 
     public async Task<List<string>> BeginDownloadAsync()
     {
-        //var results = new List<string>();
-        //_urls.ForEach( async url => results.Add(await DownloadAsync(url)));
-
         var tasks = _urls.Select(url => DownloadAsync(url));
         var results = await Task.WhenAll(tasks);
         return results.Where(s => s != string.Empty).ToList(); //return list of strings where failed
