@@ -296,7 +296,12 @@ public class HuntTrainUI : IDisposable
 
             if (ImGuiComponents.IconButton(FontAwesomeIcon.SignInAlt))
             {
-                var importCode = ImGui.GetClipboardText();
+                var importCode = string.Empty;
+                try
+                {
+                    importCode = ImGui.GetClipboardText();
+                }
+                catch{} // for some reason, getclipboardtext can sometimes throw object null error?
                 _trainManager.Import(importCode);
                 ImGui.OpenPopup($"{GuiResources.HuntTrainGuiText["ImportWindowTitle"]}##popup");
             }
