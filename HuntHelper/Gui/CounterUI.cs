@@ -16,16 +16,26 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using System.Threading;
+using System.Threading.Tasks;
+using Dalamud.Game.ClientState.Fates;
 using HuntHelper.Gui.Resource;
+using Dalamud.Game.Text.SeStringHandling.Payloads;
+using Dalamud.Logging;
+using FFXIVClientStructs.FFXIV.Client.UI.Agent;
+using System.Globalization;
+using Dalamud.Utility;
 
 namespace HuntHelper.Gui;
 
-public class CounterUI : IDisposable
+public unsafe class CounterUI : IDisposable
 {
     private readonly ClientState _clientState;
     private readonly ChatGui _chatGui;
+    private readonly GameGui _gameGui;
     private readonly Configuration _config;
     private readonly ObjectTable _objectTable;
+    private readonly FateTable _fateTable;
     private readonly List<CounterBase> _counters;
 
     private Vector2 _windowPos = new Vector2(50, 50);
@@ -34,12 +44,14 @@ public class CounterUI : IDisposable
 
     public bool WindowVisible = false;
 
-    public CounterUI(ClientState clientState, ChatGui chatGui, Configuration config, ObjectTable objectTable)
+    public CounterUI(ClientState clientState, ChatGui chatGui, GameGui gameGui, Configuration config, ObjectTable objectTable, FateTable fateTable)
     {
         _clientState = clientState;
         _chatGui = chatGui;
+        _gameGui = gameGui;
         _config = config;
         _objectTable = objectTable;
+        _fateTable = fateTable;
         _counters = new List<CounterBase>()
         {
             new MinhocaoCounter(),
@@ -55,7 +67,8 @@ public class CounterUI : IDisposable
         };
         LoadSettings();
 
-        _chatGui.ChatMessage += chatGui_ChatMessage;
+        _chatGui.ChatMessage += ChatGui_ChatMessage;
+        _clientState.TerritoryChanged += ClientState_TerritoryChanged;
     }
 
 
@@ -86,15 +99,14 @@ public class CounterUI : IDisposable
         ImGui.SetNextWindowPos(_windowPos, ImGuiCond.FirstUseEver);
         if (ImGui.Begin(GuiResources.CounterGuiText["MainWindowTitle"], ref WindowVisible, ImGuiWindowFlags.NoScrollbar))
         {
-            if (_clientState.TerritoryType == (ushort)MapID.UltimaThule)
+            Action counter = _clientState.TerritoryType switch
             {
-                DrawWeeEaCounter();
-                return;
-            }
+                (ushort)MapID.UltimaThule => DrawWeeEaCounter,
+                (ushort)MapID.SouthernThanalan => DrawNunyunuwiCounter,
+                _ => DrawCounter,
+            };
 
-            DrawCounter();
-
-
+            counter();
             ImGui.End();
         }
     }
@@ -124,13 +136,216 @@ public class CounterUI : IDisposable
         ImGuiComponents.ToggleButton("##backgroundcounttoggle", ref _countInBackground);
         ImGuiUtil.ImGui_HoveredToolTip($"{GuiResources.CounterGuiText["BackgroundToggleToolTipInfo"]}\n" +
                                        GuiResources.CounterGuiText["BackgroundToggleToolTipStatus"] +
-                                       (_countInBackground ? 
+                                       (_countInBackground ?
                                            GuiResources.CounterGuiText["BackgroundToggleToolTipEnabled"] :
                                            GuiResources.CounterGuiText["BackgroundToggleToolTipDisabled"]));
         ImGui.SameLine();
         if (ImGuiComponents.IconButton(FontAwesomeIcon.Trash)) counter.Reset();
         ImGuiUtil.ImGui_HoveredToolTip(GuiResources.CounterGuiText["Reset"]);
     }
+
+    #region Nunni - Fates - Southern Than
+
+    private string _lastFailedFateInfo = string.Empty;
+    private DateTime _startTime = DateTime.Now;
+    private HashSet<Fate> _currentFates = new HashSet<Fate>();
+
+    private readonly Vector4 _green = new Vector4(0, 1, 0, 1);
+    private readonly Vector4 _red = new Vector4(1, 0, 0, 1);
+    private readonly Vector4 _yellow = new Vector4(1, 1, 0, 1);
+
+    private void DrawNunyunuwiCounter()
+    {
+        var endTime = _startTime.AddHours(1); 
+        
+        ImGui.PushFont(UiBuilder.MonoFont);
+
+        DrawNunWindowString(endTime);
+
+        ImGuiUtil.ImGui_Separator(6);
+
+        DrawNunCountdownString(endTime);
+        PopulateFateList();
+        UpdateCurrentFates();
+
+        ImGuiUtil.ImGui_Separator(6);
+
+        DrawCurrentFateUI();
+
+        ImGuiUtil.ImGui_Separator(6);
+
+        ImGui.TextColored(_red, _lastFailedFateInfo);
+        DrawNunResetButton();
+
+        ImGui.PopFont();
+    }
+
+    private void DrawNunWindowString(DateTime endTime)
+    {
+        var startTimeString = _startTime.ToString("h:mm:ss tt", CultureInfo.InvariantCulture);
+        var endTimeString = endTime.ToString("h:mm:ss tt", CultureInfo.InvariantCulture);
+
+        ImGui.Text($"{startTimeString} - {endTimeString}\n");
+        ImGui.SameLine();
+        Utilities.ImGuiUtil.ImGui_HelpMarker("May finish earlier based on the last failed fate before you entered zone)");
+    }
+
+    private void DrawNunCountdownString(DateTime endTime)
+    {
+        var countdown = endTime.Subtract(DateTime.Now);
+        if (countdown.TotalSeconds < 0) countdown = TimeSpan.Zero;
+        var countdownString = (countdown).ToString(@"mm\:ss", CultureInfo.InvariantCulture);
+
+        ImGui.Text($"Countdown: ");
+        ImGui.SameLine();
+        if (countdown.TotalSeconds > 300) ImGui.Text($"{countdownString}");
+        else ImGui.TextColored(_green, $"{countdownString}");
+    }
+
+    private void DrawNunResetButton()
+    {   // not really needed tbh
+        ImGuiUtil.ImGui_Separator(10);
+        if (ImGui.Button("reset"))
+        {
+            _startTime = DateTime.Now;
+            _lastFailedFateInfo = string.Empty;
+        }
+    }
+    private void PopulateFateList()
+    {
+        foreach (var fate in _fateTable)
+        {
+            if (_currentFates.Add(fate))
+            {
+                _currentFates = new HashSet<Fate>(_currentFates.OrderBy(f => f.TimeRemaining > 0 ? f.TimeRemaining : long.MaxValue));
+            }
+        }
+
+#if DEBUG
+        if (ImGui.CollapsingHeader("DEBUG FATE INFO"))
+        {
+            ImGui.Text($"{"Name",-35} -> {"Dura",4} | " +
+                       $"{"Rem.",5} | " +
+                       $"{"Prog",4} : {"State",12} | " +
+                       $"{"Start",10} | " +
+                       $"{"ID",4} | " +
+                       $"{"Pos"}");
+            foreach (var fate in _fateTable)
+            {
+                ImGui.Text($"{fate.Name,-35} -> {fate.Duration,4} | " +
+                           $"{new TimeSpan(0, 0, 0, (int)(fate.TimeRemaining - 7)).ToString(@"mm\:ss"),4} | " +
+                           $"{fate.Progress,4} : {fate.State,12} | " +
+                           $"{fate.StartTimeEpoch,10} | " +
+                           $"{fate.FateId,4} | " +
+                           $"{fate.Position}");
+            }
+        }
+#endif
+    }
+
+    private void UpdateCurrentFates()
+    {
+        foreach (var cf in _currentFates)
+        {
+            if (cf.State == FateState.Ended) _currentFates.Remove(cf);
+            if (cf.State == FateState.Failed)
+            {
+                _lastFailedFateInfo = $"FAIL\n" +
+                                      $"{cf.Name} @ {cf.Progress}%%\n\n" +
+                                      $"> {DateTime.Now.ToString("hh:mm:ss tt", CultureInfo.InvariantCulture)} <\n\n" +
+                                      $"Countdown reset.";
+                _currentFates.Remove(cf);
+                _startTime = DateTime.Now;
+            }
+        }
+    }
+
+    private void DrawCurrentFateUI()
+    {
+        if (ImGui.CollapsingHeader("Fates"))
+        {
+            foreach (var cf in _currentFates)
+            {
+                DrawFateInfoUI(cf);
+            }
+        }
+        ImGuiUtil.ImGui_HoveredToolTip("Click a Fate to see it on the map.");
+    }
+    private void DrawFateInfoUI(Fate cf)
+    {
+        var fateText = GetFateInfoString(cf);
+        var fateTime = GetFateTimeString(cf);
+
+        ImGui.TextUnformatted(fateText);
+        if (ImGui.IsItemClicked()) OpenMapOnFateClick(cf);
+        Utilities.ImGuiUtil.ImGui_HoveredToolTip($"{cf.Name}");
+
+        ImGui.SameLine();
+
+        switch (cf.TimeRemaining)
+        {
+            case > 0 and <= 67:
+                ImGui.TextColored(_red, fateTime);
+                break;
+            case > 67 and < 127:
+                ImGui.TextColored(_yellow, fateTime);
+                break;
+            default:
+                ImGui.TextUnformatted(fateTime);
+                break;
+        }
+        if (ImGui.IsItemClicked()) OpenMapOnFateClick(cf);
+    }
+
+    private string GetFateInfoString(Fate fate)
+    {
+        var fateName = fate.Name.ToString();
+        if (fateName.Length > 16) fateName = fateName.Substring(0, 14) + "..";
+        return $"{fateName,-16} {fate.Progress,3}%  -> ";
+    }
+
+    private string GetFateTimeString(Fate fate)
+    {
+        return fate.State != FateState.Preparation
+            ? $"{new TimeSpan(0, 0, 0, (int)(fate.TimeRemaining - 7)).ToString(@"mm\:ss", CultureInfo.InvariantCulture)}"
+            : "upcoming or requires activation - can fail if not activated in time";
+    }
+
+    private void OpenMapOnFateClick(Fate fate)
+    {
+        try
+        {
+            var ag = AgentMap.Instance();
+            var mapId = ag->CurrentMapId;
+            var territoryId = ag->CurrentTerritoryId;
+            var pos = Dalamud.Utility.MapUtil.WorldToMap(fate.Position, ag->CurrentOffsetX, ag->CurrentOffsetY);
+
+            var mapLink = new MapLinkPayload(territoryId, mapId, pos.X, pos.Y);
+            _gameGui.OpenMapWithMapLink(mapLink);
+        }
+        catch (Exception e)
+        {
+            PluginLog.Error(e.ToString());
+        }
+    }
+    private void ClientState_TerritoryChanged(object? sender, ushort e)
+    {
+        _currentFates.Clear();
+        _startTime = DateTime.Now;
+        _lastFailedFateInfo = string.Empty;
+
+        Task.Run(() =>
+        {
+            Thread.Sleep(1000);
+            return _currentFates =
+                new HashSet<Fate>(_currentFates.OrderBy(f =>
+                    f.TimeRemaining > 0 ? f.TimeRemaining : Int64.MaxValue));
+        });
+    }
+
+    #endregion
+
+    #region Narrow-rift - Wee Ea - Ultima Thule
 
     private void DrawWeeEaCounter()
     {
@@ -150,7 +365,7 @@ public class CounterUI : IDisposable
         }
     }
 
-    private void chatGui_ChatMessage(XivChatType type, uint senderId, ref Dalamud.Game.Text.SeStringHandling.SeString sender, ref Dalamud.Game.Text.SeStringHandling.SeString message, ref bool isHandled)
+    private void ChatGui_ChatMessage(XivChatType type, uint senderId, ref Dalamud.Game.Text.SeStringHandling.SeString sender, ref Dalamud.Game.Text.SeStringHandling.SeString message, ref bool isHandled)
     {
         if (!_countInBackground && !WindowVisible) return;
 
@@ -161,8 +376,11 @@ public class CounterUI : IDisposable
         counter.TryAddFromLogLine(message.ToString());
     }
 
+    #endregion
+
     public void Dispose()
     {
-        _chatGui.ChatMessage -= chatGui_ChatMessage;
+        _chatGui.ChatMessage -= ChatGui_ChatMessage;
+        _clientState.TerritoryChanged -= ClientState_TerritoryChanged;
     }
 }
