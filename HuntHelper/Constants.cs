@@ -10,6 +10,7 @@ public static class Constants
     #region English
     //en
     private static readonly string[] Minhocao_en = { "Earth Sprite" };
+    private static readonly string[] Squonk_en = {"Chirp"};
     private static readonly string[] Leucrotta_en = { "Allagan Chimera", "Lesser Hydra", "Meracydian Vouivre" };
     private static readonly string[] Gandawera_en = { "Aurum Regis Ore", "Seventh Heaven" };
     private static readonly string[] Okina_en = { "Naked Yumemi", "Yumemi" }; //naked goes first here, otherwise minor issue w/ matching 'naked yumemi' to 'yumemi'
@@ -21,6 +22,7 @@ public static class Constants
     private static readonly string[] Ruinator_en = { "Thinker", "Wanderer", "Weeper" };
 
     private const string MinhocaoRegex_en = $"{BattleRegexBase_en}earth sprite.";
+    private const string SquonkRegex_en = $"Squonk uses Chirp";
     private const string LeucrottaRegex_en = $"{BattleRegexBase_en}(Allagan chimera|lesser hydra|Meracydian vouivre).";
     private const string GandaweraRegex_en = $"{GatheringRegexBase_en}(aurum regis ore|seventh heaven)";
     private const string OkinaRegex_en = $"{BattleRegexBase_en}(Yumemi|Naked Yumemi).";
@@ -37,6 +39,7 @@ public static class Constants
     #region Japanese
     //jp
     private static readonly string[] Minhocao_ja = { "アーススプライト" };
+    private static readonly string[] Squonk_ja = { "チャープ" };
     private static readonly string[] Leucrotta_ja = { "アラガン・キマイラ", "レッサーハイドラ", "メラシディアン・ヴィーヴル" };
     private static readonly string[] Gandawera_ja = { "皇金鉱", "アストラルフラワー" };
     private static readonly string[] Okina_ja = { "カラナシ・ユメミ", "ユメミガイ" };
@@ -49,6 +52,7 @@ public static class Constants
 
 
     private const string MinhocaoRegex_ja = $"アーススプライト{BattleRegexBase_ja}";
+    private const string SquonkRegex_ja = $"スクオンクの「チャープ」";
     private const string LeucrottaRegex_ja = $"(アラガン・キマイラ|レッサーハイドラ|メラシディアン・ヴィーヴル){BattleRegexBase_ja}";
     private const string GandaweraRegex_ja = $"(?i)(皇金鉱|アストラルフラワー){GatheringRegexBase_ja}";
     private const string OkinaRegex_ja = $"{BattleRegexBase_ja}(カラナシ・ユメミ|ユメミガイ).";
@@ -66,6 +70,7 @@ public static class Constants
     #region German
     //de
     private static readonly string[] Minhocao_de = { "Erd-Exergon" };
+    private static readonly string[] Squonk_de = { "Fiepsen" };
     private static readonly string[] Leucrotta_de = { "allagisch[a] Chimära", "klein[a] Hydra", "meracydisch[a] Vivel" };
     private static readonly string[] Gandawera_de = { "Königsgold-Erz", "Siebter Himmel-Blume" };
     private static readonly string[] Okina_de = { "Nackt-Yumemi", "Yumemi" };
@@ -77,6 +82,7 @@ public static class Constants
     private static readonly string[] Ruinator_de = { "Denker", "Streuner", "Schluchzer" };
 
     private const string MinhocaoRegex_de = $"{BattleRegexBase_de}Erd-Exergon besiegt.";
+    private const string SquonkRegex_de = $"Squonk setzt Fiepsen ein.";
     private const string LeucrottaRegex_de = $"{BattleRegexBase_de}(allagisch[a] Chimära|klein[a] Hydra|meracydisch[a] Vivel) besiegt.";
     private const string GandaweraRegex_de = $"(?i)(Königsgold-Erz|Siebter Himmel-Blume){GatheringRegexBase_de}";
     private const string OkinaRegex_de = $"{BattleRegexBase_de}(Yumemi|Nackt-Yumemi) besiegt.";
@@ -93,6 +99,7 @@ public static class Constants
     #region French
     //fr
     private static readonly string[] Minhocao_fr = { "élémentaire de terre" };
+    private static readonly string[] Squonk_fr = { "Gazouillement" };
     private static readonly string[] Leucrotta_fr = { "chimère allagoise", "hydre mineure", "vouivre méracydienne" };
     private static readonly string[] Gandawera_fr = { "Minerai d'aurum regis", "Fleur astrale | fleurs astrales" }; //sb
     private static readonly string[] Okina_fr = { "yumemi nu", "Yumemi" };
@@ -104,6 +111,7 @@ public static class Constants
     private static readonly string[] Ruinator_fr = { "penseur", "vagabond", "lamenteur" };
 
     private const string MinhocaoRegex_fr = $"{BattleRegexBase_fr}élémentaire de terre.";
+    private const string SquonkRegex_fr = $"Squonk utilise Gazouillement.";
     private const string LeucrottaRegex_fr = $"{BattleRegexBase_fr}(chimère allagoise|hydre mineure|vouivre méracydienne).";
     private const string GandaweraRegex_fr = $"{GatheringRegexBase_fr}(Minerai d'aurum regis|Fleur astrale|fleurs astrales).";
     private const string OkinaRegex_fr = $"{BattleRegexBase_fr}(yumemi nu|Yumemi).";
@@ -127,6 +135,7 @@ public static class Constants
 
 
     public static string[] Minhocao { get; private set; } = Minhocao_en;
+    public static string[] Squonk { get; private set; } = Squonk_en;
     public static string[] Leucrotta { get; private set; } = Leucrotta_en;
     public static string[] Gandawera { get; private set; } = Gandawera_en;
     public static string[] Okina { get; private set; } = Okina_en;
@@ -138,6 +147,7 @@ public static class Constants
     public static string[] Ruinator { get; private set; } = Ruinator_en;
 
     public static string MinhocaoRegex { get; private set; } = MinhocaoRegex_en;
+    public static string SquonkRegex { get; private set; } = SquonkRegex_en;
     public static string LeucrottaRegex { get; private set; } = LeucrottaRegex_en;
     public static string GandaweraRegex { get; private set; } = GandaweraRegex_en;
     public static string OkinaRegex { get; private set; } = OkinaRegex_en;
@@ -154,6 +164,7 @@ public static class Constants
         if (lang == ClientLanguage.French)
         {
             Minhocao = Minhocao_fr;
+            Squonk = Squonk_fr;
             Leucrotta = Leucrotta_fr;
             Gandawera = Gandawera_fr;
             Okina = Okina_fr;
@@ -165,6 +176,7 @@ public static class Constants
             Ruinator = Ruinator_fr;
 
             MinhocaoRegex = MinhocaoRegex_fr;
+            SquonkRegex = SquonkRegex_fr;
             LeucrottaRegex = LeucrottaRegex_fr;
             GandaweraRegex = GandaweraRegex_fr;
             OkinaRegex = OkinaRegex_fr;
@@ -179,6 +191,7 @@ public static class Constants
         if (lang == ClientLanguage.German)
         {
             Minhocao = Minhocao_de;
+            Squonk = Squonk_de;
             Leucrotta = Leucrotta_de;
             Gandawera = Gandawera_de;
             Okina = Okina_de;
@@ -190,6 +203,7 @@ public static class Constants
             Ruinator = Ruinator_de;
 
             MinhocaoRegex = MinhocaoRegex_de;
+            SquonkRegex = SquonkRegex_de;
             LeucrottaRegex = LeucrottaRegex_de;
             GandaweraRegex = GandaweraRegex_de;
             OkinaRegex = OkinaRegex_de;
@@ -204,6 +218,7 @@ public static class Constants
         if (lang == ClientLanguage.Japanese)
         {
             Minhocao = Minhocao_ja;
+            Squonk = Squonk_ja;
             Leucrotta = Leucrotta_ja;
             Gandawera = Gandawera_ja;
             Okina = Okina_ja;
@@ -215,6 +230,7 @@ public static class Constants
             Ruinator = Ruinator_ja;
 
             MinhocaoRegex = MinhocaoRegex_ja;
+            SquonkRegex = SquonkRegex_ja;
             LeucrottaRegex = LeucrottaRegex_ja;
             GandaweraRegex = GandaweraRegex_ja;
             OkinaRegex = OkinaRegex_ja;
