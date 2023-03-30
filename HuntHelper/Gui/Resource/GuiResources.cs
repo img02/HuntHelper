@@ -1,9 +1,9 @@
-﻿using Dalamud.Logging;
-using Dalamud;
+﻿using Dalamud;
+using Dalamud.Logging;
 using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.IO;
-using System;
 using System.Linq;
 
 namespace HuntHelper.Gui.Resource;
@@ -16,8 +16,8 @@ public class GuiResources
     public static readonly Dictionary<string, string> SpawnPointerFinderGuiText = new();
     public static readonly Dictionary<string, string> CounterGuiText = new();
     public static string Language = string.Empty;
-    
-    
+
+
     public static bool LoadGuiText(ClientLanguage lang)
     {
         if (Plugin.PluginDir == string.Empty) return false;
@@ -45,7 +45,7 @@ public class GuiResources
 #endif
         }
     }
-    
+
     public static string[] GetAvailableLanguages()
     {
         var localisationFolder = Path.Combine(Plugin.PluginDir, @"Data\Localisation\");
@@ -53,7 +53,7 @@ public class GuiResources
         var files = paths.Select(p => Path.GetFileNameWithoutExtension(p).ToLowerInvariant()).ToArray();
         return files;
     }
-    
+
     public static bool LoadGuiText(string language)
     {
         var path = Path.Combine(Plugin.PluginDir, @"Data\Localisation\", $"{language}.json");

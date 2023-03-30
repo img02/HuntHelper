@@ -1,7 +1,7 @@
-﻿using Dalamud.Interface;
+﻿using Dalamud.Data;
+using Dalamud.Interface;
 using Dalamud.Interface.Components;
-using Dalamud.Logging;
-using Dalamud.Data;
+using HuntHelper.Gui.Resource;
 using HuntHelper.Managers.MapData;
 using HuntHelper.Managers.MapData.Models;
 using HuntHelper.Utilities;
@@ -11,7 +11,6 @@ using System.Collections.Generic;
 using System.Numerics;
 using System.Threading;
 using System.Threading.Tasks;
-using HuntHelper.Gui.Resource;
 
 namespace HuntHelper.Gui;
 //https://github.com/mellinoe/ImGui.NET/issues/107#issuecomment-467146212
@@ -90,7 +89,7 @@ public unsafe class SpawnPointFinderUI : IDisposable//idk what to call this
                     var k = 100;
                     foreach (var msp in _spawnPoints)
                     {
-                        if (_filter.PassFilter(MapHelpers.GetMapName(_dataManager ,msp.MapID)))
+                        if (_filter.PassFilter(MapHelpers.GetMapName(_dataManager, msp.MapID)))
                         {
                             ImGui.TableNextColumn();
                             ImGui.TextUnformatted($"{MapHelpers.GetMapName(_dataManager, msp.MapID)}");
@@ -99,7 +98,7 @@ public unsafe class SpawnPointFinderUI : IDisposable//idk what to call this
                             { //using id overload bugged - now adds some other weird icon to the end ? gotta use push/pop id
                                 ImGui.PushID(i++);
                                 if (ImGuiComponents.IconButton(FontAwesomeIcon.Video)) msp.Recording = true;
-                                ImGui.PopID(); 
+                                ImGui.PopID();
                                 ImGuiUtil.ImGui_HoveredToolTip(GuiResources.SpawnPointerFinderGuiText["StartRecording"]);
                             }
                             else
@@ -122,7 +121,7 @@ public unsafe class SpawnPointFinderUI : IDisposable//idk what to call this
                                 ImGui.SetClipboardText(ExportImport.Export(exportList));
                                 ChangeCopyText();
                             }
-                            ImGui.PopID();;
+                            ImGui.PopID(); ;
                             ImGuiUtil.ImGui_HoveredToolTip(_copyText);
                         }
                     }
@@ -132,7 +131,7 @@ public unsafe class SpawnPointFinderUI : IDisposable//idk what to call this
             }
             ImGui.Separator();
             if (!_recordAll)
-            {   
+            {
                 if (ImGuiComponents.IconButton(FontAwesomeIcon.Video))
                 {
                     _recordAll = true;

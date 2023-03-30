@@ -1,5 +1,6 @@
 ﻿using Dalamud.Interface;
 using Dalamud.Interface.Components;
+using HuntHelper.Gui.Resource;
 using HuntHelper.Managers;
 using HuntHelper.Managers.Hunts;
 using HuntHelper.Managers.Hunts.Models;
@@ -11,7 +12,6 @@ using System.Linq;
 using System.Numerics;
 using System.Threading;
 using System.Threading.Tasks;
-using HuntHelper.Gui.Resource;
 
 namespace HuntHelper.Gui;
 
@@ -301,7 +301,7 @@ public class HuntTrainUI : IDisposable
                 {
                     importCode = ImGui.GetClipboardText();
                 }
-                catch{} // for some reason, getclipboardtext can sometimes throw object null error?
+                catch { } // for some reason, getclipboardtext can sometimes throw object null error?
                 _trainManager.Import(importCode);
                 ImGui.OpenPopup($"{GuiResources.HuntTrainGuiText["ImportWindowTitle"]}##popup");
             }

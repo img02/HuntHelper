@@ -10,7 +10,7 @@ public static class Constants
     #region English
     //en
     private static readonly string[] Minhocao_en = { "Earth Sprite" };
-    private static readonly string[] Squonk_en = {"Chirp"};
+    private static readonly string[] Squonk_en = { "Chirp" };
     private static readonly string[] Leucrotta_en = { "Allagan Chimera", "Lesser Hydra", "Meracydian Vouivre" };
     private static readonly string[] Gandawera_en = { "Aurum Regis Ore", "Seventh Heaven" };
     private static readonly string[] Okina_en = { "Naked Yumemi", "Yumemi" }; //naked goes first here, otherwise minor issue w/ matching 'naked yumemi' to 'yumemi'

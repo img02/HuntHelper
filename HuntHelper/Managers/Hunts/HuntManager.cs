@@ -89,10 +89,13 @@ public class HuntManager
         ImageFolderPath = Path.Combine(_pluginInterface.AssemblyLocation.Directory?.FullName!, @"Images\Maps\");
 
         // Starting this makes the plugin fail to load
-        try{
-        TTS = new SpeechSynthesizer();
-        TTSName = TTS.Voice.Name;
-        }catch{
+        try
+        {
+            TTS = new SpeechSynthesizer();
+            TTSName = TTS.Voice.Name;
+        }
+        catch
+        {
             DontUseSynthesizer = true;
         }
 
@@ -299,7 +302,7 @@ public class HuntManager
         if (!enabled) return;
         var message = FormatMessageFlags(msg, mob);
         //changed to creating a new tts each time because SpeakAsync just queues up to play...
-        if(DontUseSynthesizer) return;
+        if (DontUseSynthesizer) return;
         var tts = new SpeechSynthesizer();
         tts.SelectVoice(TTSName);
         var prompt = tts.SpeakAsync(message);
@@ -410,8 +413,8 @@ public class HuntManager
             kvp.Value.Dispose();
         }
         _trainManager.SaveHuntTrainRecord();
-        if(!DontUseSynthesizer)
-        TTS.Dispose();
+        if (!DontUseSynthesizer)
+            TTS.Dispose();
     }
 
     public double GetHPP(BattleNpc mob)

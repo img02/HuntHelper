@@ -2,7 +2,6 @@
 using ImGuiNET;
 using System;
 using System.Numerics;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace HuntHelper.Utilities;
 
@@ -15,7 +14,7 @@ public class ImGuiUtil
     }
     public static void ImGui_CentreText(string text, float offset = 1f)
     {
-        ImGui_CenterCursor(text, offset);  
+        ImGui_CenterCursor(text, offset);
         ImGui.TextUnformatted(text);
     }
 
@@ -60,12 +59,5 @@ public class ImGuiUtil
             ImGui.Text(msg);
             ImGui.EndTooltip();
         }
-    }
-
-    public static void ImGui_Separator(float offsetY)
-    {
-        ImGui.SetCursorPosY(ImGui.GetCursorPosY() + offsetY);
-        ImGui.Separator();
-        ImGui.SetCursorPosY(ImGui.GetCursorPosY() + offsetY);
     }
 }

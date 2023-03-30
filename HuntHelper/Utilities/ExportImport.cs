@@ -1,6 +1,5 @@
 ﻿using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Text;
@@ -14,7 +13,7 @@ public static class ExportImport
         var byteArr = Compress(JsonConvert.SerializeObject(objectToSerialise));
         return Convert.ToBase64String(byteArr);
     }
-    
+
 
     //if failed, returns original object. 
     public static T Import<T>(string importCode, T objectToDeserialiseTo)

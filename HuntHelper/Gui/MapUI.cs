@@ -7,6 +7,7 @@ using Dalamud.Game.Gui;
 using Dalamud.Interface;
 using Dalamud.Interface.Components;
 using Dalamud.Plugin;
+using HuntHelper.Gui.Resource;
 using HuntHelper.Managers.Hunts;
 using HuntHelper.Managers.MapData;
 using HuntHelper.Managers.MapData.Models;
@@ -21,8 +22,6 @@ using System.Numerics;
 using System.Speech.Synthesis;
 using System.Threading;
 using System.Threading.Tasks;
-using Dalamud.Logging;
-using HuntHelper.Gui.Resource;
 
 namespace HuntHelper.Gui
 {
@@ -41,7 +40,7 @@ namespace HuntHelper.Gui
         private string _territoryName;
         private string WorldName => _clientState.LocalPlayer?.CurrentWorld?.GameData?.Name.ToString() ?? "Not Found";
         private ushort _territoryId;
-        
+
         //used for combo box for language selection window
         private string _guiLanguage = GuiResources.Language;
 
@@ -152,7 +151,7 @@ namespace HuntHelper.Gui
 
         public float SingleCoordSize => ImGui.GetWindowSize().X / _mapZoneMaxCoordSize;
         //message input lengths
-        private uint _inputTextMaxLength = 300; 
+        private uint _inputTextMaxLength = 300;
         private readonly Vector4 _defaultTextColour = Vector4.One; //white
 
         //window bools
@@ -197,8 +196,8 @@ namespace HuntHelper.Gui
             _huntManager = huntManager;
             _mapDataManager = mapDataManager;
             _gameGui = gameGui;
-            if(!huntManager.DontUseSynthesizer)
-            _ttsVoiceName = huntManager.TTS.Voice.Name; // load default voice first, then from settings if avail.
+            if (!huntManager.DontUseSynthesizer)
+                _ttsVoiceName = huntManager.TTS.Voice.Name; // load default voice first, then from settings if avail.
             _territoryName = string.Empty;
 
             ClientState_TerritoryChanged(null, 0);
@@ -978,7 +977,7 @@ namespace HuntHelper.Gui
                                         var prompt = tempTTS.SpeakAsync($"{tts.Voice.Name} {GuiResources.MapGuiText["VoiceSelectedMessage"]}");
                                         Task.Run(() =>
                                         {
-                                            while (!prompt.IsCompleted);
+                                            while (!prompt.IsCompleted) ;
                                             tempTTS.Dispose();
                                         });
                                     }
@@ -1108,7 +1107,7 @@ namespace HuntHelper.Gui
                         var index = Array.IndexOf(languages, _guiLanguage);
 
                         ImGui.PushItemWidth(200f);
-                        if (ImGui.Combo("##language selection", ref index, languages, languages.Length ))
+                        if (ImGui.Combo("##language selection", ref index, languages, languages.Length))
                         {
                             _guiLanguage = languages[index];
                         }
@@ -1117,7 +1116,7 @@ namespace HuntHelper.Gui
 
                         if (ImGui.Button("OK##change language"))
                         {
-                           GuiResources.LoadGuiText(_guiLanguage);
+                            GuiResources.LoadGuiText(_guiLanguage);
                         }
                         ImGui.EndTabItem();
                     }
@@ -1127,7 +1126,7 @@ namespace HuntHelper.Gui
                         _bottomPanelHeight = 120f * ImGuiHelpers.GlobalScale;
                         ImGui.TextWrapped("If you want to help translate this plugin");
                         var url = "https://github.com/imaginary-png/HuntHelper/tree/main/Translate";
-                        ImGui.InputText(" -- click me", ref url, 100, ImGuiInputTextFlags.ReadOnly );
+                        ImGui.InputText(" -- click me", ref url, 100, ImGuiInputTextFlags.ReadOnly);
                         if (ImGui.IsItemClicked())
                         {
                             System.Diagnostics.Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
@@ -1142,7 +1141,7 @@ namespace HuntHelper.Gui
             ImGui.End();
         }
 
-        
+
         public void SavePreset(int presetNumber)
         {
             if (presetNumber is <= 0 or > 2) return;
