@@ -55,6 +55,7 @@ public unsafe class CounterUI : IDisposable
         _counters = new List<CounterBase>()
         {
             new MinhocaoCounter(),
+            new SquonkCounter(),
             new LeucrottaCounter(),
             new GandaweraCounter(),
             new OkinaCounter(),
@@ -142,6 +143,12 @@ public unsafe class CounterUI : IDisposable
         ImGui.SameLine();
         if (ImGuiComponents.IconButton(FontAwesomeIcon.Trash)) counter.Reset();
         ImGuiUtil.ImGui_HoveredToolTip(GuiResources.CounterGuiText["Reset"]);
+
+        if (_clientState.TerritoryType == (ushort)MapID.TheSeaofClouds)
+        {
+            ImGui.SameLine();
+            ImGuiUtil.ImGui_HelpMarker("Chirp count does not affect BoP spawn, this info is just for fun.");
+        }
     }
 
     #region Nunni - Fates - Southern Than
@@ -365,18 +372,18 @@ public unsafe class CounterUI : IDisposable
         }
     }
 
+    #endregion
+
     private void ChatGui_ChatMessage(XivChatType type, uint senderId, ref Dalamud.Game.Text.SeStringHandling.SeString sender, ref Dalamud.Game.Text.SeStringHandling.SeString message, ref bool isHandled)
     {
         if (!_countInBackground && !WindowVisible) return;
 
         //PluginLog.Warning($"?? line: " + message + $" {type}");
-        if ((ushort)type is not 2874 and not 2115 and not 17210 and not 57) return; //2874 = you killed, 2115 = gather attempt, 17210 = chocobo killed owo, 
+        if ((ushort)type is not 2874 and not 2115 and not 17210 and not 57 and not 10283) return; //2874 = you killed, 2115 = gather attempt, 17210 = chocobo killed owo, 10283 = Squonk uses Chirp
         var counter = _counters.FirstOrDefault(c => c.MapID == _clientState.TerritoryType);
         if (counter == null) return;
         counter.TryAddFromLogLine(message.ToString());
     }
-
-    #endregion
 
     public void Dispose()
     {
