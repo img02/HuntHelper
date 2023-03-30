@@ -301,7 +301,7 @@ public class HuntTrainUI : IDisposable
                 {
                     importCode = ImGui.GetClipboardText();
                 }
-                catch { } // for some reason, getclipboardtext can sometimes throw object null error?
+                catch { } // if clipboard doesn't have string throws object null error. i.e. a file
                 _trainManager.Import(importCode);
                 ImGui.OpenPopup($"{GuiResources.HuntTrainGuiText["ImportWindowTitle"]}##popup");
             }

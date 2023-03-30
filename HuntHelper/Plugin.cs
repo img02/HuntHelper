@@ -8,11 +8,15 @@ using Dalamud.Logging;
 using Dalamud.Plugin;
 using Dalamud.Plugin.Ipc;
 using HuntHelper.Gui;
-using HuntHelper.Gui.Resource;
 using HuntHelper.Managers.Hunts;
 using HuntHelper.Managers.MapData;
+using Newtonsoft.Json;
+using System.Collections.Generic;
 using System;
 using System.IO;
+using Dalamud;
+using Dalamud.Game.ClientState.Fates;
+using HuntHelper.Gui.Resource;
 
 namespace HuntHelper
 {
@@ -49,6 +53,8 @@ namespace HuntHelper
         private FlyTextGui FlyTextGui { get; init; }
         private GameGui GameGui { get; init; }
 
+        private FateTable FateTable { get; init; }
+
         public static ICallGateSubscriber<uint, byte, bool> TeleportIpc { get; private set; }
         public static string PluginDir { get; set; } = string.Empty;
 
@@ -60,7 +66,8 @@ namespace HuntHelper
             DataManager dataManager,
             ChatGui chatGui,
             FlyTextGui flyTextGui,
-            GameGui gameGui)
+            GameGui gameGui,
+            FateTable fateTable)
         {
             this.PluginInterface = pluginInterface;
             this.CommandManager = commandManager;
@@ -74,6 +81,7 @@ namespace HuntHelper
                 PluginLog.Error("Unable to find localisation file. What did you do?! gonna crash ok");
             }
 
+            this.FateTable = fateTable;
             this.ObjectTable = objectTable;
             this.DataManager = dataManager;
             this.ChatGui = chatGui;
@@ -91,7 +99,7 @@ namespace HuntHelper
 
             this.MapUi = new MapUI(this.Configuration, pluginInterface, clientState, objectTable, dataManager, HuntManager, MapDataManager, GameGui);
             this.HuntTrainUI = new HuntTrainUI(TrainManager, Configuration);
-            this.CounterUI = new CounterUI(ClientState, ChatGui, Configuration, ObjectTable);
+            this.CounterUI = new CounterUI(ClientState, ChatGui, GameGui, Configuration, ObjectTable, FateTable);
             this.SpawnPointFinderUI = new SpawnPointFinderUI(MapDataManager, DataManager, Configuration);
             this.PointerUI = new PointerUI(HuntManager, Configuration, GameGui);
 

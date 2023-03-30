@@ -60,4 +60,10 @@ public class ImGuiUtil
             ImGui.EndTooltip();
         }
     }
+    public static void ImGui_Separator(float offsetY)
+    {
+        ImGui.SetCursorPosY(ImGui.GetCursorPosY() + offsetY);
+        ImGui.Separator();
+        ImGui.SetCursorPosY(ImGui.GetCursorPosY() + offsetY);
+    }
 }
