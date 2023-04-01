@@ -24,6 +24,7 @@ using System.Linq;
 using System.Numerics;
 using System.Threading;
 using System.Threading.Tasks;
+using Dalamud.Game.Text.SeStringHandling;
 
 namespace HuntHelper.Gui;
 
@@ -193,7 +194,7 @@ public unsafe class CounterUI : IDisposable
 
         ImGui.Text($"{startTimeString} - {endTimeString}\n");
         ImGui.SameLine();
-        Utilities.ImGuiUtil.ImGui_HelpMarker("May finish earlier based on the last failed fate before you entered zone)");
+        Utilities.ImGuiUtil.ImGui_HelpMarker("May finish earlier based on the last failed fate before you entered the zone");
     }
 
     private void DrawNunCountdownString(DateTime endTime)
@@ -224,6 +225,7 @@ public unsafe class CounterUI : IDisposable
             if (_currentFates.Add(fate))
             {
                 _currentFates = new HashSet<Fate>(_currentFates.OrderBy(f => f.TimeRemaining > 0 ? f.TimeRemaining : long.MaxValue));
+                continue;
             }
         }
 
@@ -253,15 +255,23 @@ public unsafe class CounterUI : IDisposable
     {
         foreach (var cf in _currentFates)
         {
-            if (cf.State == FateState.Ended) _currentFates.Remove(cf);
-            if (cf.State == FateState.Failed)
+            if (cf.State == FateState.Ended)
             {
-                _lastFailedFateInfo = $"FAIL\n" +
+                _currentFates.Remove(cf);
+                continue;
+            }
+            // fate failed or a (!) fate that required [user activation] was not activated in time and disappeared
+            if (cf.State == FateState.Failed || (cf.State == FateState.Preparation && _fateTable.All(f => f != cf)))
+            {
+                var failReason = cf.State == FateState.Preparation ? $"FAIL: NOT INITIATED" : "FAIL";
+
+                _lastFailedFateInfo = $"{failReason}\n" +
                                       $"{cf.Name} @ {cf.Progress}%%\n\n" +
                                       $"> {DateTime.Now.ToString("hh:mm:ss tt", CultureInfo.InvariantCulture)} <\n\n" +
                                       $"Countdown reset.";
                 _currentFates.Remove(cf);
                 _startTime = DateTime.Now;
+                continue;
             }
         }
     }
