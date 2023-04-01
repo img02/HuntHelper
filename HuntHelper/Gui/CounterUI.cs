@@ -225,7 +225,6 @@ public unsafe class CounterUI : IDisposable
             if (_currentFates.Add(fate))
             {
                 _currentFates = new HashSet<Fate>(_currentFates.OrderBy(f => f.TimeRemaining > 0 ? f.TimeRemaining : long.MaxValue));
-                continue;
             }
         }
 
