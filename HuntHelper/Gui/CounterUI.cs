@@ -94,6 +94,9 @@ public unsafe class CounterUI : IDisposable
 
     public void DrawCountWindow()
     {
+        if (_clientState.TerritoryType == (ushort)MapID.SouthernThanalan)
+            FateUpdateLoop();
+
         if (!WindowVisible) return;
 
         ImGui.SetNextWindowSize(_windowSize, ImGuiCond.FirstUseEver);
@@ -134,12 +137,9 @@ public unsafe class CounterUI : IDisposable
             ImGui.EndTable();
         }
         ImGui.Dummy(Vector2.Zero);
-        ImGuiComponents.ToggleButton("##backgroundcounttoggle", ref _countInBackground);
-        ImGuiUtil.ImGui_HoveredToolTip($"{GuiResources.CounterGuiText["BackgroundToggleToolTipInfo"]}\n" +
-                                       GuiResources.CounterGuiText["BackgroundToggleToolTipStatus"] +
-                                       (_countInBackground ?
-                                           GuiResources.CounterGuiText["BackgroundToggleToolTipEnabled"] :
-                                           GuiResources.CounterGuiText["BackgroundToggleToolTipDisabled"]));
+
+        DrawBackgroundToggleButton();
+
         ImGui.SameLine();
         if (ImGuiComponents.IconButton(FontAwesomeIcon.Trash)) counter.Reset();
         ImGuiUtil.ImGui_HoveredToolTip(GuiResources.CounterGuiText["Reset"]);
@@ -154,6 +154,7 @@ public unsafe class CounterUI : IDisposable
     #region Nunni - Fates - Southern Than
 
     private string _lastFailedFateInfo = string.Empty;
+    private int fateRemainingTimeOffset = 15;
     private DateTime _startTime = DateTime.Now;
     private HashSet<Fate> _currentFates = new HashSet<Fate>();
 
@@ -172,8 +173,6 @@ public unsafe class CounterUI : IDisposable
         ImGuiUtil.ImGui_Separator(6);
 
         DrawNunCountdownString(endTime);
-        PopulateFateList();
-        UpdateCurrentFates();
 
         ImGuiUtil.ImGui_Separator(6);
 
@@ -182,6 +181,8 @@ public unsafe class CounterUI : IDisposable
         ImGuiUtil.ImGui_Separator(6);
 
         ImGui.TextColored(_red, _lastFailedFateInfo);
+
+        ImGuiUtil.ImGui_Separator(10);
         DrawNunResetButton();
 
         ImGui.PopFont();
@@ -210,14 +211,20 @@ public unsafe class CounterUI : IDisposable
     }
 
     private void DrawNunResetButton()
-    {   // not really needed tbh
-        ImGuiUtil.ImGui_Separator(10);
+    {   
         if (ImGui.Button("reset"))
         {
             _startTime = DateTime.Now;
             _lastFailedFateInfo = string.Empty;
         }
     }
+
+    private void FateUpdateLoop()
+    {
+        PopulateFateList();
+        UpdateCurrentFates();
+    }
+
     private void PopulateFateList()
     {
         foreach (var fate in _fateTable)
@@ -229,6 +236,7 @@ public unsafe class CounterUI : IDisposable
         }
 
 #if DEBUG
+        ImGui.PushFont(UiBuilder.MonoFont);
         if (ImGui.CollapsingHeader("DEBUG FATE INFO"))
         {
             ImGui.Text($"{"Name",-35} -> {"Dura",4} | " +
@@ -240,13 +248,14 @@ public unsafe class CounterUI : IDisposable
             foreach (var fate in _fateTable)
             {
                 ImGui.Text($"{fate.Name,-35} -> {fate.Duration,4} | " +
-                           $"{new TimeSpan(0, 0, 0, (int)(fate.TimeRemaining - 7)).ToString(@"mm\:ss"),4} | " +
+                           $"{new TimeSpan(0, 0, 0, (int)(fate.TimeRemaining - fateRemainingTimeOffset)).ToString(@"mm\:ss"),4} | " +
                            $"{fate.Progress,4} : {fate.State,12} | " +
                            $"{fate.StartTimeEpoch,10} | " +
                            $"{fate.FateId,4} | " +
                            $"{fate.Position}");
             }
         }
+        ImGui.PopFont();
 #endif
     }
 
@@ -259,6 +268,7 @@ public unsafe class CounterUI : IDisposable
                 _currentFates.Remove(cf);
                 continue;
             }
+
             // fate failed or a (!) fate that required [user activation] was not activated in time and disappeared
             if (cf.State == FateState.Failed || (cf.State == FateState.Preparation && _fateTable.All(f => f != cf)))
             {
@@ -322,7 +332,7 @@ public unsafe class CounterUI : IDisposable
     private string GetFateTimeString(Fate fate)
     {
         return fate.State != FateState.Preparation
-            ? $"{new TimeSpan(0, 0, 0, (int)(fate.TimeRemaining - 7)).ToString(@"mm\:ss", CultureInfo.InvariantCulture)}"
+            ? $"{new TimeSpan(0, 0, 0, (int)(fate.TimeRemaining - fateRemainingTimeOffset)).ToString(@"mm\:ss", CultureInfo.InvariantCulture)}"
             : "upcoming or requires activation - can fail if not activated in time";
     }
 
@@ -393,6 +403,15 @@ public unsafe class CounterUI : IDisposable
         counter.TryAddFromLogLine(message.ToString());
     }
 
+    private void DrawBackgroundToggleButton()
+    {
+        ImGuiComponents.ToggleButton("##backgroundcounttoggle", ref _countInBackground);
+        ImGuiUtil.ImGui_HoveredToolTip($"{GuiResources.CounterGuiText["BackgroundToggleToolTipInfo"]}\n" +
+                                       GuiResources.CounterGuiText["BackgroundToggleToolTipStatus"] +
+                                       (_countInBackground ?
+                                           GuiResources.CounterGuiText["BackgroundToggleToolTipEnabled"] :
+                                           GuiResources.CounterGuiText["BackgroundToggleToolTipDisabled"]));
+    }
     public void Dispose()
     {
         _chatGui.ChatMessage -= ChatGui_ChatMessage;
