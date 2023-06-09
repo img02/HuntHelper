@@ -141,9 +141,9 @@ public unsafe class TeleportManager
         new AetheryteData() {AetheryteID = 136, SubIndex = 0, TerritoryID = 813, Position = new Vector2(6.8f, 16.9f)}, //The Ostall Imperative
 
         //kholusia
-        new AetheryteData() {AetheryteID = 137, SubIndex = 0, TerritoryID = 814, Position = new Vector2()}, //Stilltide
-        new AetheryteData() {AetheryteID = 138, SubIndex = 0, TerritoryID = 814, Position = new Vector2()}, //Wright
-        new AetheryteData() {AetheryteID = 139, SubIndex = 0, TerritoryID = 814, Position = new Vector2()}, //Tomra
+        new AetheryteData() {AetheryteID = 137, SubIndex = 0, TerritoryID = 814, Position = new Vector2(34.8f, 27.2f)}, //Stilltide
+        new AetheryteData() {AetheryteID = 138, SubIndex = 0, TerritoryID = 814, Position = new Vector2(16.6f, 29.2f)}, //Wright
+        new AetheryteData() {AetheryteID = 139, SubIndex = 0, TerritoryID = 814, Position = new Vector2(12.9f, 9f)}, //Tomra
 
         //amh araeng
         new AetheryteData() {AetheryteID = 140, SubIndex = 0, TerritoryID = 815, Position = new Vector2(26.4f, 17f)}, //Mord Souq
