@@ -81,7 +81,8 @@
 
 		"SettingsTab": "设置",
 		"SelectVoiceLabel": "选择声音:",
-		"VoiceSelectedMessage": "已选择",
+		"VoiceVolumeLabel": "Volume:",
+		"VoiceTestButton": "Test",
 		"PointerSizeLabel": "指针尺寸:",
 		"PointerSizeToolTip": "钻石指针的大小缩放",
 
