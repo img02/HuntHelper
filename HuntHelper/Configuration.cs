@@ -78,6 +78,7 @@ namespace HuntHelper
         public bool UseMapImages { get; set; } = false;
         //tts
         public string TTSVoiceName { get; set; } = string.Empty;
+        public int TTSVolume { get; set; } = 50;
         public string TTSAMessage { get; set; } = "<rank> Nearby";
         public string TTSBMessage { get; set; } = "<rank> Nearby";
         public string TTSSMessage { get; set; } = "<rank> in zone";

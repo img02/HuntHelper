@@ -118,6 +118,7 @@ namespace HuntHelper.Gui
 
         //notification stuff
         private string _ttsVoiceName;
+        private int _ttsVoiceVolume;
         private string _ttsAMessage = "<rank> Nearby";
         private string _ttsBMessage = "<rank> Nearby";
         private string _ttsSMessage = "<rank> in zone";
@@ -944,53 +945,80 @@ namespace HuntHelper.Gui
                                 ImGui.EndTabItem();
                             }
 
-                            if (!_huntManager.DontUseSynthesizer && ImGui.BeginTabItem(GuiResources.MapGuiText["SettingsTab"]))
+                            if (ImGui.BeginTabItem(GuiResources.MapGuiText["SettingsTab"]))
                             {
-                                _bottomPanelHeight = tabBarHeight + 70f * ImGuiHelpers.GlobalScale;
-                                var tts = _huntManager.TTS;
-                                var voiceList = tts.GetInstalledVoices();
-                                var listOfVoiceNames = new string[voiceList.Count];
-                                for (int i = 0; i < voiceList.Count; i++)
+                                _bottomPanelHeight = tabBarHeight + 98f * ImGuiHelpers.GlobalScale;
+                                
+                                ImGui.Dummy(new Vector2(0f, 2f));
+                                if (ImGui.BeginTable("##settings table", 2, ImGuiTableFlags.ScrollX | ImGuiTableFlags.ScrollY))
                                 {
-                                    listOfVoiceNames[i] = voiceList[i].VoiceInfo.Name;
-                                }
+                                    ImGui.TableSetupColumn("#settingsLabel", ImGuiTableColumnFlags.WidthFixed);
+                                    ImGui.TableSetupColumn("#settingsValue", ImGuiTableColumnFlags.WidthStretch);
 
-                                var itemPos = Array.IndexOf(listOfVoiceNames, _ttsVoiceName);
-
-                                if (ImGui.BeginChild("##settings tts child", ImGui.GetContentRegionAvail(), false, ImGuiWindowFlags.HorizontalScrollbar))
-                                {
-                                    ImGui.Dummy(new Vector2(0f, 5f));
-                                    ImGui.Text(GuiResources.MapGuiText["SelectVoiceLabel"]);
-                                    ImGui.SameLine();
-
-                                    //ImGui.PushItemWidth(300f * ImGuiHelpers.GlobalScale);
-                                    if (ImGui.Combo("##TTS Voice Combo", ref itemPos, listOfVoiceNames,
-                                            listOfVoiceNames.Length))
+                                    if (!_huntManager.DontUseSynthesizer)
                                     {
-                                        tts.SelectVoice(listOfVoiceNames[itemPos]);
-                                        _ttsVoiceName = listOfVoiceNames[itemPos];
-                                        _huntManager.TTSName = _ttsVoiceName;
-
-                                        //creating new speechsynthesizer because it does not play audio asynchronously
-                                        var tempTTS = new SpeechSynthesizer();
-                                        tempTTS.SelectVoice(_ttsVoiceName);
-                                        var prompt = tempTTS.SpeakAsync($"{tts.Voice.Name} {GuiResources.MapGuiText["VoiceSelectedMessage"]}");
-                                        Task.Run(() =>
+                                        var tts = _huntManager.TTS;
+                                        var voiceList = tts.GetInstalledVoices();
+                                        var listOfVoiceNames = new string[voiceList.Count];
+                                        for (int i = 0; i < voiceList.Count; i++)
                                         {
-                                            while (!prompt.IsCompleted) ;
-                                            tempTTS.Dispose();
-                                        });
+                                            listOfVoiceNames[i] = voiceList[i].VoiceInfo.Name;
+                                        }
+
+                                        var itemPos = Array.IndexOf(listOfVoiceNames, _ttsVoiceName);
+                                        
+                                        ImGui.TableNextColumn();
+                                        ImGui.Text(GuiResources.MapGuiText["SelectVoiceLabel"]);
+
+                                        ImGui.TableNextColumn();
+                                        if (ImGui.Combo("##TTS Voice Combo", ref itemPos, listOfVoiceNames,
+                                                listOfVoiceNames.Length))
+                                        {
+                                            tts.SelectVoice(listOfVoiceNames[itemPos]);
+                                            _ttsVoiceName = listOfVoiceNames[itemPos];
+                                            _huntManager.TTSName = _ttsVoiceName;
+                                        }
+
+                                        ImGui.TableNextColumn();
+                                        ImGui.Text(GuiResources.MapGuiText["VoiceVolumeLabel"]);
+
+                                        ImGui.TableNextColumn();
+                                        ImGui.PushItemWidth(100f * ImGuiHelpers.GlobalScale);
+                                        if (ImGui.DragInt("##TTS Voice Volume", ref _ttsVoiceVolume, 1, 1,
+                                                100))
+                                        {
+                                            tts.Volume = _ttsVoiceVolume;
+                                            _huntManager.TTSVolume = _ttsVoiceVolume;
+                                        }
+                                        
+                                        ImGui.SameLine();
+
+                                        if (ImGui.Button(GuiResources.MapGuiText["VoiceTestButton"]))
+                                        {
+                                            //creating new speechsynthesizer because it does not play audio asynchronously
+                                            var tempTTS = new SpeechSynthesizer();
+                                            tempTTS.SelectVoice(_huntManager.TTSName);
+                                            tempTTS.Volume = _huntManager.TTSVolume;
+                                            var prompt = tempTTS.SpeakAsync($"{tts.Voice.Name}");
+                                            Task.Run(() =>
+                                            {
+                                                while (!prompt.IsCompleted) ;
+                                                tempTTS.Dispose();
+                                            });
+                                        }
                                     }
 
+                                    ImGui.TableNextColumn();
                                     ImGui.Text(GuiResources.MapGuiText["PointerSizeLabel"]);
-                                    ImGui.SameLine();
+
+                                    ImGui.TableNextColumn();
                                     if (ImGui.DragFloat("##Diamond Pointer Size Modifier", ref _diamondModifier, 0.01f, 1, 10, "%.2f"))
                                     {
                                         _configuration.PointerDiamondSizeModifier = _diamondModifier;
                                     }
 
                                     ImGuiUtil.ImGui_HoveredToolTip(GuiResources.MapGuiText["PointerSizeToolTip"]);
-                                    ImGui.EndChild();
+                                    ImGui.EndTable();
                                 }
 
                                 ImGui.EndTabItem();
@@ -1239,6 +1267,7 @@ namespace HuntHelper.Gui
             _configuration.MapWindowColour = _mapWindowColour;
             _configuration.MapWindowOpacityAsPercentage = _mapWindowOpacityAsPercentage;
             _configuration.TTSVoiceName = _ttsVoiceName;
+            _configuration.TTSVolume = _ttsVoiceVolume;
             _configuration.TTSAMessage = _ttsAMessage;
             _configuration.TTSBMessage = _ttsBMessage;
             _configuration.TTSSMessage = _ttsSMessage;
@@ -1314,6 +1343,7 @@ namespace HuntHelper.Gui
             _huntWindowFlag = _configuration.HuntWindowFlag;
             _mapWindowColour = _configuration.MapWindowColour;
             _mapWindowOpacityAsPercentage = _configuration.MapWindowOpacityAsPercentage;
+            _ttsVoiceVolume = _configuration.TTSVolume;
             _ttsAMessage = _configuration.TTSAMessage;
             _ttsBMessage = _configuration.TTSBMessage;
             _ttsSMessage = _configuration.TTSSMessage;
