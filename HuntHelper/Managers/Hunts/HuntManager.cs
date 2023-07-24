@@ -53,6 +53,7 @@ public class HuntManager
     public bool DontUseSynthesizer = false;
     public SpeechSynthesizer TTS { get; init; } //aint really used anymore except for setting default voice on load
     public string TTSName { get; set; }
+    public int TTSVolume { get; set; }
 
     #region chat/flytext colours - make customizable later? prob not.
     private readonly ushort _aTextColour = 12;
@@ -68,7 +69,7 @@ public class HuntManager
 
     public List<(HuntRank Rank, BattleNpc Mob)> CurrentMobs => _currentMobs;
 
-    public HuntManager(DalamudPluginInterface pluginInterface, TrainManager trainManager, ChatGui chatGui, FlyTextGui flyTextGui)
+    public HuntManager(DalamudPluginInterface pluginInterface, TrainManager trainManager, ChatGui chatGui, FlyTextGui flyTextGui, int ttsVolume)
     {
         _arrDict = new Dictionary<HuntRank, List<Mob>>();
         _hwDict = new Dictionary<HuntRank, List<Mob>>();
@@ -82,6 +83,7 @@ public class HuntManager
         _chatGui = chatGui;
         _flyTextGui = flyTextGui;
         _trainManager = trainManager;
+        TTSVolume = ttsVolume;
 
         HuntTrain = new List<HuntTrainMob>();
         ImportedTrain = new List<HuntTrainMob>();
@@ -305,6 +307,7 @@ public class HuntManager
         if (DontUseSynthesizer) return;
         var tts = new SpeechSynthesizer();
         tts.SelectVoice(TTSName);
+        tts.Volume = TTSVolume;
         var prompt = tts.SpeakAsync(message);
         Task.Run(() =>
             { //this works but looks weird?

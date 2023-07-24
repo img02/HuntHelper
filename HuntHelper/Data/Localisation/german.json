@@ -81,7 +81,8 @@
 
 		"SettingsTab": "Settings",
 		"SelectVoiceLabel": "Select Voice:",
-		"VoiceSelectedMessage": "Selected",
+		"VoiceVolumeLabel": "Volume:",
+		"VoiceTestButton": "Test",
 		"PointerSizeLabel": "Pointer Size:",
 		"PointerSizeToolTip": "Size modifier for the diamond pointer",
 
