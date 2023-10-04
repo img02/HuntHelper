@@ -25,17 +25,18 @@ using System.Numerics;
 using System.Threading;
 using System.Threading.Tasks;
 using Dalamud.Game.Text.SeStringHandling;
+using Dalamud.Plugin.Services;
 
 namespace HuntHelper.Gui;
 
 public unsafe partial class CounterUI : IDisposable
 {
-    private readonly ClientState _clientState;
-    private readonly ChatGui _chatGui;
-    private readonly GameGui _gameGui;
+    private readonly IClientState _clientState;
+    private readonly IChatGui _chatGui;
+    private readonly IGameGui _gameGui;
     private readonly Configuration _config;
-    private readonly ObjectTable _objectTable;
-    private readonly FateTable _fateTable;
+    private readonly IObjectTable _objectTable;
+    private readonly IFateTable _fateTable;
     private readonly List<CounterBase> _counters;
 
     private Vector2 _windowPos = new Vector2(50, 50);
@@ -44,7 +45,7 @@ public unsafe partial class CounterUI : IDisposable
 
     public bool WindowVisible = false;
 
-    public CounterUI(ClientState clientState, ChatGui chatGui, GameGui gameGui, Configuration config, ObjectTable objectTable, FateTable fateTable)
+    public CounterUI(IClientState clientState, IChatGui chatGui, IGameGui gameGui, Configuration config, IObjectTable objectTable, IFateTable fateTable)
     {
         _clientState = clientState;
         _chatGui = chatGui;

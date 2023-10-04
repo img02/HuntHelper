@@ -22,6 +22,8 @@ using System.Numerics;
 using System.Speech.Synthesis;
 using System.Threading;
 using System.Threading.Tasks;
+using Dalamud.Interface.Utility;
+using Dalamud.Plugin.Services;
 
 namespace HuntHelper.Gui
 {
@@ -30,12 +32,12 @@ namespace HuntHelper.Gui
         private readonly Configuration _configuration;
         private readonly DalamudPluginInterface _pluginInterface;
 
-        private readonly ClientState _clientState;
-        private readonly ObjectTable _objectTable;
-        private readonly DataManager _dataManager;
+        private readonly IClientState _clientState;
+        private readonly IObjectTable _objectTable;
+        private readonly IDataManager _dataManager;
         private readonly HuntManager _huntManager;
         private readonly MapDataManager _mapDataManager;
-        private readonly GameGui _gameGui;
+        private readonly IGameGui _gameGui;
 
         private string _territoryName;
         private string WorldName => _clientState.LocalPlayer?.CurrentWorld?.GameData?.Name.ToString() ?? "Not Found";
@@ -185,8 +187,8 @@ namespace HuntHelper.Gui
         }
 
         public MapUI(Configuration configuration, DalamudPluginInterface pluginInterface,
-            ClientState clientState, ObjectTable objectTable, DataManager dataManager,
-            HuntManager huntManager, MapDataManager mapDataManager, GameGui gameGui)
+            IClientState clientState, IObjectTable objectTable, IDataManager dataManager,
+            HuntManager huntManager, MapDataManager mapDataManager, IGameGui gameGui)
         {
             _configuration = configuration;
             _pluginInterface = pluginInterface; //not using atm...
@@ -201,7 +203,7 @@ namespace HuntHelper.Gui
                 _ttsVoiceName = huntManager.TTS.Voice.Name; // load default voice first, then from settings if avail.
             _territoryName = string.Empty;
 
-            ClientState_TerritoryChanged(null, 0);
+            ClientState_TerritoryChanged(0);
             _clientState.TerritoryChanged += ClientState_TerritoryChanged;
 
             LoadSettings();
@@ -1397,7 +1399,7 @@ namespace HuntHelper.Gui
         }
 
 
-        private void ClientState_TerritoryChanged(object? sender, ushort e)
+        private void ClientState_TerritoryChanged(ushort e)
         {
             _territoryName = MapHelpers.GetMapName(_dataManager, _clientState.TerritoryType);
             //_worldName = _clientState.LocalPlayer?.CurrentWorld?.GameData?.Name.ToString() ?? "Not Found";

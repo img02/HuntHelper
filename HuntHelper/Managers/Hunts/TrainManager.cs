@@ -12,14 +12,15 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Numerics;
+using Dalamud.Plugin.Services;
 
 namespace HuntHelper.Managers.Hunts;
 
 public class TrainManager
 {
-    private readonly ChatGui _chatGui;
-    private readonly GameGui _gameGui;
-    private readonly DataManager _dataManager;
+    private readonly IChatGui _chatGui;
+    private readonly IGameGui _gameGui;
+    private readonly IDataManager _dataManager;
 
     private readonly string _huntTrainFilePath;
 
@@ -27,7 +28,7 @@ public class TrainManager
     public readonly List<HuntTrainMob> ImportedTrain;
     public bool RecordTrain = false;
 
-    public TrainManager(ChatGui chatGui, GameGui gameGui, DataManager dataManager, string huntTrainFilePath)
+    public TrainManager(IChatGui chatGui, IGameGui gameGui, IDataManager dataManager, string huntTrainFilePath)
     {
         HuntTrain = new List<HuntTrainMob>();
         ImportedTrain = new List<HuntTrainMob>();
