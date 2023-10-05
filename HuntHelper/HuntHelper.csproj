@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Authors>https://github.com/imaginary-png</Authors>
     <Company></Company>
-    <Version>1.0.0.7</Version>
+    <Version>1.0.0.8</Version>
     <Description>Hunt map with spawns points, A-Rank train recorder (w/ export/import sharing), TTS, Chat notifications, Counters for S-Rank</Description>
     <Copyright></Copyright>
     <PackageProjectUrl>https://github.com/imaginary-png/HuntHelper</PackageProjectUrl>
@@ -116,7 +116,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DalamudPackager" Version="2.1.10" />
+    <PackageReference Include="DalamudPackager" Version="2.1.12" />
     <PackageReference Include="System.Speech" Version="7.0.0" />
     <Reference Include="FFXIVClientStructs">
       <HintPath>$(DalamudLibPath)FFXIVClientStructs.dll</HintPath>

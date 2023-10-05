@@ -231,7 +231,7 @@ public unsafe partial class CounterUI
             PluginLog.Error(e.ToString());
         }
     }
-    private void ClientState_TerritoryChanged(object? sender, ushort e)
+    private void ClientState_TerritoryChanged(ushort e)
     {
         _currentFates.Clear();
         _startTime = DateTime.Now;

@@ -11,13 +11,15 @@ using System.Collections.Generic;
 using System.Numerics;
 using System.Threading;
 using System.Threading.Tasks;
+using Dalamud.Interface.Utility;
+using Dalamud.Plugin.Services;
 
 namespace HuntHelper.Gui;
 //https://github.com/mellinoe/ImGui.NET/issues/107#issuecomment-467146212
 public unsafe class SpawnPointFinderUI : IDisposable//idk what to call this
 {
     private readonly MapDataManager _mapDataManager;
-    private readonly DataManager _dataManager;
+    private readonly IDataManager _dataManager;
     private readonly Configuration _config;
     private readonly List<MapSpawnPoints> _spawnPoints;
     private ImGuiTextFilterPtr _filter;
@@ -31,7 +33,7 @@ public unsafe class SpawnPointFinderUI : IDisposable//idk what to call this
 
     public bool WindowVisible = false;
 
-    public SpawnPointFinderUI(MapDataManager mapDataManager, DataManager dataManager, Configuration config)
+    public SpawnPointFinderUI(MapDataManager mapDataManager, IDataManager dataManager, Configuration config)
     {
         _mapDataManager = mapDataManager;
         _dataManager = dataManager;

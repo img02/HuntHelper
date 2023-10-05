@@ -16,6 +16,7 @@ using System;
 using System.IO;
 using Dalamud;
 using Dalamud.Game.ClientState.Fates;
+using Dalamud.Plugin.Services;
 using HuntHelper.Gui.Resource;
 
 namespace HuntHelper
@@ -36,38 +37,38 @@ namespace HuntHelper
         private const string DebugCommand = "/hhdebug";
 
         private DalamudPluginInterface PluginInterface { get; init; }
-        private CommandManager CommandManager { get; init; }
+        private ICommandManager CommandManager { get; init; }
         private Configuration Configuration { get; init; }
         private MapUI MapUi { get; init; }
         private HuntTrainUI HuntTrainUI { get; init; }
         private CounterUI CounterUI { get; init; }
         private PointerUI PointerUI { get; init; }
         private SpawnPointFinderUI SpawnPointFinderUI { get; init; }
-        private ClientState ClientState { get; init; }
-        private ObjectTable ObjectTable { get; init; }
-        private DataManager DataManager { get; init; }
-        private ChatGui ChatGui { get; init; }
+        private IClientState ClientState { get; init; }
+        private IObjectTable ObjectTable { get; init; }
+        private IDataManager DataManager { get; init; }
+        private IChatGui ChatGui { get; init; }
         private HuntManager HuntManager { get; init; }
         private TrainManager TrainManager { get; init; }
         private MapDataManager MapDataManager { get; init; }
-        private FlyTextGui FlyTextGui { get; init; }
-        private GameGui GameGui { get; init; }
+        private IFlyTextGui FlyTextGui { get; init; }
+        private IGameGui GameGui { get; init; }
 
-        private FateTable FateTable { get; init; }
+        private IFateTable FateTable { get; init; }
 
         public static ICallGateSubscriber<uint, byte, bool> TeleportIpc { get; private set; }
         public static string PluginDir { get; set; } = string.Empty;
 
         public Plugin(
             DalamudPluginInterface pluginInterface,
-            CommandManager commandManager,
-            ClientState clientState,
-            ObjectTable objectTable,
-            DataManager dataManager,
-            ChatGui chatGui,
-            FlyTextGui flyTextGui,
-            GameGui gameGui,
-            FateTable fateTable)
+            ICommandManager commandManager,
+            IClientState clientState,
+            IObjectTable objectTable,
+            IDataManager dataManager,
+            IChatGui chatGui,
+            IFlyTextGui flyTextGui,
+            IGameGui gameGui,
+            IFateTable fateTable)
         {
             this.PluginInterface = pluginInterface;
             this.CommandManager = commandManager;
@@ -177,7 +178,7 @@ namespace HuntHelper
             this.CommandManager.RemoveHandler(SpawnPointCommand);
 
             this.HuntManager.Dispose();
-            this.FlyTextGui.Dispose();
+            // this.FlyTextGui.Dispose();
         }
 
         private void DebugWindowCommand(string command, string args) => this.MapUi.RandomDebugWindowVisisble = !MapUi.RandomDebugWindowVisisble;

@@ -5,6 +5,8 @@ using HuntHelper.Managers.Hunts;
 using ImGuiNET;
 using System;
 using System.Numerics;
+using Dalamud.Interface.Utility;
+using Dalamud.Plugin.Services;
 
 namespace HuntHelper.Gui;
 
@@ -12,9 +14,9 @@ public class PointerUI
 {
     private readonly HuntManager _huntManager;
     private readonly Configuration _config;
-    private readonly GameGui _gameGui;
+    private readonly IGameGui _gameGui;
     private const float DiamondBaseWidth = 30f; //not customisable
-    public PointerUI(HuntManager huntManager, Configuration config, GameGui gameGui)
+    public PointerUI(HuntManager huntManager, Configuration config, IGameGui gameGui)
     {
         _huntManager = huntManager;
         _config = config;

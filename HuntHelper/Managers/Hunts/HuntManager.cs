@@ -17,6 +17,8 @@ using System.Linq;
 using System.Speech.Synthesis;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Dalamud.Interface.Internal;
+using Dalamud.Plugin.Services;
 
 namespace HuntHelper.Managers.Hunts;
 
@@ -29,10 +31,10 @@ public class HuntManager
     private readonly Dictionary<HuntRank, List<Mob>> _shbDict;
     private readonly Dictionary<HuntRank, List<Mob>> _sbDict;
     private readonly Dictionary<HuntRank, List<Mob>> _ewDict;
-    private readonly Dictionary<String, TextureWrap> _mapImages;
+    private readonly Dictionary<string, IDalamudTextureWrap> _mapImages;
     private readonly DalamudPluginInterface _pluginInterface;
-    private readonly ChatGui _chatGui;
-    private readonly FlyTextGui _flyTextGui;
+    private readonly IChatGui _chatGui;
+    private readonly IFlyTextGui _flyTextGui;
     private readonly TrainManager _trainManager;
 
     private readonly List<(HuntRank Rank, BattleNpc Mob)> _currentMobs;
@@ -69,14 +71,14 @@ public class HuntManager
 
     public List<(HuntRank Rank, BattleNpc Mob)> CurrentMobs => _currentMobs;
 
-    public HuntManager(DalamudPluginInterface pluginInterface, TrainManager trainManager, ChatGui chatGui, FlyTextGui flyTextGui, int ttsVolume)
+    public HuntManager(DalamudPluginInterface pluginInterface, TrainManager trainManager, IChatGui chatGui, IFlyTextGui flyTextGui, int ttsVolume)
     {
         _arrDict = new Dictionary<HuntRank, List<Mob>>();
         _hwDict = new Dictionary<HuntRank, List<Mob>>();
         _shbDict = new Dictionary<HuntRank, List<Mob>>();
         _sbDict = new Dictionary<HuntRank, List<Mob>>();
         _ewDict = new Dictionary<HuntRank, List<Mob>>();
-        _mapImages = new Dictionary<string, TextureWrap>();
+        _mapImages = new Dictionary<string, IDalamudTextureWrap>();
         _currentMobs = new List<(HuntRank, BattleNpc)>();
         _previousMobs = new List<(HuntRank, BattleNpc)>();
         _pluginInterface = pluginInterface;
@@ -194,18 +196,18 @@ public class HuntManager
             case HuntRank.A:            //didn't hyphen 'rank' here.. think it looks better
                 rankSB.AddUiForeground("A RANK", _aTextColour); // pinkish-red - same as chat msg
                 nameSB.AddUiForeground($"{mob.Name}", _aFlyTextColour); //tinted pinkish-red
-                _flyTextGui.AddFlyText(FlyTextKind.NamedDirectHit, 1, 1, 1, rankSB.BuiltString, nameSB.BuiltString, 16, 2, 0);//last 2 nums don't seem to change anything
+                _flyTextGui.AddFlyText(FlyTextKind.DamageCritDh, 1, 1, 1, rankSB.BuiltString, nameSB.BuiltString, 16, 2, 0);//last 2 nums don't seem to change anything
                 break;
             case HuntRank.B:
                 rankSB.AddUiForeground("B RANK", _bTextColour); // blue - same as chat msg
                 nameSB.AddUiForeground($"{mob.Name}", _bFlyTextColour); //tinted blue
-                _flyTextGui.AddFlyText(FlyTextKind.NamedDirectHit, 1, 1, 1, rankSB.BuiltString, nameSB.BuiltString, 16, 2, 0);
+                _flyTextGui.AddFlyText(FlyTextKind.DamageCritDh, 1, 1, 1, rankSB.BuiltString, nameSB.BuiltString, 16, 2, 0);
                 break;
             case HuntRank.S:
             case HuntRank.SS:
                 rankSB.AddUiForeground("S RANK", _sFlyTextColour); // dark-red - different from chat msg (goldish) because it stands out more.
                 nameSB.AddUiForeground($"{mob.Name}", _sTextColour); //same gold as chat msg
-                _flyTextGui.AddFlyText(FlyTextKind.NamedDirectHit, 1, 1, 1, rankSB.BuiltString, nameSB.BuiltString, 16, 2, 0);
+                _flyTextGui.AddFlyText(FlyTextKind.DamageCritDh, 1, 1, 1, rankSB.BuiltString, nameSB.BuiltString, 16, 2, 0);
                 break;
         }
     }
@@ -403,7 +405,7 @@ public class HuntManager
     }
 
 
-    public TextureWrap? GetMapImage(string mapName)
+    public IDalamudTextureWrap GetMapImage(string mapName)
     {
         if (!_mapImages.ContainsKey(mapName)) return null;
         return _mapImages[mapName];
