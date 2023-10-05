@@ -76,7 +76,7 @@ namespace HuntHelper
             PluginDir = PluginInterface.AssemblyLocation.Directory?.FullName!;
 
             this.ClientState = clientState;
-
+            
             if (!GuiResources.LoadGuiText(ClientState.ClientLanguage))
             {
                 PluginLog.Error("Unable to find localisation file. What did you do?! gonna crash ok");
