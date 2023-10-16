@@ -528,7 +528,7 @@ public class HuntTrainUI : IDisposable
                 if (_teleportMe) _teleportManager.TeleportToHunt(mob);
             }
 
-            if (ImGui.BeginPopupContextItem($"ContextMenu##{mob.Name}", ImGuiPopupFlags.MouseButtonRight))
+            if (ImGui.BeginPopupContextItem($"ContextMenu##{mob.Name}:{mob.Instance}", ImGuiPopupFlags.MouseButtonRight))
             {
                 ImGui.PushStyleColor(ImGuiCol.Text, Vector4.One); //white
                 if (ImGui.MenuItem(GuiResources.HuntTrainGuiText["ContextMenuSelect"], true)) _selectedIndex = n;
