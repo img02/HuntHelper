@@ -210,7 +210,7 @@ public class HuntTrainUI : IDisposable
             _mobList.ForEach(m =>
             {
                 var d = m.Dead;
-                ImGui.Checkbox($"##DeadCheckBox{m.Name}", ref d);
+                ImGui.Checkbox($"##DeadCheckBox{m.Name}:{m.Instance}", ref d);
                 ImGui.Separator();
                 m.Dead = d;
                 if (m.Dead && _mobList.IndexOf(m) == _selectedIndex) SelectNext();//infinite if all dead
