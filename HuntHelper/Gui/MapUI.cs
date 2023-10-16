@@ -24,6 +24,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Dalamud.Interface.Utility;
 using Dalamud.Plugin.Services;
+using FFXIVClientStructs.FFXIV.Client.Game.UI;
 
 namespace HuntHelper.Gui
 {
@@ -42,6 +43,7 @@ namespace HuntHelper.Gui
         private string _territoryName;
         private string WorldName => _clientState.LocalPlayer?.CurrentWorld?.GameData?.Name.ToString() ?? "Not Found";
         private ushort _territoryId;
+        private uint _instance;
 
         //used for combo box for language selection window
         private string _guiLanguage = GuiResources.Language;
@@ -268,7 +270,7 @@ namespace HuntHelper.Gui
                 ImGui.Indent(55);
                 ImGui.Unindent(55);
 
-                ImGui.Text($"Territory: {_territoryName}");
+                ImGui.Text($"Territory: {_territoryName}{LocInstance()}");
                 ImGui.Text($"Territory ID: {_clientState.TerritoryType}");
 
                 //PLAYER POS
@@ -427,8 +429,9 @@ namespace HuntHelper.Gui
                     ImGuiUtil.DoStuffWithMonoFont(() =>
                     {
                         SetCursorPosByPercentage(_zoneInfoPosXPercentage, _zoneInfoPosYPercentage);
-                        if (!_useMapImages) ImGui.TextColored(_zoneTextColour, $"{_territoryName}");
-                        if (_useMapImages) ImGui.TextColored(_zoneTextColourAlt, $"{_territoryName}");
+                        var displayName = $"{_territoryName}{LocInstance()}";
+                        if (!_useMapImages) ImGui.TextColored(_zoneTextColour, displayName);
+                        if (_useMapImages) ImGui.TextColored(_zoneTextColourAlt, displayName);
                     });
 
                 }
@@ -1399,11 +1402,12 @@ namespace HuntHelper.Gui
         }
 
 
-        private void ClientState_TerritoryChanged(ushort e)
+        private unsafe void ClientState_TerritoryChanged(ushort e)
         {
             _territoryName = MapHelpers.GetMapName(_dataManager, _clientState.TerritoryType);
             //_worldName = _clientState.LocalPlayer?.CurrentWorld?.GameData?.Name.ToString() ?? "Not Found";
             _territoryId = _clientState.TerritoryType;
+            _instance = (uint)UIState.Instance()->AreaInstance.Instance;
         }
 
         #region Draw Sub Windows
@@ -1475,7 +1479,7 @@ namespace HuntHelper.Gui
                 if (obj is not BattleNpc mob) continue;
                 if (!_huntManager.IsHunt(mob.NameId)) continue;
                 nearbyMobs.Add(mob);
-                _huntManager.AddToTrain(mob, _territoryId, MapHelpers.GetMapID(_dataManager, _territoryId), _territoryName, _mapZoneMaxCoordSize);
+                _huntManager.AddToTrain(mob, _territoryId, MapHelpers.GetMapID(_dataManager, _territoryId), _instance, _territoryName, _mapZoneMaxCoordSize);
             }
 
             if (nearbyMobs.Count == 0)
@@ -1747,7 +1751,7 @@ namespace HuntHelper.Gui
                         ConvertPosToCoordinate(_clientState.LocalPlayer.Position.Z)));
                 ImGui.TextUnformatted($"Player Pos: {playerPos}");
                 ImGui.NextColumn();
-                ImGuiUtil.ImGui_RightAlignText($"Map: {_territoryName} - {_territoryId}");
+                ImGuiUtil.ImGui_RightAlignText($"Map: {_territoryName}{LocInstance()} - {_territoryId}");
                 ImGuiUtil.ImGui_RightAlignText($"Coord size: {_mapZoneMaxCoordSize} ");
 
                 //priority mob stuff
@@ -1900,5 +1904,6 @@ namespace HuntHelper.Gui
             _configuration.SFoundCount = _huntManager.SCount;
         }
 
+        private string LocInstance() => _instance.GetInstanceGlyph();
     }
 }
