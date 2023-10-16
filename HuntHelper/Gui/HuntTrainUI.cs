@@ -558,7 +558,7 @@ public class HuntTrainUI : IDisposable
     private string GetAttributeFromMob(HuntTrainMobAttribute attribute, HuntTrainMob mob) =>
         attribute switch
         {
-            HuntTrainMobAttribute.Name => mob.Name,
+            HuntTrainMobAttribute.Name => $"{mob.Name}{mob.Instance.GetInstanceGlyph()}",
             HuntTrainMobAttribute.LastSeen => $"{(DateTime.Now.ToUniversalTime() - mob.LastSeenUTC).TotalMinutes:0.}m",
             HuntTrainMobAttribute.Position => $"({mob.Position.X:0.0}, {mob.Position.Y:0.0})"
         };

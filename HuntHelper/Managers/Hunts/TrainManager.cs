@@ -41,19 +41,19 @@ public class TrainManager
         LoadHuntTrainRecord();
     }
 
-    public void AddMob(BattleNpc mob, uint territoryid, uint mapid, string mapName, float zoneMapCoordSize)
+    public void AddMob(BattleNpc mob, uint territoryid, uint mapid, uint instance, string mapName, float zoneMapCoordSize)
     {   //if already exists in train, return
-        if (HuntTrain.Any(m => m.MobID == mob.NameId)) return;
+        if (HuntTrain.Any(m => m.IsSameAs(mob.NameId, instance))) return;
         var position = new Vector2(MapHelpers.ConvertToMapCoordinate(mob.Position.X, zoneMapCoordSize),
             MapHelpers.ConvertToMapCoordinate(mob.Position.Z, zoneMapCoordSize));
-        var trainMob = new HuntTrainMob(mob.Name.TextValue, mob.NameId, territoryid, mapid, mapName, position, DateTime.UtcNow, false);
+        var trainMob = new HuntTrainMob(mob.Name.TextValue, mob.NameId, territoryid, mapid, instance, mapName, position, DateTime.UtcNow, false);
         HuntTrain.Add(trainMob);
     }
 
 
-    public bool UpdateLastSeen(BattleNpc mob)
+    public bool UpdateLastSeen(BattleNpc mob, uint instance)
     {
-        var existing = HuntTrain.FirstOrDefault(m => m.MobID == mob.NameId);
+        var existing = HuntTrain.FirstOrDefault(m => m.IsSameAs(mob.NameId, instance));
         if (existing == null) return false;
         existing.LastSeenUTC = DateTime.UtcNow;
         return true;

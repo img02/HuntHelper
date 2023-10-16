@@ -122,16 +122,16 @@ public class HuntManager
         return _currentMobs;
     }
 
-    public void AddToTrain(BattleNpc mob, uint territoryid, uint mapid, string mapName, float zoneMapCoordSize)
+    public void AddToTrain(BattleNpc mob, uint territoryid, uint mapid, uint instance, string mapName, float zoneMapCoordSize)
     {
         //if mob already exists, update last seen - even if not recording
-        if (_trainManager.UpdateLastSeen(mob)) return;
+        if (_trainManager.UpdateLastSeen(mob, instance)) return;
         if (!_trainManager.RecordTrain) return;
         //only record A ranks
 #if !DEBUG //record all ranks while debugging coz weird ppl still kill ARR A ranks which makes it hard to find hunts to test with.
         if (GetHuntRank(mob.NameId) != HuntRank.A) return;
 #endif
-        _trainManager.AddMob(mob, territoryid, mapid, mapName, zoneMapCoordSize);
+        _trainManager.AddMob(mob, territoryid, mapid, instance, mapName, zoneMapCoordSize);
     }
 
     //bit much, grew big because I don't plan

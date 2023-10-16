@@ -18,9 +18,10 @@ public class HuntTrainMob
 
     public uint TerritoryID { get; init; }
     public uint MapID { get; init; }
+    public uint Instance { get; init; }
 
     [JsonConstructor]
-    public HuntTrainMob(string name, uint mobId, uint territoryId, uint mapId, string mapName, Vector2 position, DateTime lastSeenUTC, bool dead = false)
+    public HuntTrainMob(string name, uint mobId, uint territoryId, uint mapId, uint instance, string mapName, Vector2 position, DateTime lastSeenUTC, bool dead = false)
     {
         Name = name;
         MobID = mobId;
@@ -30,6 +31,7 @@ public class HuntTrainMob
         Dead = dead;
         TerritoryID = territoryId;
         MapID = mapId;
+        Instance = instance;
 
         //PluginLog.Information($"Trying to make maplink with :|{mapName}|");  //"Mor Dhona" fails when using as placename
         MapLink = SeString.CreateMapLink(territoryId, mapId, position.X, position.Y)!;
@@ -51,5 +53,10 @@ public class HuntTrainMob
     public void MarkDead()
     {
         Dead = true;
+    }
+
+    public bool IsSameAs(uint mobID, uint instance)
+    {
+        return MobID == mobID && Instance == instance;
     }
 }
