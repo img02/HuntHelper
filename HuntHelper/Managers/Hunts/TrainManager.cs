@@ -117,11 +117,11 @@ public class TrainManager
     {
         foreach (var m in ImportedTrain)
         {
-            if (HuntTrain.All(mob => mob.MobID != m.MobID)) HuntTrain.Add(m);
+            if (HuntTrain.All(mob => mob.MobID != m.MobID || mob.Instance != m.Instance)) HuntTrain.Add(m);
 
             if (updateOldTime)
             {   //inefficient?
-                var toUpdate = HuntTrain.FirstOrDefault(mob => mob.MobID == m.MobID);
+                var toUpdate = HuntTrain.FirstOrDefault(mob => mob.MobID == m.MobID && mob.Instance == m.Instance);
                 if (toUpdate == null) continue;
                 if (m.LastSeenUTC > toUpdate.LastSeenUTC) toUpdate.LastSeenUTC = m.LastSeenUTC;
             }

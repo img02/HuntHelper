@@ -404,12 +404,12 @@ public class HuntTrainUI : IDisposable
                     foreach (var m in _importedTrain)
                     {   //green text if new mob, grey text if exists.
                         ImGui.PushStyleColor(ImGuiCol.Text,
-                            _mobList.All(mob => mob.MobID != m.MobID)
+                            _mobList.All(mob => mob.MobID != m.MobID || mob.Instance != m.Instance)
                                 ? new Vector4(0.1647f, 1f, 0.647f, 1f) //greenish
                                 : new Vector4(0.51f, 0.51f, 0.51f, 1f)); //grey
                                                                          // : new Vector4(1f, 0.345f, 0.345f, 1f)); //redish
                         ImGui.TableNextColumn();
-                        ImGui.TextUnformatted($"{m.Name}");
+                        ImGui.TextUnformatted($"{m.Name}{m.Instance.GetInstanceGlyph()}");
                         ImGui.TableNextColumn();
                         ImGui.TextUnformatted($"{(DateTime.Now.ToUniversalTime() - m.LastSeenUTC).TotalMinutes:0}m");
                         ImGui.PopStyleColor();
