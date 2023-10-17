@@ -1,4 +1,4 @@
-# HuntHelper  [![Download count](https://img.shields.io/endpoint?url=https://vz32sgcoal.execute-api.us-east-1.amazonaws.com/HuntHelper)](https://github.com/imaginary-png/HuntHelper)
+# HuntHelper  [![Download count](https://img.shields.io/endpoint?url=https://qzysathwfhebdai6xgauhz4q7m0mzmrf.lambda-url.us-east-1.on.aws/HuntHelper)](https://github.com/imaginary-png/HuntHelper)
 
 Hunt radar / map. A-Train recording. S Rank Utilities.
 
