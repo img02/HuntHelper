@@ -1,5 +1,6 @@
 ﻿using Dalamud.Interface;
 using Dalamud.Interface.Components;
+using Dalamud.Interface.Utility;
 using HuntHelper.Gui.Resource;
 using HuntHelper.Managers;
 using HuntHelper.Managers.Hunts;
@@ -12,7 +13,6 @@ using System.Linq;
 using System.Numerics;
 using System.Threading;
 using System.Threading.Tasks;
-using Dalamud.Interface.Utility;
 
 namespace HuntHelper.Gui;
 
@@ -20,6 +20,7 @@ public class HuntTrainUI : IDisposable
 {
     private readonly TrainManager _trainManager;
     private readonly Configuration _config;
+    private readonly SirenHuntsManager _sirenHuntsManager;
 
     private bool _huntTrainWindowVisible = false;
 
@@ -58,11 +59,15 @@ public class HuntTrainUI : IDisposable
         set => _huntTrainWindowVisible = value;
     }
 
-    public HuntTrainUI(TrainManager trainManager, Configuration config)
+    public HuntTrainUI(
+        TrainManager trainManager,
+        Configuration config,
+        SirenHuntsManager sirenHuntsManager)
     {
         _trainManager = trainManager;
         _mobList = _trainManager.HuntTrain;
         _config = config;
+        _sirenHuntsManager = sirenHuntsManager;
         _importedTrain = _trainManager.ImportedTrain;
         LoadSettings();
         _teleportManager = new TeleportManager();
@@ -281,8 +286,17 @@ public class HuntTrainUI : IDisposable
             ImGuiUtil.ImGui_HoveredToolTip(GuiResources.HuntTrainGuiText["DeleteTrainButton"]);
             ImGui.SameLine();
 
+            ImGui.SetCursorPosX(ImGui.GetWindowSize().X - (76 * ImGuiHelpers.GlobalScale));
+            if (ImGuiComponents.IconButton(FontAwesomeIcon.Link))
+            {
+                var sirenLink = GetSirenLink();
+                ImGui.SetClipboardText(sirenLink);
+            }
+
+            ImGuiUtil.ImGui_HoveredToolTip(GuiResources.HuntTrainGuiText["CopySirenLinkButton"]);
+            ImGui.SameLine(); ImGui.Dummy(new Vector2(4, 0)); ImGui.SameLine();
+            
             //gosh these buttons don't line up, off by like 1 pixel :(
-            ImGui.SetCursorPosX(ImGui.GetWindowSize().X - (54 * ImGuiHelpers.GlobalScale));
             if (ImGuiComponents.IconButton(FontAwesomeIcon.SignOutAlt))
             {
                 //get export code
@@ -319,6 +333,11 @@ public class HuntTrainUI : IDisposable
             ImGui.End();
         }
         ImGui.PopStyleVar();//pop window padding
+    }
+
+    private string GetSirenLink()
+    {
+        return _sirenHuntsManager.GetSirenHuntsLink(_mobList);
     }
 
     private void DrawTeleportPluginNotFoundModal()

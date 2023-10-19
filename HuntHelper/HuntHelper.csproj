@@ -109,6 +109,10 @@
     <Content Include="Data\SpawnPointData.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Remove="Data\SirenHunts.json" />
+    <Content Include="Data\SirenHunts.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <PropertyGroup>

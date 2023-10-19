@@ -187,6 +187,8 @@ namespace HuntHelper.Gui
             get => _settingsVisible;
             set => _settingsVisible = value;
         }
+        
+        private string _sirenHuntsBaseUrl;
 
         public MapUI(Configuration configuration, DalamudPluginInterface pluginInterface,
             IClientState clientState, IObjectTable objectTable, IDataManager dataManager,
@@ -1211,18 +1213,50 @@ namespace HuntHelper.Gui
 
         public void DrawSettingsWindow()
         {
-            if (!SettingsVisible)
-            {
-                return;
-            }
+            if (!SettingsVisible) return;
 
-            ImGui.SetNextWindowSize(new Vector2(300, 100), ImGuiCond.Always);
-            if (ImGui.Begin("help, i've fallen over", ref _settingsVisible,
-                ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse))
+            if (ImGui.Begin(GuiResources.MapGuiText["SettingsWindowTitle"], ref _settingsVisible, ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.HorizontalScrollbar))
             {
-                ImGuiUtil.ImGui_CentreText(GuiResources.MapGuiText["DefaultSettingsWindowMessage"], _defaultTextColour);
+                if (ImGui.BeginTabBar("settings categories"))
+                {
+                    if (ImGui.BeginTabItem(GuiResources.MapGuiText["SettingsWindowAdvancedTab"]))
+                    {
+                        var tableSize = new Vector2(ImGui.GetTextLineHeight()*24, 0);
+                        if (ImGui.BeginTable("#advanced settings table", 2, ImGuiTableFlags.None, tableSize))
+                        {
+                            ImGui.TableSetupColumn("#advanced settings label", ImGuiTableColumnFlags.WidthFixed);
+                            ImGui.TableSetupColumn("#advanced settings value", ImGuiTableColumnFlags.WidthStretch);
+
+                            ImGui.TableNextColumn();
+                            ImGui.Text(GuiResources.MapGuiText["SirenHuntsBaseUrlInputLabel"]);
+                            ImGui.TableNextColumn();
+                            ImGui.InputText("##siren hunts base url", ref _sirenHuntsBaseUrl, 256,
+                                ImGuiInputTextFlags.CallbackAlways,
+                                TextCallback(() => { _configuration.SirenHuntsBaseUrl = _sirenHuntsBaseUrl; }));
+                            ImGui.SameLine();
+                            if (ImGui.Button(GuiResources.MapGuiText["ResetButton"]))
+                                _sirenHuntsBaseUrl = Constants.SirenHuntsDefaultBaseUrl;
+
+                            ImGui.EndTable();
+                        }
+
+                        ImGui.EndTabItem();
+                    }
+
+                    ImGui.EndTabBar();
+                }
+
+                ImGui.End();
             }
-            ImGui.End();
+        }
+
+        private unsafe ImGuiInputTextCallback TextCallback(Action action)
+        {
+            return (data) =>
+            {
+                action();
+                return 0;
+            };
         }
 
         private void SaveSettings()
@@ -1294,6 +1328,7 @@ namespace HuntHelper.Gui
             _configuration.PointToBRank = _pointToBRank;
             _configuration.PointToSRank = _pointToSRank;
             _configuration.PointerDiamondSizeModifier = _diamondModifier;
+            _configuration.SirenHuntsBaseUrl = _sirenHuntsBaseUrl;
 
             _configuration.Language = GuiResources.Language;
 
@@ -1370,6 +1405,7 @@ namespace HuntHelper.Gui
             _pointToBRank = _configuration.PointToBRank;
             _pointToSRank = _configuration.PointToSRank;
             _diamondModifier = _configuration.PointerDiamondSizeModifier;
+            _sirenHuntsBaseUrl = _configuration.SirenHuntsBaseUrl;
 
             //if voice name available on user's pc, set as tts voice. --else default already set.
             if (!_huntManager.DontUseSynthesizer && _huntManager.TTS.GetInstalledVoices().Any(v => v.VoiceInfo.Name == _configuration.TTSVoiceName))

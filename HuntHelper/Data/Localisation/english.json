@@ -101,6 +101,9 @@
 		"StatsTabMessage": "Hunts found:",
 
 		"DefaultSettingsWindowMessage": "There's nothing here\nOptions are available from the main map window,",
+		"SettingsWindowTitle": "Settings",
+		"SettingsWindowAdvancedTab": "Advanced",
+		"SirenHuntsBaseUrlInputLabel": "Siren Hunts base url:",
 
 		"LoadedHuntDataWindowTitle": "Loaded Hunt Data",
 		"LoadedHuntDataDatabaseTab": "database",
@@ -146,6 +149,7 @@
 		"StartRecordingButton": "Start Recording",
 		"StopRecordingButton": "Stop Recording",
 		"DeleteTrainButton": "Delete Train",
+		"CopySirenLinkButton": "Copy Siren Hunts Link",
 		"ImportButton": "Import",
 		"ContextMenuSelect": "   Select",
 		"ContextMenuRemove": "   Remove",

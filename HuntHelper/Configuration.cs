@@ -120,6 +120,8 @@ namespace HuntHelper
         public bool HuntTrainNextTeleportMeOnCommand { get; set; } = false;
         public bool HuntTrainShowTeleportButtons { get; set; } = false;
 
+        public string SirenHuntsBaseUrl { get; set; } = Constants.SirenHuntsDefaultBaseUrl;
+
         #endregion
 
 

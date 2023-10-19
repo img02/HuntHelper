@@ -101,6 +101,9 @@
 		"StatsTabMessage": "已找到的怪物:",
 
 		"DefaultSettingsWindowMessage": "啥也没有\n设置在在主地图窗口",
+		"SettingsWindowTitle": "Settings",
+		"SettingsWindowAdvancedTab": "Advanced",
+		"SirenHuntsBaseUrlInputLabel": "Siren Hunts base url:",
 
 		"LoadedHuntDataWindowTitle": "加载狩猎数据",
 		"LoadedHuntDataDatabaseTab": "数据库",
@@ -146,6 +149,7 @@
 		"StartRecordingButton": "开始录制",
 		"StopRecordingButton": "停止录制",
 		"DeleteTrainButton": "删除狩猎车序",
+		"CopySirenLinkButton": "Copy Siren Hunts Link",
 		"ImportButton": "导入",
 		"ContextMenuSelect": "   选择",
 		"ContextMenuRemove": "   删除",

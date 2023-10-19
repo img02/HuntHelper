@@ -6,6 +6,9 @@ public static class Constants
 {
     public const string BaseImageUrl = "https://raw.githubusercontent.com/imaginary-png/HuntHelper-Resources/main/Images/Maps/";
     public const string RepoUrl = "https://github.com/imaginary-png/HuntHelper-Resources/";
+    
+    // Siren Hunts
+    public const string SirenHuntsDefaultBaseUrl = "https://www.sirenhunts.com/scouting";
 
     #region English
     //en

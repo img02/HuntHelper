@@ -51,6 +51,7 @@ namespace HuntHelper
         private HuntManager HuntManager { get; init; }
         private TrainManager TrainManager { get; init; }
         private MapDataManager MapDataManager { get; init; }
+        private SirenHuntsManager SirenHuntsManager { get; init; }
         private IFlyTextGui FlyTextGui { get; init; }
         private IGameGui GameGui { get; init; }
 
@@ -97,9 +98,10 @@ namespace HuntHelper
             this.TrainManager = new TrainManager(ChatGui, GameGui, dataManager, Path.Combine(PluginInterface.AssemblyLocation.Directory?.FullName!, @"Data\HuntTrain.json"));
             this.HuntManager = new HuntManager(PluginInterface, TrainManager, chatGui, flyTextGui, this.Configuration.TTSVolume);
             this.MapDataManager = new MapDataManager(Path.Combine(PluginInterface.AssemblyLocation.Directory?.FullName!, @"Data\SpawnPointData.json"));
+            this.SirenHuntsManager = new SirenHuntsManager(Configuration, ChatGui, MapDataManager, Path.Combine(PluginInterface.AssemblyLocation.Directory?.FullName!, @"Data\SirenHunts.json"));
 
             this.MapUi = new MapUI(this.Configuration, pluginInterface, clientState, objectTable, dataManager, HuntManager, MapDataManager, GameGui);
-            this.HuntTrainUI = new HuntTrainUI(TrainManager, Configuration);
+            this.HuntTrainUI = new HuntTrainUI(TrainManager, Configuration, SirenHuntsManager);
             this.CounterUI = new CounterUI(ClientState, ChatGui, GameGui, Configuration, ObjectTable, FateTable);
             this.SpawnPointFinderUI = new SpawnPointFinderUI(MapDataManager, DataManager, Configuration);
             this.PointerUI = new PointerUI(HuntManager, Configuration, GameGui);
