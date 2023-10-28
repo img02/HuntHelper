@@ -138,7 +138,7 @@ public class HuntManager
     public void AddNearbyMobs(List<BattleNpc> nearbyMobs, float zoneMapCoordSize, uint territoryId, uint mapid,
         bool aTTS, bool bTTS, bool sTTS, string aTTSmsg, string bTTSmsg, string sTTSmsg,
         bool chatA, bool chatB, bool chatS, string chatAmsg, string chatBmsg, string chatSmsg,
-        bool flyTxtA, bool flyTxtB, bool flyTxtS)
+        bool flyTxtA, bool flyTxtB, bool flyTxtS, uint instance)
     {
         //compare with old list
         //move old mob set out
@@ -162,20 +162,20 @@ public class HuntManager
             {
                 case HuntRank.A:
                     NewMobFoundTTS(aTTS, aTTSmsg, mob);
-                    SendChatMessage(chatA, chatAmsg, territoryId, mapid, mob, zoneMapCoordSize);
+                    SendChatMessage(chatA, chatAmsg, territoryId, mapid, instance, mob, zoneMapCoordSize);
                     SendFlyText(rank, mob, flyTxtA);
                     ACount++;
                     break;
                 case HuntRank.B:
                     NewMobFoundTTS(bTTS, bTTSmsg, mob);
-                    SendChatMessage(chatB, chatBmsg, territoryId, mapid, mob, zoneMapCoordSize);
+                    SendChatMessage(chatB, chatBmsg, territoryId, mapid, instance, mob, zoneMapCoordSize);
                     SendFlyText(rank, mob, flyTxtB);
                     BCount++;
                     break;
                 case HuntRank.S:
                 case HuntRank.SS: //don't think ss is actually used lol
                     NewMobFoundTTS(sTTS, sTTSmsg, mob);
-                    SendChatMessage(chatS, chatSmsg, territoryId, mapid, mob, zoneMapCoordSize);
+                    SendChatMessage(chatS, chatSmsg, territoryId, mapid, instance, mob, zoneMapCoordSize);
                     SendFlyText(rank, mob, flyTxtS);
                     SCount++;
                     break;
@@ -212,7 +212,7 @@ public class HuntManager
         }
     }
 
-    public void SendChatMessage(bool enabled, string msg, uint territoryId, uint mapid, BattleNpc mob, float zoneCoordSize)
+    public void SendChatMessage(bool enabled, string msg, uint territoryId, uint mapid, uint instance, BattleNpc mob, float zoneCoordSize)
     {
         if (!enabled) return;
 
@@ -248,9 +248,10 @@ public class HuntManager
                     if (rank == HuntRank.S) sb.AddUiForeground("S-Rank", _sTextColour); //gold 
                     break;
                 case "<name>":
-                    if (rank == HuntRank.A) sb.AddUiForeground($"{mob.Name}", _aTextColour); //red / pinkish
-                    if (rank == HuntRank.B) sb.AddUiForeground($"{mob.Name}", _bTextColour); //blue
-                    if (rank == HuntRank.S) sb.AddUiForeground($"{mob.Name}", _sTextColour); //gold 
+                    var name = $"{mob.Name}{LocalizationUtil.GetInstanceGlyph(instance)}";
+                    if (rank == HuntRank.A) sb.AddUiForeground(name, _aTextColour); //red / pinkish
+                    if (rank == HuntRank.B) sb.AddUiForeground(name, _bTextColour); //blue
+                    if (rank == HuntRank.S) sb.AddUiForeground(name, _sTextColour); //gold 
                     break;
                 case "<hpp>": //change colour based on initial hp? meh
                     if (Math.Abs(hpp - 100) < 1) sb.AddUiForeground($"{hpp:0}%", 67); //green - ~100% hp
@@ -394,13 +395,13 @@ public class HuntManager
         return text;
     }
     public bool IsHunt(uint modelID)
-    {
+    {   
         var exists = false;
-        exists = _arrDict.Any(kvp => kvp.Value.Any(m => m.ModelID == modelID));
-        if (!exists) exists = _hwDict.Any(kvp => kvp.Value.Any(m => m.ModelID == modelID));
-        if (!exists) exists = _sbDict.Any(kvp => kvp.Value.Any(m => m.ModelID == modelID));
+        exists = _ewDict.Any(kvp => kvp.Value.Any(m => m.ModelID == modelID));
         if (!exists) exists = _shbDict.Any(kvp => kvp.Value.Any(m => m.ModelID == modelID));
-        if (!exists) exists = _ewDict.Any(kvp => kvp.Value.Any(m => m.ModelID == modelID));
+        if (!exists) exists = _sbDict.Any(kvp => kvp.Value.Any(m => m.ModelID == modelID));
+        if (!exists) exists = _hwDict.Any(kvp => kvp.Value.Any(m => m.ModelID == modelID));        
+        if (!exists) exists = _arrDict.Any(kvp => kvp.Value.Any(m => m.ModelID == modelID));
         return exists;
     }
 

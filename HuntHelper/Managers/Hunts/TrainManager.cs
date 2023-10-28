@@ -70,10 +70,12 @@ public class TrainManager
             _chatGui.Print(sb.BuiltString);
             return;
         }
+        var instance = LocalizationUtil.GetInstanceGlyph(HuntTrain[index].Instance);
+        var name = $"{HuntTrain[index].Name}{instance}";
 
         sb.AddUiForeground(textColor);
         sb.AddIcon(BitmapFontIcon.ExclamationRectangle);
-        sb.AddText(HuntTrain[index].Name + "---");
+        sb.AddText(name + "---");
         sb.AddUiForegroundOff();
 
         sb.AddUiForeground(flagColour);

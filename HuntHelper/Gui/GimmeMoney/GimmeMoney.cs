@@ -47,17 +47,15 @@ namespace HuntHelper.Gui.GimmeMoney
         /// <param name="_bottomPanelHeight"></param>
         public static void drawDonoButton()
         {
-            //took this from simpletweaks ;d
             ImGui.PushStyleColor(ImGuiCol.Button, 0xFF000000 | 0x005E5BFF);
             ImGui.PushStyleColor(ImGuiCol.ButtonHovered, 0xAA000000 | 0x005E5BFF);           
 
             if (ImGui.Button("ko-fi"))
-            {
-                //("If you've found this plugin useful and want to show some support.");
+            {         
                 var url = Constants.kofiUrl;
                 System.Diagnostics.Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
             }
-            ImGuiUtil.ImGui_HoveredToolTip("If you've found this plugin useful and wnat to show some support.");
+            ImGuiUtil.ImGui_HoveredToolTip("If you've found this plugin useful and want to show some support.");
 
             ImGui.PopStyleColor(2);
         }

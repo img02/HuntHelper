@@ -1491,7 +1491,7 @@ namespace HuntHelper.Gui
             _huntManager.AddNearbyMobs(nearbyMobs, _mapZoneMaxCoordSize, _territoryId, MapHelpers.GetMapID(_dataManager, _territoryId),
                 _ttsAEnabled, _ttsBEnabled, _ttsSEnabled, _ttsAMessage, _ttsBMessage, _ttsSMessage,
                 _chatAEnabled, _chatBEnabled, _chatSEnabled, _chatAMessage, _chatBMessage, _chatSMessage,
-                _flyTxtAEnabled, _flyTxtBEnabled, _flyTxtSEnabled);
+                _flyTxtAEnabled, _flyTxtBEnabled, _flyTxtSEnabled, _instance);
             UpdateStats();
 
             if (!MapVisible) return;
@@ -1652,7 +1652,7 @@ namespace HuntHelper.Gui
             {
                 _huntManager.SendChatMessage(true,
                     "<exclamationrectangle> <name> <flag> -- <rank> <exclamationrectangle>",
-                    _territoryId, MapHelpers.GetMapID(_dataManager, _territoryId),
+                    _territoryId, MapHelpers.GetMapID(_dataManager, _territoryId), _instance,
                     mob, _mapZoneMaxCoordSize);
             }
         }
