@@ -490,6 +490,8 @@ namespace HuntHelper.Gui
                     ImGuiUtil.ImGui_HelpMarker(GuiResources.MapGuiText["LoadedHuntDataButtonToolTip"]);
                     DrawDataBaseWindow();
 
+                    GimmeMoney.GimmeMoney.drawDonoButton();
+
                     /*ImGui.TextUnformatted($"{ImGui.GetWindowSize()}");
                     ImGui.TextUnformatted($"{ImGui.GetContentRegionAvail()}");*/
 
@@ -500,6 +502,9 @@ namespace HuntHelper.Gui
                 if (ImGui.BeginTabBar("Options", ImGuiTabBarFlags.FittingPolicyScroll))
                 {
                     var tabBarHeight = 57f;
+                    //default height, increase in individual tabs as needed
+                    _bottomPanelHeight = tabBarHeight + 90f * ImGuiHelpers.GlobalScale;
+
                     if (ImGui.BeginTabItem(GuiResources.MapGuiText["GeneralTab"]))
                     {
                         _bottomPanelHeight = tabBarHeight + 155f * ImGuiHelpers.GlobalScale; //tab bar + spacing seems to be around ~57f. 155f is the sizeY of the largest content section
@@ -953,7 +958,7 @@ namespace HuntHelper.Gui
                             if (ImGui.BeginTabItem(GuiResources.MapGuiText["SettingsTab"]))
                             {
                                 _bottomPanelHeight = tabBarHeight + 98f * ImGuiHelpers.GlobalScale;
-                                
+
                                 ImGui.Dummy(new Vector2(0f, 2f));
                                 if (ImGui.BeginTable("##settings table", 2, ImGuiTableFlags.ScrollX | ImGuiTableFlags.ScrollY))
                                 {
@@ -971,7 +976,7 @@ namespace HuntHelper.Gui
                                         }
 
                                         var itemPos = Array.IndexOf(listOfVoiceNames, _ttsVoiceName);
-                                        
+
                                         ImGui.TableNextColumn();
                                         ImGui.Text(GuiResources.MapGuiText["SelectVoiceLabel"]);
 
@@ -995,7 +1000,7 @@ namespace HuntHelper.Gui
                                             tts.Volume = _ttsVoiceVolume;
                                             _huntManager.TTSVolume = _ttsVoiceVolume;
                                         }
-                                        
+
                                         ImGui.SameLine();
 
                                         if (ImGui.Button(GuiResources.MapGuiText["VoiceTestButton"]))
@@ -1059,8 +1064,6 @@ namespace HuntHelper.Gui
 
                     if (ImGui.BeginTabItem(GuiResources.MapGuiText["OnScreenMobInfoTab"]))
                     {
-                        _bottomPanelHeight = tabBarHeight + 90f * ImGuiHelpers.GlobalScale;
-
                         ImGui.SetNextWindowContentSize(new Vector2(470 * ImGuiHelpers.GlobalScale, 0));
 
                         if (ImGui.BeginChild("##mobinfo child", ImGui.GetContentRegionAvail(), true, ImGuiWindowFlags.HorizontalScrollbar))
@@ -1119,8 +1122,6 @@ namespace HuntHelper.Gui
 
                     if (ImGui.BeginTabItem(GuiResources.MapGuiText["StatsTab"]))
                     {
-                        _bottomPanelHeight = 120f * ImGuiHelpers.GlobalScale;
-
                         ImGuiUtil.DoStuffWithMonoFont(() =>
                             {
                                 ImGui.TextUnformatted(GuiResources.MapGuiText["StatsTabMessage"]);
@@ -1135,7 +1136,6 @@ namespace HuntHelper.Gui
 
                     if (ImGui.BeginTabItem("Language"))
                     {
-                        _bottomPanelHeight = 120f * ImGuiHelpers.GlobalScale;
                         var languages = GuiResources.GetAvailableLanguages();
                         var index = Array.IndexOf(languages, _guiLanguage);
 
@@ -1156,9 +1156,8 @@ namespace HuntHelper.Gui
 
                     if (ImGui.BeginTabItem("Translate"))
                     {
-                        _bottomPanelHeight = 120f * ImGuiHelpers.GlobalScale;
                         ImGui.TextWrapped("If you want to help translate this plugin");
-                        var url = "https://github.com/imaginary-png/HuntHelper/tree/main/Translate";
+                        var url = Constants.translateUrl;
                         ImGui.InputText(" -- click me", ref url, 100, ImGuiInputTextFlags.ReadOnly);
                         if (ImGui.IsItemClicked())
                         {
@@ -1167,6 +1166,7 @@ namespace HuntHelper.Gui
                         ImGui.TextWrapped("or dm me @ img#7855");
                         ImGui.EndTabItem();
                     }
+
                     ImGui.EndTabBar();
                 }
             }
