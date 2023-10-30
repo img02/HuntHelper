@@ -1,5 +1,4 @@
 ﻿using Dalamud;
-using Dalamud.Logging;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;

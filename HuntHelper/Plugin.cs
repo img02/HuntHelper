@@ -62,10 +62,13 @@ namespace HuntHelper
             IChatGui chatGui,
             IFlyTextGui flyTextGui,
             IGameGui gameGui,
-            IFateTable fateTable)
+            IFateTable fateTable,
+            IPluginLog pluginLog)
         {
             this.PluginInterface = pluginInterface;
             this.CommandManager = commandManager;
+
+            PluginLog.Logger = pluginLog;
 
             PluginDir = PluginInterface.AssemblyLocation.Directory?.FullName!;
 
