@@ -1,8 +1,7 @@
-﻿using Dalamud.Data;
+﻿using Dalamud.Plugin.Services;
 using Lumina.Data;
 using Lumina.Excel.GeneratedSheets;
 using System;
-using Dalamud.Plugin.Services;
 
 namespace HuntHelper.Utilities;
 

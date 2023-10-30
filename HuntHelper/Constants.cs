@@ -1,5 +1,4 @@
 ﻿using Dalamud;
-using static System.Net.WebRequestMethods;
 
 namespace HuntHelper;
 

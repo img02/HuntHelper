@@ -1,8 +1,7 @@
-﻿using Dalamud.Data;
-using Dalamud.Game.ClientState.Objects.Types;
-using Dalamud.Game.Gui;
+﻿using Dalamud.Game.ClientState.Objects.Types;
 using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Game.Text.SeStringHandling.Payloads;
+using Dalamud.Plugin.Services;
 using HuntHelper.Managers.Hunts.Models;
 using HuntHelper.Utilities;
 using Lumina.Excel.GeneratedSheets;
@@ -12,7 +11,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Numerics;
-using Dalamud.Plugin.Services;
 
 namespace HuntHelper.Managers.Hunts;
 

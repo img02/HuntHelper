@@ -1,6 +1,7 @@
-﻿using Dalamud.Data;
-using Dalamud.Interface;
+﻿using Dalamud.Interface;
 using Dalamud.Interface.Components;
+using Dalamud.Interface.Utility;
+using Dalamud.Plugin.Services;
 using HuntHelper.Gui.Resource;
 using HuntHelper.Managers.MapData;
 using HuntHelper.Managers.MapData.Models;
@@ -11,8 +12,6 @@ using System.Collections.Generic;
 using System.Numerics;
 using System.Threading;
 using System.Threading.Tasks;
-using Dalamud.Interface.Utility;
-using Dalamud.Plugin.Services;
 
 namespace HuntHelper.Gui;
 //https://github.com/mellinoe/ImGui.NET/issues/107#issuecomment-467146212

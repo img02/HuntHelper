@@ -1,20 +1,7 @@
-﻿using Dalamud.Game.ClientState;
-using Dalamud.Game.ClientState.Fates;
-using Dalamud.Game.ClientState.Objects;
-using Dalamud.Game.Gui;
-using Dalamud.Game.Text;
+﻿using Dalamud.Game.ClientState.Fates;
 using Dalamud.Game.Text.SeStringHandling.Payloads;
 using Dalamud.Interface;
-using Dalamud.Interface.Components;
-using Dalamud.Logging;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
-using HuntHelper.Gui.Resource;
-using HuntHelper.Managers.Counters;
-using HuntHelper.Managers.Counters.ARR;
-using HuntHelper.Managers.Counters.EW;
-using HuntHelper.Managers.Counters.HW;
-using HuntHelper.Managers.Counters.SB;
-using HuntHelper.Managers.Counters.ShB;
 using HuntHelper.Utilities;
 using ImGuiNET;
 using System;
@@ -24,11 +11,10 @@ using System.Linq;
 using System.Numerics;
 using System.Threading;
 using System.Threading.Tasks;
-using Dalamud.Game.Text.SeStringHandling;
 
 namespace HuntHelper.Gui;
 
-public unsafe partial class CounterUI 
+public unsafe partial class CounterUI
 {
     #region Nunni - Fates - Southern Than
     private string _lastFailedFateInfo = string.Empty;

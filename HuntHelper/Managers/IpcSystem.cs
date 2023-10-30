@@ -7,18 +7,17 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using System.Threading.Tasks;
 
 namespace HuntHelper.Managers;
 
 public class IpcSystem : IDisposable
 {
     private const uint HuntHelperApiVersion = 1;
-    
+
     private readonly DalamudPluginInterface _pluginInterface;
     private readonly IFramework _framework;
     private readonly TrainManager _trainManager;
-    
+
     private readonly ICallGateProvider<uint> _cgGetVersion;
     private readonly ICallGateProvider<List<MobRecord>> _cgGetTrainList;
 
@@ -27,10 +26,10 @@ public class IpcSystem : IDisposable
         _pluginInterface = pluginInterface;
         _framework = framework;
         _trainManager = trainManager;
-        
+
         _cgGetVersion = pluginInterface.GetIpcProvider<uint>("HH.GetVersion");
         _cgGetTrainList = pluginInterface.GetIpcProvider<List<MobRecord>>("HH.GetTrainList");
-        
+
         _cgGetVersion.RegisterFunc(GetVersion);
         _cgGetTrainList.RegisterFunc(GetTrainList);
 

@@ -1,5 +1,4 @@
 ﻿using Dalamud.Game.Command;
-using Dalamud.Logging;
 using Dalamud.Plugin;
 using Dalamud.Plugin.Ipc;
 using Dalamud.Plugin.Services;
@@ -73,7 +72,7 @@ namespace HuntHelper
             PluginDir = PluginInterface.AssemblyLocation.Directory?.FullName!;
 
             this.ClientState = clientState;
-            
+
             if (!GuiResources.LoadGuiText(ClientState.ClientLanguage))
             {
                 PluginLog.Error("Unable to find localisation file. What did you do?! gonna crash ok");

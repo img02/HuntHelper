@@ -1,5 +1,4 @@
-﻿using Dalamud.Logging;
-using Dalamud.Plugin.Ipc.Exceptions;
+﻿using Dalamud.Plugin.Ipc.Exceptions;
 using HuntHelper.Managers.Hunts.Models;
 using System.Collections.Generic;
 using System.Linq;

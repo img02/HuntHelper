@@ -1,5 +1,6 @@
 ﻿using Dalamud.Interface;
 using Dalamud.Interface.Components;
+using Dalamud.Interface.Utility;
 using HuntHelper.Gui.Resource;
 using HuntHelper.Managers;
 using HuntHelper.Managers.Hunts;
@@ -12,7 +13,6 @@ using System.Linq;
 using System.Numerics;
 using System.Threading;
 using System.Threading.Tasks;
-using Dalamud.Interface.Utility;
 
 namespace HuntHelper.Gui;
 

@@ -1,12 +1,10 @@
 ﻿using Dalamud.Game.ClientState.Objects.Types;
-using Dalamud.Game.Gui;
-using Dalamud.Interface;
+using Dalamud.Interface.Utility;
+using Dalamud.Plugin.Services;
 using HuntHelper.Managers.Hunts;
 using ImGuiNET;
 using System;
 using System.Numerics;
-using Dalamud.Interface.Utility;
-using Dalamud.Plugin.Services;
 
 namespace HuntHelper.Gui;
 

@@ -1,13 +1,12 @@
 ﻿using Dalamud.Game.ClientState.Objects.Types;
-using Dalamud.Game.Gui;
 using Dalamud.Game.Gui.FlyText;
 using Dalamud.Game.Text.SeStringHandling;
-using Dalamud.Logging;
+using Dalamud.Interface.Internal;
 using Dalamud.Plugin;
+using Dalamud.Plugin.Services;
 using HuntHelper.Managers.Hunts.Models;
 using HuntHelper.Managers.MapData.Models;
 using HuntHelper.Utilities;
-using ImGuiScene;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -17,8 +16,6 @@ using System.Linq;
 using System.Speech.Synthesis;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Dalamud.Interface.Internal;
-using Dalamud.Plugin.Services;
 
 namespace HuntHelper.Managers.Hunts;
 
@@ -395,12 +392,12 @@ public class HuntManager
         return text;
     }
     public bool IsHunt(uint modelID)
-    {   
+    {
         var exists = false;
         exists = _ewDict.Any(kvp => kvp.Value.Any(m => m.ModelID == modelID));
         if (!exists) exists = _shbDict.Any(kvp => kvp.Value.Any(m => m.ModelID == modelID));
         if (!exists) exists = _sbDict.Any(kvp => kvp.Value.Any(m => m.ModelID == modelID));
-        if (!exists) exists = _hwDict.Any(kvp => kvp.Value.Any(m => m.ModelID == modelID));        
+        if (!exists) exists = _hwDict.Any(kvp => kvp.Value.Any(m => m.ModelID == modelID));
         if (!exists) exists = _arrDict.Any(kvp => kvp.Value.Any(m => m.ModelID == modelID));
         return exists;
     }

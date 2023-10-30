@@ -1,13 +1,7 @@
-﻿using Dalamud.Game.ClientState;
-using Dalamud.Game.ClientState.Fates;
-using Dalamud.Game.ClientState.Objects;
-using Dalamud.Game.Gui;
-using Dalamud.Game.Text;
-using Dalamud.Game.Text.SeStringHandling.Payloads;
+﻿using Dalamud.Game.Text;
 using Dalamud.Interface;
 using Dalamud.Interface.Components;
-using Dalamud.Logging;
-using FFXIVClientStructs.FFXIV.Client.UI.Agent;
+using Dalamud.Plugin.Services;
 using HuntHelper.Gui.Resource;
 using HuntHelper.Managers.Counters;
 using HuntHelper.Managers.Counters.ARR;
@@ -19,13 +13,8 @@ using HuntHelper.Utilities;
 using ImGuiNET;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Numerics;
-using System.Threading;
-using System.Threading.Tasks;
-using Dalamud.Game.Text.SeStringHandling;
-using Dalamud.Plugin.Services;
 
 namespace HuntHelper.Gui;
 

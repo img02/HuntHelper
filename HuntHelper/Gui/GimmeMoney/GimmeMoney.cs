@@ -1,12 +1,7 @@
 ﻿using Dalamud.Interface.Utility;
 using HuntHelper.Utilities;
 using ImGuiNET;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HuntHelper.Gui.GimmeMoney
 {
@@ -48,10 +43,10 @@ namespace HuntHelper.Gui.GimmeMoney
         public static void drawDonoButton()
         {
             ImGui.PushStyleColor(ImGuiCol.Button, 0xFF000000 | 0x005E5BFF);
-            ImGui.PushStyleColor(ImGuiCol.ButtonHovered, 0xAA000000 | 0x005E5BFF);           
+            ImGui.PushStyleColor(ImGuiCol.ButtonHovered, 0xAA000000 | 0x005E5BFF);
 
             if (ImGui.Button("ko-fi"))
-            {         
+            {
                 var url = Constants.kofiUrl;
                 System.Diagnostics.Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
             }
