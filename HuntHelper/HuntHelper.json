@@ -1,5 +1,5 @@
 {
-  "Author": "imaginary-png",
+  "Author": "img",
   "Name": "Hunt Helper",
   "Punchline": "basically a hunt radar + train recorder + notifications + s rank utils +++.",
   "Description": "Hunt map with spawns points, A-Rank train recorder (w/ export/import sharing), TTS, Chat notifications, Counters for S-Rank Spawns",
@@ -13,15 +13,15 @@
     "mob"
   ],
   "InternalName": "Hunt Helper",
-  "RepoUrl": "https://github.com/imaginary-png/HuntHelper",
+  "RepoUrl": "https://github.com/img02/HuntHelper",
   "ApplicableVersion": "any",
   "DalamudApiLevel": 9,
   "LoadPriority": 0,
   "ImageUrls": [
-    "https://raw.githubusercontent.com/imaginary-png/HuntHelper/main/Images/image1.png",
-    "https://raw.githubusercontent.com/imaginary-png/HuntHelper/main/Images/image2.png",
-    "https://raw.githubusercontent.com/imaginary-png/HuntHelper/main/Images/image3.png",
-    "https://raw.githubusercontent.com/imaginary-png/HuntHelper/main/Images/image4.png"
+    "https://raw.githubusercontent.com/img02/HuntHelper/main/Images/image1.png",
+    "https://raw.githubusercontent.com/img02/HuntHelper/main/Images/image2.png",
+    "https://raw.githubusercontent.com/img02/HuntHelper/main/Images/image3.png",
+    "https://raw.githubusercontent.com/img02/HuntHelper/main/Images/image4.png"
   ],
-  "IconUrl": "https://raw.githubusercontent.com/imaginary-png/HuntHelper/main/Images/icon.png"
+  "IconUrl": "https://raw.githubusercontent.com/img02/HuntHelper/main/Images/icon.png"
 }
