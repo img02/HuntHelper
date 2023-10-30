@@ -203,11 +203,11 @@ public unsafe class TeleportManager
 
     public void TeleportToHunt(HuntTrainMob mob)
     {
-        if (!Aetherytes.Exists(a => a.TerritoryID == mob.TerritoryID)) return;
         var aeth = GetNearestAetheryte(mob.TerritoryID, mob.Position);
+        if (aeth == null) return;
         try
         {
-            Plugin.TeleportIpc.InvokeFunc(aeth.AetheryteID, aeth.SubIndex);
+            Plugin.TeleportIpc.InvokeFunc(((AetheryteData)aeth).AetheryteID, ((AetheryteData)aeth).SubIndex);
         }
         catch (IpcNotReadyError)
         {
@@ -216,10 +216,11 @@ public unsafe class TeleportManager
         }
     }
 
-    private AetheryteData GetNearestAetheryte(uint territoryID, Vector2 mobPosition)
+    private AetheryteData? GetNearestAetheryte(uint territoryID, Vector2 mobPosition)
     {
         var zoneAetherytes = Aetherytes.Where(a => a.TerritoryID == territoryID).ToList();
         if (zoneAetherytes.Count() == 1) return zoneAetherytes[0];
+        if (zoneAetherytes.Count() == 0) return null;
 
         var aetheryte = zoneAetherytes[0];
         var smallestDist = Vector2.Distance(mobPosition, zoneAetherytes[0].Position);
