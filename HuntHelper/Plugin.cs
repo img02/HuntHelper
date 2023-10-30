@@ -1,23 +1,15 @@
-﻿using Dalamud.Data;
-using Dalamud.Game.ClientState;
-using Dalamud.Game.ClientState.Objects;
-using Dalamud.Game.Command;
-using Dalamud.Game.Gui;
-using Dalamud.Game.Gui.FlyText;
+﻿using Dalamud.Game.Command;
 using Dalamud.Logging;
 using Dalamud.Plugin;
 using Dalamud.Plugin.Ipc;
+using Dalamud.Plugin.Services;
 using HuntHelper.Gui;
+using HuntHelper.Gui.Resource;
+using HuntHelper.Managers;
 using HuntHelper.Managers.Hunts;
 using HuntHelper.Managers.MapData;
-using Newtonsoft.Json;
-using System.Collections.Generic;
 using System;
 using System.IO;
-using Dalamud;
-using Dalamud.Game.ClientState.Fates;
-using Dalamud.Plugin.Services;
-using HuntHelper.Gui.Resource;
 
 namespace HuntHelper
 {
@@ -51,6 +43,7 @@ namespace HuntHelper
         private HuntManager HuntManager { get; init; }
         private TrainManager TrainManager { get; init; }
         private MapDataManager MapDataManager { get; init; }
+        private IpcSystem IpcSystem { get; init; }
         private IFlyTextGui FlyTextGui { get; init; }
         private IGameGui GameGui { get; init; }
 
@@ -61,6 +54,7 @@ namespace HuntHelper
 
         public Plugin(
             DalamudPluginInterface pluginInterface,
+            IFramework framework,
             ICommandManager commandManager,
             IClientState clientState,
             IObjectTable objectTable,
@@ -97,6 +91,7 @@ namespace HuntHelper
             this.TrainManager = new TrainManager(ChatGui, GameGui, dataManager, Path.Combine(PluginInterface.AssemblyLocation.Directory?.FullName!, @"Data\HuntTrain.json"));
             this.HuntManager = new HuntManager(PluginInterface, TrainManager, chatGui, flyTextGui, this.Configuration.TTSVolume);
             this.MapDataManager = new MapDataManager(Path.Combine(PluginInterface.AssemblyLocation.Directory?.FullName!, @"Data\SpawnPointData.json"));
+            this.IpcSystem = new IpcSystem(pluginInterface, framework, TrainManager);
 
             this.MapUi = new MapUI(this.Configuration, pluginInterface, clientState, objectTable, dataManager, HuntManager, MapDataManager, GameGui);
             this.HuntTrainUI = new HuntTrainUI(TrainManager, Configuration);
@@ -160,6 +155,7 @@ namespace HuntHelper
             this.CounterUI.SaveSettings();
             this.SpawnPointFinderUI.SaveSettings();
 
+            this.IpcSystem.Dispose();
             //this.HuntTrainUI.Dispose();
             this.SpawnPointFinderUI.Dispose();
             this.CounterUI.Dispose();
