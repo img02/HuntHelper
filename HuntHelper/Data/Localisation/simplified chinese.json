@@ -7,6 +7,7 @@
 		"/hh2save helpmessage": "保存预设2",
 		"/hht helpmessage": "开启狩猎车界面",
 		"/hhn helpmessage": "发送狩猎车下一站坐标至聊天",
+		"/hhna helpmessage": "Sends the flag for the next train mob's nearest Aetheryte into chat",
 		"/hhc helpmessage": "计数器窗口 -- 面相农怪触发的S",
 		"/hhr helpmessage": "刷新点追踪窗口"
 	},
@@ -141,6 +142,7 @@
 		"TeleportOnClick": "点击传送",
 		"TeleportOnClickToolTip": "当点击狩猎时，启动传送到最近的以太水晶。这将开始传送，即使你试图重新排序或点击只是为了聊天链接。",
 		"TeleportOnCommand": "当使用/hhn时，启动传送到最近的以太水晶。",
+		"TeleportToAetheryte": "Initiate teleport to closest Aetheryte when /hhna used. This will override the /hhn teleport.",
 		"RemoveDeadButton": "移除已死亡",
 		"ResetDeadButton": "重设死亡统计",
 		"StartRecordingButton": "开始录制",

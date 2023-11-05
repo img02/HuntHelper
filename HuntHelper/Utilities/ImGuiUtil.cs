@@ -31,16 +31,19 @@ public class ImGuiUtil
         ImGui.SetCursorPosX((windowWidth - textWidth) * 0.5f * offset);
     }
 
+    public static void ImGui_HelpMarker(string text, Vector4 bg)
+    {
+        ImGui.PushStyleColor(ImGuiCol.PopupBg, bg);
+        ImGui_HelpMarker(text);
+        ImGui.PopStyleColor();
+    }
+
     public static void ImGui_HelpMarker(string text)
     {
         ImGui.TextDisabled("(?)");
         if (ImGui.IsItemHovered())
         {
-            ImGui.BeginTooltip();
-            ImGui.PushTextWrapPos(ImGui.GetFontSize() * 35.0f);
-            ImGui.TextUnformatted(text);
-            ImGui.PopTextWrapPos();
-            ImGui.EndTooltip();
+            ImGui_HoveredToolTip(text);
         }
     }
 
@@ -51,13 +54,25 @@ public class ImGuiUtil
         ImGui.PopFont();
     }
 
+    public static void ImGui_HoveredToolTip(string msg, Vector4 bg)
+    {
+        ImGui.PushStyleColor(ImGuiCol.PopupBg, bg);
+        ImGui_HoveredToolTip(msg);
+        ImGui.PopStyleColor();
+    }
+
     public static void ImGui_HoveredToolTip(string msg)
     {
         if (ImGui.IsItemHovered())
-        {
+        { 
+            ImGui.PushStyleVar(ImGuiStyleVar.PopupBorderSize, 1f);
+            ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, new Vector2(6f, 6f));
+
             ImGui.BeginTooltip();
             ImGui.Text(msg);
             ImGui.EndTooltip();
+
+            ImGui.PopStyleVar(2);
         }
     }
     public static void ImGui_Separator(float offsetY)

@@ -6,7 +6,7 @@ using System.Numerics;
 
 namespace HuntHelper.Managers;
 
-internal struct AetheryteData
+public struct AetheryteData
 {
     internal uint AetheryteID;
     internal byte SubIndex; //seems to always be 0 for non-housing
@@ -216,7 +216,7 @@ public unsafe class TeleportManager
         }
     }
 
-    private AetheryteData? GetNearestAetheryte(uint territoryID, Vector2 mobPosition)
+    public AetheryteData? GetNearestAetheryte(uint territoryID, Vector2 mobPosition)
     {
         var zoneAetherytes = Aetherytes.Where(a => a.TerritoryID == territoryID).ToList();
         if (zoneAetherytes.Count() == 1) return zoneAetherytes[0];

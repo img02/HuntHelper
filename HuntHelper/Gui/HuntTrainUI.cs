@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -37,6 +38,7 @@ public class HuntTrainUI : IDisposable
     private bool _teleportMe = false;
     private bool _teleportMeOnCommand = false;
     private bool _showTeleButtons = false;
+    private bool _teleToAetheryte = false;
     #endregion
 
     private Vector4 _deadTextColour = new Vector4(.6f, .7f, .6f, 1f);
@@ -88,6 +90,7 @@ public class HuntTrainUI : IDisposable
         _teleportMe = _config.HuntTrainNextTeleportMe;
         _teleportMeOnCommand = _config.HuntTrainNextTeleportMeOnCommand;
         _showTeleButtons = _config.HuntTrainShowTeleportButtons;
+        _teleToAetheryte = _config.HuntTrainTeleportToAetheryte;
     }
 
     public void SaveSettings()
@@ -101,6 +104,7 @@ public class HuntTrainUI : IDisposable
         _config.HuntTrainNextTeleportMe = _teleportMe;
         _config.HuntTrainNextTeleportMeOnCommand = _teleportMeOnCommand;
         _config.HuntTrainShowTeleportButtons = _showTeleButtons;
+        _config.HuntTrainTeleportToAetheryte = _teleToAetheryte;
     }
 
 
@@ -143,7 +147,14 @@ public class HuntTrainUI : IDisposable
             ImGui.BeginChild("NameHeader", new Vector2(nameWidth, 20 * ImGuiHelpers.GlobalScale), _useBorder,
                 ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse);
             ImGui.Text(GuiResources.HuntTrainGuiText["NameHeader"]);
+
+            ImGui.SameLine();
+            ImGuiUtil.ImGui_HelpMarker(GuiResources.HuntTrainGuiText["HowTo"], new Vector4(0.15f, 0.15f, 0.15f, 1f));           
+            ImGui.SameLine();
+            ImGui.TextColored(new Vector4(1f, .3f, .3f, 1f), "  <<<");
+
             ImGui.EndChild();
+
             if (_showTeleButtons)
             {
                 ImGui.SameLine();
@@ -162,11 +173,6 @@ public class HuntTrainUI : IDisposable
                 ImGui.Text(GuiResources.HuntTrainGuiText["LastSeenHeader"]);
                 ImGui.EndChild();
             }
-
-            ImGui.SameLine();
-            ImGuiUtil.ImGui_HelpMarker(GuiResources.HuntTrainGuiText["HowTo"]);
-            ImGui.SameLine();
-            ImGui.TextColored(new Vector4(1f, .3f, .3f, 1f), "  <<<");
 
             #endregion
 
@@ -224,26 +230,43 @@ public class HuntTrainUI : IDisposable
 
             if (ImGui.TreeNode($"options##treeeee", $"{GuiResources.HuntTrainGuiText["Settings"]}"))
             {
-                if (ImGui.BeginTable("settingsalignment", 2))
+                if (ImGui.TreeNode("cosmetic##iwanttodeletethisbutmaybesomeusersactuallyuseit", "Cosmetic"))
                 {
-                    ImGui.TableNextColumn();
-                    ImGui.Checkbox(GuiResources.HuntTrainGuiText["Border"], ref _useBorder);
-                    ImGui.TableNextColumn();
-                    ImGui.Checkbox(GuiResources.HuntTrainGuiText["LastSeen"], ref _showLastSeen);
-                    ImGuiUtil.ImGui_HoveredToolTip(GuiResources.HuntTrainGuiText["LastSeenToolTip"]);
-                    ImGui.TableNextColumn();
-                    ImGui.Checkbox(GuiResources.HuntTrainGuiText["OpenMap"], ref _openMap); //assuming this is allowed as it requires user interaction, but opening map on S rank spawn would be passive and so 'automated'
-                    ImGuiUtil.ImGui_HoveredToolTip(GuiResources.HuntTrainGuiText["OpenMapToolTip"]);
-                    ImGui.TableNextColumn();
-                    ImGui.Checkbox(GuiResources.HuntTrainGuiText["TeleButtons"], ref _showTeleButtons);
-                    ImGuiUtil.ImGui_HoveredToolTip(GuiResources.HuntTrainGuiText["TeleButtonsToolTip"]);
-                    ImGui.TableNextColumn();
-                    ImGui.Checkbox(GuiResources.HuntTrainGuiText["TeleportOnClick"], ref _teleportMe);
-                    ImGuiUtil.ImGui_HoveredToolTip(GuiResources.HuntTrainGuiText["TeleportOnClickToolTip"]);
-                    ImGui.TableNextColumn();
-                    ImGui.Checkbox(GuiResources.HuntTrainGuiText["TeleportOnCommand"], ref _teleportMeOnCommand);
-                    ImGuiUtil.ImGui_HoveredToolTip(GuiResources.HuntTrainGuiText["TeleportOnCommand"]);
-                    ImGui.EndTable();
+                    if (ImGui.BeginTable("settingsalignment", 2))
+                    {
+                        ImGui.TableNextColumn();
+                        ImGui.Checkbox(GuiResources.HuntTrainGuiText["Border"], ref _useBorder);
+                        ImGui.TableNextColumn();
+                        ImGui.Checkbox(GuiResources.HuntTrainGuiText["LastSeen"], ref _showLastSeen);
+                        ImGuiUtil.ImGui_HoveredToolTip(GuiResources.HuntTrainGuiText["LastSeenToolTip"]);
+                        ImGui.EndTable();
+                    }
+                    ImGui.TreePop();
+                }
+
+                if (ImGui.TreeNode("Teleport", "Teleport"))
+                {
+                    if (ImGui.BeginTable("settingsalignment", 2))
+                    {
+
+                        ImGui.TableNextColumn();
+                        ImGui.Checkbox(GuiResources.HuntTrainGuiText["OpenMap"], ref _openMap); //assuming this is allowed as it requires user interaction, but opening map on S rank spawn would be passive and so 'automated'
+                        ImGuiUtil.ImGui_HoveredToolTip(GuiResources.HuntTrainGuiText["OpenMapToolTip"]);
+                        ImGui.TableNextColumn();
+                        ImGui.Checkbox(GuiResources.HuntTrainGuiText["TeleButtons"], ref _showTeleButtons);
+                        ImGuiUtil.ImGui_HoveredToolTip(GuiResources.HuntTrainGuiText["TeleButtonsToolTip"]);
+                        ImGui.TableNextColumn();
+                        ImGui.Checkbox(GuiResources.HuntTrainGuiText["TeleportOnClick"], ref _teleportMe);
+                        ImGuiUtil.ImGui_HoveredToolTip(GuiResources.HuntTrainGuiText["TeleportOnClickToolTip"]);
+                        ImGui.TableNextColumn();
+                        ImGui.Checkbox(GuiResources.HuntTrainGuiText["TeleportOnCommand"], ref _teleportMeOnCommand);
+                        ImGuiUtil.ImGui_HoveredToolTip(GuiResources.HuntTrainGuiText["TeleportOnCommand"]);
+                        ImGui.TableNextColumn();
+                        ImGui.Checkbox(GuiResources.HuntTrainGuiText["TeleportToAetheryte"], ref _teleToAetheryte);
+                        ImGuiUtil.ImGui_HoveredToolTip(GuiResources.HuntTrainGuiText["TeleportToAetheryte"]);
+                        ImGui.EndTable();
+                    }
+                    ImGui.TreePop();
                 }
 
                 ImGui.TreePop();
@@ -494,7 +517,9 @@ public class HuntTrainUI : IDisposable
         });
     }
 
-    //called from command, sets current mob as dead, selects next, sends flag.
+    /// <summary>
+    /// called from command /hhn, sets current mob as dead, selects next, sends flag.
+    /// </summary>
     public void GetNextMobCommand()
     {
         if (_selectedIndex < _mobList.Count) _mobList[_selectedIndex].Dead = true;
@@ -502,9 +527,31 @@ public class HuntTrainUI : IDisposable
         if (!_mobList[_selectedIndex].Dead)
         {
             _trainManager.SendTrainFlag(_selectedIndex, _openMap);
-            if (_teleportMeOnCommand) _teleportManager.TeleportToHunt(_mobList[_selectedIndex]);
+            if (_teleportMeOnCommand && !_teleToAetheryte) _teleportManager.TeleportToHunt(_mobList[_selectedIndex]);
         }
         else _trainManager.SendTrainFlag(-1, false);
+    }
+
+    /// <summary>
+    /// called from command /hhna, gets flag of closest aetheryte to the next hunt mob
+    /// </summary>
+    public void GetNextMobNearestAetheryte()
+    {
+        var nextIndex = GetNextIndex();
+        if (nextIndex == -1)
+        {
+            _trainManager.SendTrainFlag(-1, false);
+            return;
+        }
+
+        if (!_mobList[nextIndex].Dead)
+        {
+            var mob = _mobList[nextIndex];
+            var aeth = _teleportManager.GetNearestAetheryte(mob.TerritoryID, mob.Position);
+            if (aeth == null) return;
+            _trainManager.OpenMap((AetheryteData)aeth, mob);
+            if (_teleportMeOnCommand && _teleToAetheryte) _teleportManager.TeleportToHunt(_mobList[nextIndex]);
+        }
     }
 
     //based off of https://github.com/ocornut/imgui/blob/docking/imgui_demo.cpp#L2337
@@ -563,19 +610,32 @@ public class HuntTrainUI : IDisposable
             HuntTrainMobAttribute.Position => $"({mob.Position.X:0.0}, {mob.Position.Y:0.0})"
         };
 
+    /// <summary>
+    /// returns -1 if no living mobs remain
+    /// </summary>
+    /// <returns></returns>
+    private int GetNextIndex()
+    {
+        // start from selected index to continue downwards
+        for (int i = _selectedIndex + 1; i < _mobList.Count; i++)
+        {
+            if (_mobList[i].Dead) continue;
+            return i;
+        }
+        // then go back to start
+        for (int i = 0; i < _selectedIndex; i++)
+        {
+            if (_mobList[i].Dead) continue;
+            return i;
+        }
+
+        return -1;
+    }
+
     private void SelectNext()
     {
-        for (int i = 0; _selectedIndex < _mobList.Count; _selectedIndex++)
-        {
-            if (!_mobList[_selectedIndex].Dead) return;
-
-            //this way, if there is a preceding hunt that was skipped (still alive) for some reason, 
-            //the list will continue downwards first, before looping back to the top 
-            if (i != 0 || _selectedIndex != _mobList.Count - 1) continue;
-            _selectedIndex = -1;
-            i++;
-        }
-        _selectedIndex = 0; //if all mobs are dead, set to index 0.
+        var nextIndex = GetNextIndex();
+        _selectedIndex = nextIndex == -1 ? 0 : nextIndex;
     }
 
     private enum HuntTrainMobAttribute

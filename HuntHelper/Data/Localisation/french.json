@@ -7,6 +7,7 @@
 		"/hh2save helpmessage": "Save Preset Two",
 		"/hht helpmessage": "Opens the Hunt Train Window",
 		"/hhn helpmessage": "Sends the flag for the next train mob into chat",
+		"/hhna helpmessage": "Sends the flag for the next train mob's nearest Aetheryte into chat",
 		"/hhc helpmessage": "Counter window -- for counter-based S ranks",
 		"/hhr helpmessage": "Spawn point tracking window"
 	},

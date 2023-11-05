@@ -86,17 +86,26 @@ public class TrainManager
 
         _chatGui.Print(sb.BuiltString);
 
-        if (!openMap) return;
-        var mlp = (MapLinkPayload)HuntTrain[index].MapLink.Payloads[0];
-        _gameGui.OpenMapWithMapLink(mlp);
-
+        if (!openMap) return;        
+        OpenMap(HuntTrain[index], openMap);
     }
-
+  
     public void OpenMap(HuntTrainMob mob, bool openMap)
     {
         if (!openMap) return;
         var mlp = (MapLinkPayload)mob.MapLink.Payloads[0];
-        _gameGui.OpenMapWithMapLink(mlp);
+        OpenMap(mlp);
+    }    
+
+    public void OpenMap(AetheryteData aeth, HuntTrainMob mob)
+    {
+        var mlp = new MapLinkPayload(mob.TerritoryID, mob.MapID, aeth.Position.X, aeth.Position.Y);
+        OpenMap(mlp);
+    }
+
+    public void OpenMap(MapLinkPayload mapLink)
+    {
+        _gameGui.OpenMapWithMapLink(mapLink);
     }
 
     public void Import(string importCode)

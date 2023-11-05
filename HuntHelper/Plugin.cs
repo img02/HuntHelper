@@ -23,6 +23,7 @@ namespace HuntHelper
         private const string MapWindowPresetTwoSave = "/hh2save";
         private const string HuntTrainWindowCommand = "/hht";
         private const string NextHuntInTrainCommand = "/hhn";
+        private const string NextHuntInTrainAetheryteCommand = "/hhna";
         private const string CounterCommand = "/hhc";
         private const string SpawnPointCommand = "/hhr";
         private const string DebugCommand = "/hhdebug";
@@ -103,48 +104,19 @@ namespace HuntHelper
 
             TeleportIpc = PluginInterface.GetIpcSubscriber<uint, byte, bool>("Teleport");
 
-            this.CommandManager.AddHandler(MapWindowCommand, new CommandInfo(HuntMapCommand)
-            {
-                HelpMessage = GuiResources.PluginText["/hh helpmessage"]
-            });
-            this.CommandManager.AddHandler(MapWindowPresetOne, new CommandInfo(ApplyPresetOneCommand)
-            {
-                HelpMessage = GuiResources.PluginText["/hh1 helpmessage"]
-            });
-            this.CommandManager.AddHandler(MapWindowPresetTwo, new CommandInfo(ApplyPresetTwoCommand)
-            {
-                HelpMessage = GuiResources.PluginText["/hh2 helpmessage"]
-            });
-            this.CommandManager.AddHandler(MapWindowPresetOneSave, new CommandInfo(SavePresetOneCommand)
-            {
-                HelpMessage = GuiResources.PluginText["/hh1save helpmessage"]
-            });
-            this.CommandManager.AddHandler(MapWindowPresetTwoSave, new CommandInfo(SavePresetTwoCommand)
-            {
-                HelpMessage = GuiResources.PluginText["/hh2save helpmessage"]
-            });
-            this.CommandManager.AddHandler(HuntTrainWindowCommand, new CommandInfo(HuntTrainCommand)
-            {
-                HelpMessage = GuiResources.PluginText["/hht helpmessage"]
-            });
-            this.CommandManager.AddHandler(NextHuntInTrainCommand, new CommandInfo(GetNextMobCommand)
-            {
-                HelpMessage = GuiResources.PluginText["/hhn helpmessage"]
-            });
+            this.CommandManager.AddHandler(MapWindowCommand, new CommandInfo(HuntMapCommand) { HelpMessage = GuiResources.PluginText["/hh helpmessage"] });
+            this.CommandManager.AddHandler(MapWindowPresetOne, new CommandInfo(ApplyPresetOneCommand) { HelpMessage = GuiResources.PluginText["/hh1 helpmessage"] });
+            this.CommandManager.AddHandler(MapWindowPresetTwo, new CommandInfo(ApplyPresetTwoCommand) { HelpMessage = GuiResources.PluginText["/hh2 helpmessage"] });
+            this.CommandManager.AddHandler(MapWindowPresetOneSave, new CommandInfo(SavePresetOneCommand) { HelpMessage = GuiResources.PluginText["/hh1save helpmessage"] });
+            this.CommandManager.AddHandler(MapWindowPresetTwoSave, new CommandInfo(SavePresetTwoCommand) { HelpMessage = GuiResources.PluginText["/hh2save helpmessage"] });
+            this.CommandManager.AddHandler(HuntTrainWindowCommand, new CommandInfo(HuntTrainCommand) { HelpMessage = GuiResources.PluginText["/hht helpmessage"] });
+            this.CommandManager.AddHandler(NextHuntInTrainCommand, new CommandInfo(GetNextMobCommand) { HelpMessage = GuiResources.PluginText["/hhn helpmessage"] });
+            this.CommandManager.AddHandler(NextHuntInTrainAetheryteCommand, new CommandInfo(GetNextMobAetheryteCommand) { HelpMessage = GuiResources.PluginText["/hhna helpmessage"] }); //todo replace msg
 #if DEBUG
-            this.CommandManager.AddHandler(DebugCommand, new CommandInfo(DebugWindowCommand)
-            {
-                HelpMessage = "random data, debug info"
-            });
+            this.CommandManager.AddHandler(DebugCommand, new CommandInfo(DebugWindowCommand) { HelpMessage = "random data, debug info" });
 #endif
-            this.CommandManager.AddHandler(CounterCommand, new CommandInfo(CounterWindowCommand)
-            {
-                HelpMessage = GuiResources.PluginText["/hhc helpmessage"]
-            });
-            this.CommandManager.AddHandler(SpawnPointCommand, new CommandInfo(SpawnPointWindowCommand)
-            {
-                HelpMessage = GuiResources.PluginText["/hhr helpmessage"]
-            });
+            this.CommandManager.AddHandler(CounterCommand, new CommandInfo(CounterWindowCommand) { HelpMessage = GuiResources.PluginText["/hhc helpmessage"] });
+            this.CommandManager.AddHandler(SpawnPointCommand, new CommandInfo(SpawnPointWindowCommand) { HelpMessage = GuiResources.PluginText["/hhr helpmessage"] });
 
             this.PluginInterface.UiBuilder.Draw += DrawUI;
             this.PluginInterface.UiBuilder.OpenConfigUi += DrawConfigUI;
@@ -186,15 +158,16 @@ namespace HuntHelper
             Configuration.MapWindowVisible = MapUi.MapVisible;
         }
 
-        private void ApplyPresetOneCommand(string command, string args) => MapUi.ApplyPreset(1);
-        private void ApplyPresetTwoCommand(string command, string args) => MapUi.ApplyPreset(2);
-        private void SavePresetOneCommand(string command, string args) => MapUi.SavePresetByCommand(1);
-        private void SavePresetTwoCommand(string command, string args) => MapUi.SavePresetByCommand(2);
-        private void HuntTrainCommand(string command, string args) => HuntTrainUI.HuntTrainWindowVisible = !HuntTrainUI.HuntTrainWindowVisible;
+        private void ApplyPresetOneCommand(string _, string __) => MapUi.ApplyPreset(1);
+        private void ApplyPresetTwoCommand(string _, string __) => MapUi.ApplyPreset(2);
+        private void SavePresetOneCommand(string _, string __) => MapUi.SavePresetByCommand(1);
+        private void SavePresetTwoCommand(string _, string __) => MapUi.SavePresetByCommand(2);
+        private void HuntTrainCommand(string _, string __) => HuntTrainUI.HuntTrainWindowVisible = !HuntTrainUI.HuntTrainWindowVisible;
         //gets next available hunt in the recorded train
-        private void GetNextMobCommand(string command, string args) => HuntTrainUI.GetNextMobCommand();
-        private void CounterWindowCommand(string command, string args) => CounterUI.WindowVisible = !CounterUI.WindowVisible;
-        private void SpawnPointWindowCommand(string command, string args) => SpawnPointFinderUI.WindowVisible = !SpawnPointFinderUI.WindowVisible;
+        private void GetNextMobCommand(string _, string __) => HuntTrainUI.GetNextMobCommand();
+        private void GetNextMobAetheryteCommand(string _, string __) => HuntTrainUI.GetNextMobNearestAetheryte();
+        private void CounterWindowCommand(string _, string __) => CounterUI.WindowVisible = !CounterUI.WindowVisible;
+        private void SpawnPointWindowCommand(string _, string __) => SpawnPointFinderUI.WindowVisible = !SpawnPointFinderUI.WindowVisible;
 
         private void DrawUI()
         {
