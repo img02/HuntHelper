@@ -1159,6 +1159,12 @@ namespace HuntHelper.Gui
                         {
                             System.Diagnostics.Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
                         }
+                        url = Constants.translateUrlCrowdIn;
+                        ImGui.InputText(" -- click me", ref url, 100, ImGuiInputTextFlags.ReadOnly);
+                        if (ImGui.IsItemClicked())
+                        {
+                            System.Diagnostics.Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
+                        }
                         ImGui.TextWrapped("or dm me @ img#7855");
                         ImGui.EndTabItem();
                     }
