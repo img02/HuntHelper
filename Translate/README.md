@@ -5,3 +5,5 @@ Add your translations to the file
 feel free to add other langauges
 
 make a pr or dm me on discord @ img#7855 
+
+OR go to: https://crowdin.com/project/hunthelper
