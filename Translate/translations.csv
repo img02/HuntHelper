@@ -6,6 +6,7 @@ Plugin,,,,,,
 ,/hh1save helpmessage,Save Preset One,,,,保存预设1
 ,/hh2save helpmessage,Save Preset Two,,,,保存预设2
 ,/hht helpmessage,Opens the Hunt Train Window,,,,开启狩猎车界面
+,/hhna helpmessage,Sends the flag for the next train mob's nearest Aetheryte into chat,,,,
 ,/hhn helpmessage,Sends the flag for the next train mob into chat,,,,发送狩猎车下一站坐标至聊天
 ,/hhc helpmessage,Counter window -- for counter-based S ranks,,,,计数器窗口 -- 面相农怪触发的S
 ,/hhr helpmessage,Spawn point tracking window,,,,刷新点追踪窗口
@@ -127,7 +128,7 @@ HuntTrain,,,,,,
 ,TeleportHeader,Teleport,,,,传送
 ,TeleportToolTip,Teleport will initiate even if you are closer to the mob / on the same map. pls adjust thx,,,,即使你和狩猎怪附近或同一张图也会传送，请调整。
 ,LastSeenHeader,Last Seen,,,,上次发现
-,HowTo,"HOW TO: Background - Click on any of the rows to send the relevant Map Link into chat. (Drag to reorder the list). Click on the checkbox to mark a mob as dead. Use the command \/hhn to automatically mark the current selected as dead, and send the next Map link into chat. (you will have to click the first one manually) *Does not allow duplicates (currently does not handle instances or different worlds) - Only records A ranks.",,,,如何使用：背景 - 点任何一行来发送相关地图链接到聊天。（拖拽来录制列表）。点击确认框来标记已死亡的狩猎怪。使用指令\/hhn来自动标记死亡当前选择的怪物，并发送下一个地图链接到聊天。（第一次不得不手动点）*不允许重复（当前不处理多线或多服务器）-只记录A怪*
+,HowTo,"HOW TO: Background | Click on any of the rows to send the relevant Map Link into chat. (Drag to reorder the list)   || Click on the checkbox to mark a mob as dead. ||Use the command /hhn to automatically mark the current selected as dead, and send the next Map link into chat, and automatically teleport if enabled. |(you will have to click the first one manually) ||Use the command /hhna to set the flag as the closest Aetheryte (Not the mob) and automatically teleport if enabled. This will override and disable the /hht teleport. |You can then use /hht to get the flag for the next mob without initiating a teleport. ||Use the Export and Import buttons to share and compile scouts with others. ||Only records A ranks.",,,,如何使用：背景 - 点任何一行来发送相关地图链接到聊天。（拖拽来录制列表）。点击确认框来标记已死亡的狩猎怪。使用指令\/hhn来自动标记死亡当前选择的怪物，并发送下一个地图链接到聊天。（第一次不得不手动点）*不允许重复（当前不处理多线或多服务器）-只记录A怪*
 ,TeleportButton,tele,,,,传送
 ,Settings,Settings,,,,设置
 ,Border,Border,,,,边界
