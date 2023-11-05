@@ -135,6 +135,7 @@
 		"Border": "Border",
 		"LastSeen": "Last seen",
 		"LastSeenToolTip": "Show how long since the hunt was found.",
+		"ShowFlagInChat": "Send <mob> <flag> msg in chat.",
 		"OpenMap": "Open Map",
 		"OpenMapToolTip": "Open the relevant map when /hhn used or when name clicked.",
 		"TeleButtons": "Tele Buttons",

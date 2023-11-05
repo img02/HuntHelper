@@ -134,6 +134,7 @@ HuntTrain,,,,,,
 ,Border,Border,,,,边界
 ,LastSeen,Last seen,,,,上次发现
 ,LastSeenToolTip,Show how long since the hunt was found.,,,,显示距离上次发现过了多久
+,ShowFlagInChat,Send <mob> <flag> msg in chat.,,,,
 ,OpenMap,Open Map,,,,开启地图
 ,OpenMapToolTip,Open the relevant map when /hhn used or when name clicked.,,,,当/hhn启用或单击名称时开启相关地图
 ,TeleButtons,Tele Buttons,,,,传送键

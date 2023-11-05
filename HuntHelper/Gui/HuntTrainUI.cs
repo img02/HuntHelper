@@ -39,6 +39,7 @@ public class HuntTrainUI : IDisposable
     private bool _teleportMeOnCommand = false;
     private bool _showTeleButtons = false;
     private bool _teleToAetheryte = false;
+    private bool _showInChat = true;
     #endregion
 
     private Vector4 _deadTextColour = new Vector4(.6f, .7f, .6f, 1f);
@@ -91,6 +92,7 @@ public class HuntTrainUI : IDisposable
         _teleportMeOnCommand = _config.HuntTrainNextTeleportMeOnCommand;
         _showTeleButtons = _config.HuntTrainShowTeleportButtons;
         _teleToAetheryte = _config.HuntTrainTeleportToAetheryte;
+        _showInChat = _config.HuntTrainShowFlagInChat;
     }
 
     public void SaveSettings()
@@ -105,6 +107,7 @@ public class HuntTrainUI : IDisposable
         _config.HuntTrainNextTeleportMeOnCommand = _teleportMeOnCommand;
         _config.HuntTrainShowTeleportButtons = _showTeleButtons;
         _config.HuntTrainTeleportToAetheryte = _teleToAetheryte;
+        _config.HuntTrainShowFlagInChat = _showInChat;
     }
 
 
@@ -239,6 +242,9 @@ public class HuntTrainUI : IDisposable
                         ImGui.TableNextColumn();
                         ImGui.Checkbox(GuiResources.HuntTrainGuiText["LastSeen"], ref _showLastSeen);
                         ImGuiUtil.ImGui_HoveredToolTip(GuiResources.HuntTrainGuiText["LastSeenToolTip"]);
+                        ImGui.TableNextColumn();
+                        ImGui.Checkbox(GuiResources.HuntTrainGuiText["ShowFlagInChat"], ref _showInChat);
+                        ImGuiUtil.ImGui_HoveredToolTip(GuiResources.HuntTrainGuiText["ShowFlagInChat"]);
                         ImGui.EndTable();
                     }
                     ImGui.TreePop();
@@ -526,10 +532,10 @@ public class HuntTrainUI : IDisposable
         SelectNext();
         if (!_mobList[_selectedIndex].Dead)
         {
-            _trainManager.SendTrainFlag(_selectedIndex, _openMap);
+            _trainManager.SendTrainFlag(_selectedIndex, _openMap, _showInChat);
             if (_teleportMeOnCommand && !_teleToAetheryte) _teleportManager.TeleportToHunt(_mobList[_selectedIndex]);
         }
-        else _trainManager.SendTrainFlag(-1, false);
+        else _trainManager.SendTrainFlag(-1, false, true);
     }
 
     /// <summary>
@@ -540,7 +546,7 @@ public class HuntTrainUI : IDisposable
         var nextIndex = GetNextIndex();
         if (nextIndex == -1)
         {
-            _trainManager.SendTrainFlag(-1, false);
+            _trainManager.SendTrainFlag(-1, false, true);
             return;
         }
 
@@ -571,7 +577,7 @@ public class HuntTrainUI : IDisposable
 
             if (ImGui.IsItemActive() && ImGui.IsMouseClicked(ImGuiMouseButton.Left))
             {
-                _trainManager.SendTrainFlag(n, _openMap);
+                _trainManager.SendTrainFlag(n, _openMap, _showInChat);
                 if (_teleportMe) _teleportManager.TeleportToHunt(mob);
             }
 

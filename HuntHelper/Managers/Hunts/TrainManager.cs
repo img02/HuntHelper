@@ -56,10 +56,12 @@ public class TrainManager
         existing.LastSeenUTC = DateTime.UtcNow;
         return true;
     }
-    public void SendTrainFlag(int index, bool openMap, ushort textColor = 24, ushort flagColour = 559, ushort countColour = 502) //make customizable in the future, maybe
+    public void SendTrainFlag(int index, bool openMap, bool showInChat, ushort textColor = 24, ushort flagColour = 559, ushort countColour = 502) //make customizable in the future, maybe
     {
-        var sb = new SeStringBuilder();
+        if (openMap) OpenMap(HuntTrain[index], openMap);
+        if (!showInChat) return;
 
+        var sb = new SeStringBuilder();
         if (index == -1)
         {
             sb.AddUiForeground(textColor);
@@ -68,34 +70,34 @@ public class TrainManager
             _chatGui.Print(sb.BuiltString);
             return;
         }
+
         var instance = LocalizationUtil.GetInstanceGlyph(HuntTrain[index].Instance);
         var name = $"{HuntTrain[index].Name}{instance}";
 
-        sb.AddUiForeground(textColor);
-        sb.AddIcon(BitmapFontIcon.ExclamationRectangle);
-        sb.AddText(name + "---");
-        sb.AddUiForegroundOff();
+        {
+            sb.AddUiForeground(textColor);
+            sb.AddIcon(BitmapFontIcon.ExclamationRectangle);
+            sb.AddText(name + "---");
+            sb.AddUiForegroundOff();
 
-        sb.AddUiForeground(flagColour);
-        sb.Append(HuntTrain[index].MapLink);
-        sb.AddUiForegroundOff();
+            sb.AddUiForeground(flagColour);
+            sb.Append(HuntTrain[index].MapLink);
+            sb.AddUiForegroundOff();
 
-        sb.AddUiForeground(countColour);
-        sb.AddText($" --- {index + 1}/{HuntTrain.Count}");
-        sb.AddUiForegroundOff();
+            sb.AddUiForeground(countColour);
+            sb.AddText($" --- {index + 1}/{HuntTrain.Count}");
+            sb.AddUiForegroundOff();
 
-        _chatGui.Print(sb.BuiltString);
-
-        if (!openMap) return;        
-        OpenMap(HuntTrain[index], openMap);
+            _chatGui.Print(sb.BuiltString);
+        }
     }
-  
+
     public void OpenMap(HuntTrainMob mob, bool openMap)
     {
         if (!openMap) return;
         var mlp = (MapLinkPayload)mob.MapLink.Payloads[0];
         OpenMap(mlp);
-    }    
+    }
 
     public void OpenMap(AetheryteData aeth, HuntTrainMob mob)
     {

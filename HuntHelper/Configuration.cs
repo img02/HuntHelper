@@ -26,7 +26,8 @@ namespace HuntHelper
         //defaults to using client lang file
         public string Language { get; set; } = string.Empty;
 
-        // icon colours
+       
+        #region icon stuff
         public Vector4 SpawnPointColour { get; set; } = new Vector4(0.24706f, 0.309804f, 0.741176f, 1); //purty blue
         public Vector4 MobColour { get; set; } = new Vector4(0.4f, 1f, 0.567f, 1f); //green
         public Vector4 PlayerIconColour { get; set; } = new Vector4(0f, 0f, 0f, 1f); //black
@@ -44,8 +45,9 @@ namespace HuntHelper
         // icon-related thickness
         public float DetectionCircleThickness { get; set; } = 3f;
         public float DirectionLineThickness { get; set; } = 3f;
+        #endregion
 
-        // on-screen text positions and colours
+        #region on-screen text position and colour stuff
         public float ZoneInfoPosXPercentage { get; set; } = 3.5f;
         public float ZoneInfoPosYPercentage { get; set; } = 11.1f;
         public float WorldInfoPosXPercentage { get; set; } = 0.45f;
@@ -65,18 +67,23 @@ namespace HuntHelper
         public Vector4 NearbyMobListColourAlt { get; set; } = Vector4.One;
         public Vector4 PriorityMobColourBackground { get; set; } = new Vector4(1f, 0.43529411764705883f, 0.5137254901960784f, 0f); //nicely pink :D
         public Vector4 NearbyMobListColourBackground { get; set; } = new Vector4(1f, 0.43529411764705883f, 0.5137254901960784f, 0f); //nicely pink :D
+        #endregion
 
         public Vector4 MapWindowColour { get; set; } = new Vector4(0f, 0f, 0f, .2f); //alpha / w value isn't used
         public float MapWindowOpacityAsPercentage { get; set; } = 20f;
 
-        //checkbox bools
+        #region map ui bools
         public bool PriorityMobEnabled { get; set; } = true;
         public bool NearbyMobListEnabled { get; set; } = true;
         public bool ShowZoneName { get; set; } = true;
         public bool ShowWorldName { get; set; } = true;
         public bool SaveSpawnData { get; set; } = true;
         public bool UseMapImages { get; set; } = false;
-        //tts
+        public bool EnableBackgroundScan { get; set; } = false;
+        public bool ShowOptionsWindow { get; set; } = false;
+        #endregion
+
+        #region TTS
         public string TTSVoiceName { get; set; } = string.Empty;
         public int TTSVolume { get; set; } = 50;
         public string TTSAMessage { get; set; } = "<rank> Nearby";
@@ -88,14 +95,18 @@ namespace HuntHelper
         public bool TTSAEnabled { get; set; } = false;
         public bool TTSBEnabled { get; set; } = false;
         public bool TTSSEnabled { get; set; } = true;
+        #endregion
+
+        #region chat notif
         public bool ChatAEnabled { get; set; } = false;
         public bool ChatBEnabled { get; set; } = false;
         public bool ChatSEnabled { get; set; } = true;
-        public bool EnableBackgroundScan { get; set; } = false;
-        public bool ShowOptionsWindow { get; set; } = false;
         public bool FlyTextAEnabled { get; set; } = false;
         public bool FlyTextBEnabled { get; set; } = false;
         public bool FlyTextSEnabled { get; set; } = true;
+
+        #endregion
+
         public bool PointToARank { get; set; } = false;
         public bool PointToBRank { get; set; } = false;
         public bool PointToSRank { get; set; } = false;
@@ -119,8 +130,8 @@ namespace HuntHelper
         public bool HuntTrainNextTeleportMe { get; set; } = false;
         public bool HuntTrainNextTeleportMeOnCommand { get; set; } = false;
         public bool HuntTrainShowTeleportButtons { get; set; } = false;
-
         public bool HuntTrainTeleportToAetheryte { get; set; } = false;
+        public bool HuntTrainShowFlagInChat { get; set; } = true;
 
         #endregion
 
