@@ -1,4 +1,5 @@
 ﻿using Dalamud.Interface.Utility;
+using HuntHelper.Gui.Resource;
 using HuntHelper.Utilities;
 using ImGuiNET;
 using System.Diagnostics;
@@ -21,7 +22,7 @@ namespace HuntHelper.Gui.GimmeMoney
             if (ImGui.BeginTabItem("ko-fi"))
             {
                 _bottomPanelHeight = 120f * ImGuiHelpers.GlobalScale;
-                ImGui.TextWrapped("If you've found this plugin useful and want to show some support.");
+                ImGui.TextWrapped(GuiResources.PluginText["dono"]);
                 var url = Constants.kofiUrl;
                 ImGui.PushItemWidth(150);
                 ImGui.InputText("", ref url, 40, ImGuiInputTextFlags.ReadOnly);
@@ -50,7 +51,7 @@ namespace HuntHelper.Gui.GimmeMoney
                 var url = Constants.kofiUrl;
                 System.Diagnostics.Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
             }
-            ImGuiUtil.ImGui_HoveredToolTip("If you've found this plugin useful and want to show some support.");
+            ImGuiUtil.ImGui_HoveredToolTip(GuiResources.PluginText["dono"]);
 
             ImGui.PopStyleColor(2);
         }

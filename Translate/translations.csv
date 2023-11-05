@@ -10,6 +10,7 @@ Plugin,,,,,,
 ,/hhn helpmessage,Sends the flag for the next train mob into chat,,,,发送狩猎车下一站坐标至聊天
 ,/hhc helpmessage,Counter window -- for counter-based S ranks,,,,计数器窗口 -- 面相农怪触发的S
 ,/hhr helpmessage,Spawn point tracking window,,,,刷新点追踪窗口
+,dono,If you've found this plugin useful and want to show some support.,,,,
 ,,,,,,
 Map,,,,,,
 ,ErrorLoadingDataMessage,Error loading data,,,,加载数据错误

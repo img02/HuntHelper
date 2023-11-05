@@ -9,7 +9,8 @@
 		"/hhn helpmessage": "发送狩猎车下一站坐标至聊天",
 		"/hhna helpmessage": "Sends the flag for the next train mob's nearest Aetheryte into chat",
 		"/hhc helpmessage": "计数器窗口 -- 面相农怪触发的S",
-		"/hhr helpmessage": "刷新点追踪窗口"
+		"/hhr helpmessage": "刷新点追踪窗口",
+		"dono": "If you've found this plugin useful and want to show some support."
 	},
 	"Map": {
 		"ErrorLoadingDataMessage": "加载数据错误",
