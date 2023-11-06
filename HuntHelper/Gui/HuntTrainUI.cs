@@ -249,10 +249,7 @@ public class HuntTrainUI : IDisposable
                         ImGuiUtil.ImGui_HoveredToolTip(GuiResources.HuntTrainGuiText["LastSeenToolTip"]);
                         ImGui.TableNextColumn();
                         ImGui.Checkbox(GuiResources.HuntTrainGuiText["ShowFlagInChat"], ref _showInChat);
-                        ImGuiUtil.ImGui_HoveredToolTip(GuiResources.HuntTrainGuiText["ShowFlagInChat"]);
-                        ImGui.TableNextColumn();
-                        ImGui.Checkbox(GuiResources.HuntTrainGuiText["OpenUIWhenIPCImport"], ref _showTrainUIDuringIPCImport);
-                        ImGuiUtil.ImGui_HoveredToolTip(GuiResources.HuntTrainGuiText["OpenUIWhenIPCImport"]);                        
+                        ImGuiUtil.ImGui_HoveredToolTip(GuiResources.HuntTrainGuiText["ShowFlagInChat"]);                     
                         ImGui.EndTable();
                     }
                     ImGui.TreePop();
@@ -262,9 +259,8 @@ public class HuntTrainUI : IDisposable
                 {
                     if (ImGui.BeginTable("settingsalignment", 2))
                     {
-
                         ImGui.TableNextColumn();
-                        ImGui.Checkbox(GuiResources.HuntTrainGuiText["OpenMap"], ref _openMap); //assuming this is allowed as it requires user interaction, but opening map on S rank spawn would be passive and so 'automated'
+                        ImGui.Checkbox(GuiResources.HuntTrainGuiText["OpenMap"], ref _openMap); 
                         ImGuiUtil.ImGui_HoveredToolTip(GuiResources.HuntTrainGuiText["OpenMapToolTip"]);
                         ImGui.TableNextColumn();
                         ImGui.Checkbox(GuiResources.HuntTrainGuiText["TeleButtons"], ref _showTeleButtons);
@@ -278,6 +274,18 @@ public class HuntTrainUI : IDisposable
                         ImGui.TableNextColumn();
                         ImGui.Checkbox(GuiResources.HuntTrainGuiText["TeleportToAetheryte"], ref _teleToAetheryte);
                         ImGuiUtil.ImGui_HoveredToolTip(GuiResources.HuntTrainGuiText["TeleportToAetheryte"]);
+                        ImGui.EndTable();
+                    }
+                    ImGui.TreePop();                    
+                }
+                
+                if (ImGui.TreeNode("IPCRelatedStuffIdk", "IPC"))
+                {
+                    if (ImGui.BeginTable("settingsalignment", 1))
+                    {
+                        ImGui.TableNextColumn();
+                        ImGui.Checkbox(GuiResources.HuntTrainGuiText["OpenUIWhenIPCImport"], ref _showTrainUIDuringIPCImport);
+                        ImGuiUtil.ImGui_HoveredToolTip(GuiResources.HuntTrainGuiText["OpenUIWhenIPCImport"]);
                         ImGui.EndTable();
                     }
                     ImGui.TreePop();
