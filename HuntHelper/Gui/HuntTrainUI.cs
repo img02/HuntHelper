@@ -40,6 +40,7 @@ public class HuntTrainUI : IDisposable
     private bool _showTeleButtons = false;
     private bool _teleToAetheryte = false;
     private bool _showInChat = true;
+    private bool _showTrainUIDuringIPCImport = true;
     #endregion
 
     private Vector4 _deadTextColour = new Vector4(.6f, .7f, .6f, 1f);
@@ -72,7 +73,8 @@ public class HuntTrainUI : IDisposable
     }
 
     public void Draw()
-    {
+    {        
+        if (_showTrainUIDuringIPCImport && _trainManager.ImportFromIPC) { _huntTrainWindowVisible = true; }
         DrawHuntTrainWindow();
     }
 
@@ -93,6 +95,7 @@ public class HuntTrainUI : IDisposable
         _showTeleButtons = _config.HuntTrainShowTeleportButtons;
         _teleToAetheryte = _config.HuntTrainTeleportToAetheryte;
         _showInChat = _config.HuntTrainShowFlagInChat;
+        _showTrainUIDuringIPCImport = _config.HuntTrainShowUIDuringIPCImport;
     }
 
     public void SaveSettings()
@@ -108,6 +111,7 @@ public class HuntTrainUI : IDisposable
         _config.HuntTrainShowTeleportButtons = _showTeleButtons;
         _config.HuntTrainTeleportToAetheryte = _teleToAetheryte;
         _config.HuntTrainShowFlagInChat = _showInChat;
+        _config.HuntTrainShowUIDuringIPCImport = _showTrainUIDuringIPCImport;
     }
 
 
@@ -115,6 +119,7 @@ public class HuntTrainUI : IDisposable
     public void DrawHuntTrainWindow()
     {
         if (!HuntTrainWindowVisible) return;
+        if (_trainManager.ImportFromIPC) ImGui.SetNextWindowCollapsed(false);
 
         var numOfColumns = 2;
         if (_showLastSeen) numOfColumns++;
@@ -124,7 +129,7 @@ public class HuntTrainUI : IDisposable
         ImGui.SetNextWindowSize(_huntTrainWindowSize, ImGuiCond.FirstUseEver);
         ImGui.SetWindowPos(_huntTrainWindowPos);
         if (ImGui.Begin($"{GuiResources.HuntTrainGuiText["MainWindowTitle"]}##Window", ref _huntTrainWindowVisible, ImGuiWindowFlags.NoScrollbar))
-        {
+        {   
             var childSizeX = ImGui.GetWindowSize().X / numOfColumns;
             var childSizeY = _mobList.Count * 23 * ImGuiHelpers.GlobalScale;
             var lastSeenWidth = childSizeX * ImGuiHelpers.GlobalScale; //math is hard, resizing is hard owie :(
@@ -245,6 +250,9 @@ public class HuntTrainUI : IDisposable
                         ImGui.TableNextColumn();
                         ImGui.Checkbox(GuiResources.HuntTrainGuiText["ShowFlagInChat"], ref _showInChat);
                         ImGuiUtil.ImGui_HoveredToolTip(GuiResources.HuntTrainGuiText["ShowFlagInChat"]);
+                        ImGui.TableNextColumn();
+                        ImGui.Checkbox(GuiResources.HuntTrainGuiText["OpenUIWhenIPCImport"], ref _showTrainUIDuringIPCImport);
+                        ImGuiUtil.ImGui_HoveredToolTip(GuiResources.HuntTrainGuiText["OpenUIWhenIPCImport"]);                        
                         ImGui.EndTable();
                     }
                     ImGui.TreePop();
