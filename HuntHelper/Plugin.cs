@@ -94,7 +94,6 @@ namespace HuntHelper
             this.TrainManager = new TrainManager(ChatGui, GameGui, dataManager, Path.Combine(PluginInterface.AssemblyLocation.Directory?.FullName!, @"Data\HuntTrain.json"));
             this.HuntManager = new HuntManager(PluginInterface, TrainManager, chatGui, flyTextGui, this.Configuration.TTSVolume);
             this.MapDataManager = new MapDataManager(Path.Combine(PluginInterface.AssemblyLocation.Directory?.FullName!, @"Data\SpawnPointData.json"));
-            this.IpcSystem = new IpcSystem(pluginInterface, framework, TrainManager);
 
             this.MapUi = new MapUI(this.Configuration, pluginInterface, clientState, objectTable, dataManager, HuntManager, MapDataManager, GameGui);
             this.HuntTrainUI = new HuntTrainUI(TrainManager, Configuration);
@@ -102,6 +101,7 @@ namespace HuntHelper
             this.SpawnPointFinderUI = new SpawnPointFinderUI(MapDataManager, DataManager, Configuration);
             this.PointerUI = new PointerUI(HuntManager, Configuration, GameGui);
 
+            IpcSystem = new IpcSystem(pluginInterface, framework, TrainManager, HuntTrainUI);
             TeleportIpc = PluginInterface.GetIpcSubscriber<uint, byte, bool>("Teleport");
 
             this.CommandManager.AddHandler(MapWindowCommand, new CommandInfo(HuntMapCommand) { HelpMessage = GuiResources.PluginText["/hh helpmessage"] });

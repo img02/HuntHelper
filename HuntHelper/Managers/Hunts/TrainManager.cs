@@ -118,6 +118,13 @@ public class TrainManager
         LocaliseNames(ImportedTrain);
     }
 
+    public void Import(IList<HuntTrainMob> trainMobs)
+    {
+        ImportedTrain.Clear(); //should be empty already
+        if (trainMobs.Count > 0) ImportedTrain.AddRange(trainMobs);
+        LocaliseNames(ImportedTrain);
+    }
+
     public void ImportTrainAll()
     {
         HuntTrain.Clear();

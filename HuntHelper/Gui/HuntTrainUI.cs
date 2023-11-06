@@ -52,6 +52,7 @@ public class HuntTrainUI : IDisposable
     private bool _importAll = false;
     private bool _importNew = true;
     private bool _importUpdateTime = true;
+    private bool _openImportPopup = false;
 
     private TeleportManager _teleportManager;
 
@@ -406,6 +407,11 @@ public class HuntTrainUI : IDisposable
         ImGui.SetNextWindowPos(center, ImGuiCond.Appearing, new Vector2(0.5f, 0.5f));
         ImGui.SetNextWindowSize(new Vector2(400, 700), ImGuiCond.FirstUseEver);
 
+        if (_openImportPopup)
+        {
+            ImGui.OpenPopup($"{GuiResources.HuntTrainGuiText["ImportWindowTitle"]}##popup");
+            _openImportPopup = false;
+        }
         if (ImGui.BeginPopupModal($"{GuiResources.HuntTrainGuiText["ImportWindowTitle"]}##popup"))
         {
 
@@ -498,6 +504,11 @@ public class HuntTrainUI : IDisposable
         }
     }
 
+    public void OpenImportPopup()
+    {
+        _openImportPopup = true;
+        HuntTrainWindowVisible = true;
+    }
 
     private void ImportTrainData()
     {
