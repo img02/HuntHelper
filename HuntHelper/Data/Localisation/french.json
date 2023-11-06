@@ -130,7 +130,7 @@
 		"TeleportHeader": "Teleport",
 		"TeleportToolTip": "Teleport will initiate even if you are closer to the mob / on the same map. pls adjust thx",
 		"LastSeenHeader": "Last Seen",
-		"HowTo": "HOW TO:\n\nBackground\nClick on any of the rows to send the relevant Map Link into chat. (Drag to reorder the list)\n\nClick on the checkbox to mark a mob as dead.\n\nUse the command \"/hhn\" to automatically mark the current selected as dead, and send the next Map link into chat.\n(you will have to click the first one manually)\n\n*Does not allow duplicates (currently does not handle instances or different worlds) - Only records A ranks.",
+		"HowTo": "HOW TO:\n\nBackground\nClick on any of the rows to send the relevant Map Link into chat. (Drag to reorder the list)\n\nClick on the checkbox to mark a mob as dead.\n\nUse the command \"/hhn\" to automatically mark the current selected as dead, and set the next mob flag, and automatically teleport if enabled. \n(you will have to click the first one manually) \n\nUse the command \"/hhna\" to set the flag as the closest Aetheryte (Not the mob) and automatically teleport if enabled. This will override and disable the \"/hhn\" teleport. \nYou can then use \"/hhn\" to get the flag for the next mob without initiating a teleport. \n\nUse the Export and Import buttons to share and compile scouts with others.\n\nOnly records A ranks.",
 		"TeleportButton": "tele",
 		"Settings": "Settings",
 		"Border": "Border",
