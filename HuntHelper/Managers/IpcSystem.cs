@@ -23,18 +23,16 @@ public class IpcSystem : IDisposable
     private readonly DalamudPluginInterface _pluginInterface;
     private readonly IFramework _framework;
     private readonly TrainManager _trainManager;
-    private readonly HuntTrainUI _huntTrainUi;
 
     private readonly ICallGateProvider<uint> _cgGetVersion;
     private readonly ICallGateProvider<List<MobRecord>> _cgGetTrainList;
     private readonly ICallGateProvider<List<MobRecord>,bool> _cgImportTrainList;
 
-    public IpcSystem(DalamudPluginInterface pluginInterface, IFramework framework, TrainManager trainManager, HuntTrainUI huntTrainUi)
+    public IpcSystem(DalamudPluginInterface pluginInterface, IFramework framework, TrainManager trainManager)
     {
         _pluginInterface = pluginInterface;
         _framework = framework;
         _trainManager = trainManager;
-        _huntTrainUi = huntTrainUi;
 
         _cgGetVersion = pluginInterface.GetIpcProvider<uint>(IpcFuncNameGetVersion);
         _cgGetTrainList = pluginInterface.GetIpcProvider<List<MobRecord>>(IpcFuncNameGetTrainList);
@@ -65,8 +63,18 @@ public class IpcSystem : IDisposable
     
     private void ImportTrainList(List<MobRecord> trainList)
     {
+        _trainManager.ImportFromIPC = true;
+        /* if we rework this and use a bool instead
+         * since train manager is used multiple times in this class, but hunt train ui is only used for this
+         * we can rework it so hunt train ui is not needed
+         * 
+         * we can then check the bool in the UI
+         * 
+         * separating things
+        */
+
         _trainManager.Import(trainList.Select(FromMobRecord).ToList());
-        _huntTrainUi.OpenImportPopup();
+        //_huntTrainUi.OpenImportPopup();
     }
 
     private static MobRecord AsMobRecord(HuntTrainMob mob) =>

@@ -101,7 +101,7 @@ namespace HuntHelper
             this.SpawnPointFinderUI = new SpawnPointFinderUI(MapDataManager, DataManager, Configuration);
             this.PointerUI = new PointerUI(HuntManager, Configuration, GameGui);
 
-            IpcSystem = new IpcSystem(pluginInterface, framework, TrainManager, HuntTrainUI);
+            IpcSystem = new IpcSystem(pluginInterface, framework, TrainManager);
             TeleportIpc = PluginInterface.GetIpcSubscriber<uint, byte, bool>("Teleport");
 
             this.CommandManager.AddHandler(MapWindowCommand, new CommandInfo(HuntMapCommand) { HelpMessage = GuiResources.PluginText["/hh helpmessage"] });

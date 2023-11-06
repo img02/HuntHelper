@@ -52,7 +52,6 @@ public class HuntTrainUI : IDisposable
     private bool _importAll = false;
     private bool _importNew = true;
     private bool _importUpdateTime = true;
-    private bool _openImportPopup = false;
 
     private TeleportManager _teleportManager;
 
@@ -325,15 +324,33 @@ public class HuntTrainUI : IDisposable
             ImGuiUtil.ImGui_HoveredToolTip(_copyText);
             ImGui.SameLine(); ImGui.Dummy(new Vector2(4, 0)); ImGui.SameLine();
 
-            if (ImGuiComponents.IconButton(FontAwesomeIcon.SignInAlt))
+            if (ImGuiComponents.IconButton(FontAwesomeIcon.SignInAlt) || _trainManager.ImportFromIPC)
             {
-                var importCode = string.Empty;
-                try
+                if (_trainManager.ImportFromIPC)
                 {
-                    importCode = ImGui.GetClipboardText();
+                    PluginLog.Warning("IMPORTING FROM IPC FOOL");
+                    /*
+                     * This way we can open the modal from the same place with existing code, 
+                     * reducing dupe code and spread                     
+                     * 
+                     * we do not need OpenImportPopup() anymore or the local bool _openImportPopup
+                     * 
+                     * instead we just use train manager
+                     */
+                    _trainManager.ImportFromIPC = false; //now we disable it so it doesn't get stuck
                 }
-                catch { } // if clipboard doesn't have string throws object null error. i.e. a file
-                _trainManager.Import(importCode);
+                else
+                {
+                    PluginLog.Warning("IMPORTING FROM HH CODE FOOL");
+                    var importCode = string.Empty;
+                    try
+                    {
+                        importCode = ImGui.GetClipboardText();
+                    }
+                    catch { } // if clipboard doesn't have string throws object null error. i.e. a file
+                    _trainManager.Import(importCode);
+                }
+
                 ImGui.OpenPopup($"{GuiResources.HuntTrainGuiText["ImportWindowTitle"]}##popup");
             }
 
@@ -406,15 +423,9 @@ public class HuntTrainUI : IDisposable
         var center = ImGui.GetWindowPos() + ImGui.GetWindowSize() / 2;
         ImGui.SetNextWindowPos(center, ImGuiCond.Appearing, new Vector2(0.5f, 0.5f));
         ImGui.SetNextWindowSize(new Vector2(400, 700), ImGuiCond.FirstUseEver);
-
-        if (_openImportPopup)
-        {
-            ImGui.OpenPopup($"{GuiResources.HuntTrainGuiText["ImportWindowTitle"]}##popup");
-            _openImportPopup = false;
-        }
+              
         if (ImGui.BeginPopupModal($"{GuiResources.HuntTrainGuiText["ImportWindowTitle"]}##popup"))
         {
-
             //if count is zero -> show message
             if (_importedTrain.Count == 0)
             {
@@ -504,12 +515,6 @@ public class HuntTrainUI : IDisposable
         }
     }
 
-    public void OpenImportPopup()
-    {
-        _openImportPopup = true;
-        HuntTrainWindowVisible = true;
-    }
-
     private void ImportTrainData()
     {
         if (_importAll)
@@ -519,7 +524,6 @@ public class HuntTrainUI : IDisposable
         }
         _trainManager.ImportTrainNew(_importUpdateTime);
     }
-
 
     //changes tooltip temporarily when clicked. ^^)b
     private void ChangeCopyText()
