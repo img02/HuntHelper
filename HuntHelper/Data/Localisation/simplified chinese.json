@@ -153,6 +153,7 @@
 		"ImportButton": "导入",
 		"ContextMenuSelect": "   选择",
 		"ContextMenuRemove": "   删除",
+		"OpenUIWhenIPCImport": "Open the train UI when importing from another plugin",
 
 
 		"TeleportWindowTitle": "未找到Teleporter插件",

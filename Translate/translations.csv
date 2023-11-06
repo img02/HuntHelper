@@ -151,6 +151,7 @@ HuntTrain,,,,,,
 ,ImportButton,Import,,,,导入
 ,ContextMenuSelect, Select,,,,选择
 ,ContextMenuRemove, Remove,,,,删除
+,OpenUIWhenIPCImport,Open the train UI when importing from another plugin,,,,
 ,,,,,,
 ,,,,,,
 ,TeleportWindowTitle,Teleporter Plugin Not Found,,,,未找到Teleporter插件

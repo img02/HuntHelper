@@ -152,6 +152,7 @@
 		"ImportButton": "Import",
 		"ContextMenuSelect": "   Select",
 		"ContextMenuRemove": "   Remove",
+		"OpenUIWhenIPCImport": "Open the train UI when importing from another plugin",
 
 
 		"TeleportWindowTitle": "Teleporter Plugin Not Found",
