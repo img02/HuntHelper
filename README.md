@@ -44,3 +44,11 @@ Implemented by [im-scared](https://github.com/im-scared)
 /hht -> Hunt train window  
 /hhr -> Spawn position recording window  
 /hhc -> Counter window
+
+/hh1  
+/hh2 -> Opens the map with preset size and position  
+/hh1save  
+/hh2save -> save the current window size and position to the preset number  
+
+/hhn -> Gets the next mob in the train as a \<flag\> - Initiates teleport if enabled  
+/hhna -> Gets the \<flag\> for the nearest Aetheryte to the next mob - Initiates teleport if enabled (overrides and disables /hhn teleport)   
