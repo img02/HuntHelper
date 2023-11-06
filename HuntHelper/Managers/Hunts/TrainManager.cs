@@ -111,13 +111,11 @@ public class TrainManager
     }
 
     public void Import(string importCode)
-    {
-        ImportedTrain.Clear(); //should be empty already
+    {        
         var temp = ExportImport.Import(importCode, ImportedTrain);
-        if (temp.Count > 0) ImportedTrain.AddRange(temp);
-        LocaliseNames(ImportedTrain);
-    }
-
+        Import(temp);
+    }    
+    
     public void Import(IList<HuntTrainMob> trainMobs)
     {
         ImportedTrain.Clear(); //should be empty already
