@@ -1458,7 +1458,7 @@ namespace HuntHelper.Gui
                         ? ImGui.ColorConvertFloat4ToU32(new Vector4(1f, 0f, 0f, 1f)) //red for taken spawn point
                         : ImGui.ColorConvertFloat4ToU32(_spawnPointColour));
                 DoubleClickToToggleSpawnPointTaken(drawPos, sp);
-            }
+            }            
         }
 
         private void DoubleClickToToggleSpawnPointTaken(Vector2 spPos, SpawnPointPosition sp)

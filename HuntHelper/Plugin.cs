@@ -93,7 +93,7 @@ namespace HuntHelper
 
             this.TrainManager = new TrainManager(ChatGui, GameGui, dataManager, Path.Combine(PluginInterface.AssemblyLocation.Directory?.FullName!, @"Data\HuntTrain.json"));
             this.HuntManager = new HuntManager(PluginInterface, TrainManager, chatGui, flyTextGui, this.Configuration.TTSVolume);
-            this.MapDataManager = new MapDataManager(Path.Combine(PluginInterface.AssemblyLocation.Directory?.FullName!, @"Data\SpawnPointData.json"));
+            this.MapDataManager = new MapDataManager(Path.Combine(PluginInterface.AssemblyLocation.Directory?.FullName!, @"Data\SpawnPointData.json"), new MappyIPC(pluginInterface));
             this.IpcSystem = new IpcSystem(pluginInterface, framework, TrainManager);
 
             this.MapUi = new MapUI(this.Configuration, pluginInterface, clientState, objectTable, dataManager, HuntManager, MapDataManager, GameGui);
@@ -104,6 +104,10 @@ namespace HuntHelper
 
             TeleportIpc = PluginInterface.GetIpcSubscriber<uint, byte, bool>("Teleport");
 
+            this.ClientState.TerritoryChanged += MapDataManager.OnTerritoryChanged;
+            MapDataManager.DrawMappySpawnPositions();
+
+            #region Commands
             this.CommandManager.AddHandler(MapWindowCommand, new CommandInfo(HuntMapCommand) { HelpMessage = GuiResources.PluginText["/hh helpmessage"] });
             this.CommandManager.AddHandler(MapWindowPresetOne, new CommandInfo(ApplyPresetOneCommand) { HelpMessage = GuiResources.PluginText["/hh1 helpmessage"] });
             this.CommandManager.AddHandler(MapWindowPresetTwo, new CommandInfo(ApplyPresetTwoCommand) { HelpMessage = GuiResources.PluginText["/hh2 helpmessage"] });
@@ -117,6 +121,7 @@ namespace HuntHelper
 #endif
             this.CommandManager.AddHandler(CounterCommand, new CommandInfo(CounterWindowCommand) { HelpMessage = GuiResources.PluginText["/hhc helpmessage"] });
             this.CommandManager.AddHandler(SpawnPointCommand, new CommandInfo(SpawnPointWindowCommand) { HelpMessage = GuiResources.PluginText["/hhr helpmessage"] });
+            #endregion
 
             this.PluginInterface.UiBuilder.Draw += DrawUI;
             this.PluginInterface.UiBuilder.OpenConfigUi += DrawConfigUI;
@@ -124,6 +129,8 @@ namespace HuntHelper
 
         public void Dispose()
         {
+            this.ClientState.TerritoryChanged -= MapDataManager.OnTerritoryChanged;
+
             //save hunttrainui config first
             this.HuntTrainUI.SaveSettings();
             this.CounterUI.SaveSettings();
@@ -134,6 +141,9 @@ namespace HuntHelper
             this.SpawnPointFinderUI.Dispose();
             this.CounterUI.Dispose();
             this.MapUi.Dispose();
+
+            #region Commands
+
 #if DEBUG
             this.CommandManager.RemoveHandler(DebugCommand);
 #endif
@@ -147,10 +157,13 @@ namespace HuntHelper
             this.CommandManager.RemoveHandler(CounterCommand);
             this.CommandManager.RemoveHandler(SpawnPointCommand);
 
+            #endregion
+
             this.HuntManager.Dispose();
-            // this.FlyTextGui.Dispose();
+            
         }
 
+        #region Commands
         private void DebugWindowCommand(string command, string args) => this.MapUi.RandomDebugWindowVisisble = !MapUi.RandomDebugWindowVisisble;
         private void HuntMapCommand(string command, string args)
         {
@@ -168,6 +181,8 @@ namespace HuntHelper
         private void GetNextMobAetheryteCommand(string _, string __) => HuntTrainUI.GetNextMobNearestAetheryte();
         private void CounterWindowCommand(string _, string __) => CounterUI.WindowVisible = !CounterUI.WindowVisible;
         private void SpawnPointWindowCommand(string _, string __) => SpawnPointFinderUI.WindowVisible = !SpawnPointFinderUI.WindowVisible;
+
+        #endregion
 
         private void DrawUI()
         {

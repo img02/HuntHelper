@@ -16,6 +16,7 @@ using System.Linq;
 using System.Speech.Synthesis;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using static FFXIVClientStructs.FFXIV.Client.Graphics.Scene.Object;
 
 namespace HuntHelper.Managers.Hunts;
 
@@ -101,6 +102,25 @@ public class HuntManager
         }
 
         LoadHuntData();
+    }
+
+    public void UpdateNearbyMobs()
+    {
+        var nearbyMobs = new List<BattleNpc>();
+        //sift through and add any hunt mobs to new list
+        foreach (var obj in _objectTable)
+        {
+            if (obj is not BattleNpc mob) continue;
+            if (!_huntManager.IsHunt(mob.NameId)) continue;
+            nearbyMobs.Add(mob);
+            AddToTrain(mob, _territoryId, MapHelpers.GetMapID(_dataManager, _territoryId), _instance, _territoryName, _mapZoneMaxCoordSize);
+        }
+
+        if (nearbyMobs.Count == 0)
+        {
+            CurrentMobs.Clear();
+            return;
+        }
     }
 
     public (HuntRank Rank, BattleNpc? Mob) GetPriorityMob()

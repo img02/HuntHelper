@@ -1,4 +1,5 @@
-﻿using HuntHelper.Managers.MapData.Models;
+﻿using FFXIVClientStructs.FFXIV.Common.Math;
+using HuntHelper.Managers.MapData.Models;
 using HuntHelper.Utilities;
 using Newtonsoft.Json;
 using System.Collections.Generic;
@@ -19,13 +20,16 @@ public class MapDataManager
     //private readonly DalamudPluginInterface _pluginInterface;
     private readonly string _filePath;
 
-    public MapDataManager(string filePath)
+    private MappyIPC _mappy;
+
+    public MapDataManager(string filePath, MappyIPC mappy)
     {
         //this._pluginInterface = pluginInterface;
         _filePath = filePath;
         SpawnPointsList = new List<MapSpawnPoints>();
         ImportedList = new List<MapSpawnPoints>();
         LoadSpawnPointData();
+        _mappy = mappy;
     }
 
     public void LoadSpawnPointData()
@@ -146,4 +150,22 @@ public class MapDataManager
         }
         return text;
     }
+
+    #region mappy ipc
+
+    public void OnTerritoryChanged(ushort territoryid)
+    {
+        DrawMappySpawnPositions();
+    }
+
+    public void DrawMappySpawnPositions()
+    {
+        //rework to do on client territory change or w/e
+        if (_mappy.HasSpawnPoints()) _mappy.ClearSpawnPointMarkers();
+        var pos = GetSpawnPoints(135);
+        pos.ForEach(p =>  _mappy.AddSpawnPointMarker(new Vector2(p.X, p.Y)));        
+    }
+
+    #endregion
+
 }
