@@ -57,6 +57,14 @@ namespace HuntHelper.Managers
                 return false;
                 PluginLog.Log("mappy not ready");
             }
+            /*
+             
+            https://xivapi.com/docs/Icons
+            https://xivapi.com/docs/Icons?set=fates
+            https://xivapi.com/docs/Icons?set=icons016000
+             
+             
+             */
             AddMapCoordinateMarkerIpcFunction!.InvokeFunc(015026, coordinates,  0,"","" );
             PluginLog.Log("added");
             return true;

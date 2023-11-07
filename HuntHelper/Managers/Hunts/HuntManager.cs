@@ -108,24 +108,24 @@ public class HuntManager
     {
         var nearbyMobs = new List<BattleNpc>();
         //sift through and add any hunt mobs to new list
-        foreach (var obj in _objectTable)
-        {
-            if (obj is not BattleNpc mob) continue;
-            if (!_huntManager.IsHunt(mob.NameId)) continue;
-            nearbyMobs.Add(mob);
-            AddToTrain(mob, _territoryId, MapHelpers.GetMapID(_dataManager, _territoryId), _instance, _territoryName, _mapZoneMaxCoordSize);
-        }
+        //foreach (var obj in _objectTable)
+        //{
+        //    if (obj is not BattleNpc mob) continue;
+        //    if (!_huntManager.IsHunt(mob.NameId)) continue;
+        //    nearbyMobs.Add(mob);
+        //    AddToTrain(mob, _territoryId, MapHelpers.GetMapID(_dataManager, _territoryId), _instance, _territoryName, _mapZoneMaxCoordSize);
+        //}
 
-        if (nearbyMobs.Count == 0)
-        {
-            CurrentMobs.Clear();
-            return;
-        }
+        //if (nearbyMobs.Count == 0)
+        //{
+        //    CurrentMobs.Clear();
+        //    return;
+        //}
 
-        AddNearbyMobs(nearbyMobs, _mapZoneMaxCoordSize, _territoryId, MapHelpers.GetMapID(_dataManager, _territoryId),
-            _ttsAEnabled, _ttsBEnabled, _ttsSEnabled, _ttsAMessage, _ttsBMessage, _ttsSMessage,
-            _chatAEnabled, _chatBEnabled, _chatSEnabled, _chatAMessage, _chatBMessage, _chatSMessage,
-            _flyTxtAEnabled, _flyTxtBEnabled, _flyTxtSEnabled, _instance);
+        //AddNearbyMobs(nearbyMobs, _mapZoneMaxCoordSize, _territoryId, MapHelpers.GetMapID(_dataManager, _territoryId),
+        //    _ttsAEnabled, _ttsBEnabled, _ttsSEnabled, _ttsAMessage, _ttsBMessage, _ttsSMessage,
+        //    _chatAEnabled, _chatBEnabled, _chatSEnabled, _chatAMessage, _chatBMessage, _chatSMessage,
+        //    _flyTxtAEnabled, _flyTxtBEnabled, _flyTxtSEnabled, _instance);
     }
 
     public (HuntRank Rank, BattleNpc? Mob) GetPriorityMob()
