@@ -121,6 +121,11 @@ public class HuntManager
             CurrentMobs.Clear();
             return;
         }
+
+        AddNearbyMobs(nearbyMobs, _mapZoneMaxCoordSize, _territoryId, MapHelpers.GetMapID(_dataManager, _territoryId),
+            _ttsAEnabled, _ttsBEnabled, _ttsSEnabled, _ttsAMessage, _ttsBMessage, _ttsSMessage,
+            _chatAEnabled, _chatBEnabled, _chatSEnabled, _chatAMessage, _chatBMessage, _chatSMessage,
+            _flyTxtAEnabled, _flyTxtBEnabled, _flyTxtSEnabled, _instance);
     }
 
     public (HuntRank Rank, BattleNpc? Mob) GetPriorityMob()
