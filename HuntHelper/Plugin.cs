@@ -92,7 +92,7 @@ namespace HuntHelper
             this.Configuration.Initialize(this.PluginInterface);
 
             this.TrainManager = new TrainManager(ChatGui, GameGui, dataManager, Path.Combine(PluginInterface.AssemblyLocation.Directory?.FullName!, @"Data\HuntTrain.json"));
-            this.HuntManager = new HuntManager(PluginInterface, TrainManager, chatGui, flyTextGui, this.Configuration.TTSVolume);
+            this.HuntManager = new HuntManager(PluginInterface, TrainManager, chatGui, flyTextGui, clientState, objectTable, dataManager, this.Configuration);
             this.MapDataManager = new MapDataManager(Path.Combine(PluginInterface.AssemblyLocation.Directory?.FullName!, @"Data\SpawnPointData.json"));
             this.IpcSystem = new IpcSystem(pluginInterface, framework, TrainManager);
 
