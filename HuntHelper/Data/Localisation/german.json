@@ -102,6 +102,9 @@
 		"StatsTab": "Stats",
 		"StatsTabMessage": "Hunts found:",
 
+		"EnableMappy": "Enable Mappy integration",
+		"MappyCustomColours": "Custom colours (spawn point and mob icon only, toggle 'Enable Mappy' ^^^ above to take effect",
+
 		"DefaultSettingsWindowMessage": "There's nothing here\nOptions are available from the main map window,",
 
 		"LoadedHuntDataWindowTitle": "Loaded Hunt Data",

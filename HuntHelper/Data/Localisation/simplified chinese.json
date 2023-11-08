@@ -102,6 +102,9 @@
 		"StatsTab": "统计",
 		"StatsTabMessage": "已找到的怪物:",
 
+		"EnableMappy": "Enable Mappy integration",
+		"MappyCustomColours": "Custom colours (spawn point and mob icon only, toggle 'Enable Mappy' ^^^ above to take effect",
+
 		"DefaultSettingsWindowMessage": "啥也没有\n设置在在主地图窗口",
 
 		"LoadedHuntDataWindowTitle": "加载狩猎数据",

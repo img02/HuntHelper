@@ -79,22 +79,22 @@ namespace HuntHelper
                 PluginLog.Error("Unable to find localisation file. What did you do?! gonna crash ok");
             }
 
+            this.Configuration = this.PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
+            this.Configuration.Initialize(this.PluginInterface);
+
             this.FateTable = fateTable;
             this.ObjectTable = objectTable;
             this.DataManager = dataManager;
             this.ChatGui = chatGui;
             this.FlyTextGui = flyTextGui;
             this.GameGui = gameGui;
-            this.Mappy = new MappyIPC(PluginInterface);
+            this.Mappy = new MappyIPC(PluginInterface, Configuration);
 
-            Constants.SetCounterLanguage(ClientState.ClientLanguage);
-
-            this.Configuration = this.PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
-            this.Configuration.Initialize(this.PluginInterface);
+            Constants.SetCounterLanguage(ClientState.ClientLanguage);            
 
             this.TrainManager = new TrainManager(ChatGui, GameGui, dataManager, Path.Combine(PluginInterface.AssemblyLocation.Directory?.FullName!, @"Data\HuntTrain.json"));
             this.HuntManager = new HuntManager(PluginInterface, TrainManager, chatGui, flyTextGui, clientState, objectTable, dataManager, this.Configuration);
-            this.MapDataManager = new MapDataManager(Path.Combine(PluginInterface.AssemblyLocation.Directory?.FullName!, @"Data\SpawnPointData.json"), clientState, Mappy);
+            this.MapDataManager = new MapDataManager(Path.Combine(PluginInterface.AssemblyLocation.Directory?.FullName!, @"Data\SpawnPointData.json"), clientState, dataManager, Configuration, Mappy);
             this.IpcSystem = new IpcSystem(pluginInterface, framework, TrainManager);
 
             this.MapUi = new MapUI(this.Configuration, pluginInterface, clientState, objectTable, dataManager, HuntManager, MapDataManager, GameGui);
@@ -105,8 +105,7 @@ namespace HuntHelper
 
             TeleportIpc = PluginInterface.GetIpcSubscriber<uint, byte, bool>("Teleport");
 
-            ClientState.TerritoryChanged += MapDataManager.OnTerritoryChanged;
-            MapDataManager.DrawMappySpawnPositions();
+            if (Configuration.UseMappy) MapDataManager.DrawAllMappySpawnPoints();
             HuntManager.CurrentMobChange += Mappy.OnCurrentMobChange;
 
             #region Commands
@@ -131,7 +130,6 @@ namespace HuntHelper
 
         public void Dispose()
         {
-            this.ClientState.TerritoryChanged -= MapDataManager.OnTerritoryChanged;
             HuntManager.CurrentMobChange -= Mappy.OnCurrentMobChange;
             Mappy.ClearSpawnPointMarkers();
             Mappy.RemoveMobMarkers();

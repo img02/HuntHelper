@@ -7,6 +7,7 @@ using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using HuntHelper.Gui.Resource;
+using HuntHelper.Managers;
 using HuntHelper.Managers.Hunts;
 using HuntHelper.Managers.MapData;
 using HuntHelper.Managers.MapData.Models;
@@ -206,7 +207,7 @@ namespace HuntHelper.Gui
 
             LoadSettings();
             LoadMapImages();
-
+            if (_configuration.UseMappy) mapDataManager.DrawAllMappySpawnPoints();
             _backgroundLoopCancelTokenSource = new CancellationTokenSource();
             _backgroundLoop = Task.Run(BackgroundLoop, _backgroundLoopCancelTokenSource.Token);
         }
@@ -777,12 +778,12 @@ namespace HuntHelper.Gui
                                         ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
 
                                     ImGui.TableNextColumn();
-                                    ImGui.ColorEdit4(GuiResources.MapGuiText["MobIcon"], ref _mobColour,
-                                        ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
+                                    if (ImGui.ColorEdit4(GuiResources.MapGuiText["MobIcon"], ref _mobColour,
+                                        ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel)) SaveSettings();
 
                                     ImGui.TableNextColumn();
-                                    ImGui.ColorEdit4(GuiResources.MapGuiText["SpawnPoint"], ref _spawnPointColour,
-                                        ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
+                                    if (ImGui.ColorEdit4(GuiResources.MapGuiText["SpawnPoint"], ref _spawnPointColour,
+                                        ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel)) SaveSettings();
 
                                     ImGui.Dummy(new Vector2(0, 4f));
 
@@ -1166,6 +1167,19 @@ namespace HuntHelper.Gui
                         ImGui.EndTabItem();
                     }
 
+                    if (ImGui.BeginTabItem("Mappy"))
+                    {
+                        if (ImGui.Checkbox(GuiResources.MapGuiText["EnableMappy"], ref _configuration.UseMappy))
+                        {
+                            //todo clear away drawn spawn positions and mob pos
+                            if (!_configuration.UseMappy) _mapDataManager.ClearMappy();
+                            else _mapDataManager.DrawAllMappySpawnPoints();
+                        }                        
+                        ImGui.Checkbox(GuiResources.MapGuiText["MappyCustomColours"], ref _configuration.MappyUseCustomColours);
+                        ImGuiUtil.ImGui_HoveredToolTip(GuiResources.MapGuiText["MappyCustomColours"]);
+
+                        ImGui.EndTabItem();
+                    }
                     ImGui.EndTabBar();
                 }
             }

@@ -192,7 +192,7 @@ public class HuntManager
                     break;
             }
         }
-        if (CurrentMobChange != null) CurrentMobChange(CurrentMobs, zoneMapCoordSize);
+        CurrentMobChange?.Invoke(CurrentMobs, zoneMapCoordSize);
     }
 
     #region rework later?
@@ -464,7 +464,7 @@ public class HuntManager
 #if DEBUG
             PluginLog.Warning("Cleared");
 #endif
-            if (CurrentMobChange != null) CurrentMobChange(CurrentMobs, zoneCoordSize);
+            CurrentMobChange?.Invoke(CurrentMobs, zoneCoordSize);
             return;
         }
 #if DEBUG

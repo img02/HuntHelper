@@ -101,6 +101,9 @@ Map,,,,,,
 ,StatsTab,Stats,,,,统计
 ,StatsTabMessage,Hunts found,,,,已找到的怪物
 ,,,,,,
+,EnableMappy,Enable Mappy integration,,,,
+,MappyCustomColours,Custom colours (spawn point and mob icon only,,,,
+,,,,,,
 ,DefaultSettingsWindowMessage,"There's nothing here\nOptions are available from the main map window,",,,,啥也没有\n设置在在主地图窗口
 ,,,,,,
 ,LoadedHuntDataWindowTitle,Loaded Hunt Data,,,,加载狩猎数据

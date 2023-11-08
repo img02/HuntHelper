@@ -22,9 +22,11 @@ public class MapDataManager
     //private readonly DalamudPluginInterface _pluginInterface;
     private readonly string _filePath;
     private readonly IClientState _clientState;
+    private readonly IDataManager _dataManager;
+    private readonly Configuration _config;
     private MappyIPC _mappy;
 
-    public MapDataManager(string filePath, IClientState client, MappyIPC mappy)
+    public MapDataManager(string filePath, IClientState client, IDataManager dataManager, Configuration config, MappyIPC mappy)
     {
         //this._pluginInterface = pluginInterface;
         _filePath = filePath;
@@ -32,6 +34,8 @@ public class MapDataManager
         ImportedList = new List<MapSpawnPoints>();
         LoadSpawnPointData();
         _clientState = client;
+        _dataManager = dataManager;
+        _config = config;
         _mappy = mappy;
     }
 
@@ -156,24 +160,21 @@ public class MapDataManager
 
     #region mappy ipc
 
-    public void OnTerritoryChanged(ushort territoryid)
+    public void DrawAllMappySpawnPoints()
     {
-        if (!_mappy.IsReady()) return;
-        DrawMappySpawnPositions();
+        PluginLog.Verbose("Adding all Spawn Points to mappy");
+        SpawnPointsList.ForEach(p =>
+        {
+            foreach (var sp in p.Positions)
+            {   // okay once again I am confused about territory and map ids lmao. swear to god the naming is mixed in various places.
+                _mappy.AddSpawnPointMarker(sp.Position, MapHelpers.GetMapID(_dataManager, p.MapID));
+            }
+        }  );
     }
 
-    public void DrawMappySpawnPositions()
+    public void ClearMappy()
     {
-        try
-        {
-            _mappy.ClearSpawnPointMarkers();
-            var pos = GetSpawnPoints(_clientState.TerritoryType);
-            pos.ForEach(p => _mappy.AddSpawnPointMarker(new Vector2(p.X, p.Y)));
-        }
-        catch (IpcNotReadyError)
-        {
-            PluginLog.Debug("Mappy IPC not ready / found.");
-        }
+        _mappy.RemoveAll();
     }
 
     #endregion

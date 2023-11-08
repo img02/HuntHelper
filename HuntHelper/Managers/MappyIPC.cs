@@ -36,11 +36,13 @@ namespace HuntHelper.Managers
         private readonly ICallGateSubscriber<bool>? IsReadyIpcFunction = null;
 
         private DalamudPluginInterface _pluginInterface;
+        private Configuration _config;
 
 
-        public MappyIPC(DalamudPluginInterface pluginInterface)
+        public MappyIPC(DalamudPluginInterface pluginInterface, Configuration config)
         {
             _pluginInterface = pluginInterface;
+            _config = config;
 
             // Copy/Paste this to subscribe to these functions, be sure to check for IPCNotReady exceptions ;)
             AddWorldMarkerIpcFunction = _pluginInterface.GetIpcSubscriber<uint, Vector2, uint, string, string, string>("Mappy.World.AddMarker");
@@ -64,9 +66,6 @@ namespace HuntHelper.Managers
             RemoveLineIpcFunction = _pluginInterface.GetIpcSubscriber<string, bool>("Mappy.RemoveLine");
             IsReadyIpcFunction = _pluginInterface.GetIpcSubscriber<bool>("Mappy.IsReady");
         }
-
-
-
         
         public bool IsReady()
         {
@@ -81,8 +80,8 @@ namespace HuntHelper.Managers
             }
         }
 
+        #region no longer used -- used for drawing a single maps spawn points
         public bool HasSpawnPoints() => SpawnMarkers.Count > 0;
-
 
         /// <Exception cref="IpcNotReadyError">If Mappy plugin not installed or not ready</exception>
         public bool AddSpawnPointMarker(Vector2 coordinates)
@@ -92,31 +91,42 @@ namespace HuntHelper.Managers
                 //PluginLog.Verbose("Could not add marker, Mappy IPC not ready.");
                 return false;
             }
-            /*            
 
-            https://xivapi.com/docs/Icons
-            https://xivapi.com/docs/Icons?set=fates
-            https://xivapi.com/docs/Icons?set=icons016000             
-             
-             */
+            var colour = _config.MappyUseCustomColours ? _config.SpawnPointColour : LineColour;
 
             //draws an X
-            var id = AddMapCoordLineIpcFunction!.InvokeFunc(coordinates + new Vector2(-LineOffset, -LineOffset), 
-                coordinates + new Vector2(LineOffset, LineOffset), 0, LineColour, LineThickness);
+            var id = AddMapCoordLineIpcFunction!.InvokeFunc(coordinates + new Vector2(-LineOffset, -LineOffset),
+                coordinates + new Vector2(LineOffset, LineOffset), 0, colour, LineThickness);
 
-            var id2 = AddMapCoordLineIpcFunction.InvokeFunc(coordinates + new Vector2(-LineOffset, LineOffset), 
-                coordinates + new Vector2(LineOffset, -LineOffset), 0, LineColour, LineThickness);
-
-            //var id3 = AddMapCoordCircleFilled!.InvokeFunc(coordinates, 5f, 0, new Vector4(1f, 0.5f, 0.5f, 1f), 5);
-            //var id4 = AddMapCoordCircle!.InvokeFunc(coordinates, 15f, 0, new Vector4(1f, 0.5f, 0.5f, 1f), 0, 3f);
-
-            //uses icon
-            //var id = AddMapCoordinateMarkerIpcFunction!.InvokeFunc(SpawnMarkerID, coordinates, 0, "", "");
+            var id2 = AddMapCoordLineIpcFunction.InvokeFunc(coordinates + new Vector2(-LineOffset, LineOffset),
+                coordinates + new Vector2(LineOffset, -LineOffset), 0, colour, LineThickness);
 
             SpawnMarkers.Add(id);
             SpawnMarkers.Add(id2);
-            //SpawnMarkers.Add(id3);
-            //PluginLog.Log("added");
+            return true;
+        }
+        #endregion
+
+        /// <Exception cref="IpcNotReadyError">If Mappy plugin not installed or not ready</exception>
+        public bool AddSpawnPointMarker(Vector2 coordinates, uint mapId)
+        {
+            if (!IsReady())
+            {
+                //PluginLog.Verbose("Could not add marker, Mappy IPC not ready.");
+                return false;
+            }
+
+            var colour = _config.MappyUseCustomColours ? _config.SpawnPointColour : LineColour;
+
+            //draws an X
+            var id = AddMapCoordLineIpcFunction!.InvokeFunc(coordinates + new Vector2(-LineOffset, -LineOffset),
+                coordinates + new Vector2(LineOffset, LineOffset), mapId, colour, LineThickness);
+
+            var id2 = AddMapCoordLineIpcFunction.InvokeFunc(coordinates + new Vector2(-LineOffset, LineOffset),
+                coordinates + new Vector2(LineOffset, -LineOffset), mapId, colour, LineThickness);
+                       
+            SpawnMarkers.Add(id);
+            SpawnMarkers.Add(id2);
             return true;
         }
 
@@ -124,8 +134,7 @@ namespace HuntHelper.Managers
         private float LineThickness = 5;
         //private Vector4 LineColour = new Vector4(1f, 0.4f, 0.4f, 1f);
         private Vector4 LineColour = new Vector4(0.35f, 0.35f, 1f, 1f);
-
-        
+                
         public void ClearSpawnPointMarkers()
         {
             try
@@ -136,19 +145,12 @@ namespace HuntHelper.Managers
             }
             catch (IpcNotReadyError)
             { }
-        }
+        }       
 
         /// <Exception cref="IpcNotReadyError">If Mappy plugin not installed or not ready</exception>
-        public void AddMobMarkerWithIcon(uint IconId, Vector2 MapCoordinates, uint MapId = 0, string Tooltip = "", string Description = "")
+        public void AddMobMarkerWithCircle(Vector2 centre, float radius, Vector4 colour, int segments)
         {
-            var id = AddWorldMarkerIpcFunction!.InvokeFunc(IconId, MapCoordinates, 0, Tooltip, Description);
-            MobMarkers.Add(id);
-        }
-
-        /// <Exception cref="IpcNotReadyError">If Mappy plugin not installed or not ready</exception>
-        public void AddMobMarkerWithCircle(Vector2 centre, Vector4 colour, int segments)
-        {
-            var id = AddMapCoordCircleFilled!.InvokeFunc(centre, 10f, 0, colour, segments);
+            var id = AddMapCoordCircleFilled!.InvokeFunc(centre, radius, 0, colour, segments);
             MobMarkers.Add(id);
         }
 
@@ -168,6 +170,9 @@ namespace HuntHelper.Managers
             catch (IpcNotReadyError) { }
         }
 
+        /// <summary>
+        /// If 'Use Mappy' disabled, this will immediately return.
+        /// </summary>
         public void OnCurrentMobChange(IList<(HuntRank, BattleNpc)> mobs, float zoneCoordSize)
         {
             /*
@@ -189,6 +194,7 @@ namespace HuntHelper.Managers
 			-	076952 cute stickers              
              */
 
+            if (!_config.UseMappy) return;
             try
             {
 #if DEBUG
@@ -197,27 +203,39 @@ namespace HuntHelper.Managers
                 RemoveMobMarkers();
                 foreach (var (rank, mob) in mobs)
                 {
-                    //var marker = GetMobMarkerIcon(rank);
-                    //AddMobMarkerWithIcon(marker, new Vector2(mob.Position.X, mob.Position.Z), 0, $"{mob.Name}  |  {rank}\t\t");
-
-                    //draw circle instead
-                    var (colour,segments) = GetMobCircleColourSegments(rank);
+                    var (colour,segments, radius) = GetMobCircleStuff(rank);
                     var posX = MapHelpers.ConvertToMapCoordinate(mob.Position.X, zoneCoordSize);
                     var posY = MapHelpers.ConvertToMapCoordinate(mob.Position.Z, zoneCoordSize);
-                    AddMobMarkerWithCircle(new Vector2(posX, posY), colour, segments);
+                    colour = _config.MappyUseCustomColours ? _config.MobColour : colour;
+                    AddMobMarkerWithCircle(new Vector2(posX, posY), radius, colour, segments);
                 }
             }
             catch (IpcNotReadyError) { }
         }
 
-        private (Vector4, int) GetMobCircleColourSegments(HuntRank rank) => rank switch
+        private (Vector4, int, float) GetMobCircleStuff(HuntRank rank) => rank switch
         {
-            HuntRank.A => (new Vector4(1f, 0.2f, 0.2f, 1f), 5),
-            HuntRank.S => (new Vector4(1f, 0.2f, 0.2f, 1f), 8),
-            HuntRank.SS=> (new Vector4(1f, 0.2f, 0.2f, 1f), 3),
-            HuntRank.B => (new Vector4(1f, 0.2f, 0.2f, 1f), 4),
+            HuntRank.A => (ColourA, 5, 12f),
+            HuntRank.B => (ColourA, 20, 8f),
+            HuntRank.S => (ColourA, 4, 14f),
+            HuntRank.SS=> (ColourA, 3, 16f),            
             _ => throw new NotImplementedException(),
         };
+
+        private Vector4 ColourA = new Vector4(1f, 0.2f, 0.2f, 1f);
+        //hard to see...
+        private Vector4 ColourB = new Vector4(136 / 255f, 220 / 255f, 221 / 255f, 1f);
+        private Vector4 ColourS = new Vector4(1f, 226 / 255f, 0f, 1f);
+        private Vector4 ColourSS = new Vector4(1f, 226 / 255f, 0f, 1f);
+
+        #region unused icon stuff
+
+        /// <Exception cref="IpcNotReadyError">If Mappy plugin not installed or not ready</exception>
+        public void AddMobMarkerWithIcon(uint IconId, Vector2 MapCoordinates, uint MapId = 0, string Tooltip = "", string Description = "")
+        {
+            var id = AddWorldMarkerIpcFunction!.InvokeFunc(IconId, MapCoordinates, 0, Tooltip, Description);
+            MobMarkers.Add(id);
+        }
 
         private uint GetMobMarkerIcon(HuntRank rank) => rank switch
         {
@@ -237,7 +255,13 @@ namespace HuntHelper.Managers
         //private uint SpawnMarkerID = 060201; // clouds
         //private uint SpawnMarkerID = 060421; // lil blue diamond thing
         private uint SpawnMarkerID = 060624; // cool red diamond thing - 060626
+        #endregion
 
 
+        public void RemoveAll()
+        {
+            ClearSpawnPointMarkers();
+            RemoveMobMarkers();
+        }
     }
 }

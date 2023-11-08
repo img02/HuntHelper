@@ -119,6 +119,8 @@ namespace HuntHelper
         public Preset PresetOne { get; set; } = new Preset() { MapOpacity = 1, UseMap = false, WindowOpacity = 1, WindowSize = 512 };
         public Preset PresetTwo { get; set; } = new Preset() { MapOpacity = 1, UseMap = false, WindowOpacity = 1, WindowSize = 512 };
 
+        public bool UseMappy = false;
+        public bool MappyUseCustomColours = false;
         #endregion
 
         #region Hunt Train Window
