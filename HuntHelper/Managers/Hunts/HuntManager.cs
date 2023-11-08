@@ -192,7 +192,7 @@ public class HuntManager
                     break;
             }
         }
-        if (CurrentMobChange != null) CurrentMobChange(CurrentMobs);
+        if (CurrentMobChange != null) CurrentMobChange(CurrentMobs, zoneMapCoordSize);
     }
 
     #region rework later?
@@ -464,7 +464,7 @@ public class HuntManager
 #if DEBUG
             PluginLog.Warning("Cleared");
 #endif
-            if (CurrentMobChange != null) CurrentMobChange(CurrentMobs);
+            if (CurrentMobChange != null) CurrentMobChange(CurrentMobs, zoneCoordSize);
             return;
         }
 #if DEBUG
@@ -477,7 +477,7 @@ public class HuntManager
             _config.FlyTextAEnabled, _config.FlyTextBEnabled, _config.FlyTextSEnabled, instance);
     }
 
-    public event Action<IList<(HuntRank, BattleNpc)>> CurrentMobChange;
+    public event Action<IList<(HuntRank, BattleNpc)>, float> CurrentMobChange;
 
     public double GetHPP(BattleNpc mob)
     {
