@@ -22,7 +22,7 @@ namespace HuntHelper.Managers
         private readonly ICallGateSubscriber<string, bool>? RemoveMarkerIpcFunction = null;
         //public ICallGateSubscriber<string, Vector2, bool>? UpdateMarkerIpcFunction = null;
         //public ICallGateSubscriber<Vector2, Vector2, uint, Vector4, float, string>? AddTextureLineIpcFunction = null;
-        //public ICallGateSubscriber<Vector2, Vector2, uint, Vector4, float, string>? AddMapCoordLineIpcFunction = null;
+        public ICallGateSubscriber<Vector2, Vector2, uint, Vector4, float, string>? AddMapCoordLineIpcFunction = null;
         private readonly ICallGateSubscriber<string, bool>? RemoveLineIpcFunction = null;
         private readonly ICallGateSubscriber<bool>? IsReadyIpcFunction = null;
 
@@ -40,7 +40,7 @@ namespace HuntHelper.Managers
             RemoveMarkerIpcFunction = _pluginInterface.GetIpcSubscriber<string, bool>("Mappy.RemoveMarker");
             //UpdateMarkerIpcFunction = Service.PluginInterface.GetIpcSubscriber<string, Vector2, bool>("Mappy.UpdateMarker");
             //AddTextureLineIpcFunction = Service.PluginInterface.GetIpcSubscriber<Vector2, Vector2, uint, Vector4, float, string>("Mappy.Texture.AddLine");
-            //AddMapCoordLineIpcFunction = Service.PluginInterface.GetIpcSubscriber<Vector2, Vector2, uint, Vector4, float, string>("Mappy.MapCoord.AddLine");
+            AddMapCoordLineIpcFunction = _pluginInterface.GetIpcSubscriber<Vector2, Vector2, uint, Vector4, float, string>("Mappy.MapCoord.AddLine");
             RemoveLineIpcFunction = _pluginInterface.GetIpcSubscriber<string, bool>("Mappy.RemoveLine");
             IsReadyIpcFunction = _pluginInterface.GetIpcSubscriber<bool>("Mappy.IsReady");
         }
@@ -72,17 +72,20 @@ namespace HuntHelper.Managers
                 //PluginLog.Verbose("Could not add marker, Mappy IPC not ready.");
                 return false;
             }
-            /*
-             
+            /*            
 
             https://xivapi.com/docs/Icons
             https://xivapi.com/docs/Icons?set=fates
-            https://xivapi.com/docs/Icons?set=icons016000
-             
+            https://xivapi.com/docs/Icons?set=icons016000             
              
              */
-            var id = AddMapCoordinateMarkerIpcFunction!.InvokeFunc(SpawnMarkerID, coordinates, 0, "", "");
+
+            var id = AddMapCoordLineIpcFunction!.InvokeFunc(coordinates, coordinates + new Vector2(0.2f, 0.2f), 0, new Vector4(1f, 0.5f, 0.5f, 1f), 4);
+            var id2 = AddMapCoordLineIpcFunction.InvokeFunc(coordinates + new Vector2(0.2f,0), coordinates + new Vector2(0f, 0.2f), 0, new Vector4(1f, 0.5f, 0.5f, 1f), 4);
+
+            //var id = AddMapCoordinateMarkerIpcFunction!.InvokeFunc(SpawnMarkerID, coordinates, 0, "", "");
             SpawnMarkers.Add(id);
+            SpawnMarkers.Add(id2);
             //PluginLog.Log("added");
             return true;
         }
