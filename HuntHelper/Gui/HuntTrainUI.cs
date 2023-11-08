@@ -40,6 +40,7 @@ public class HuntTrainUI : IDisposable
     private bool _showTeleButtons = false;
     private bool _teleToAetheryte = false;
     private bool _showInChat = true;
+    private bool _showTrainUIDuringIPCImport = true;
     #endregion
 
     private Vector4 _deadTextColour = new Vector4(.6f, .7f, .6f, 1f);
@@ -72,7 +73,8 @@ public class HuntTrainUI : IDisposable
     }
 
     public void Draw()
-    {
+    {        
+        if (_showTrainUIDuringIPCImport && _trainManager.ImportFromIPC) { _huntTrainWindowVisible = true; }
         DrawHuntTrainWindow();
     }
 
@@ -93,6 +95,7 @@ public class HuntTrainUI : IDisposable
         _showTeleButtons = _config.HuntTrainShowTeleportButtons;
         _teleToAetheryte = _config.HuntTrainTeleportToAetheryte;
         _showInChat = _config.HuntTrainShowFlagInChat;
+        _showTrainUIDuringIPCImport = _config.HuntTrainShowUIDuringIPCImport;
     }
 
     public void SaveSettings()
@@ -108,6 +111,7 @@ public class HuntTrainUI : IDisposable
         _config.HuntTrainShowTeleportButtons = _showTeleButtons;
         _config.HuntTrainTeleportToAetheryte = _teleToAetheryte;
         _config.HuntTrainShowFlagInChat = _showInChat;
+        _config.HuntTrainShowUIDuringIPCImport = _showTrainUIDuringIPCImport;
     }
 
 
@@ -115,6 +119,7 @@ public class HuntTrainUI : IDisposable
     public void DrawHuntTrainWindow()
     {
         if (!HuntTrainWindowVisible) return;
+        if (_trainManager.ImportFromIPC) ImGui.SetNextWindowCollapsed(false);
 
         var numOfColumns = 2;
         if (_showLastSeen) numOfColumns++;
@@ -124,7 +129,7 @@ public class HuntTrainUI : IDisposable
         ImGui.SetNextWindowSize(_huntTrainWindowSize, ImGuiCond.FirstUseEver);
         ImGui.SetWindowPos(_huntTrainWindowPos);
         if (ImGui.Begin($"{GuiResources.HuntTrainGuiText["MainWindowTitle"]}##Window", ref _huntTrainWindowVisible, ImGuiWindowFlags.NoScrollbar))
-        {
+        {   
             var childSizeX = ImGui.GetWindowSize().X / numOfColumns;
             var childSizeY = _mobList.Count * 23 * ImGuiHelpers.GlobalScale;
             var lastSeenWidth = childSizeX * ImGuiHelpers.GlobalScale; //math is hard, resizing is hard owie :(
@@ -244,7 +249,7 @@ public class HuntTrainUI : IDisposable
                         ImGuiUtil.ImGui_HoveredToolTip(GuiResources.HuntTrainGuiText["LastSeenToolTip"]);
                         ImGui.TableNextColumn();
                         ImGui.Checkbox(GuiResources.HuntTrainGuiText["ShowFlagInChat"], ref _showInChat);
-                        ImGuiUtil.ImGui_HoveredToolTip(GuiResources.HuntTrainGuiText["ShowFlagInChat"]);
+                        ImGuiUtil.ImGui_HoveredToolTip(GuiResources.HuntTrainGuiText["ShowFlagInChat"]);                     
                         ImGui.EndTable();
                     }
                     ImGui.TreePop();
@@ -254,9 +259,8 @@ public class HuntTrainUI : IDisposable
                 {
                     if (ImGui.BeginTable("settingsalignment", 2))
                     {
-
                         ImGui.TableNextColumn();
-                        ImGui.Checkbox(GuiResources.HuntTrainGuiText["OpenMap"], ref _openMap); //assuming this is allowed as it requires user interaction, but opening map on S rank spawn would be passive and so 'automated'
+                        ImGui.Checkbox(GuiResources.HuntTrainGuiText["OpenMap"], ref _openMap); 
                         ImGuiUtil.ImGui_HoveredToolTip(GuiResources.HuntTrainGuiText["OpenMapToolTip"]);
                         ImGui.TableNextColumn();
                         ImGui.Checkbox(GuiResources.HuntTrainGuiText["TeleButtons"], ref _showTeleButtons);
@@ -270,6 +274,18 @@ public class HuntTrainUI : IDisposable
                         ImGui.TableNextColumn();
                         ImGui.Checkbox(GuiResources.HuntTrainGuiText["TeleportToAetheryte"], ref _teleToAetheryte);
                         ImGuiUtil.ImGui_HoveredToolTip(GuiResources.HuntTrainGuiText["TeleportToAetheryte"]);
+                        ImGui.EndTable();
+                    }
+                    ImGui.TreePop();                    
+                }
+                
+                if (ImGui.TreeNode("IPCRelatedStuffIdk", "IPC"))
+                {
+                    if (ImGui.BeginTable("settingsalignment", 1))
+                    {
+                        ImGui.TableNextColumn();
+                        ImGui.Checkbox(GuiResources.HuntTrainGuiText["OpenUIWhenIPCImport"], ref _showTrainUIDuringIPCImport);
+                        ImGuiUtil.ImGui_HoveredToolTip(GuiResources.HuntTrainGuiText["OpenUIWhenIPCImport"]);
                         ImGui.EndTable();
                     }
                     ImGui.TreePop();
@@ -324,15 +340,33 @@ public class HuntTrainUI : IDisposable
             ImGuiUtil.ImGui_HoveredToolTip(_copyText);
             ImGui.SameLine(); ImGui.Dummy(new Vector2(4, 0)); ImGui.SameLine();
 
-            if (ImGuiComponents.IconButton(FontAwesomeIcon.SignInAlt))
+            if (ImGuiComponents.IconButton(FontAwesomeIcon.SignInAlt) || _trainManager.ImportFromIPC)
             {
-                var importCode = string.Empty;
-                try
+                if (_trainManager.ImportFromIPC)
                 {
-                    importCode = ImGui.GetClipboardText();
+                    PluginLog.Warning("IMPORTING FROM IPC FOOL");
+                    /*
+                     * This way we can open the modal from the same place with existing code, 
+                     * reducing dupe code and spread                     
+                     * 
+                     * we do not need OpenImportPopup() anymore or the local bool _openImportPopup
+                     * 
+                     * instead we just use train manager
+                     */
+                    _trainManager.ImportFromIPC = false; //now we disable it so it doesn't get stuck
                 }
-                catch { } // if clipboard doesn't have string throws object null error. i.e. a file
-                _trainManager.Import(importCode);
+                else
+                {
+                    PluginLog.Warning("IMPORTING FROM HH CODE FOOL");
+                    var importCode = string.Empty;
+                    try
+                    {
+                        importCode = ImGui.GetClipboardText();
+                    }
+                    catch { } // if clipboard doesn't have string throws object null error. i.e. a file
+                    _trainManager.Import(importCode);
+                }
+
                 ImGui.OpenPopup($"{GuiResources.HuntTrainGuiText["ImportWindowTitle"]}##popup");
             }
 
@@ -405,10 +439,9 @@ public class HuntTrainUI : IDisposable
         var center = ImGui.GetWindowPos() + ImGui.GetWindowSize() / 2;
         ImGui.SetNextWindowPos(center, ImGuiCond.Appearing, new Vector2(0.5f, 0.5f));
         ImGui.SetNextWindowSize(new Vector2(400, 700), ImGuiCond.FirstUseEver);
-
+              
         if (ImGui.BeginPopupModal($"{GuiResources.HuntTrainGuiText["ImportWindowTitle"]}##popup"))
         {
-
             //if count is zero -> show message
             if (_importedTrain.Count == 0)
             {
@@ -498,7 +531,6 @@ public class HuntTrainUI : IDisposable
         }
     }
 
-
     private void ImportTrainData()
     {
         if (_importAll)
@@ -508,7 +540,6 @@ public class HuntTrainUI : IDisposable
         }
         _trainManager.ImportTrainNew(_importUpdateTime);
     }
-
 
     //changes tooltip temporarily when clicked. ^^)b
     private void ChangeCopyText()

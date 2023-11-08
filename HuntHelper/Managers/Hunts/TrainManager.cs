@@ -25,6 +25,7 @@ public class TrainManager
     public readonly List<HuntTrainMob> HuntTrain;
     public readonly List<HuntTrainMob> ImportedTrain;
     public bool RecordTrain = false;
+    public bool ImportFromIPC = false;
 
     public TrainManager(IChatGui chatGui, IGameGui gameGui, IDataManager dataManager, string huntTrainFilePath)
     {
@@ -112,9 +113,14 @@ public class TrainManager
 
     public void Import(string importCode)
     {
-        ImportedTrain.Clear(); //should be empty already
         var temp = ExportImport.Import(importCode, ImportedTrain);
-        if (temp.Count > 0) ImportedTrain.AddRange(temp);
+        Import(temp);
+    }
+
+    public void Import(IList<HuntTrainMob> trainMobs)
+    {
+        ImportedTrain.Clear(); //should be empty already
+        if (trainMobs.Count > 0) ImportedTrain.AddRange(trainMobs);
         LocaliseNames(ImportedTrain);
     }
 
