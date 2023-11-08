@@ -1,9 +1,11 @@
-﻿using Dalamud.Game.ClientState.Objects.Types;
+﻿using Dalamud.Configuration;
+using Dalamud.Game.ClientState.Objects.Types;
 using Dalamud.Game.Gui.FlyText;
 using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Interface.Internal;
 using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
+using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using HuntHelper.Managers.Hunts.Models;
 using HuntHelper.Managers.MapData.Models;
 using HuntHelper.Utilities;
@@ -30,10 +32,15 @@ public class HuntManager
     private readonly Dictionary<HuntRank, List<Mob>> _sbDict;
     private readonly Dictionary<HuntRank, List<Mob>> _ewDict;
     private readonly Dictionary<string, IDalamudTextureWrap> _mapImages;
+
     private readonly DalamudPluginInterface _pluginInterface;
     private readonly IChatGui _chatGui;
     private readonly IFlyTextGui _flyTextGui;
-    private readonly TrainManager _trainManager;
+    private readonly IClientState _clientState;
+    private readonly IObjectTable _objectTable;
+    private readonly IDataManager _dataManager;
+    private readonly Configuration _config;
+    private readonly TrainManager _trainManager;    
 
     private readonly List<(HuntRank Rank, BattleNpc Mob)> _currentMobs;
     private readonly List<(HuntRank Rank, BattleNpc Mob)> _previousMobs;
@@ -69,7 +76,9 @@ public class HuntManager
 
     public List<(HuntRank Rank, BattleNpc Mob)> CurrentMobs => _currentMobs;
 
-    public HuntManager(DalamudPluginInterface pluginInterface, TrainManager trainManager, IChatGui chatGui, IFlyTextGui flyTextGui, int ttsVolume)
+    public HuntManager(DalamudPluginInterface pluginInterface, TrainManager trainManager, IChatGui chatGui, 
+        IFlyTextGui flyTextGui, IClientState clientState, IObjectTable objectTable,
+        IDataManager dataManager, Configuration config)
     {
         _arrDict = new Dictionary<HuntRank, List<Mob>>();
         _hwDict = new Dictionary<HuntRank, List<Mob>>();
@@ -79,11 +88,17 @@ public class HuntManager
         _mapImages = new Dictionary<string, IDalamudTextureWrap>();
         _currentMobs = new List<(HuntRank, BattleNpc)>();
         _previousMobs = new List<(HuntRank, BattleNpc)>();
+
         _pluginInterface = pluginInterface;
         _chatGui = chatGui;
         _flyTextGui = flyTextGui;
         _trainManager = trainManager;
-        TTSVolume = ttsVolume;
+        _clientState = clientState;
+        _objectTable = objectTable;
+        _dataManager = dataManager;
+        _config = config;
+
+        TTSVolume = config.TTSVolume;
 
         HuntTrain = new List<HuntTrainMob>();
         ImportedTrain = new List<HuntTrainMob>();
@@ -374,6 +389,11 @@ public class HuntManager
         LoadFilesIntoDic(_ewDict, EWJsonFiles);
     }
 
+    /// <summary>
+    ///  this should actually be territory id? fuck I've forgotten how territory and map ids work. it's been like a year
+    /// </summary>
+    /// <param name="mapID"></param>
+    /// <returns></returns>
     public float GetMapZoneCoordSize(ushort mapID)
     {
         //EVERYTHING EXCEPT HEAVENSWARD HAS 41 COORDS, BUT FOR SOME REASON HW HAS 43, WHYYYYYY
@@ -419,6 +439,36 @@ public class HuntManager
         _trainManager.SaveHuntTrainRecord();
         if (!DontUseSynthesizer)
             TTS.Dispose();
+    }
+
+    public unsafe void UpdateMobInfo()
+    {
+        var territoryId = _clientState.TerritoryType;            
+        var territoryName = MapHelpers.GetMapName(_dataManager, _clientState.TerritoryType);
+        var mapId = MapHelpers.GetMapID(_dataManager, territoryId);
+        var instance = (uint)UIState.Instance()->AreaInstance.Instance;
+        var zoneCoordSize = GetMapZoneCoordSize(territoryId);
+
+        var nearbyMobs = new List<BattleNpc>();
+        //sift through and add any hunt mobs to new list
+        foreach (var obj in _objectTable)
+        {
+            if (obj is not BattleNpc mob) continue;
+            if (!IsHunt(mob.NameId)) continue;
+            nearbyMobs.Add(mob);
+            AddToTrain(mob, territoryId, mapId, instance, territoryName, zoneCoordSize);
+        }
+
+        if (nearbyMobs.Count == 0)
+        {
+            CurrentMobs.Clear();
+            return;
+        }
+
+        AddNearbyMobs(nearbyMobs, zoneCoordSize, territoryId, mapId,
+            _config.TTSAEnabled, _config.TTSBEnabled, _config.TTSSEnabled, _config.TTSAMessage, _config.TTSBMessage, _config.TTSSMessage,
+            _config.ChatAEnabled, _config.ChatBEnabled, _config.ChatSEnabled, _config.ChatAMessage, _config.ChatBMessage, _config.ChatSMessage,
+            _config.FlyTextAEnabled, _config.FlyTextBEnabled, _config.FlyTextSEnabled, instance);
     }
 
     public double GetHPP(BattleNpc mob)

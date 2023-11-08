@@ -148,6 +148,7 @@ namespace HuntHelper.Gui
         #endregion
 
         private bool _showDebug = false;
+
         private float _mapZoneMaxCoordSize = 41; //default to 41 as thats most common for hunt zones
 
         public float SingleCoordSize => ImGui.GetWindowSize().X / _mapZoneMaxCoordSize;
@@ -419,7 +420,6 @@ namespace HuntHelper.Gui
 
                 //optional togglable stuff 
 
-                //zone name
                 if (_showZoneName)
                 {
                     ImGuiUtil.DoStuffWithMonoFont(() =>
@@ -832,7 +832,7 @@ namespace HuntHelper.Gui
                                     ImGui.SameLine();
                                     ImGui.InputText("##A Rank A Chat Msg", ref _chatAMessage, _inputTextMaxLength);
                                     ImGui.SameLine();
-                                    ImGui.Checkbox("##A Rank A Chat Checkbox", ref _chatAEnabled);
+                                    if (ImGui.Checkbox("##A Rank A Chat Checkbox", ref _chatAEnabled)) SaveSettings();
                                     ImGui.SameLine();
                                     ImGuiUtil.ImGui_HelpMarker(GuiResources.MapGuiText["ChatMessageLabelToolTip"]);
 
@@ -841,11 +841,11 @@ namespace HuntHelper.Gui
                                     ImGui.SameLine();
                                     ImGui.InputText("##A Rank A TTS Msg", ref _ttsAMessage, _inputTextMaxLength);
                                     ImGui.SameLine();
-                                    ImGui.Checkbox("##A Rank A TTS Checkbox", ref _ttsAEnabled);
+                                    if (ImGui.Checkbox("##A Rank A TTS Checkbox", ref _ttsAEnabled)) SaveSettings(); //could change config props to fields, but...
                                     ImGui.SameLine();
                                     ImGuiUtil.ImGui_HelpMarker(GuiResources.MapGuiText["TTSMessageLabelToolTip"]);
 
-                                    ImGui.Checkbox("FlyText##A Rank", ref _flyTxtAEnabled);
+                                    if (ImGui.Checkbox("FlyText##A Rank", ref _flyTxtAEnabled)) SaveSettings();
                                     ImGui.SameLine();
                                     ImGuiUtil.ImGui_HelpMarker(GuiResources.MapGuiText["FlyTextToolTip"]);
                                     ImGui.SameLine();
@@ -874,7 +874,7 @@ namespace HuntHelper.Gui
                                     ImGui.SameLine();
                                     ImGui.InputText("##A Rank B Chat Msg", ref _chatBMessage, _inputTextMaxLength);
                                     ImGui.SameLine();
-                                    ImGui.Checkbox("##A Rank B Chat Checkbox", ref _chatBEnabled);
+                                    if (ImGui.Checkbox("##A Rank B Chat Checkbox", ref _chatBEnabled)) SaveSettings(); 
                                     ImGui.SameLine();
                                     ImGuiUtil.ImGui_HelpMarker(GuiResources.MapGuiText["ChatMessageLabelToolTip"]);
 
@@ -883,11 +883,11 @@ namespace HuntHelper.Gui
                                     ImGui.SameLine();
                                     ImGui.InputText("##A Rank B TTS Msg", ref _ttsBMessage, _inputTextMaxLength);
                                     ImGui.SameLine();
-                                    ImGui.Checkbox("##A Rank B TTS Checkbox", ref _ttsBEnabled);
+                                    if (ImGui.Checkbox("##A Rank B TTS Checkbox", ref _ttsBEnabled)) SaveSettings(); 
                                     ImGui.SameLine();
                                     ImGuiUtil.ImGui_HelpMarker(GuiResources.MapGuiText["TTSMessageLabelToolTip"]);
 
-                                    ImGui.Checkbox("FlyText##B Rank", ref _flyTxtBEnabled);
+                                    if (ImGui.Checkbox("FlyText##B Rank", ref _flyTxtBEnabled)) SaveSettings();
                                     ImGui.SameLine();
                                     ImGuiUtil.ImGui_HelpMarker(GuiResources.MapGuiText["FlyTextToolTip"]);
                                     ImGui.SameLine();
@@ -916,7 +916,7 @@ namespace HuntHelper.Gui
                                     ImGui.SameLine();
                                     ImGui.InputText("##A Rank S Chat Msg", ref _chatSMessage, _inputTextMaxLength);
                                     ImGui.SameLine();
-                                    ImGui.Checkbox("##A Rank S Chat Checkbox", ref _chatSEnabled);
+                                    if (ImGui.Checkbox("##A Rank S Chat Checkbox", ref _chatSEnabled)) SaveSettings();
                                     ImGui.SameLine();
                                     ImGuiUtil.ImGui_HelpMarker(GuiResources.MapGuiText["ChatMessageLabelToolTip"]);
 
@@ -925,11 +925,11 @@ namespace HuntHelper.Gui
                                     ImGui.SameLine();
                                     ImGui.InputText("##A Rank S TTS Msg", ref _ttsSMessage, _inputTextMaxLength);
                                     ImGui.SameLine();
-                                    ImGui.Checkbox("##A Rank S TTS Checkbox", ref _ttsSEnabled);
+                                    if (ImGui.Checkbox("##A Rank S TTS Checkbox", ref _ttsSEnabled)) SaveSettings();
                                     ImGui.SameLine();
                                     ImGuiUtil.ImGui_HelpMarker(GuiResources.MapGuiText["TTSMessageLabelToolTip"]);
 
-                                    ImGui.Checkbox("FlyText##S Rank", ref _flyTxtSEnabled);
+                                    if (ImGui.Checkbox("FlyText##S Rank", ref _flyTxtSEnabled)) SaveSettings();
                                     ImGui.SameLine();
                                     ImGuiUtil.ImGui_HelpMarker(GuiResources.MapGuiText["FlyTextToolTip"]);
                                     ImGui.SameLine();
@@ -1474,26 +1474,7 @@ namespace HuntHelper.Gui
 
         private void UpdateMobInfo()
         {
-            var nearbyMobs = new List<BattleNpc>();
-            //sift through and add any hunt mobs to new list
-            foreach (var obj in _objectTable)
-            {
-                if (obj is not BattleNpc mob) continue;
-                if (!_huntManager.IsHunt(mob.NameId)) continue;
-                nearbyMobs.Add(mob);
-                _huntManager.AddToTrain(mob, _territoryId, MapHelpers.GetMapID(_dataManager, _territoryId), _instance, _territoryName, _mapZoneMaxCoordSize);
-            }
-
-            if (nearbyMobs.Count == 0)
-            {
-                _huntManager.CurrentMobs.Clear();
-                return;
-            }
-
-            _huntManager.AddNearbyMobs(nearbyMobs, _mapZoneMaxCoordSize, _territoryId, MapHelpers.GetMapID(_dataManager, _territoryId),
-                _ttsAEnabled, _ttsBEnabled, _ttsSEnabled, _ttsAMessage, _ttsBMessage, _ttsSMessage,
-                _chatAEnabled, _chatBEnabled, _chatSEnabled, _chatAMessage, _chatBMessage, _chatSMessage,
-                _flyTxtAEnabled, _flyTxtBEnabled, _flyTxtSEnabled, _instance);
+            _huntManager.UpdateMobInfo();
             UpdateStats();
 
             if (!MapVisible) return;
