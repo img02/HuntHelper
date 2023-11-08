@@ -46,8 +46,8 @@ namespace HuntHelper
         private IpcSystem IpcSystem { get; init; }
         private IFlyTextGui FlyTextGui { get; init; }
         private IGameGui GameGui { get; init; }
-
         private IFateTable FateTable { get; init; }
+        private MappyIPC Mappy { get; init; }
 
         public static ICallGateSubscriber<uint, byte, bool> TeleportIpc { get; private set; }
         public static string PluginDir { get; set; } = string.Empty;
@@ -85,6 +85,7 @@ namespace HuntHelper
             this.ChatGui = chatGui;
             this.FlyTextGui = flyTextGui;
             this.GameGui = gameGui;
+            this.Mappy = new MappyIPC(PluginInterface);
 
             Constants.SetCounterLanguage(ClientState.ClientLanguage);
 
@@ -93,7 +94,7 @@ namespace HuntHelper
 
             this.TrainManager = new TrainManager(ChatGui, GameGui, dataManager, Path.Combine(PluginInterface.AssemblyLocation.Directory?.FullName!, @"Data\HuntTrain.json"));
             this.HuntManager = new HuntManager(PluginInterface, TrainManager, chatGui, flyTextGui, clientState, objectTable, dataManager, this.Configuration);
-            this.MapDataManager = new MapDataManager(Path.Combine(PluginInterface.AssemblyLocation.Directory?.FullName!, @"Data\SpawnPointData.json"));
+            this.MapDataManager = new MapDataManager(Path.Combine(PluginInterface.AssemblyLocation.Directory?.FullName!, @"Data\SpawnPointData.json"), clientState, Mappy);
             this.IpcSystem = new IpcSystem(pluginInterface, framework, TrainManager);
 
             this.MapUi = new MapUI(this.Configuration, pluginInterface, clientState, objectTable, dataManager, HuntManager, MapDataManager, GameGui);
@@ -104,8 +105,9 @@ namespace HuntHelper
 
             TeleportIpc = PluginInterface.GetIpcSubscriber<uint, byte, bool>("Teleport");
 
-            this.ClientState.TerritoryChanged += MapDataManager.OnTerritoryChanged;
+            ClientState.TerritoryChanged += MapDataManager.OnTerritoryChanged;
             MapDataManager.DrawMappySpawnPositions();
+            HuntManager.CurrentMobChange += Mappy.OnCurrentMobChange;
 
             #region Commands
             this.CommandManager.AddHandler(MapWindowCommand, new CommandInfo(HuntMapCommand) { HelpMessage = GuiResources.PluginText["/hh helpmessage"] });
@@ -130,6 +132,9 @@ namespace HuntHelper
         public void Dispose()
         {
             this.ClientState.TerritoryChanged -= MapDataManager.OnTerritoryChanged;
+            HuntManager.CurrentMobChange -= Mappy.OnCurrentMobChange;
+            Mappy.ClearSpawnPointMarkers();
+            Mappy.RemoveMobMarkers();
 
             //save hunttrainui config first
             this.HuntTrainUI.SaveSettings();
@@ -137,7 +142,7 @@ namespace HuntHelper
             this.SpawnPointFinderUI.SaveSettings();
 
             this.IpcSystem.Dispose();
-            //this.HuntTrainUI.Dispose();
+            this.HuntTrainUI.Dispose();
             this.SpawnPointFinderUI.Dispose();
             this.CounterUI.Dispose();
             this.MapUi.Dispose();
@@ -160,7 +165,7 @@ namespace HuntHelper
             #endregion
 
             this.HuntManager.Dispose();
-            
+
         }
 
         #region Commands

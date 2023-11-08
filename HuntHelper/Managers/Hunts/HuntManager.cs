@@ -1,5 +1,4 @@
-﻿using Dalamud.Configuration;
-using Dalamud.Game.ClientState.Objects.Types;
+﻿using Dalamud.Game.ClientState.Objects.Types;
 using Dalamud.Game.Gui.FlyText;
 using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Interface.Internal;
@@ -18,7 +17,6 @@ using System.Linq;
 using System.Speech.Synthesis;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using static FFXIVClientStructs.FFXIV.Client.Graphics.Scene.Object;
 
 namespace HuntHelper.Managers.Hunts;
 
@@ -40,7 +38,7 @@ public class HuntManager
     private readonly IObjectTable _objectTable;
     private readonly IDataManager _dataManager;
     private readonly Configuration _config;
-    private readonly TrainManager _trainManager;    
+    private readonly TrainManager _trainManager;
 
     private readonly List<(HuntRank Rank, BattleNpc Mob)> _currentMobs;
     private readonly List<(HuntRank Rank, BattleNpc Mob)> _previousMobs;
@@ -76,7 +74,7 @@ public class HuntManager
 
     public List<(HuntRank Rank, BattleNpc Mob)> CurrentMobs => _currentMobs;
 
-    public HuntManager(DalamudPluginInterface pluginInterface, TrainManager trainManager, IChatGui chatGui, 
+    public HuntManager(DalamudPluginInterface pluginInterface, TrainManager trainManager, IChatGui chatGui,
         IFlyTextGui flyTextGui, IClientState clientState, IObjectTable objectTable,
         IDataManager dataManager, Configuration config)
     {
@@ -118,7 +116,7 @@ public class HuntManager
 
         LoadHuntData();
     }
-     
+
     public (HuntRank Rank, BattleNpc? Mob) GetPriorityMob()
     {
         if (_priorityMob == null) return (_highestRank, null);
@@ -194,6 +192,7 @@ public class HuntManager
                     break;
             }
         }
+        if (CurrentMobChange != null) CurrentMobChange(CurrentMobs);
     }
 
     #region rework later?
@@ -443,7 +442,7 @@ public class HuntManager
 
     public unsafe void UpdateMobInfo()
     {
-        var territoryId = _clientState.TerritoryType;            
+        var territoryId = _clientState.TerritoryType;
         var territoryName = MapHelpers.GetMapName(_dataManager, _clientState.TerritoryType);
         var mapId = MapHelpers.GetMapID(_dataManager, territoryId);
         var instance = (uint)UIState.Instance()->AreaInstance.Instance;
@@ -462,14 +461,23 @@ public class HuntManager
         if (nearbyMobs.Count == 0)
         {
             CurrentMobs.Clear();
+#if DEBUG
+            PluginLog.Warning("Cleared");
+#endif
+            if (CurrentMobChange != null) CurrentMobChange(CurrentMobs);
             return;
         }
+#if DEBUG
+        PluginLog.Warning("nearby");
+#endif
 
         AddNearbyMobs(nearbyMobs, zoneCoordSize, territoryId, mapId,
             _config.TTSAEnabled, _config.TTSBEnabled, _config.TTSSEnabled, _config.TTSAMessage, _config.TTSBMessage, _config.TTSSMessage,
             _config.ChatAEnabled, _config.ChatBEnabled, _config.ChatSEnabled, _config.ChatAMessage, _config.ChatBMessage, _config.ChatSMessage,
             _config.FlyTextAEnabled, _config.FlyTextBEnabled, _config.FlyTextSEnabled, instance);
     }
+
+    public event Action<IList<(HuntRank, BattleNpc)>> CurrentMobChange;
 
     public double GetHPP(BattleNpc mob)
     {

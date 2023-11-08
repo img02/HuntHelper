@@ -11,7 +11,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -152,7 +151,7 @@ public class HuntTrainUI : IDisposable
             ImGui.Text(GuiResources.HuntTrainGuiText["NameHeader"]);
 
             ImGui.SameLine();
-            ImGuiUtil.ImGui_HelpMarker(GuiResources.HuntTrainGuiText["HowTo"], new Vector4(0.15f, 0.15f, 0.15f, 1f));           
+            ImGuiUtil.ImGui_HelpMarker(GuiResources.HuntTrainGuiText["HowTo"], new Vector4(0.15f, 0.15f, 0.15f, 1f));
             ImGui.SameLine();
             ImGui.TextColored(new Vector4(1f, .3f, .3f, 1f), "  <<<");
 

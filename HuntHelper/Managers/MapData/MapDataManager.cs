@@ -1,4 +1,6 @@
-﻿using FFXIVClientStructs.FFXIV.Common.Math;
+﻿using Dalamud.Plugin.Ipc.Exceptions;
+using Dalamud.Plugin.Services;
+using FFXIVClientStructs.FFXIV.Common.Math;
 using HuntHelper.Managers.MapData.Models;
 using HuntHelper.Utilities;
 using Newtonsoft.Json;
@@ -19,16 +21,17 @@ public class MapDataManager
 
     //private readonly DalamudPluginInterface _pluginInterface;
     private readonly string _filePath;
-
+    private readonly IClientState _clientState;
     private MappyIPC _mappy;
 
-    public MapDataManager(string filePath, MappyIPC mappy)
+    public MapDataManager(string filePath, IClientState client, MappyIPC mappy)
     {
         //this._pluginInterface = pluginInterface;
         _filePath = filePath;
         SpawnPointsList = new List<MapSpawnPoints>();
         ImportedList = new List<MapSpawnPoints>();
         LoadSpawnPointData();
+        _clientState = client;
         _mappy = mappy;
     }
 
@@ -155,15 +158,22 @@ public class MapDataManager
 
     public void OnTerritoryChanged(ushort territoryid)
     {
+        if (!_mappy.IsReady()) return;
         DrawMappySpawnPositions();
     }
 
     public void DrawMappySpawnPositions()
     {
-        //rework to do on client territory change or w/e
-        if (_mappy.HasSpawnPoints()) _mappy.ClearSpawnPointMarkers();
-        var pos = GetSpawnPoints(135);
-        pos.ForEach(p =>  _mappy.AddSpawnPointMarker(new Vector2(p.X, p.Y)));        
+        try
+        {
+            _mappy.ClearSpawnPointMarkers();
+            var pos = GetSpawnPoints(_clientState.TerritoryType);
+            pos.ForEach(p => _mappy.AddSpawnPointMarker(new Vector2(p.X, p.Y)));
+        }
+        catch (IpcNotReadyError)
+        {
+            PluginLog.Debug("Mappy IPC not ready / found.");
+        }
     }
 
     #endregion

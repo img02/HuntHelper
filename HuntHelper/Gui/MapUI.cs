@@ -13,7 +13,6 @@ using HuntHelper.Managers.MapData.Models;
 using HuntHelper.Utilities;
 using ImGuiNET;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -210,8 +209,6 @@ namespace HuntHelper.Gui
 
             _backgroundLoopCancelTokenSource = new CancellationTokenSource();
             _backgroundLoop = Task.Run(BackgroundLoop, _backgroundLoopCancelTokenSource.Token);
-
-
         }
 
         private void BackgroundLoop()
@@ -223,7 +220,7 @@ namespace HuntHelper.Gui
                 {
                     if (_backgroundLoopCancelTokenSource.Token.IsCancellationRequested) return;
                     UpdateMobInfo();
-                    Thread.Sleep(1000);
+                    Thread.Sleep(300);
                 }
                 Thread.Sleep(1000);
             }
@@ -874,7 +871,7 @@ namespace HuntHelper.Gui
                                     ImGui.SameLine();
                                     ImGui.InputText("##A Rank B Chat Msg", ref _chatBMessage, _inputTextMaxLength);
                                     ImGui.SameLine();
-                                    if (ImGui.Checkbox("##A Rank B Chat Checkbox", ref _chatBEnabled)) SaveSettings(); 
+                                    if (ImGui.Checkbox("##A Rank B Chat Checkbox", ref _chatBEnabled)) SaveSettings();
                                     ImGui.SameLine();
                                     ImGuiUtil.ImGui_HelpMarker(GuiResources.MapGuiText["ChatMessageLabelToolTip"]);
 
@@ -883,7 +880,7 @@ namespace HuntHelper.Gui
                                     ImGui.SameLine();
                                     ImGui.InputText("##A Rank B TTS Msg", ref _ttsBMessage, _inputTextMaxLength);
                                     ImGui.SameLine();
-                                    if (ImGui.Checkbox("##A Rank B TTS Checkbox", ref _ttsBEnabled)) SaveSettings(); 
+                                    if (ImGui.Checkbox("##A Rank B TTS Checkbox", ref _ttsBEnabled)) SaveSettings();
                                     ImGui.SameLine();
                                     ImGuiUtil.ImGui_HelpMarker(GuiResources.MapGuiText["TTSMessageLabelToolTip"]);
 
@@ -1458,7 +1455,7 @@ namespace HuntHelper.Gui
                         ? ImGui.ColorConvertFloat4ToU32(new Vector4(1f, 0f, 0f, 1f)) //red for taken spawn point
                         : ImGui.ColorConvertFloat4ToU32(_spawnPointColour));
                 DoubleClickToToggleSpawnPointTaken(drawPos, sp);
-            }            
+            }
         }
 
         private void DoubleClickToToggleSpawnPointTaken(Vector2 spPos, SpawnPointPosition sp)
@@ -1484,12 +1481,7 @@ namespace HuntHelper.Gui
 
             DrawPriorityMobInfo();
             DrawNearbyMobInfo();
-
-            //draws 'quest-like' type pointers thingies --only when map window active
-            /*_huntManager.GetAllCurrentMobsWithRank().ForEach((item) =>
-                PointToMobsBecauseBlind(item.Rank, item.Mob));*/
         }
-
 
         private void DrawMobIcon(BattleNpc mob)
         {

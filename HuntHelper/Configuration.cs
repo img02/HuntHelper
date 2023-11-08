@@ -26,7 +26,7 @@ namespace HuntHelper
         //defaults to using client lang file
         public string Language { get; set; } = string.Empty;
 
-       
+
         #region icon stuff
         public Vector4 SpawnPointColour { get; set; } = new Vector4(0.24706f, 0.309804f, 0.741176f, 1); //purty blue
         public Vector4 MobColour { get; set; } = new Vector4(0.4f, 1f, 0.567f, 1f); //green
