@@ -111,8 +111,8 @@ namespace HuntHelper.Managers
         public bool AddSpawnPointMarker(Vector2 coordinates, uint mapId)
         {
             if (!IsReady())
-            {
-                //PluginLog.Verbose("Could not add marker, Mappy IPC not ready.");
+            {   //im about to spam this log ;d
+                PluginLog.Verbose("Could not add marker, Mappy IPC not ready.");
                 return false;
             }
 
