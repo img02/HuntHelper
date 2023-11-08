@@ -7,10 +7,10 @@
 		"/hh2save helpmessage": "保存预设2",
 		"/hht helpmessage": "开启狩猎车界面",
 		"/hhn helpmessage": "发送狩猎车下一站坐标至聊天",
-		"/hhna helpmessage": "Sends the flag for the next train mob's nearest Aetheryte into chat",
+		"/hhna helpmessage": "发送狩猎车的下一站最近传送水晶至聊天",
 		"/hhc helpmessage": "计数器窗口 -- 面相农怪触发的S",
 		"/hhr helpmessage": "刷新点追踪窗口",
-		"dono": "If you've found this plugin useful and want to show some support."
+		"dono": "如果你认为本插件有用并想提供支持"
 	},
 	"Map": {
 		"ErrorLoadingDataMessage": "加载数据错误",
@@ -136,7 +136,7 @@
 		"Border": "边界",
 		"LastSeen": "上次发现",
 		"LastSeenToolTip": "显示距离上次发现过了多久",
-		"ShowFlagInChat": "Send <mob> <flag> msg in chat.",
+		"ShowFlagInChat": "在聊天栏中发送 <mob> <flag> 消息",
 		"OpenMap": "开启地图",
 		"OpenMapToolTip": "当/hhn启用或单击名称时开启相关地图",
 		"TeleButtons": "传送键",
