@@ -51,7 +51,7 @@ public class IpcSystem : IDisposable
         _cgGetTrainList.UnregisterFunc();
         _cgImportTrainList.UnregisterAction();
 
-        _pluginInterface.GetIpcProvider<bool>(IpcFuncNameDisable);
+        _pluginInterface.GetIpcProvider<bool>(IpcFuncNameDisable).SendMessage();
     }
 
     private static uint GetVersion() => HuntHelperApiVersion;
