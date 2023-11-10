@@ -18,7 +18,6 @@ public class TrainManager
 {
     private readonly IChatGui _chatGui;
     private readonly IGameGui _gameGui;
-    private readonly IDataManager _dataManager;
 
     private readonly string _huntTrainFilePath;
 
@@ -27,14 +26,13 @@ public class TrainManager
     public bool RecordTrain = false;
     public bool ImportFromIPC = false;
 
-    public TrainManager(IChatGui chatGui, IGameGui gameGui, IDataManager dataManager, string huntTrainFilePath)
+    public TrainManager(IChatGui chatGui, IGameGui gameGui,  string huntTrainFilePath)
     {
         HuntTrain = new List<HuntTrainMob>();
         ImportedTrain = new List<HuntTrainMob>();
 
         _chatGui = chatGui;
         _gameGui = gameGui;
-        _dataManager = dataManager;
 
         _huntTrainFilePath = huntTrainFilePath;
         LoadHuntTrainRecord();
@@ -121,7 +119,7 @@ public class TrainManager
     {
         ImportedTrain.Clear(); //should be empty already
         if (trainMobs.Count > 0) ImportedTrain.AddRange(trainMobs);
-        LocaliseNames(ImportedTrain);
+        MapHelpers.LocaliseMobNames(ImportedTrain);
     }
 
     public void ImportTrainAll()
@@ -171,9 +169,4 @@ public class TrainManager
         File.WriteAllText(_huntTrainFilePath, serialised);
     }
 
-
-    private void LocaliseNames(List<HuntTrainMob> trainList)
-    {
-        trainList.ForEach(m => m.Name = _dataManager.Excel.GetSheet<BNpcName>()?.GetRow(m.MobID)?.Singular.ToString() ?? m.Name);
-    }
 }

@@ -14,6 +14,7 @@ using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace HuntHelper.Gui;
 
@@ -41,6 +42,7 @@ public class HuntTrainUI : IDisposable
     private bool _teleToAetheryte = false;
     private bool _showInChat = true;
     private bool _showTrainUIDuringIPCImport = true;
+    private bool _showMapName = false;
     #endregion
 
     private Vector4 _deadTextColour = new Vector4(.6f, .7f, .6f, 1f);
@@ -73,7 +75,7 @@ public class HuntTrainUI : IDisposable
     }
 
     public void Draw()
-    {        
+    {
         if (_showTrainUIDuringIPCImport && _trainManager.ImportFromIPC) { _huntTrainWindowVisible = true; }
         DrawHuntTrainWindow();
     }
@@ -96,6 +98,7 @@ public class HuntTrainUI : IDisposable
         _teleToAetheryte = _config.HuntTrainTeleportToAetheryte;
         _showInChat = _config.HuntTrainShowFlagInChat;
         _showTrainUIDuringIPCImport = _config.HuntTrainShowUIDuringIPCImport;
+        _showMapName = _config.HuntTrainShowMapName;
     }
 
     public void SaveSettings()
@@ -112,6 +115,7 @@ public class HuntTrainUI : IDisposable
         _config.HuntTrainTeleportToAetheryte = _teleToAetheryte;
         _config.HuntTrainShowFlagInChat = _showInChat;
         _config.HuntTrainShowUIDuringIPCImport = _showTrainUIDuringIPCImport;
+        _config.HuntTrainShowMapName = _showMapName;
     }
 
 
@@ -129,7 +133,7 @@ public class HuntTrainUI : IDisposable
         ImGui.SetNextWindowSize(_huntTrainWindowSize, ImGuiCond.FirstUseEver);
         ImGui.SetWindowPos(_huntTrainWindowPos);
         if (ImGui.Begin($"{GuiResources.HuntTrainGuiText["MainWindowTitle"]}##Window", ref _huntTrainWindowVisible, ImGuiWindowFlags.NoScrollbar))
-        {   
+        {
             var childSizeX = ImGui.GetWindowSize().X / numOfColumns;
             var childSizeY = _mobList.Count * 23 * ImGuiHelpers.GlobalScale;
             var lastSeenWidth = childSizeX * ImGuiHelpers.GlobalScale; //math is hard, resizing is hard owie :(
@@ -157,7 +161,7 @@ public class HuntTrainUI : IDisposable
             ImGui.Text(GuiResources.HuntTrainGuiText["NameHeader"]);
 
             ImGui.SameLine();
-            ImGuiUtil.ImGui_HelpMarker(GuiResources.HuntTrainGuiText["HowTo"], new Vector4(0.15f, 0.15f, 0.15f, 1f));           
+            ImGuiUtil.ImGui_HelpMarker(GuiResources.HuntTrainGuiText["HowTo"], new Vector4(0.15f, 0.15f, 0.15f, 1f));
             ImGui.SameLine();
             ImGui.TextColored(new Vector4(1f, .3f, .3f, 1f), "  <<<");
 
@@ -248,8 +252,11 @@ public class HuntTrainUI : IDisposable
                         ImGui.Checkbox(GuiResources.HuntTrainGuiText["LastSeen"], ref _showLastSeen);
                         ImGuiUtil.ImGui_HoveredToolTip(GuiResources.HuntTrainGuiText["LastSeenToolTip"]);
                         ImGui.TableNextColumn();
+                        ImGui.Checkbox("Show Map Name", ref _showMapName);
+                        ImGuiUtil.ImGui_HoveredToolTip("Show Map Name");
+                        ImGui.TableNextColumn();
                         ImGui.Checkbox(GuiResources.HuntTrainGuiText["ShowFlagInChat"], ref _showInChat);
-                        ImGuiUtil.ImGui_HoveredToolTip(GuiResources.HuntTrainGuiText["ShowFlagInChat"]);                     
+                        ImGuiUtil.ImGui_HoveredToolTip(GuiResources.HuntTrainGuiText["ShowFlagInChat"]);
                         ImGui.EndTable();
                     }
                     ImGui.TreePop();
@@ -260,7 +267,7 @@ public class HuntTrainUI : IDisposable
                     if (ImGui.BeginTable("settingsalignment", 2))
                     {
                         ImGui.TableNextColumn();
-                        ImGui.Checkbox(GuiResources.HuntTrainGuiText["OpenMap"], ref _openMap); 
+                        ImGui.Checkbox(GuiResources.HuntTrainGuiText["OpenMap"], ref _openMap);
                         ImGuiUtil.ImGui_HoveredToolTip(GuiResources.HuntTrainGuiText["OpenMapToolTip"]);
                         ImGui.TableNextColumn();
                         ImGui.Checkbox(GuiResources.HuntTrainGuiText["TeleButtons"], ref _showTeleButtons);
@@ -276,9 +283,9 @@ public class HuntTrainUI : IDisposable
                         ImGuiUtil.ImGui_HoveredToolTip(GuiResources.HuntTrainGuiText["TeleportToAetheryte"]);
                         ImGui.EndTable();
                     }
-                    ImGui.TreePop();                    
+                    ImGui.TreePop();
                 }
-                
+
                 if (ImGui.TreeNode("IPCRelatedStuffIdk", "IPC"))
                 {
                     if (ImGui.BeginTable("settingsalignment", 1))
@@ -439,7 +446,7 @@ public class HuntTrainUI : IDisposable
         var center = ImGui.GetWindowPos() + ImGui.GetWindowSize() / 2;
         ImGui.SetNextWindowPos(center, ImGuiCond.Appearing, new Vector2(0.5f, 0.5f));
         ImGui.SetNextWindowSize(new Vector2(400, 700), ImGuiCond.FirstUseEver);
-              
+
         if (ImGui.BeginPopupModal($"{GuiResources.HuntTrainGuiText["ImportWindowTitle"]}##popup"))
         {
             //if count is zero -> show message
@@ -642,7 +649,9 @@ public class HuntTrainUI : IDisposable
     private string GetAttributeFromMob(HuntTrainMobAttribute attribute, HuntTrainMob mob) =>
         attribute switch
         {
-            HuntTrainMobAttribute.Name => $"{mob.Name}{mob.Instance.GetInstanceGlyph()}",
+            HuntTrainMobAttribute.Name =>
+                _showMapName ? $"「{MapHelpers.GetMapName(mob.TerritoryID)}」{mob.Name}{mob.Instance.GetInstanceGlyph()}"
+                : $"{mob.Name}{mob.Instance.GetInstanceGlyph()}",
             HuntTrainMobAttribute.LastSeen => $"{(DateTime.Now.ToUniversalTime() - mob.LastSeenUTC).TotalMinutes:0.}m",
             HuntTrainMobAttribute.Position => $"({mob.Position.X:0.0}, {mob.Position.Y:0.0})"
         };

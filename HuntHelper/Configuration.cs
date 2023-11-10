@@ -132,7 +132,9 @@ namespace HuntHelper
         public bool HuntTrainShowTeleportButtons { get; set; } = false;
         public bool HuntTrainTeleportToAetheryte { get; set; } = false;
         public bool HuntTrainShowFlagInChat { get; set; } = true;
-        public bool HuntTrainShowUIDuringIPCImport { get;set; } = true;
+        public bool HuntTrainShowUIDuringIPCImport { get; set; } = true;
+
+        public bool HuntTrainShowMapName { get; set; } = false;
 
         #endregion
 

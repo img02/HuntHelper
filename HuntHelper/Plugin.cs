@@ -7,6 +7,7 @@ using HuntHelper.Gui.Resource;
 using HuntHelper.Managers;
 using HuntHelper.Managers.Hunts;
 using HuntHelper.Managers.MapData;
+using HuntHelper.Utilities;
 using System;
 using System.IO;
 
@@ -86,19 +87,21 @@ namespace HuntHelper
             this.FlyTextGui = flyTextGui;
             this.GameGui = gameGui;
 
+            MapHelpers.SetUp(DataManager);
+
             Constants.SetCounterLanguage(ClientState.ClientLanguage);
 
             this.Configuration = this.PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
             this.Configuration.Initialize(this.PluginInterface);
 
-            this.TrainManager = new TrainManager(ChatGui, GameGui, dataManager, Path.Combine(PluginInterface.AssemblyLocation.Directory?.FullName!, @"Data\HuntTrain.json"));
+            this.TrainManager = new TrainManager(ChatGui, GameGui, Path.Combine(PluginInterface.AssemblyLocation.Directory?.FullName!, @"Data\HuntTrain.json"));
             this.HuntManager = new HuntManager(PluginInterface, TrainManager, chatGui, flyTextGui, this.Configuration.TTSVolume);
             this.MapDataManager = new MapDataManager(Path.Combine(PluginInterface.AssemblyLocation.Directory?.FullName!, @"Data\SpawnPointData.json"));
 
-            this.MapUi = new MapUI(this.Configuration, pluginInterface, clientState, objectTable, dataManager, HuntManager, MapDataManager, GameGui);
+            this.MapUi = new MapUI(this.Configuration, clientState, objectTable, HuntManager, MapDataManager, GameGui);
             this.HuntTrainUI = new HuntTrainUI(TrainManager, Configuration);
             this.CounterUI = new CounterUI(ClientState, ChatGui, GameGui, Configuration, ObjectTable, FateTable);
-            this.SpawnPointFinderUI = new SpawnPointFinderUI(MapDataManager, DataManager, Configuration);
+            this.SpawnPointFinderUI = new SpawnPointFinderUI(MapDataManager, Configuration);
             this.PointerUI = new PointerUI(HuntManager, Configuration, GameGui);
 
             IpcSystem = new IpcSystem(pluginInterface, framework, TrainManager);

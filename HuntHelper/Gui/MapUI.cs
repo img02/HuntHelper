@@ -27,11 +27,9 @@ namespace HuntHelper.Gui
     class MapUI : IDisposable
     {
         private readonly Configuration _configuration;
-        private readonly DalamudPluginInterface _pluginInterface;
 
         private readonly IClientState _clientState;
         private readonly IObjectTable _objectTable;
-        private readonly IDataManager _dataManager;
         private readonly HuntManager _huntManager;
         private readonly MapDataManager _mapDataManager;
         private readonly IGameGui _gameGui;
@@ -184,16 +182,14 @@ namespace HuntHelper.Gui
             set => _settingsVisible = value;
         }
 
-        public MapUI(Configuration configuration, DalamudPluginInterface pluginInterface,
-            IClientState clientState, IObjectTable objectTable, IDataManager dataManager,
-            HuntManager huntManager, MapDataManager mapDataManager, IGameGui gameGui)
+        public MapUI(Configuration configuration, IClientState clientState, 
+            IObjectTable objectTable,HuntManager huntManager, 
+            MapDataManager mapDataManager, IGameGui gameGui)
         {
             _configuration = configuration;
-            _pluginInterface = pluginInterface; //not using atm...
 
             _clientState = clientState;
             _objectTable = objectTable;
-            _dataManager = dataManager;
             _huntManager = huntManager;
             _mapDataManager = mapDataManager;
             _gameGui = gameGui;
@@ -364,7 +360,7 @@ namespace HuntHelper.Gui
                     }
                     else
                     {
-                        var mapNameEng = MapHelpers.GetMapNameInEnglish(_dataManager, _territoryId);
+                        var mapNameEng = MapHelpers.GetMapNameInEnglish(_territoryId);
                         var mapImg = _huntManager.GetMapImage(mapNameEng);
                         if (mapImg != null)
                         {
@@ -1406,7 +1402,7 @@ namespace HuntHelper.Gui
 
         private unsafe void ClientState_TerritoryChanged(ushort e)
         {
-            _territoryName = MapHelpers.GetMapName(_dataManager, _clientState.TerritoryType);
+            _territoryName = MapHelpers.GetMapName(_clientState.TerritoryType);
             //_worldName = _clientState.LocalPlayer?.CurrentWorld?.GameData?.Name.ToString() ?? "Not Found";
             _territoryId = _clientState.TerritoryType;
             _instance = (uint)UIState.Instance()->AreaInstance.Instance;
@@ -1481,7 +1477,7 @@ namespace HuntHelper.Gui
                 if (obj is not BattleNpc mob) continue;
                 if (!_huntManager.IsHunt(mob.NameId)) continue;
                 nearbyMobs.Add(mob);
-                _huntManager.AddToTrain(mob, _territoryId, MapHelpers.GetMapID(_dataManager, _territoryId), _instance, _territoryName, _mapZoneMaxCoordSize);
+                _huntManager.AddToTrain(mob, _territoryId, MapHelpers.GetMapID(_territoryId), _instance, _territoryName, _mapZoneMaxCoordSize);
             }
 
             if (nearbyMobs.Count == 0)
@@ -1490,7 +1486,7 @@ namespace HuntHelper.Gui
                 return;
             }
 
-            _huntManager.AddNearbyMobs(nearbyMobs, _mapZoneMaxCoordSize, _territoryId, MapHelpers.GetMapID(_dataManager, _territoryId),
+            _huntManager.AddNearbyMobs(nearbyMobs, _mapZoneMaxCoordSize, _territoryId, MapHelpers.GetMapID( _territoryId),
                 _ttsAEnabled, _ttsBEnabled, _ttsSEnabled, _ttsAMessage, _ttsBMessage, _ttsSMessage,
                 _chatAEnabled, _chatBEnabled, _chatSEnabled, _chatAMessage, _chatBMessage, _chatSMessage,
                 _flyTxtAEnabled, _flyTxtBEnabled, _flyTxtSEnabled, _instance);
@@ -1654,7 +1650,7 @@ namespace HuntHelper.Gui
             {
                 _huntManager.SendChatMessage(true,
                     "<exclamationrectangle> <name> <flag> -- <rank> <exclamationrectangle>",
-                    _territoryId, MapHelpers.GetMapID(_dataManager, _territoryId), _instance,
+                    _territoryId, MapHelpers.GetMapID( _territoryId), _instance,
                     mob, _mapZoneMaxCoordSize);
             }
         }
