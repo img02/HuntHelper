@@ -365,12 +365,8 @@ public class HuntManager
             "./data/EW-S.json"
         };
 
-        //messy... prob cleaner way
-        LoadFilesIntoDic(_arrDict, ARRJsonFiles);
-        LoadFilesIntoDic(_hwDict, HWJsonFiles);
-        LoadFilesIntoDic(_sbDict, SBJsonFiles);
-        LoadFilesIntoDic(_shbDict, ShBJsonFiles);
-        LoadFilesIntoDic(_ewDict, EWJsonFiles);
+        LoadFilesIntoDic(new[] { (_arrDict, ARRJsonFiles), (_hwDict, HWJsonFiles),
+            (_sbDict, SBJsonFiles), (_shbDict, ShBJsonFiles), (_ewDict, EWJsonFiles) });
     }
 
     public float GetMapZoneCoordSize(ushort mapID)
@@ -393,8 +389,7 @@ public class HuntManager
     }
     public bool IsHunt(uint modelID)
     {
-        var exists = false;
-        exists = _ewDict.Any(kvp => kvp.Value.Any(m => m.ModelID == modelID));
+        var exists = _ewDict.Any(kvp => kvp.Value.Any(m => m.ModelID == modelID));
         if (!exists) exists = _shbDict.Any(kvp => kvp.Value.Any(m => m.ModelID == modelID));
         if (!exists) exists = _sbDict.Any(kvp => kvp.Value.Any(m => m.ModelID == modelID));
         if (!exists) exists = _hwDict.Any(kvp => kvp.Value.Any(m => m.ModelID == modelID));
@@ -489,6 +484,11 @@ public class HuntManager
         }
 
         return text += "\n--------------------------------------------------\n";
+    }
+
+    private void LoadFilesIntoDic((Dictionary<HuntRank, List<Mob>> dict, List<string> filePaths)[] toLoad)
+    {
+        foreach (var (dict, filePaths) in toLoad) LoadFilesIntoDic(dict, filePaths);
     }
 
     private void LoadFilesIntoDic(Dictionary<HuntRank, List<Mob>> dict, List<string> filePaths)
