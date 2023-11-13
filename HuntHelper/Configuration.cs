@@ -34,6 +34,8 @@ namespace HuntHelper
         public Vector4 PlayerIconBackgroundColour { get; set; } = new Vector4(0.117647f, 0.5647f, 1f, 0.7f); //blue
         public Vector4 DirectionLineColour { get; set; } = new Vector4(1f, 0.3f, 0.3f, 1f); //redish
         public Vector4 DetectionCircleColour { get; set; } = new Vector4(1f, 1f, 0f, 1f); //goldish
+
+        public Vector4 PlayerPathColour = new Vector4(0.117647f, 0.5647f, 1f, 0.7f); //blue
         // icon radius sizes
         public float AllRadiusModifier { get; set; } = 1.0f;
         public float MobIconRadiusModifier { get; set; } = 2f;

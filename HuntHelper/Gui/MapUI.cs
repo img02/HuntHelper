@@ -61,6 +61,7 @@ namespace HuntHelper.Gui
         private Vector4 _playerIconBackgroundColour = new Vector4(0.117647f, 0.5647f, 1f, 0.7f); //blue
         private Vector4 _directionLineColour = new Vector4(1f, 0.3f, 0.3f, 1f); //redish
         private Vector4 _detectionCircleColour = new Vector4(1f, 1f, 0f, 1f); //goldish
+        private Vector4 _playerPathColour = new Vector4(0.117647f, 0.5647f, 1f, 0.7f); //blue
         // icon radius sizes
         private float _allRadiusModifier = 1.0f;
         private float _mobIconRadiusModifier = 2f;
@@ -182,8 +183,8 @@ namespace HuntHelper.Gui
             set => _settingsVisible = value;
         }
 
-        public MapUI(Configuration configuration, IClientState clientState, 
-            IObjectTable objectTable,HuntManager huntManager, 
+        public MapUI(Configuration configuration, IClientState clientState,
+            IObjectTable objectTable, HuntManager huntManager,
             MapDataManager mapDataManager, IGameGui gameGui)
         {
             _configuration = configuration;
@@ -763,7 +764,7 @@ namespace HuntHelper.Gui
                             {
                                 ImGui.Dummy(new Vector2(0, 2f));
 
-                                if (ImGui.BeginTable("Colour Options Table", 3, ImGuiTableFlags.ScrollX | ImGuiTableFlags.ScrollY))
+                                if (ImGui.BeginTable("Colour Options Table", 4, ImGuiTableFlags.ScrollX | ImGuiTableFlags.ScrollY))
                                 {
                                     ImGui.Dummy(new Vector2(0, 2f));
 
@@ -782,6 +783,14 @@ namespace HuntHelper.Gui
                                     ImGui.TableNextColumn();
                                     ImGui.ColorEdit4(GuiResources.MapGuiText["SpawnPoint"], ref _spawnPointColour,
                                         ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
+
+                                    ImGui.Dummy(new Vector2(0, 4f));
+
+                                    ImGui.TableNextColumn();
+                                    ImGui.ColorEdit4("Path Colour", ref _playerPathColour,
+                                        ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
+                                    ImGui.SameLine();
+                                    ImGuiUtil.ImGui_HelpMarker("Set Alpha (A) to zero to disable.");
 
                                     ImGui.Dummy(new Vector2(0, 4f));
 
@@ -1292,6 +1301,8 @@ namespace HuntHelper.Gui
             _configuration.PointToBRank = _pointToBRank;
             _configuration.PointToSRank = _pointToSRank;
             _configuration.PointerDiamondSizeModifier = _diamondModifier;
+            _configuration.PlayerPathColour = _playerPathColour;
+
 
             _configuration.Language = GuiResources.Language;
 
@@ -1368,6 +1379,7 @@ namespace HuntHelper.Gui
             _pointToBRank = _configuration.PointToBRank;
             _pointToSRank = _configuration.PointToSRank;
             _diamondModifier = _configuration.PointerDiamondSizeModifier;
+            _playerPathColour = _configuration.PlayerPathColour;
 
             //if voice name available on user's pc, set as tts voice. --else default already set.
             if (!_huntManager.DontUseSynthesizer && _huntManager.TTS.GetInstalledVoices().Any(v => v.VoiceInfo.Name == _configuration.TTSVoiceName))
@@ -1486,7 +1498,7 @@ namespace HuntHelper.Gui
                 return;
             }
 
-            _huntManager.AddNearbyMobs(nearbyMobs, _mapZoneMaxCoordSize, _territoryId, MapHelpers.GetMapID( _territoryId),
+            _huntManager.AddNearbyMobs(nearbyMobs, _mapZoneMaxCoordSize, _territoryId, MapHelpers.GetMapID(_territoryId),
                 _ttsAEnabled, _ttsBEnabled, _ttsSEnabled, _ttsAMessage, _ttsBMessage, _ttsSMessage,
                 _chatAEnabled, _chatBEnabled, _chatSEnabled, _chatAMessage, _chatBMessage, _chatSMessage,
                 _flyTxtAEnabled, _flyTxtBEnabled, _flyTxtSEnabled, _instance);
@@ -1650,7 +1662,7 @@ namespace HuntHelper.Gui
             {
                 _huntManager.SendChatMessage(true,
                     "<exclamationrectangle> <name> <flag> -- <rank> <exclamationrectangle>",
-                    _territoryId, MapHelpers.GetMapID( _territoryId), _instance,
+                    _territoryId, MapHelpers.GetMapID(_territoryId), _instance,
                     mob, _mapZoneMaxCoordSize);
             }
         }
@@ -1674,19 +1686,23 @@ namespace HuntHelper.Gui
                     new Vector2(
                         playerPos.X + (float)(detectionRadius * Math.Sin(rotation)),
                         playerPos.Y - (float)(detectionRadius * Math.Cos(rotation)));
-
+                var projectedPathEnd =
+                    new Vector2(
+                        playerPos.X + (float)(ImGui.GetContentRegionAvail().X * Math.Sin(rotation)),
+                        playerPos.Y - (float)(ImGui.GetContentRegionAvail().Y * Math.Cos(rotation)));
                 #region Player Icon Drawing - order: direction, detection, player
 
                 var drawlist = ImGui.GetWindowDrawList();
-                DrawPlayerIcon(drawlist, playerPos, detectionRadius, lineEnding);
-
+                DrawPlayerIcon(drawlist, playerPos, detectionRadius, lineEnding, projectedPathEnd);
                 #endregion
             }
 
         }
 
-        private void DrawPlayerIcon(ImDrawListPtr drawlist, Vector2 playerPos, float detectionRadius, Vector2 lineEnding)
+        private void DrawPlayerIcon(ImDrawListPtr drawlist, Vector2 playerPos, float detectionRadius, Vector2 lineEnding, Vector2 projectedPathEnd)
         {
+            //projected path            )
+            drawlist.AddLine(playerPos, projectedPathEnd, ImGui.ColorConvertFloat4ToU32(_playerPathColour), detectionRadius * 2f);
             //player icon background circle
             drawlist.AddCircleFilled(playerPos, detectionRadius, ImGui.ColorConvertFloat4ToU32(_playerIconBackgroundColour));
             //direction line
@@ -1696,6 +1712,7 @@ namespace HuntHelper.Gui
             //detection circle
             drawlist.AddCircle(playerPos, detectionRadius, ImGui.ColorConvertFloat4ToU32(_detectionCircleColour), 0, _detectionCircleThickness);
         }
+
         #endregion
 
         #endregion
