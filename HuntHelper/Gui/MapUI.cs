@@ -61,7 +61,7 @@ namespace HuntHelper.Gui
         private Vector4 _playerIconBackgroundColour = new Vector4(0.117647f, 0.5647f, 1f, 0.7f); //blue
         private Vector4 _directionLineColour = new Vector4(1f, 0.3f, 0.3f, 1f); //redish
         private Vector4 _detectionCircleColour = new Vector4(1f, 1f, 0f, 1f); //goldish
-        private Vector4 _playerPathColour = new Vector4(0.117647f, 0.5647f, 1f, 0.7f); //blue
+        private Vector4 _playerPathColour = new Vector4(0.117647f, 0.5647f, 1f, 0.4f); //blue
         // icon radius sizes
         private float _allRadiusModifier = 1.0f;
         private float _mobIconRadiusModifier = 2f;
