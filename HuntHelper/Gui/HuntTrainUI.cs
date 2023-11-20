@@ -120,6 +120,9 @@ public class HuntTrainUI : IDisposable
 
 
     private Vector4 bg = new Vector4(.3f, .3f, .3f, 1f);
+    private float trainItemY => 23f * ImGuiHelpers.GlobalScale;
+    private ImGuiWindowFlags defaultTrainFlags = ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse;
+
     public void DrawHuntTrainWindow()
     {
         if (!HuntTrainWindowVisible) return;
@@ -129,35 +132,30 @@ public class HuntTrainUI : IDisposable
         if (_showLastSeen) numOfColumns++;
         if (_showTeleButtons) numOfColumns++;
 
+
         ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, new Vector2(0, 0));
         ImGui.SetNextWindowSize(_huntTrainWindowSize, ImGuiCond.FirstUseEver);
         ImGui.SetWindowPos(_huntTrainWindowPos);
-        if (ImGui.Begin($"{GuiResources.HuntTrainGuiText["MainWindowTitle"]}##Window", ref _huntTrainWindowVisible, ImGuiWindowFlags.NoScrollbar))
+        if (ImGui.Begin($"{GuiResources.HuntTrainGuiText["MainWindowTitle"]}##Window", ref _huntTrainWindowVisible, defaultTrainFlags))
         {
             var childSizeX = ImGui.GetWindowSize().X / numOfColumns;
             var childSizeY = _mobList.Count * 23 * ImGuiHelpers.GlobalScale;
-            var lastSeenWidth = childSizeX * ImGuiHelpers.GlobalScale; //math is hard, resizing is hard owie :(
-            var teleWidth = childSizeX * ImGuiHelpers.GlobalScale;
-            var nameWidth = childSizeX * 1.75f * ImGuiHelpers.GlobalScale;
-            if (_showTeleButtons && _showLastSeen)
-            {
-                nameWidth = childSizeX * 2.25f;
-                lastSeenWidth = childSizeX * .75f;
-                teleWidth = childSizeX * .75f;
-            }
+            var lastSeenWidth = _showLastSeen ? 70.5f * ImGuiHelpers.GlobalScale : 0f;
+            var teleWidth = _showTeleButtons ? 60f * ImGuiHelpers.GlobalScale : 0f;
+            var deadBtnsWidth = 20f * ImGuiHelpers.GlobalScale;
+            var nameWidth = ImGui.GetWindowSize().X - (lastSeenWidth + teleWidth + deadBtnsWidth);
 
             ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing, new Vector2(0, 0));
 
             #region hunt train main
 
             ImGui.BeginChild("HUNT TRAIN MAIN CHILD WINDOW ALL ENCOMPASSING LAYOUT FIXING CHILD OF WINDOW",
-                new Vector2(ImGui.GetWindowSize().X, (_mobList.Count + 1) * 24f * ImGuiHelpers.GlobalScale), _useBorder); //23f is the size of a selectable from SelectableFromList();
+                new Vector2(ImGui.GetWindowSize().X, (_mobList.Count + 1) * 24f * ImGuiHelpers.GlobalScale), _useBorder, defaultTrainFlags); //23f is the size of a selectable from SelectableFromList();
 
             #region Headers
 
             ImGui.SameLine();
-            ImGui.BeginChild("NameHeader", new Vector2(nameWidth, 20 * ImGuiHelpers.GlobalScale), _useBorder,
-                ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse);
+            ImGui.BeginChild("NameHeader", new Vector2(nameWidth, 20 * ImGuiHelpers.GlobalScale), _useBorder, defaultTrainFlags);
             ImGui.Text(GuiResources.HuntTrainGuiText["NameHeader"]);
 
             ImGui.SameLine();
@@ -171,7 +169,7 @@ public class HuntTrainUI : IDisposable
             {
                 ImGui.SameLine();
                 ImGui.BeginChild("TeleButtonHeader", new Vector2(teleWidth, 20 * ImGuiHelpers.GlobalScale),
-                    _useBorder, ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse);
+                    _useBorder, defaultTrainFlags);
                 ImGui.Text(GuiResources.HuntTrainGuiText["TeleportHeader"]);
                 ImGuiUtil.ImGui_HoveredToolTip($"{GuiResources.HuntTrainGuiText["TeleportToolTip"]}");
                 ImGui.EndChild();
@@ -181,7 +179,7 @@ public class HuntTrainUI : IDisposable
             {
                 ImGui.SameLine();
                 ImGui.BeginChild("LastSeenHeader", new Vector2(lastSeenWidth, 20 * ImGuiHelpers.GlobalScale),
-                    _useBorder, ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse);
+                    _useBorder, defaultTrainFlags);
                 ImGui.Text(GuiResources.HuntTrainGuiText["LastSeenHeader"]);
                 ImGui.EndChild();
             }
@@ -190,24 +188,28 @@ public class HuntTrainUI : IDisposable
 
             ImGui.Separator();
 
-            ImGui.BeginChild("Name", new Vector2(nameWidth, childSizeY), _useBorder,
-                ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse);
+            ImGui.BeginChild("Name", new Vector2(nameWidth, childSizeY), _useBorder, defaultTrainFlags);
             SelectableFromList(HuntTrainMobAttribute.Name);
             ImGui.EndChild();
 
             if (_showTeleButtons)
             {
                 ImGui.SameLine();
-                ImGui.BeginChild("Tele", new Vector2(teleWidth, childSizeY), _useBorder,
-                    ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse);
+                ImGui.BeginChild("Tele", new Vector2(teleWidth, childSizeY), _useBorder, defaultTrainFlags);
                 foreach (var m in _mobList)
                 {
-                    if (ImGui.Button($"{GuiResources.HuntTrainGuiText["TeleportButton"]}##{m.MapID}{m.Position}"))
+                    if (ImGui.BeginChild($"TeleButton##{m.MobID}{m.Instance}", new Vector2(teleWidth, trainItemY), _useBorder, defaultTrainFlags))
                     {
-                        _teleportManager.TeleportToHunt(m);
-                        _trainManager.OpenMap(m, _openMap);
+                        ImGui.SetCursorPosX(14f * ImGuiHelpers.GlobalScale);
+                        if (ImGui.Button($"{GuiResources.HuntTrainGuiText["TeleportButton"]}##{m.MapID}{m.Position}", new Vector2(33f * ImGuiHelpers.GlobalScale, trainItemY-2)))
+                        {
+                            _teleportManager.TeleportToHunt(m);
+                            _trainManager.OpenMap(m, _openMap);
+                        }
+                        if (ImGui.IsItemHovered()) ImGuiUtil.ImGui_HoveredToolTip($"{m.Name}");
+                        ImGui.EndChild();
                     }
-                    if (ImGui.IsItemHovered()) ImGuiUtil.ImGui_HoveredToolTip($"{m.Name}");
+                    ImGui.Separator();
                 }
                 ImGui.EndChild();
             }
@@ -215,23 +217,25 @@ public class HuntTrainUI : IDisposable
             if (_showLastSeen)
             {
                 ImGui.SameLine();
-                ImGui.BeginChild("Last seen", new Vector2(lastSeenWidth, childSizeY), _useBorder,
-                    ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse);
+                ImGui.BeginChild("Last seen", new Vector2(lastSeenWidth, childSizeY), _useBorder, defaultTrainFlags);
                 SelectableFromList(HuntTrainMobAttribute.LastSeen);
                 ImGui.EndChild();
             }
 
             ImGui.SameLine();
 
-            ImGui.BeginChild("DeadButtons", new Vector2(childSizeX * 0.25f, childSizeY), _useBorder,
-                ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse);
+            ImGui.BeginChild("DeadButtons", new Vector2(deadBtnsWidth, childSizeY), _useBorder, defaultTrainFlags);
             _mobList.ForEach(m =>
             {
-                var d = m.Dead;
-                ImGui.Checkbox($"##DeadCheckBox{m.Name}:{m.Instance}", ref d);
-                ImGui.Separator();
-                m.Dead = d;
-                if (m.Dead && _mobList.IndexOf(m) == _selectedIndex) SelectNext();//infinite if all dead
+                if (ImGui.BeginChild($"DeadButtonsChild##{m.MobID}{m.Instance}", new Vector2(teleWidth, trainItemY), _useBorder, defaultTrainFlags))
+                {
+                    var d = m.Dead;
+                    ImGui.Checkbox($"##DeadCheckBox{m.Name}:{m.Instance}", ref d);
+                    ImGui.Separator();
+                    m.Dead = d;
+                    if (m.Dead && _mobList.IndexOf(m) == _selectedIndex) SelectNext();//infinite if all dead
+                    ImGui.EndChild();
+                }
             });
             ImGui.EndChild();
 
@@ -350,21 +354,11 @@ public class HuntTrainUI : IDisposable
             if (ImGuiComponents.IconButton(FontAwesomeIcon.SignInAlt) || _trainManager.ImportFromIPC)
             {
                 if (_trainManager.ImportFromIPC)
-                {
-                    PluginLog.Warning("IMPORTING FROM IPC FOOL");
-                    /*
-                     * This way we can open the modal from the same place with existing code, 
-                     * reducing dupe code and spread                     
-                     * 
-                     * we do not need OpenImportPopup() anymore or the local bool _openImportPopup
-                     * 
-                     * instead we just use train manager
-                     */
-                    _trainManager.ImportFromIPC = false; //now we disable it so it doesn't get stuck
+                {                   
+                    _trainManager.ImportFromIPC = false;
                 }
                 else
-                {
-                    PluginLog.Warning("IMPORTING FROM HH CODE FOOL");
+                {                  
                     var importCode = string.Empty;
                     try
                     {
@@ -382,7 +376,7 @@ public class HuntTrainUI : IDisposable
             DrawDeleteModal();
             DrawImportWindowModal();
             #endregion
-
+            ImGui.Text($"{nameWidth} | {teleWidth} | {lastSeenWidth} | {deadBtnsWidth}");
             if (_teleportManager.TeleportPluginNotFound) ImGui.OpenPopup($"{GuiResources.HuntTrainGuiText["TeleportWindowTitle"]}##ModalPopupWindowThingymajig");
             DrawTeleportPluginNotFoundModal();
             ImGui.PopStyleVar(); //pop itemspacing
