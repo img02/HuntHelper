@@ -374,7 +374,7 @@ public class HuntTrainUI : IDisposable
             DrawDeleteModal();
             DrawImportWindowModal();
             #endregion
-            ImGui.Text($"{nameWidth} | {teleWidth} | {lastSeenWidth} | {deadBtnsWidth}");
+           
             if (_teleportManager.TeleportPluginNotFound) ImGui.OpenPopup($"{GuiResources.HuntTrainGuiText["TeleportWindowTitle"]}##ModalPopupWindowThingymajig");
             DrawTeleportPluginNotFoundModal();
             ImGui.PopStyleVar(); //pop itemspacing
