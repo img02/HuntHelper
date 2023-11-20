@@ -64,7 +64,7 @@ public class ImGuiUtil
     public static void ImGui_HoveredToolTip(string msg)
     {
         if (ImGui.IsItemHovered())
-        { 
+        {
             ImGui.PushStyleVar(ImGuiStyleVar.PopupBorderSize, 1f);
             ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, new Vector2(6f, 6f));
 

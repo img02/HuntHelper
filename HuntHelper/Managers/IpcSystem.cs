@@ -1,7 +1,6 @@
 ﻿using Dalamud.Plugin;
 using Dalamud.Plugin.Ipc;
 using Dalamud.Plugin.Services;
-using HuntHelper.Gui;
 using HuntHelper.Managers.Hunts;
 using HuntHelper.Managers.Hunts.Models;
 using System;
@@ -26,7 +25,7 @@ public class IpcSystem : IDisposable
 
     private readonly ICallGateProvider<uint> _cgGetVersion;
     private readonly ICallGateProvider<List<MobRecord>> _cgGetTrainList;
-    private readonly ICallGateProvider<List<MobRecord>,bool> _cgImportTrainList;
+    private readonly ICallGateProvider<List<MobRecord>, bool> _cgImportTrainList;
 
     public IpcSystem(DalamudPluginInterface pluginInterface, IFramework framework, TrainManager trainManager)
     {
@@ -36,7 +35,7 @@ public class IpcSystem : IDisposable
 
         _cgGetVersion = pluginInterface.GetIpcProvider<uint>(IpcFuncNameGetVersion);
         _cgGetTrainList = pluginInterface.GetIpcProvider<List<MobRecord>>(IpcFuncNameGetTrainList);
-        _cgImportTrainList = pluginInterface.GetIpcProvider<List<MobRecord>,bool>(IpcFuncNameImportTrainList);
+        _cgImportTrainList = pluginInterface.GetIpcProvider<List<MobRecord>, bool>(IpcFuncNameImportTrainList);
 
         _cgGetVersion.RegisterFunc(GetVersion);
         _cgGetTrainList.RegisterFunc(GetTrainList);
@@ -60,28 +59,18 @@ public class IpcSystem : IDisposable
         _framework.RunOnFrameworkThread(() =>
             _trainManager.HuntTrain.Select(AsMobRecord).ToList()
         ).Result;
-    
+
     private void ImportTrainList(List<MobRecord> trainList)
     {
         _trainManager.ImportFromIPC = true;
-        /* if we rework this and use a bool instead
-         * since train manager is used multiple times in this class, but hunt train ui is only used for this
-         * we can rework it so hunt train ui is not needed
-         * 
-         * we can then check the bool in the UI
-         * 
-         * separating things
-        */
-
         _trainManager.Import(trainList.Select(FromMobRecord).ToList());
-        //_huntTrainUi.OpenImportPopup();
     }
 
     private static MobRecord AsMobRecord(HuntTrainMob mob) =>
         new MobRecord(mob.Name, mob.MobID, mob.TerritoryID, mob.MapID, mob.Instance, mob.Position, mob.Dead, mob.LastSeenUTC);
 
     private static HuntTrainMob FromMobRecord(MobRecord mob) =>
-        new HuntTrainMob(mob.Name, mob.MobID, mob.TerritoryID, mob.MapID, mob.Instance, string.Empty,  mob.Position, mob.LastSeenUTC, mob.Dead);
+        new HuntTrainMob(mob.Name, mob.MobID, mob.TerritoryID, mob.MapID, mob.Instance, string.Empty, mob.Position, mob.LastSeenUTC, mob.Dead);
 
     private record struct MobRecord(
         string Name,

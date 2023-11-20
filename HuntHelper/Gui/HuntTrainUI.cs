@@ -11,10 +11,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace HuntHelper.Gui;
 
@@ -201,7 +199,7 @@ public class HuntTrainUI : IDisposable
                     if (ImGui.BeginChild($"TeleButton##{m.MobID}{m.Instance}", new Vector2(teleWidth, trainItemY), _useBorder, defaultTrainFlags))
                     {
                         ImGui.SetCursorPosX(14f * ImGuiHelpers.GlobalScale);
-                        if (ImGui.Button($"{GuiResources.HuntTrainGuiText["TeleportButton"]}##{m.MapID}{m.Position}", new Vector2(33f * ImGuiHelpers.GlobalScale, trainItemY-2)))
+                        if (ImGui.Button($"{GuiResources.HuntTrainGuiText["TeleportButton"]}##{m.MapID}{m.Position}", new Vector2(33f * ImGuiHelpers.GlobalScale, trainItemY - 2)))
                         {
                             _teleportManager.TeleportToHunt(m);
                             _trainManager.OpenMap(m, _openMap);
@@ -354,11 +352,11 @@ public class HuntTrainUI : IDisposable
             if (ImGuiComponents.IconButton(FontAwesomeIcon.SignInAlt) || _trainManager.ImportFromIPC)
             {
                 if (_trainManager.ImportFromIPC)
-                {                   
+                {
                     _trainManager.ImportFromIPC = false;
                 }
                 else
-                {                  
+                {
                     var importCode = string.Empty;
                     try
                     {

@@ -4,7 +4,6 @@ using Lumina.Data;
 using Lumina.Excel.GeneratedSheets;
 using System;
 using System.Collections.Generic;
-using System.Speech.Synthesis;
 
 namespace HuntHelper.Utilities;
 /// <summary>
@@ -19,18 +18,18 @@ public class MapHelpers
         DataManager = dataManager;
     }
 
-    public static string GetMapName( uint territoryID) //map id... territory id... confusing ...
+    public static string GetMapName(uint territoryID) //map id... territory id... confusing ...
     {
         return DataManager.Excel.GetSheet<TerritoryType>()?.GetRow(territoryID)?.PlaceName?.Value?.Name.ToString() ?? "location not found";
     }
 
-    public static string GetMapNameInEnglish( uint territoryID)
+    public static string GetMapNameInEnglish(uint territoryID)
     {
         var row = DataManager.Excel.GetSheet<TerritoryType>(Language.English)?.GetRow(territoryID)?.PlaceName.Row ?? 0;
         return DataManager.Excel.GetSheet<PlaceName>(Language.English)?.GetRow(row)?.Name.ToString() ?? "location not found";
     }
 
-    public static uint GetMapID( uint territoryID) //createmaplink doesn't work with "Mor Dhona" :(
+    public static uint GetMapID(uint territoryID) //createmaplink doesn't work with "Mor Dhona" :(
     {
         return DataManager!.GetExcelSheet<TerritoryType>()!.GetRow(territoryID)!.Map.Value!.RowId;
     }

@@ -1,7 +1,6 @@
 ﻿using Dalamud.Interface;
 using Dalamud.Interface.Components;
 using Dalamud.Interface.Utility;
-using Dalamud.Plugin.Services;
 using HuntHelper.Gui.Resource;
 using HuntHelper.Managers.MapData;
 using HuntHelper.Managers.MapData.Models;
@@ -197,7 +196,7 @@ public unsafe class SpawnPointFinderUI : IDisposable//idk what to call this
 
             foreach (var msp in _importList)
             {
-                ImGui.TextUnformatted(MapHelpers.GetMapName( msp.MapID));
+                ImGui.TextUnformatted(MapHelpers.GetMapName(msp.MapID));
             }
             ImGui.Dummy(Vector2.Zero); ImGui.Separator(); ImGui.Dummy(Vector2.Zero);
 

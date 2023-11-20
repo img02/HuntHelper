@@ -4,7 +4,6 @@ using Dalamud.Game.Text.SeStringHandling.Payloads;
 using Dalamud.Plugin.Services;
 using HuntHelper.Managers.Hunts.Models;
 using HuntHelper.Utilities;
-using Lumina.Excel.GeneratedSheets;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -26,7 +25,7 @@ public class TrainManager
     public bool RecordTrain = false;
     public bool ImportFromIPC = false;
 
-    public TrainManager(IChatGui chatGui, IGameGui gameGui,  string huntTrainFilePath)
+    public TrainManager(IChatGui chatGui, IGameGui gameGui, string huntTrainFilePath)
     {
         HuntTrain = new List<HuntTrainMob>();
         ImportedTrain = new List<HuntTrainMob>();
@@ -149,7 +148,7 @@ public class TrainManager
         foreach (var m in HuntTrain) if (m.Dead) toRemove.Add(m);
         foreach (var m in toRemove) HuntTrain.Remove(m);
     }
-    //Unkill is deinitely a real word! :^
+
     public void TrainUnkillAll() => HuntTrain.ForEach(m => m.Dead = false);
     public void TrainDelete() => HuntTrain.Clear();
 
