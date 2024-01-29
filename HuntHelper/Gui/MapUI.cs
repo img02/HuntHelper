@@ -329,7 +329,6 @@ namespace HuntHelper.Gui
             {
                 _currentWindowSize = (int)ImGui.GetWindowSize().X;
                 _mapWindowPos = ImGui.GetWindowPos();
-                _mapZoneMaxCoordSize = _huntManager.GetMapZoneCoordSize(_territoryId);
 
                 //if custom size not used, use these default sizes - resize with window size
                 //radius for mob / spawn point circles - equal to half a map coord size
@@ -1417,6 +1416,7 @@ namespace HuntHelper.Gui
             //_worldName = _clientState.LocalPlayer?.CurrentWorld?.GameData?.Name.ToString() ?? "Not Found";
             _territoryId = _clientState.TerritoryType;
             _instance = (uint)UIState.Instance()->AreaInstance.Instance;
+            _mapZoneMaxCoordSize = _huntManager.GetMapZoneCoordSize(_territoryId);
         }
 
         #region Draw Sub Windows
