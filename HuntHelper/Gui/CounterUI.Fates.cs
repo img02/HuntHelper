@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace HuntHelper.Gui;
 
-public unsafe partial class CounterUI
+public unsafe partial class CounterUI : IDisposable
 {
     #region Nunni - Fates - Southern Than
     private string _lastFailedFateInfo = string.Empty;

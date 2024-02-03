@@ -151,7 +151,7 @@ namespace HuntHelper
             this.CommandManager.RemoveHandler(SpawnPointCommand);
 
             this.HuntManager.Dispose();
-            // this.FlyTextGui.Dispose();
+            this.TrainManager.Dispose();
         }
 
         private void DebugWindowCommand(string command, string args) => this.MapUi.RandomDebugWindowVisisble = !MapUi.RandomDebugWindowVisisble;

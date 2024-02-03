@@ -13,21 +13,51 @@ using System.Numerics;
 
 namespace HuntHelper.Managers.Hunts;
 
-public class TrainManager
+public class TrainList<T> : List<T>
+{
+    public event Action TrainChanged;   
+    public new void Add(T item)
+    {
+        base.Add(item);
+        OnTrainChanged();
+    }
+    public new void AddRange(IEnumerable<T> collection)
+    {
+        base.AddRange(collection);
+        OnTrainChanged();
+    }
+    public new void Remove(T item)
+    {
+        base.Remove(item);
+        OnTrainChanged();
+    }
+    public new void Clear()
+    {
+        base.Clear();
+        OnTrainChanged();
+    }
+
+    private void OnTrainChanged()
+    {
+        TrainChanged?.Invoke();
+    }    
+}
+
+public class TrainManager : IDisposable
 {
     private readonly IChatGui _chatGui;
     private readonly IGameGui _gameGui;
 
     private readonly string _huntTrainFilePath;
 
-    public readonly List<HuntTrainMob> HuntTrain; // maybe rework to use observablecollection? ughhhhhhhhh
+    public readonly TrainList<HuntTrainMob> HuntTrain; 
     public readonly List<HuntTrainMob> ImportedTrain;
     public bool RecordTrain = false;
     public bool ImportFromIPC = false;
 
     public TrainManager(IChatGui chatGui, IGameGui gameGui, string huntTrainFilePath)
     {
-        HuntTrain = new List<HuntTrainMob>();
+        HuntTrain = new TrainList<HuntTrainMob>();
         ImportedTrain = new List<HuntTrainMob>();
 
         _chatGui = chatGui;
@@ -35,8 +65,19 @@ public class TrainManager
 
         _huntTrainFilePath = huntTrainFilePath;
         LoadHuntTrainRecord();
+
+        HuntTrain.TrainChanged += HuntTrain_TrainChanged;
     }
 
+    private void HuntTrain_TrainChanged()
+    {
+        SaveHuntTrainRecord();
+    }
+
+    public void Dispose()
+    {
+        HuntTrain.TrainChanged -= HuntTrain_TrainChanged;
+    }
     public void AddMob(BattleNpc mob, uint territoryid, uint mapid, uint instance, string mapName, float zoneMapCoordSize)
     {   //if already exists in train, return
         if (HuntTrain.Any(m => m.IsSameAs(mob.NameId, instance))) return;
@@ -44,7 +85,6 @@ public class TrainManager
             MapHelpers.ConvertToMapCoordinate(mob.Position.Z, zoneMapCoordSize));
         var trainMob = new HuntTrainMob(mob.Name.TextValue, mob.NameId, territoryid, mapid, instance, mapName, position, DateTime.UtcNow, false);
         HuntTrain.Add(trainMob);
-        SaveHuntTrainRecord();
     }
 
     public bool UpdateLastSeen(BattleNpc mob, uint instance)
@@ -119,7 +159,6 @@ public class TrainManager
         ImportedTrain.Clear(); //should be empty already
         ImportedTrain.AddRange(trainMobs);
         MapHelpers.LocaliseMobNames(ImportedTrain);
-        SaveHuntTrainRecord();
     }
 
     public void ImportTrainAll()
@@ -154,7 +193,6 @@ public class TrainManager
     {
         if (mob == null) return;
         HuntTrain.Remove(mob);
-        SaveHuntTrainRecord();
     }
 
     public void TrainUnkillAll() => HuntTrain.ForEach(m => m.Dead = false);
@@ -179,6 +217,7 @@ public class TrainManager
     {
         var serialised = JsonConvert.SerializeObject(HuntTrain, Formatting.Indented);
         File.WriteAllText(_huntTrainFilePath, serialised);
+        PluginLog.Verbose("Saving train data...");
     }
 
 }

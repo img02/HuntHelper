@@ -19,7 +19,7 @@ using System.Threading.Tasks;
 
 namespace HuntHelper.Managers.Hunts;
 
-public class HuntManager
+public class HuntManager : IDisposable
 {
     public readonly string ImageFolderPath;
 
