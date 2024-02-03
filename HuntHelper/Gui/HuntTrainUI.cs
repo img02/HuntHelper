@@ -558,7 +558,7 @@ public class HuntTrainUI : IDisposable
     /// </summary>
     public void GetNextMobCommand()
     {
-        if (_selectedIndex < _mobList.Count) _mobList[_selectedIndex].Dead = true;
+        if (_selectedIndex < _mobList.Count) _trainManager.TrainMarkAsDead(_selectedIndex);
         SelectNext();
         if (!_mobList[_selectedIndex].Dead)
         {
@@ -593,7 +593,6 @@ public class HuntTrainUI : IDisposable
     //based off of https://github.com/ocornut/imgui/blob/docking/imgui_demo.cpp#L2337
     private void SelectableFromList(HuntTrainMobAttribute attributeToDisplay)
     {
-        HuntTrainMob? toRemove = null;
         for (int n = 0; n < _mobList.Count; n++)
         {
             var mob = _mobList[n];
@@ -616,7 +615,7 @@ public class HuntTrainUI : IDisposable
                 ImGui.PushStyleColor(ImGuiCol.Text, Vector4.One); //white
                 if (ImGui.MenuItem(GuiResources.HuntTrainGuiText["ContextMenuSelect"], true)) _selectedIndex = n;
                 ImGui.MenuItem("   ---", false);
-                if (ImGui.MenuItem(GuiResources.HuntTrainGuiText["ContextMenuRemove"], true)) toRemove = mob;
+                if (ImGui.MenuItem(GuiResources.HuntTrainGuiText["ContextMenuRemove"], true)) _trainManager.TrainRemove(mob);
                 ImGui.EndPopup();
                 ImGui.PopStyleColor();
             }
@@ -635,7 +634,6 @@ public class HuntTrainUI : IDisposable
             ImGui.Separator();
             ImGui.PopStyleColor(); // pop style text colour
         }
-        if (toRemove != null) _mobList.Remove(toRemove);
     }
 
     private string GetAttributeFromMob(HuntTrainMobAttribute attribute, HuntTrainMob mob) =>

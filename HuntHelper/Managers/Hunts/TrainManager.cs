@@ -20,7 +20,7 @@ public class TrainManager
 
     private readonly string _huntTrainFilePath;
 
-    public readonly List<HuntTrainMob> HuntTrain;
+    public readonly List<HuntTrainMob> HuntTrain; // maybe rework to use observablecollection? ughhhhhhhhh
     public readonly List<HuntTrainMob> ImportedTrain;
     public bool RecordTrain = false;
     public bool ImportFromIPC = false;
@@ -44,8 +44,8 @@ public class TrainManager
             MapHelpers.ConvertToMapCoordinate(mob.Position.Z, zoneMapCoordSize));
         var trainMob = new HuntTrainMob(mob.Name.TextValue, mob.NameId, territoryid, mapid, instance, mapName, position, DateTime.UtcNow, false);
         HuntTrain.Add(trainMob);
+        SaveHuntTrainRecord();
     }
-
 
     public bool UpdateLastSeen(BattleNpc mob, uint instance)
     {
@@ -117,8 +117,9 @@ public class TrainManager
     public void Import(IList<HuntTrainMob> trainMobs)
     {
         ImportedTrain.Clear(); //should be empty already
-        if (trainMobs.Count > 0) ImportedTrain.AddRange(trainMobs);
+        ImportedTrain.AddRange(trainMobs);
         MapHelpers.LocaliseMobNames(ImportedTrain);
+        SaveHuntTrainRecord();
     }
 
     public void ImportTrainAll()
@@ -149,9 +150,21 @@ public class TrainManager
         foreach (var m in toRemove) HuntTrain.Remove(m);
     }
 
+    public void TrainRemove(HuntTrainMob mob)
+    {
+        if (mob == null) return;
+        HuntTrain.Remove(mob);
+        SaveHuntTrainRecord();
+    }
+
     public void TrainUnkillAll() => HuntTrain.ForEach(m => m.Dead = false);
     public void TrainDelete() => HuntTrain.Clear();
 
+    public void TrainMarkAsDead(int index)
+    {
+        HuntTrain[index].Dead = true;
+        SaveHuntTrainRecord();
+    }
 
     public void LoadHuntTrainRecord()
     {
