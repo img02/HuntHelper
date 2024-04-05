@@ -128,6 +128,34 @@ public static class Constants
     private const string GatheringRegexBase_fr = "(?i)Vous obtenez.*";
     #endregion
 
+    #region ChineseSimplified
+    //zh
+    private static readonly string[] Minhocao_chs = { "土元精" };
+    private static readonly string[] Squonk_chs = { "唧唧咋咋" };
+    private static readonly string[] Leucrotta_chs = { "亚拉戈奇美拉", "小海德拉", "美拉西迪亚薇薇尔飞龙" };
+    private static readonly string[] Gandawera_chs = { "皇金矿", "星极花" };
+    private static readonly string[] Okina_chs = { "无壳观梦螺", "观梦螺" };
+    private static readonly string[] Udumbara_chs = { "莱西", "狄亚卡" };
+    private static readonly string[] SaltAndLight_chs = { "舍弃" };
+    private static readonly string[] ForgivenPedantry_chs = { "矮人棉" };
+    private static readonly string[] Ixtab_chs = { "破裂的隆卡人偶", "破裂的隆卡石蒺藜", "破裂的隆卡器皿" };
+    private static readonly string[] Sphatika_chs = { "阿输陀花", "毕舍遮", "金刚尾" };
+    private static readonly string[] Ruinator_chs = { "思考之物", "彷徨之物", "叹息之物" };
+
+    private const string MinhocaoRegex_chs = $"土元精{BattleRegexBase_chs}";
+    private const string SquonkRegex_chs = $"斯奎克发动了“唧唧咋咋”";
+    private const string LeucrottaRegex_chs = $"(亚拉戈奇美拉|小海德拉|美拉西迪亚薇薇尔飞龙){BattleRegexBase_chs}";
+    private const string GandaweraRegex_chs = $"{GatheringRegexBase_chs}(皇金矿|星极花)";
+    private const string OkinaRegex_chs = $"(无壳观梦螺|观梦螺){BattleRegexBase_chs}";
+    private const string UdumbaraRegex_chs = $"(莱西|狄亚卡){BattleRegexBase_chs}";
+    private const string SaltAndLightRegex_chs = $"舍弃了.*";
+    private const string ForgivenPedantryRegex_chs = $"{GatheringRegexBase_chs}矮人棉";
+    private const string IxtabRegex_chs = $"(破裂的隆卡人偶|破裂的隆卡石蒺藜|破裂的隆卡器皿){BattleRegexBase_chs}";
+    private const string SphatikaRegex_chs = $"(阿输陀花|毕舍遮|金刚尾){BattleRegexBase_chs}";
+    private const string RuinatorRegex_chs = $"(思考之物|彷徨之物|叹息之物){BattleRegexBase_chs}";
+    private const string BattleRegexBase_chs = "打倒了";
+    private const string GatheringRegexBase_chs = "获得了.*";
+    #endregion
 
     //ss ids
     public const uint SS_Ker = 10615;
@@ -245,5 +273,31 @@ public static class Constants
             RuinatorRegex = RuinatorRegex_ja;
         }
 
+        if (lang == ClientLanguage.ChineseSimplified)
+        {
+            Minhocao = Minhocao_chs;
+            Squonk = Squonk_chs;
+            Leucrotta = Leucrotta_chs;
+            Gandawera = Gandawera_chs;
+            Okina = Okina_chs;
+            Udumbara = Udumbara_chs;
+            SaltAndLight = SaltAndLight_chs;
+            ForgivenPedantry = ForgivenPedantry_chs;
+            Ixtab = Ixtab_chs;
+            Sphatika = Sphatika_chs;
+            Ruinator = Ruinator_chs;
+
+            MinhocaoRegex = MinhocaoRegex_chs;
+            SquonkRegex = SquonkRegex_chs;
+            LeucrottaRegex = LeucrottaRegex_chs;
+            GandaweraRegex = GandaweraRegex_chs;
+            OkinaRegex = OkinaRegex_chs;
+            UdumbaraRegex = UdumbaraRegex_chs;
+            SaltAndLightRegex = SaltAndLightRegex_chs;
+            ForgivenPedantryRegex = ForgivenPedantryRegex_chs;
+            IxtabRegex = IxtabRegex_chs;
+            SphatikaRegex = SphatikaRegex_chs;
+            RuinatorRegex = RuinatorRegex_chs;
+        }
     }
 }
