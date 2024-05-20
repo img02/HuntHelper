@@ -1,4 +1,5 @@
-﻿using Dalamud.Game.ClientState.Objects.Enums;
+﻿using Dalamud;
+using Dalamud.Game.ClientState.Objects.Enums;
 using Dalamud.Game.ClientState.Objects.Types;
 using Dalamud.Interface;
 using Dalamud.Interface.Components;
@@ -359,7 +360,8 @@ namespace HuntHelper.Gui
                     }
                     else
                     {
-                        var mapNameEng = MapHelpers.GetMapNameInEnglish(_territoryId);
+                        ClientLanguage clientLanguage = _clientState.ClientLanguage;
+                        var mapNameEng = MapHelpers.GetMapNameInEnglish(_territoryId,clientLanguage);
                         var mapImg = _huntManager.GetMapImage(mapNameEng);
                         if (mapImg != null)
                         {
