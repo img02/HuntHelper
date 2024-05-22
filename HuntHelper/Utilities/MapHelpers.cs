@@ -25,6 +25,8 @@ public class MapHelpers
         {"迷津","Labyrinthos"},{"萨维奈岛","Thavnair"},{"加雷马","Garlemald"},{"叹息海","Mare Lamentorum"},{"厄尔庇斯","Elpis"},{"天外天垓","Ultima Thule"}//6.0
     };
 
+    private static List<ClientLanguage> languages = new List<ClientLanguage> { ClientLanguage.English, ClientLanguage.Japanese, ClientLanguage.German, ClientLanguage.French };
+
     public static IDataManager DataManager;
 
     public static void SetUp(IDataManager dataManager)
@@ -39,13 +41,11 @@ public class MapHelpers
     public static string GetMapNameInEnglish(uint territoryID,ClientLanguage clientLanguage)
     {
         var row = DataManager.Excel.GetSheet<TerritoryType>(Language.English)?.GetRow(territoryID)?.PlaceName.Row ?? 0;
-        List<ClientLanguage> languages = new List<ClientLanguage> {ClientLanguage.English,ClientLanguage.Japanese,ClientLanguage.German,ClientLanguage.French};
         if (languages.Contains(clientLanguage)){
             return DataManager.Excel.GetSheet<PlaceName>(Language.English)?.GetRow(row)?.Name.ToString() ?? "location not found";
         }
         var mapName = DataManager.Excel.GetSheet<PlaceName>()?.GetRow(row)?.Name.ToString() ?? "location not found";
-        // PluginLog.Log(mapName);
-        return ChineseToEnglish[mapName];
+        return ChineseToEnglish.ContainsKey(mapName) ? ChineseToEnglish[mapName] : "location not found";
     }
 
     public static uint GetMapID(uint territoryID) //createmaplink doesn't work with "Mor Dhona" :(
