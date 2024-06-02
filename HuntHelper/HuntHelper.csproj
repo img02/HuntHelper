@@ -25,6 +25,9 @@
     <None Remove="Data\ARR-A.json" />
     <None Remove="Data\ARR-B.json" />
     <None Remove="Data\ARR-S.json" />
+    <None Remove="Data\DT-A.json" />
+    <None Remove="Data\DT-B.json" />
+    <None Remove="Data\DT-S.json" />
     <None Remove="Data\EW-A.json" />
     <None Remove="Data\EW-B.json" />
     <None Remove="Data\EW-S.json" />
@@ -104,6 +107,15 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Data\ShB-S.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\DT-A.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\DT-B.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\DT-S.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Data\SpawnPointData.json">

@@ -350,10 +350,15 @@ namespace HuntHelper.Gui
                 if (_useMapImages)
                 {
                     //if only something went wrong, such as only some maps images downloaded
-                    if (_huntManager.HasDownloadErrors) MapImageDownloadWindow();
+                    if (_huntManager.HasDownloadErrors || _huntManager.NotAllImagesFound) MapImageDownloadWindow();
 
                     if (!_huntManager.ImagesLoaded && !_huntManager.HasDownloadErrors)
                     {
+
+                        //todo idk put in some kind of check for the number of map images then if count != something, missing images, prompt delete and redownload
+                        // for dawntrail
+                        // count images on start up?
+
                         //if images/map doesn't exist, or is empty - show map download window
                         if (!Directory.Exists(_huntManager.ImageFolderPath) || !Directory.EnumerateFiles(_huntManager.ImageFolderPath).Any()) MapImageDownloadWindow();
                         else LoadMapImages();
@@ -1862,6 +1867,8 @@ namespace HuntHelper.Gui
             {
                 var url = Constants.RepoUrl;
                 var imageDir = _huntManager.ImageFolderPath;
+
+                // msg to show
                 if (_huntManager.DownloadingImages) //show this is in process of downloading
                 {
                     ImGuiUtil.DoStuffWithMonoFont(() =>
@@ -1886,7 +1893,8 @@ namespace HuntHelper.Gui
                     ImGuiUtil.DoStuffWithMonoFont(() =>
                     {
                         ImGui.Dummy(Vector2.Zero);
-                        ImGui.TextWrapped(GuiResources.MapGuiText["ImageDownloadPromptMessage"]);
+                        if (_huntManager.NotAllImagesFound) ImGui.TextWrapped("Map images missing (maybe a new expansion has released?).\n\nRedownload images.");
+                        else ImGui.TextWrapped(GuiResources.MapGuiText["ImageDownloadPromptMessage"]);
                         ImGui.SameLine();
                         if (ImGui.Button($"{GuiResources.MapGuiText["ImageDownloadButton"]}##download")) _huntManager.DownloadImages(_mapDataManager.SpawnPointsList);
                         ImGui.Text(GuiResources.MapGuiText["ImageDownloadManualMessageOne"]);
