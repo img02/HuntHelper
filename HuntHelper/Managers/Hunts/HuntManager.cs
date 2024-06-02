@@ -21,7 +21,7 @@ namespace HuntHelper.Managers.Hunts;
 
 public class HuntManager : IDisposable
 {
-    public static int HuntMapCount = 41; //todo update this for dawntrail
+    public static int HuntMapCount = 41; //todo update this for dawntrail, also update all those data jsons :(
     public readonly string ImageFolderPath;
 
     private readonly Dictionary<HuntRank, List<Mob>> _arrDict;

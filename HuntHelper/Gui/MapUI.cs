@@ -333,11 +333,6 @@ namespace HuntHelper.Gui
 
                     if (!_huntManager.ImagesLoaded && !_huntManager.HasDownloadErrors)
                     {
-
-                        //todo idk put in some kind of check for the number of map images then if count != something, missing images, prompt delete and redownload
-                        // for dawntrail
-                        // count images on start up?
-
                         //if images/map doesn't exist, or is empty - show map download window
                         if (!Directory.Exists(_huntManager.ImageFolderPath) || !Directory.EnumerateFiles(_huntManager.ImageFolderPath).Any()) MapImageDownloadWindow();
                         else LoadMapImages();
@@ -1872,7 +1867,7 @@ namespace HuntHelper.Gui
                     ImGuiUtil.DoStuffWithMonoFont(() =>
                     {
                         ImGui.Dummy(Vector2.Zero);
-                        if (_huntManager.NotAllImagesFound) ImGui.TextWrapped("Some map images are missing (maybe a new expansion has released?).\n\nRedownload images.");
+                        if (_huntManager.NotAllImagesFound) ImGui.TextWrapped(GuiResources.MapGuiText["ImagesMissingPromptMessage"]);
                         else ImGui.TextWrapped(GuiResources.MapGuiText["ImageDownloadPromptMessage"]);
                         ImGui.SameLine();
                         if (ImGui.Button($"{GuiResources.MapGuiText["ImageDownloadButton"]}##download")) _huntManager.DownloadImages(_mapDataManager.SpawnPointsList);

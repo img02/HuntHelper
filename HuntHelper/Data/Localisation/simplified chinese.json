@@ -119,7 +119,8 @@
 		"ImageDownloadPromptMessage": "找不到地图图片，可能这是你初次使用。\n要下载吗？(~23.2MB)",
 		"ImageDownloadButton": "下载",
 		"ImageDownloadManualMessageOne": "或者你可以从这里查看或者手动下载:",
-		"ImageDownloadManualMessageTwo": "在:"
+		"ImageDownloadManualMessageTwo": "在:",
+		"ImagesMissingPromptMessage": "Some map images are missing (maybe a new expansion has released?).\n\nRedownload images."
 	},
 
 	"HuntTrain": {
