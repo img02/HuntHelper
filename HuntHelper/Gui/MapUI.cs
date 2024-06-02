@@ -158,8 +158,6 @@ namespace HuntHelper.Gui
         private bool _randomDebugWindowVisible = false;
         private bool _showDatabaseListWindow = false;
 
-        private Task _backgroundLoop;
-        private CancellationTokenSource _backgroundLoopCancelTokenSource;
         private Task _loadingImagesAttempt = Task.CompletedTask;
 
         public bool RandomDebugWindowVisisble
@@ -203,34 +201,14 @@ namespace HuntHelper.Gui
 
             LoadSettings();
             LoadMapImages();
-
-            _backgroundLoopCancelTokenSource = new CancellationTokenSource();
-            _backgroundLoop = Task.Run(BackgroundLoop, _backgroundLoopCancelTokenSource.Token);
-
-
-        }
-
-        private void BackgroundLoop()
-        {
-            while (true)
-            {
-                if (_backgroundLoopCancelTokenSource.Token.IsCancellationRequested) return;
-                while (_enableBackgroundScan && !MapVisible)
-                {
-                    if (_backgroundLoopCancelTokenSource.Token.IsCancellationRequested) return;
-                    UpdateMobInfo();
-                    Thread.Sleep(1000);
-                }
-                Thread.Sleep(1000);
-            }
-        }
+        }            
 
         public void Dispose()
         {
             _clientState.TerritoryChanged -= ClientState_TerritoryChanged;
-            _backgroundLoopCancelTokenSource.Cancel();
-            while (!_backgroundLoop.IsCompleted) ;
-            _backgroundLoopCancelTokenSource.Dispose();
+            //_backgroundLoopCancelTokenSource.Cancel();
+            //while (!_backgroundLoop.IsCompleted) ;
+            //_backgroundLoopCancelTokenSource.Dispose();
             SaveSettings();
         }
 
@@ -317,6 +295,7 @@ namespace HuntHelper.Gui
         {
             if (!MapVisible)
             {
+                if (_enableBackgroundScan) UpdateMobInfo();
                 return;
             }
 
@@ -1893,7 +1872,7 @@ namespace HuntHelper.Gui
                     ImGuiUtil.DoStuffWithMonoFont(() =>
                     {
                         ImGui.Dummy(Vector2.Zero);
-                        if (_huntManager.NotAllImagesFound) ImGui.TextWrapped("Map images missing (maybe a new expansion has released?).\n\nRedownload images.");
+                        if (_huntManager.NotAllImagesFound) ImGui.TextWrapped("Some map images are missing (maybe a new expansion has released?).\n\nRedownload images.");
                         else ImGui.TextWrapped(GuiResources.MapGuiText["ImageDownloadPromptMessage"]);
                         ImGui.SameLine();
                         if (ImGui.Button($"{GuiResources.MapGuiText["ImageDownloadButton"]}##download")) _huntManager.DownloadImages(_mapDataManager.SpawnPointsList);

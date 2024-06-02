@@ -542,7 +542,7 @@ public class HuntManager : IDisposable
         if (files.Count != HuntMapCount)
         {
             if (DownloadingImages) return; //wait until all images downloaded
-            NotAllImagesFound = true;
+            if (files.Count > 0) NotAllImagesFound = true;
             return;
         }
 

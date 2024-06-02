@@ -1,4 +1,5 @@
 ﻿using Dalamud.Game.Command;
+using Dalamud.Interface;
 using Dalamud.Plugin;
 using Dalamud.Plugin.Ipc;
 using Dalamud.Plugin.Services;
@@ -53,6 +54,7 @@ namespace HuntHelper
         public static ICallGateSubscriber<uint, byte, bool> TeleportIpc { get; private set; }
         public static string PluginDir { get; set; } = string.Empty;
 
+
         public Plugin(
             DalamudPluginInterface pluginInterface,
             IFramework framework,
@@ -98,7 +100,7 @@ namespace HuntHelper
             this.HuntManager = new HuntManager(PluginInterface, TrainManager, chatGui, flyTextGui, this.Configuration.TTSVolume);
             this.MapDataManager = new MapDataManager(Path.Combine(PluginInterface.AssemblyLocation.Directory?.FullName!, @"Data\SpawnPointData.json"));
 
-            this.MapUi = new MapUI(this.Configuration, clientState, objectTable, HuntManager, MapDataManager, GameGui);
+            this.MapUi = new MapUI(this.Configuration, ClientState, ObjectTable, HuntManager, MapDataManager, GameGui);
             this.HuntTrainUI = new HuntTrainUI(TrainManager, Configuration);
             this.CounterUI = new CounterUI(ClientState, ChatGui, GameGui, Configuration, ObjectTable, FateTable);
             this.SpawnPointFinderUI = new SpawnPointFinderUI(MapDataManager, Configuration);
@@ -106,7 +108,7 @@ namespace HuntHelper
 
             IpcSystem = new IpcSystem(pluginInterface, framework, TrainManager);
             TeleportIpc = PluginInterface.GetIpcSubscriber<uint, byte, bool>("Teleport");
-
+                        
             this.CommandManager.AddHandler(MapWindowCommand, new CommandInfo(HuntMapCommand) { HelpMessage = GuiResources.PluginText["/hh helpmessage"] });
             this.CommandManager.AddHandler(MapWindowPresetOne, new CommandInfo(ApplyPresetOneCommand) { HelpMessage = GuiResources.PluginText["/hh1 helpmessage"] });
             this.CommandManager.AddHandler(MapWindowPresetTwo, new CommandInfo(ApplyPresetTwoCommand) { HelpMessage = GuiResources.PluginText["/hh2 helpmessage"] });
@@ -123,6 +125,7 @@ namespace HuntHelper
 
             this.PluginInterface.UiBuilder.Draw += DrawUI;
             this.PluginInterface.UiBuilder.OpenConfigUi += DrawConfigUI;
+            this.PluginInterface.UiBuilder.OpenMainUi += HuntMapCommandGetRidOfValidationMsg;
         }
 
         public void Dispose()
@@ -156,6 +159,11 @@ namespace HuntHelper
 
         private void DebugWindowCommand(string command, string args) => this.MapUi.RandomDebugWindowVisisble = !MapUi.RandomDebugWindowVisisble;
         private void HuntMapCommand(string command, string args)
+        {
+            MapUi.MapVisible = !MapUi.MapVisible;
+            Configuration.MapWindowVisible = MapUi.MapVisible;
+        }
+        private void HuntMapCommandGetRidOfValidationMsg()
         {
             MapUi.MapVisible = !MapUi.MapVisible;
             Configuration.MapWindowVisible = MapUi.MapVisible;
