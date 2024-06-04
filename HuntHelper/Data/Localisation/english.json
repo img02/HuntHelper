@@ -119,7 +119,8 @@
 		"ImageDownloadPromptMessage": "Could not find map images\nThis is expected if this is your first time.\nWould you like to try to download them? (~23.2MB)",
 		"ImageDownloadButton": "Download",
 		"ImageDownloadManualMessageOne": "Or you can view and manually download from:",
-		"ImageDownloadManualMessageTwo": "and place in:"
+		"ImageDownloadManualMessageTwo": "and place in:",
+		"ImagesMissingPromptMessage": "Some map images are missing (maybe a new expansion has released?).\n\nRedownload images."
 	},
 
 	"HuntTrain": {

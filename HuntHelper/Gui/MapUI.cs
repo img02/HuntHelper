@@ -158,8 +158,6 @@ namespace HuntHelper.Gui
         private bool _randomDebugWindowVisible = false;
         private bool _showDatabaseListWindow = false;
 
-        private Task _backgroundLoop;
-        private CancellationTokenSource _backgroundLoopCancelTokenSource;
         private Task _loadingImagesAttempt = Task.CompletedTask;
 
         public bool RandomDebugWindowVisisble
@@ -203,34 +201,14 @@ namespace HuntHelper.Gui
 
             LoadSettings();
             LoadMapImages();
-
-            _backgroundLoopCancelTokenSource = new CancellationTokenSource();
-            _backgroundLoop = Task.Run(BackgroundLoop, _backgroundLoopCancelTokenSource.Token);
-
-
-        }
-
-        private void BackgroundLoop()
-        {
-            while (true)
-            {
-                if (_backgroundLoopCancelTokenSource.Token.IsCancellationRequested) return;
-                while (_enableBackgroundScan && !MapVisible)
-                {
-                    if (_backgroundLoopCancelTokenSource.Token.IsCancellationRequested) return;
-                    UpdateMobInfo();
-                    Thread.Sleep(1000);
-                }
-                Thread.Sleep(1000);
-            }
-        }
+        }            
 
         public void Dispose()
         {
             _clientState.TerritoryChanged -= ClientState_TerritoryChanged;
-            _backgroundLoopCancelTokenSource.Cancel();
-            while (!_backgroundLoop.IsCompleted) ;
-            _backgroundLoopCancelTokenSource.Dispose();
+            //_backgroundLoopCancelTokenSource.Cancel();
+            //while (!_backgroundLoop.IsCompleted) ;
+            //_backgroundLoopCancelTokenSource.Dispose();
             SaveSettings();
         }
 
@@ -317,6 +295,7 @@ namespace HuntHelper.Gui
         {
             if (!MapVisible)
             {
+                if (_enableBackgroundScan) UpdateMobInfo();
                 return;
             }
 
@@ -350,7 +329,7 @@ namespace HuntHelper.Gui
                 if (_useMapImages)
                 {
                     //if only something went wrong, such as only some maps images downloaded
-                    if (_huntManager.HasDownloadErrors) MapImageDownloadWindow();
+                    if (_huntManager.HasDownloadErrors || _huntManager.NotAllImagesFound) MapImageDownloadWindow();
 
                     if (!_huntManager.ImagesLoaded && !_huntManager.HasDownloadErrors)
                     {
@@ -1862,6 +1841,8 @@ namespace HuntHelper.Gui
             {
                 var url = Constants.RepoUrl;
                 var imageDir = _huntManager.ImageFolderPath;
+
+                // msg to show
                 if (_huntManager.DownloadingImages) //show this is in process of downloading
                 {
                     ImGuiUtil.DoStuffWithMonoFont(() =>
@@ -1886,7 +1867,8 @@ namespace HuntHelper.Gui
                     ImGuiUtil.DoStuffWithMonoFont(() =>
                     {
                         ImGui.Dummy(Vector2.Zero);
-                        ImGui.TextWrapped(GuiResources.MapGuiText["ImageDownloadPromptMessage"]);
+                        if (_huntManager.NotAllImagesFound) ImGui.TextWrapped(GuiResources.MapGuiText["ImagesMissingPromptMessage"]);
+                        else ImGui.TextWrapped(GuiResources.MapGuiText["ImageDownloadPromptMessage"]);
                         ImGui.SameLine();
                         if (ImGui.Button($"{GuiResources.MapGuiText["ImageDownloadButton"]}##download")) _huntManager.DownloadImages(_mapDataManager.SpawnPointsList);
                         ImGui.Text(GuiResources.MapGuiText["ImageDownloadManualMessageOne"]);

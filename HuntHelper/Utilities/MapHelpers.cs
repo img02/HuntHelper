@@ -40,10 +40,14 @@ public class MapHelpers
     }
     public static string GetMapNameInEnglish(uint territoryID,ClientLanguage clientLanguage)
     {
+        /*DataManager.Excel.RemoveSheetFromCache<TerritoryType>();
+       return DataManager.Excel.GetSheet<TerritoryType>(Language.English)?.GetRow(territoryID)?.PlaceName?.Value?.Name.ToString() ?? "location not found";        */
+
         var row = DataManager.Excel.GetSheet<TerritoryType>(Language.English)?.GetRow(territoryID)?.PlaceName.Row ?? 0;
         if (languages.Contains(clientLanguage)){
             return DataManager.Excel.GetSheet<PlaceName>(Language.English)?.GetRow(row)?.Name.ToString() ?? "location not found";
         }
+
         var mapName = DataManager.Excel.GetSheet<PlaceName>()?.GetRow(row)?.Name.ToString() ?? "location not found";
         return ChineseToEnglish.ContainsKey(mapName) ? ChineseToEnglish[mapName] : "location not found";
     }

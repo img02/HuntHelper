@@ -21,6 +21,7 @@ namespace HuntHelper.Managers.Hunts;
 
 public class HuntManager : IDisposable
 {
+    public static int HuntMapCount = 41; //todo update this for dawntrail, also update all those data jsons :(
     public readonly string ImageFolderPath;
 
     private readonly Dictionary<HuntRank, List<Mob>> _arrDict;
@@ -28,6 +29,7 @@ public class HuntManager : IDisposable
     private readonly Dictionary<HuntRank, List<Mob>> _shbDict;
     private readonly Dictionary<HuntRank, List<Mob>> _sbDict;
     private readonly Dictionary<HuntRank, List<Mob>> _ewDict;
+    private readonly Dictionary<HuntRank, List<Mob>> _dtDict;
     private readonly Dictionary<string, IDalamudTextureWrap> _mapImages;
     private readonly DalamudPluginInterface _pluginInterface;
     private readonly IChatGui _chatGui;
@@ -45,8 +47,10 @@ public class HuntManager : IDisposable
     public int BCount;
 
     public bool ImagesLoaded { get; private set; } = false;
+    public bool NotAllImagesFound { get; private set; } = false;
     public bool ErrorPopUpVisible = false;
     public string ErrorMessage = string.Empty;
+
 
 
     public bool DontUseSynthesizer = false;
@@ -75,6 +79,7 @@ public class HuntManager : IDisposable
         _shbDict = new Dictionary<HuntRank, List<Mob>>();
         _sbDict = new Dictionary<HuntRank, List<Mob>>();
         _ewDict = new Dictionary<HuntRank, List<Mob>>();
+        _dtDict = new Dictionary<HuntRank, List<Mob>>();
         _mapImages = new Dictionary<string, IDalamudTextureWrap>();
         _currentMobs = new List<(HuntRank, BattleNpc)>();
         _previousMobs = new List<(HuntRank, BattleNpc)>();
@@ -89,7 +94,7 @@ public class HuntManager : IDisposable
 
         ImageFolderPath = Path.Combine(_pluginInterface.AssemblyLocation.Directory?.FullName!, @"Images\Maps\");
 
-        // Starting this makes the plugin fail to load
+        // Starting this makes the plugin fail to load - on non-windows
         try
         {
             TTS = new SpeechSynthesizer();
@@ -364,9 +369,22 @@ public class HuntManager : IDisposable
             "./data/EW-B.json",
             "./data/EW-S.json"
         };
+        var DTJsonFiles = new List<string>
+        {
+            "./data/DT-A.json",
+            "./data/DT-B.json",
+            "./data/DT-S.json"
+        };
 
-        LoadFilesIntoDic(new[] { (_arrDict, ARRJsonFiles), (_hwDict, HWJsonFiles),
-            (_sbDict, SBJsonFiles), (_shbDict, ShBJsonFiles), (_ewDict, EWJsonFiles) });
+
+        LoadFilesIntoDic(new[] {
+            (_arrDict, ARRJsonFiles),
+            (_hwDict, HWJsonFiles),
+            (_sbDict, SBJsonFiles),
+            (_shbDict, ShBJsonFiles),
+            (_ewDict, EWJsonFiles),
+            (_dtDict, DTJsonFiles )
+        });
     }
 
     public float GetMapZoneCoordSize(ushort mapID)
@@ -385,11 +403,13 @@ public class HuntManager : IDisposable
         text += DictToString(_sbDict);
         text += DictToString(_shbDict);
         text += DictToString(_ewDict);
+        text += DictToString(_dtDict);
         return text;
     }
     public bool IsHunt(uint modelID)
     {
-        var exists = _ewDict.Any(kvp => kvp.Value.Any(m => m.ModelID == modelID));
+        var exists = _dtDict.Any(kvp => kvp.Value.Any(m => m.ModelID == modelID));
+        if (!exists) exists = _ewDict.Any(kvp => kvp.Value.Any(m => m.ModelID == modelID));
         if (!exists) exists = _shbDict.Any(kvp => kvp.Value.Any(m => m.ModelID == modelID));
         if (!exists) exists = _sbDict.Any(kvp => kvp.Value.Any(m => m.ModelID == modelID));
         if (!exists) exists = _hwDict.Any(kvp => kvp.Value.Any(m => m.ModelID == modelID));
@@ -518,7 +538,13 @@ public class HuntManager : IDisposable
         if (!Directory.Exists(ImageFolderPath)) return;
 
         var files = Directory.EnumerateFiles(ImageFolderPath).ToList();
-        if (!files.Any() || files.Count != 41) return; //wait until all images downloaded
+
+        if (files.Count != HuntMapCount)
+        {
+            if (DownloadingImages) return; //wait until all images downloaded
+            if (files.Count > 0) NotAllImagesFound = true;
+            return;
+        }
 
         var paths = Directory.EnumerateFiles(ImageFolderPath, "*", SearchOption.TopDirectoryOnly);
         foreach (var path in paths)
@@ -527,6 +553,7 @@ public class HuntManager : IDisposable
             if (_mapImages.ContainsKey(name)) continue;
             _mapImages.Add(name, _pluginInterface.UiBuilder.LoadImage(path));
         }
+        NotAllImagesFound = false;
         ImagesLoaded = true;
         return;
     }
@@ -540,8 +567,9 @@ public class HuntManager : IDisposable
     {
         DownloadingImages = true;
         try
-        {
-            Directory.CreateDirectory(ImageFolderPath); //create dir where images will be stored
+        {   // if redownloading, delete all files first.
+            if (Directory.Exists(ImageFolderPath)) Directory.Delete(ImageFolderPath, true); 
+            Directory.CreateDirectory(ImageFolderPath);   
         }
         catch (Exception ex)
         {

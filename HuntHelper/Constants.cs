@@ -219,7 +219,7 @@ public static class Constants
             RuinatorRegex = RuinatorRegex_fr;
         }
 
-        if (lang == ClientLanguage.German)
+        else if (lang == ClientLanguage.German)
         {
             Minhocao = Minhocao_de;
             Squonk = Squonk_de;
@@ -246,7 +246,7 @@ public static class Constants
             RuinatorRegex = RuinatorRegex_de;
         }
 
-        if (lang == ClientLanguage.Japanese)
+        else if (lang == ClientLanguage.Japanese)
         {
             Minhocao = Minhocao_ja;
             Squonk = Squonk_ja;
@@ -273,7 +273,7 @@ public static class Constants
             RuinatorRegex = RuinatorRegex_ja;
         }
 
-        if (lang == ClientLanguage.ChineseSimplified)
+        else //(lang == ClientLanguage.ChineseSimplified) // ChineseSimplified does not exist in global dalamud version
         {
             Minhocao = Minhocao_chs;
             Squonk = Squonk_chs;
