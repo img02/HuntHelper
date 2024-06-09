@@ -6,6 +6,8 @@ using Lumina.Data;
 using Lumina.Excel.GeneratedSheets;
 using System;
 using System.Collections.Generic;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace HuntHelper.Utilities;
 /// <summary>
@@ -38,7 +40,7 @@ public class MapHelpers
     {
         return DataManager.Excel.GetSheet<TerritoryType>()?.GetRow(territoryID)?.PlaceName?.Value?.Name.ToString() ?? "location not found";
     }
-    public static string GetMapNameInEnglish(uint territoryID,ClientLanguage clientLanguage)
+    public static string GetMapNameInEnglish(uint territoryID, ClientLanguage clientLanguage)
     {
         /*DataManager.Excel.RemoveSheetFromCache<TerritoryType>();
        return DataManager.Excel.GetSheet<TerritoryType>(Language.English)?.GetRow(territoryID)?.PlaceName?.Value?.Name.ToString() ?? "location not found";        */
@@ -67,4 +69,41 @@ public class MapHelpers
         trainList.ForEach(m => m.Name = DataManager.Excel.GetSheet<BNpcName>()?.GetRow(m.MobID)?.Singular.ToString() ?? m.Name);
     }
 
+    public static async Task<bool> MapImageVerUpToDate(string currentVersion)
+    {        
+        try
+        {
+            var client = new HttpClient();
+            client.DefaultRequestHeaders.Add("Cache-Control", "no-cache");
+            var ver = await client.GetStringAsync(ImageVerUrl);
+            PluginLog.Warning(@"map images latest ver: " + ver);
+            return currentVersion == ver;
+        }
+        catch (Exception ex)
+        {
+            PluginLog.Warning("Could not check map image version");
+            PluginLog.Error(ex.Message);
+        }
+        return true;
+    }
+
+    public static async Task<string> GetMapImageVer()
+    {
+      
+        try
+        {
+            var client = new HttpClient();
+            //client.DefaultRequestHeaders.Add("User-Agent", "request");
+            client.DefaultRequestHeaders.Add("Cache-Control", "no-cache");
+            var ver = await client.GetStringAsync(ImageVerUrl);
+            return ver;
+        }
+        catch (Exception ex)
+        {
+            PluginLog.Error(ex.Message);
+        }
+        return "0";
+    }
+
+    private static readonly string ImageVerUrl = @"https://raw.githubusercontent.com/img02/HuntHelper-Resources/main/version";
 }

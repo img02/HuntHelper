@@ -120,7 +120,8 @@
 		"ImageDownloadButton": "下载",
 		"ImageDownloadManualMessageOne": "或者你可以从这里查看或者手动下载:",
 		"ImageDownloadManualMessageTwo": "在:",
-		"ImagesMissingPromptMessage": "Some map images are missing (maybe a new expansion has released?).\n\nRedownload images."
+		"ImagesMissingPromptMessage": "Some map images are missing (maybe a new expansion has released?).\n\nRedownload images.",
+		"OutOfDateMaps": "New map images have been released, please redownload to update. *requires restarting plugin to use new images."
 	},
 
 	"HuntTrain": {

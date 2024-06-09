@@ -158,6 +158,13 @@ namespace HuntHelper
         //Hunt Window Flag - used for toggling title bar
         public int HuntWindowFlag { get; set; } = (int)(ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoTitleBar);
 
+        public string MapImagesVer { get; set; } = "0";
+
+
+        #region dawntrail prompt stuff. idk reminder for future expansion
+        public bool DawntrailSubmitPositionsData = false;
+        public bool DawntrailAlreadyPrompted = false;
+        #endregion
 
         [NonSerialized]
         private DalamudPluginInterface? _pluginInterface;
