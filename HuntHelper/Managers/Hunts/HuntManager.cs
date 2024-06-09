@@ -4,6 +4,8 @@ using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Interface.Internal;
 using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
+using Dalamud.Utility;
+using HuntHelper.Gui;
 using HuntHelper.Managers.Hunts.Models;
 using HuntHelper.Managers.MapData.Models;
 using HuntHelper.Utilities;
@@ -563,7 +565,7 @@ public class HuntManager : IDisposable
     public List<string> DownloadErrors = new List<string>();
 
     //only called from GUI
-    public async void DownloadImages(List<MapSpawnPoints> spawnpointdata)
+    public async void DownloadImages(List<MapSpawnPoints> spawnpointdata, Configuration _configuration)
     {
         DownloadingImages = true;
         try
@@ -590,7 +592,26 @@ public class HuntManager : IDisposable
             PluginLog.Error("Error:");
             DownloadErrors.ForEach(e => PluginLog.Error(e));
         }
+        else
+        {
+            UpdateImageVer(_configuration);
+        }
         DownloadingImages = false;
+
+        
+    }
+
+    private async void UpdateImageVer(Configuration config)
+    {
+        if (!Directory.Exists(ImageFolderPath)) return;
+        var files = Directory.EnumerateFiles(ImageFolderPath).ToList();
+
+        if (files.Count == HuntMapCount) config.MapImagesVer = await MapHelpers.GetMapImageVer();
+    }
+
+    public bool IsDawntrailHunt(uint mobId)
+    {
+        return _dtDict.Any(kvp => kvp.Value.Any(m => m.ModelID == mobId));
     }
 
 }

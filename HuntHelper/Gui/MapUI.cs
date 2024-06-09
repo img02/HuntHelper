@@ -10,6 +10,7 @@ using HuntHelper.Gui.Resource;
 using HuntHelper.Managers.Hunts;
 using HuntHelper.Managers.MapData;
 using HuntHelper.Managers.MapData.Models;
+using HuntHelper.Managers.NewExpansion;
 using HuntHelper.Utilities;
 using ImGuiNET;
 using System;
@@ -201,7 +202,8 @@ namespace HuntHelper.Gui
 
             LoadSettings();
             LoadMapImages();
-        }            
+            CheckMapImageVer();
+        }
 
         public void Dispose()
         {
@@ -329,8 +331,8 @@ namespace HuntHelper.Gui
                 if (_useMapImages)
                 {
                     //if only something went wrong, such as only some maps images downloaded
-                    if (_huntManager.HasDownloadErrors || _huntManager.NotAllImagesFound) MapImageDownloadWindow();
-
+                    if (_huntManager.HasDownloadErrors || _huntManager.NotAllImagesFound || _outOfDateImages) MapImageDownloadWindow();
+                    
                     if (!_huntManager.ImagesLoaded && !_huntManager.HasDownloadErrors)
                     {
                         //if images/map doesn't exist, or is empty - show map download window
@@ -340,7 +342,7 @@ namespace HuntHelper.Gui
                     else
                     {
                         ClientLanguage clientLanguage = _clientState.ClientLanguage;
-                        var mapNameEng = MapHelpers.GetMapNameInEnglish(_territoryId,clientLanguage);
+                        var mapNameEng = MapHelpers.GetMapNameInEnglish(_territoryId, clientLanguage);
                         var mapImg = _huntManager.GetMapImage(mapNameEng);
                         if (mapImg != null)
                         {
@@ -476,6 +478,17 @@ namespace HuntHelper.Gui
                     var tabBarHeight = 57f;
                     //default height, increase in individual tabs as needed
                     _bottomPanelHeight = tabBarHeight + 90f * ImGuiHelpers.GlobalScale;
+
+                    //todo disable this later
+                    if (ImGui.BeginTabItem("Dawntrail"))
+                    {
+                        ImGui.TextWrapped("submit found hunt position data?");
+
+                        ImGui.Checkbox("opt in", ref _configuration.DawntrailSubmitPositionsData);
+
+                        ImGui.EndTabItem();
+                    }
+
 
                     if (ImGui.BeginTabItem(GuiResources.MapGuiText["GeneralTab"]))
                     {
@@ -1153,6 +1166,7 @@ namespace HuntHelper.Gui
                         ImGui.EndTabItem();
                     }
 
+                  
                     ImGui.EndTabBar();
                 }
             }
@@ -1483,6 +1497,25 @@ namespace HuntHelper.Gui
                 _chatAEnabled, _chatBEnabled, _chatSEnabled, _chatAMessage, _chatBMessage, _chatSMessage,
                 _flyTxtAEnabled, _flyTxtBEnabled, _flyTxtSEnabled, _instance);
             UpdateStats();
+
+
+            //todo disable after hunt maps avail.
+            #region DAWNTRAIL API GATHING SPAWN POINTS STUFF TEST TEST TEST
+            
+            //if (_huntManager.IsDawntrailHunt(mobId))
+            if (_territoryId >= 139) //todo update for dawntrail map ids
+            {
+                _huntManager.CurrentMobs.ForEach(m =>
+                {
+                    var mob = m.Mob;
+                    SpawnDataGatherer.AddFoundMob(_configuration.DawntrailSubmitPositionsData, mob.NameId,
+                        mob.Name.ToString(),
+                        new Vector3(ConvertPosToCoordinate(mob.Position.X), ConvertPosToCoordinate(mob.Position.Z), ConvertPosToCoordinate(mob.Position.Y)),
+                        $"{m.Rank}", _territoryId,
+                        MapHelpers.GetMapNameInEnglish(_territoryId, _clientState.ClientLanguage), _huntManager.GetHPP(mob), _clientState.LocalContentId);
+                });
+            }
+            #endregion
 
             if (!MapVisible) return;
 
@@ -1868,9 +1901,14 @@ namespace HuntHelper.Gui
                     {
                         ImGui.Dummy(Vector2.Zero);
                         if (_huntManager.NotAllImagesFound) ImGui.TextWrapped(GuiResources.MapGuiText["ImagesMissingPromptMessage"]);
+                        else if (_outOfDateImages) ImGui.TextWrapped(GuiResources.MapGuiText["OutOfDateMaps"]);
                         else ImGui.TextWrapped(GuiResources.MapGuiText["ImageDownloadPromptMessage"]);
-                        ImGui.SameLine();
-                        if (ImGui.Button($"{GuiResources.MapGuiText["ImageDownloadButton"]}##download")) _huntManager.DownloadImages(_mapDataManager.SpawnPointsList);
+                        ImGui.NewLine();
+                        if (ImGui.Button($"{GuiResources.MapGuiText["ImageDownloadButton"]}##download"))
+                        {
+                            _huntManager.DownloadImages(_mapDataManager.SpawnPointsList, _configuration);
+                            _outOfDateImages = false;
+                        }
                         ImGui.Text(GuiResources.MapGuiText["ImageDownloadManualMessageOne"]);
                         ImGui.Text($"");
                         ImGui.Dummy(Vector2.Zero);
@@ -1903,5 +1941,15 @@ namespace HuntHelper.Gui
         }
 
         private string LocInstance() => _instance.GetInstanceGlyph();
+
+
+
+        private bool _outOfDateImages = false;
+        private async void CheckMapImageVer()
+        {
+            if (!await MapHelpers.MapImageVerUpToDate(_configuration.MapImagesVer))
+                _outOfDateImages = true;
+        }
+
     }
 }

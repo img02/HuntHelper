@@ -8,6 +8,7 @@ using HuntHelper.Gui.Resource;
 using HuntHelper.Managers;
 using HuntHelper.Managers.Hunts;
 using HuntHelper.Managers.MapData;
+using HuntHelper.Managers.NewExpansion;
 using HuntHelper.Utilities;
 using System;
 using System.IO;
@@ -54,6 +55,8 @@ namespace HuntHelper
         public static ICallGateSubscriber<uint, byte, bool> TeleportIpc { get; private set; }
         public static string PluginDir { get; set; } = string.Empty;
 
+        private SubmitDataPrompt SubmitDataPrompt { get; set; }
+
 
         public Plugin(
             DalamudPluginInterface pluginInterface,
@@ -82,79 +85,81 @@ namespace HuntHelper
                 PluginLog.Error("Unable to find localisation file. What did you do?! gonna crash ok");
             }
 
-            this.FateTable = fateTable;
-            this.ObjectTable = objectTable;
-            this.DataManager = dataManager;
-            this.ChatGui = chatGui;
-            this.FlyTextGui = flyTextGui;
-            this.GameGui = gameGui;
+            FateTable = fateTable;
+            ObjectTable = objectTable;
+            DataManager = dataManager;
+            ChatGui = chatGui;
+            FlyTextGui = flyTextGui;
+            GameGui = gameGui;
 
             MapHelpers.SetUp(DataManager);
 
             Constants.SetCounterLanguage(ClientState.ClientLanguage);
 
-            this.Configuration = this.PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
-            this.Configuration.Initialize(this.PluginInterface);
+            Configuration = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
+            Configuration.Initialize(PluginInterface);
 
-            this.TrainManager = new TrainManager(ChatGui, GameGui, Path.Combine(PluginInterface.AssemblyLocation.Directory?.FullName!, @"Data\HuntTrain.json"));
-            this.HuntManager = new HuntManager(PluginInterface, TrainManager, chatGui, flyTextGui, this.Configuration.TTSVolume);
-            this.MapDataManager = new MapDataManager(Path.Combine(PluginInterface.AssemblyLocation.Directory?.FullName!, @"Data\SpawnPointData.json"));
+            TrainManager = new TrainManager(ChatGui, GameGui, Path.Combine(PluginInterface.AssemblyLocation.Directory?.FullName!, @"Data\HuntTrain.json"));
+            HuntManager = new HuntManager(PluginInterface, TrainManager, chatGui, flyTextGui, Configuration.TTSVolume);
+            MapDataManager = new MapDataManager(Path.Combine(PluginInterface.AssemblyLocation.Directory?.FullName!, @"Data\SpawnPointData.json"));
 
-            this.MapUi = new MapUI(this.Configuration, ClientState, ObjectTable, HuntManager, MapDataManager, GameGui);
-            this.HuntTrainUI = new HuntTrainUI(TrainManager, Configuration);
-            this.CounterUI = new CounterUI(ClientState, ChatGui, GameGui, Configuration, ObjectTable, FateTable);
-            this.SpawnPointFinderUI = new SpawnPointFinderUI(MapDataManager, Configuration);
-            this.PointerUI = new PointerUI(HuntManager, Configuration, GameGui);
+            MapUi = new MapUI(this.Configuration, ClientState, ObjectTable, HuntManager, MapDataManager, GameGui);
+            HuntTrainUI = new HuntTrainUI(TrainManager, Configuration);
+            CounterUI = new CounterUI(ClientState, ChatGui, GameGui, Configuration, ObjectTable, FateTable);
+            SpawnPointFinderUI = new SpawnPointFinderUI(MapDataManager, Configuration);
+            PointerUI = new PointerUI(HuntManager, Configuration, GameGui);
+            SubmitDataPrompt = new SubmitDataPrompt(Configuration);
 
             IpcSystem = new IpcSystem(pluginInterface, framework, TrainManager);
             TeleportIpc = PluginInterface.GetIpcSubscriber<uint, byte, bool>("Teleport");
                         
-            this.CommandManager.AddHandler(MapWindowCommand, new CommandInfo(HuntMapCommand) { HelpMessage = GuiResources.PluginText["/hh helpmessage"] });
-            this.CommandManager.AddHandler(MapWindowPresetOne, new CommandInfo(ApplyPresetOneCommand) { HelpMessage = GuiResources.PluginText["/hh1 helpmessage"] });
-            this.CommandManager.AddHandler(MapWindowPresetTwo, new CommandInfo(ApplyPresetTwoCommand) { HelpMessage = GuiResources.PluginText["/hh2 helpmessage"] });
-            this.CommandManager.AddHandler(MapWindowPresetOneSave, new CommandInfo(SavePresetOneCommand) { HelpMessage = GuiResources.PluginText["/hh1save helpmessage"] });
-            this.CommandManager.AddHandler(MapWindowPresetTwoSave, new CommandInfo(SavePresetTwoCommand) { HelpMessage = GuiResources.PluginText["/hh2save helpmessage"] });
-            this.CommandManager.AddHandler(HuntTrainWindowCommand, new CommandInfo(HuntTrainCommand) { HelpMessage = GuiResources.PluginText["/hht helpmessage"] });
-            this.CommandManager.AddHandler(NextHuntInTrainCommand, new CommandInfo(GetNextMobCommand) { HelpMessage = GuiResources.PluginText["/hhn helpmessage"] });
-            this.CommandManager.AddHandler(NextHuntInTrainAetheryteCommand, new CommandInfo(GetNextMobAetheryteCommand) { HelpMessage = GuiResources.PluginText["/hhna helpmessage"] }); //todo replace msg
+            CommandManager.AddHandler(MapWindowCommand, new CommandInfo(HuntMapCommand) { HelpMessage = GuiResources.PluginText["/hh helpmessage"] });
+            CommandManager.AddHandler(MapWindowPresetOne, new CommandInfo(ApplyPresetOneCommand) { HelpMessage = GuiResources.PluginText["/hh1 helpmessage"] });
+            CommandManager.AddHandler(MapWindowPresetTwo, new CommandInfo(ApplyPresetTwoCommand) { HelpMessage = GuiResources.PluginText["/hh2 helpmessage"] });
+            CommandManager.AddHandler(MapWindowPresetOneSave, new CommandInfo(SavePresetOneCommand) { HelpMessage = GuiResources.PluginText["/hh1save helpmessage"] });
+            CommandManager.AddHandler(MapWindowPresetTwoSave, new CommandInfo(SavePresetTwoCommand) { HelpMessage = GuiResources.PluginText["/hh2save helpmessage"] });
+            CommandManager.AddHandler(HuntTrainWindowCommand, new CommandInfo(HuntTrainCommand) { HelpMessage = GuiResources.PluginText["/hht helpmessage"] });
+            CommandManager.AddHandler(NextHuntInTrainCommand, new CommandInfo(GetNextMobCommand) { HelpMessage = GuiResources.PluginText["/hhn helpmessage"] });
+            CommandManager.AddHandler(NextHuntInTrainAetheryteCommand, new CommandInfo(GetNextMobAetheryteCommand) { HelpMessage = GuiResources.PluginText["/hhna helpmessage"] }); //todo replace msg
 #if DEBUG
-            this.CommandManager.AddHandler(DebugCommand, new CommandInfo(DebugWindowCommand) { HelpMessage = "random data, debug info" });
+            CommandManager.AddHandler(DebugCommand, new CommandInfo(DebugWindowCommand) { HelpMessage = "random data, debug info" });
 #endif
-            this.CommandManager.AddHandler(CounterCommand, new CommandInfo(CounterWindowCommand) { HelpMessage = GuiResources.PluginText["/hhc helpmessage"] });
-            this.CommandManager.AddHandler(SpawnPointCommand, new CommandInfo(SpawnPointWindowCommand) { HelpMessage = GuiResources.PluginText["/hhr helpmessage"] });
+            CommandManager.AddHandler(CounterCommand, new CommandInfo(CounterWindowCommand) { HelpMessage = GuiResources.PluginText["/hhc helpmessage"] });
+            CommandManager.AddHandler(SpawnPointCommand, new CommandInfo(SpawnPointWindowCommand) { HelpMessage = GuiResources.PluginText["/hhr helpmessage"] });
 
-            this.PluginInterface.UiBuilder.Draw += DrawUI;
-            this.PluginInterface.UiBuilder.OpenConfigUi += DrawConfigUI;
-            this.PluginInterface.UiBuilder.OpenMainUi += HuntMapCommandGetRidOfValidationMsg;
+            PluginInterface.UiBuilder.Draw += DrawUI;
+            PluginInterface.UiBuilder.OpenConfigUi += DrawConfigUI;
+            PluginInterface.UiBuilder.OpenMainUi += HuntMapCommandGetRidOfValidationMsg;
         }
 
         public void Dispose()
         {
             //save hunttrainui config first
-            this.HuntTrainUI.SaveSettings();
-            this.CounterUI.SaveSettings();
-            this.SpawnPointFinderUI.SaveSettings();
+            HuntTrainUI.SaveSettings();
+            CounterUI.SaveSettings();
+            SpawnPointFinderUI.SaveSettings();
 
-            this.IpcSystem.Dispose();
-            //this.HuntTrainUI.Dispose();
-            this.SpawnPointFinderUI.Dispose();
-            this.CounterUI.Dispose();
-            this.MapUi.Dispose();
+            IpcSystem.Dispose();
+            HuntTrainUI.Dispose();
+            SpawnPointFinderUI.Dispose();
+            CounterUI.Dispose();
+            MapUi.Dispose();
 #if DEBUG
-            this.CommandManager.RemoveHandler(DebugCommand);
+            CommandManager.RemoveHandler(DebugCommand);
 #endif
-            this.CommandManager.RemoveHandler(MapWindowCommand);
-            this.CommandManager.RemoveHandler(MapWindowPresetOne);
-            this.CommandManager.RemoveHandler(MapWindowPresetTwo);
-            this.CommandManager.RemoveHandler(MapWindowPresetOneSave);
-            this.CommandManager.RemoveHandler(MapWindowPresetTwoSave);
-            this.CommandManager.RemoveHandler(HuntTrainWindowCommand);
-            this.CommandManager.RemoveHandler(NextHuntInTrainCommand);
-            this.CommandManager.RemoveHandler(CounterCommand);
-            this.CommandManager.RemoveHandler(SpawnPointCommand);
+            CommandManager.RemoveHandler(MapWindowCommand);
+            CommandManager.RemoveHandler(MapWindowPresetOne);
+            CommandManager.RemoveHandler(MapWindowPresetTwo);
+            CommandManager.RemoveHandler(MapWindowPresetOneSave);
+            CommandManager.RemoveHandler(MapWindowPresetTwoSave);
+            CommandManager.RemoveHandler(HuntTrainWindowCommand);
+            CommandManager.RemoveHandler(NextHuntInTrainCommand);
+            CommandManager.RemoveHandler(CounterCommand);
+            CommandManager.RemoveHandler(SpawnPointCommand);
 
-            this.HuntManager.Dispose();
-            this.TrainManager.Dispose();
+            HuntManager.Dispose();
+            TrainManager.Dispose();
+            SubmitDataPrompt.Dispose();
         }
 
         private void DebugWindowCommand(string command, string args) => this.MapUi.RandomDebugWindowVisisble = !MapUi.RandomDebugWindowVisisble;
@@ -184,11 +189,12 @@ namespace HuntHelper
         {
             try
             {
-                this.MapUi.Draw();
-                this.HuntTrainUI.Draw();
-                this.CounterUI.Draw();
-                this.SpawnPointFinderUI.Draw();
-                this.PointerUI.Draw();
+                MapUi.Draw();
+                HuntTrainUI.Draw();
+                CounterUI.Draw();
+                SpawnPointFinderUI.Draw();
+                PointerUI.Draw();
+                SubmitDataPrompt.Draw();
             }
             catch (Exception e)
             {
@@ -204,7 +210,7 @@ namespace HuntHelper
 
         private void DrawConfigUI()
         {
-            this.MapUi.SettingsVisible = true;
+            MapUi.SettingsVisible = true;
         }
 
 
