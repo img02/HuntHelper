@@ -185,6 +185,8 @@ public class HuntTrainUI : IDisposable
                         _teleportManager.TeleportToHunt(m);
                         _trainManager.OpenMap(m, _openMap);
                     }
+                    if (ImGui.IsItemHovered()) ImGuiUtil.ImGui_HoveredToolTip($"{m.Name}\n{m.MapName}");
+
                     ImGui.SetItemAllowOverlap();
                     ImGui.SameLine();
                     ImGui.SetCursorPosX(moveCursorX(ref x, 40));
