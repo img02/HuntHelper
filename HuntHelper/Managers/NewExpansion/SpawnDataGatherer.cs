@@ -22,10 +22,8 @@ namespace HuntHelper.Managers.NewExpansion
         private static readonly string baseUrl = @"https://idklol-cqej.onrender.com/api/dawntrail?"; // freeeee tier render web service
         private static IList<MobFoundData> history = new List<MobFoundData>();
       
-        public static void AddFoundMob(bool userOptedIn, uint mobid, string name, Vector3 position, string rank, uint mapid, string mapName, double hpp, ulong playerid)
+        public static void AddFoundMob(uint mobid, string name, Vector3 position, string rank, uint mapid, string mapName, ulong playerid)
         {
-            if (!userOptedIn) return;
-            if (hpp < 100) return; 
 
             var currTime = DateTime.UtcNow;
 

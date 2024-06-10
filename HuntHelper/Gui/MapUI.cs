@@ -332,7 +332,7 @@ namespace HuntHelper.Gui
                 {
                     //if only something went wrong, such as only some maps images downloaded
                     if (_huntManager.HasDownloadErrors || _huntManager.NotAllImagesFound || _outOfDateImages) MapImageDownloadWindow();
-                    
+
                     if (!_huntManager.ImagesLoaded && !_huntManager.HasDownloadErrors)
                     {
                         //if images/map doesn't exist, or is empty - show map download window
@@ -1166,7 +1166,7 @@ namespace HuntHelper.Gui
                         ImGui.EndTabItem();
                     }
 
-                  
+
                     ImGui.EndTabBar();
                 }
             }
@@ -1501,19 +1501,20 @@ namespace HuntHelper.Gui
 
             //todo disable after hunt maps avail.
             #region DAWNTRAIL API GATHING SPAWN POINTS STUFF TEST TEST TEST
-            
+
             //if (_huntManager.IsDawntrailHunt(mobId))
-            if (_territoryId >= 139) //todo update for dawntrail map ids
+            if (_territoryId >= 139 && _configuration.DawntrailSubmitPositionsData) //todo update for dawntrail map ids
             {
-                _huntManager.CurrentMobs.ForEach(m =>
+                foreach (var m in _huntManager.CurrentMobs)
                 {
                     var mob = m.Mob;
-                    SpawnDataGatherer.AddFoundMob(_configuration.DawntrailSubmitPositionsData, mob.NameId,
-                        mob.Name.ToString(),
-                        new Vector3(ConvertPosToCoordinate(mob.Position.X), ConvertPosToCoordinate(mob.Position.Z), ConvertPosToCoordinate(mob.Position.Y)),
-                        $"{m.Rank}", _territoryId,
-                        MapHelpers.GetMapNameInEnglish(_territoryId, _clientState.ClientLanguage), _huntManager.GetHPP(mob), _clientState.LocalContentId);
-                });
+                    if (_huntManager.GetHPP(mob) < 100) continue;
+
+                    SpawnDataGatherer.AddFoundMob(mob.NameId, mob.Name.ToString(),
+                    new Vector3(ConvertPosToCoordinate(mob.Position.X), ConvertPosToCoordinate(mob.Position.Z), ConvertPosToCoordinate(mob.Position.Y)),
+                    $"{m.Rank}", _territoryId,
+                    MapHelpers.GetMapNameInEnglish(_territoryId, _clientState.ClientLanguage), _clientState.LocalContentId);
+                }
             }
             #endregion
 
