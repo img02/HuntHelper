@@ -144,7 +144,7 @@
 		"TeleButtons": "Tele Buttons",
 		"TeleButtonsToolTip": "Show teleport buttons.\nProbably best to use this instead of tele on click.",
 		"TeleportOnClick": "Teleport on click",
-		"TeleportOnClickToolTip": "Initiate teleport to closest Aetheryte when hunt is clicked.\nThis will begin tele even if you try to reorder or click just for chat link.",
+		"TeleportOnClickToolTip": "Initiate teleport to closest Aetheryte when hunt is clicked.\nThis will begin tele even if you try to reorder or click just for chat link.\nThis hides the teleport buttons, as it does the same thing.",
 		"TeleportOnCommand": "Initiate teleport to closest Aetheryte when /hhn used.",
 		"RemoveDeadButton": "Remove Dead",
 		"ResetDeadButton": "Reset Dead Status",
