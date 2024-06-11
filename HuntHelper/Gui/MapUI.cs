@@ -8,6 +8,7 @@ using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using HuntHelper.Gui.Resource;
 using HuntHelper.Managers.Hunts;
+using HuntHelper.Managers.Hunts.Models;
 using HuntHelper.Managers.MapData;
 using HuntHelper.Managers.MapData.Models;
 using HuntHelper.Managers.NewExpansion;
@@ -19,6 +20,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Numerics;
+using System.Reflection.Emit;
 using System.Speech.Synthesis;
 using System.Threading;
 using System.Threading.Tasks;
@@ -1591,30 +1593,27 @@ namespace HuntHelper.Gui
                     $"({ConvertPosToCoordinate(mob.Position.X):0.00}, {ConvertPosToCoordinate(mob.Position.Z):0.00})"
                 };
 
-                //SetCursorPosByPercentage has moved the cursor (where next element will be drawn)
-                //now before drawing child, work out position based on cursor pos, window pos (top left) and mouse pos
-                //to have detection for mouseover tooltip
-                var labelVector = ImGui.GetCursorPos() + ImGui.GetWindowPos() + new Vector2(140, 20);//adding half of child x,y size to get middle of element
-                                                                                                     //fixed sizing.... mouse over tooltip in case long-ass mob name clips 
-                if (ImGui.GetMousePos().X - labelVector.X is < 140 and > -140 &&  //Why didn't I try isitem/windowhovered? bcoz i'm stupid
-                    ImGui.GetMousePos().Y - labelVector.Y is < 20 and > -20)
-                {
-                    ImGui_ToolTip(info);
-                    MouseClickToSendChatFlag(mob);
-                }
-
-
                 ImGui.PushStyleColor(ImGuiCol.Border, _priorityMobColourBackground);
                 ImGui.PushStyleColor(ImGuiCol.ChildBg, _priorityMobColourBackground);
-                ImGui.BeginChild("Priorty Mob Label", new Vector2(280f, 40f), true, ImGuiWindowFlags.NoScrollbar);
+                ImGui.BeginChild("Priorty Mob Label", new Vector2(280f, 40f) * ImGuiHelpers.GlobalScale, true, ImGuiWindowFlags.NoScrollbar);
                 var colour = _useMapImages ? _priorityMobTextColourAlt : _priorityMobTextColour; //if using map image, use alt colour.
+
+                ImGui.BeginGroup(); // group needed? does itemhovered apply to child or text?
                 ImGuiUtil.ImGui_CentreText(
                      $" {rank}  |  {mob.Name}  |  {_huntManager.GetHPP(mob):0.00}%%",
                      colour);
                 ImGuiUtil.ImGui_CentreText(
                     $"({ConvertPosToCoordinate(mob.Position.X):0.00}, {ConvertPosToCoordinate(mob.Position.Z):0.00})",
                     colour);
-                ImGui.EndChild();
+                ImGui.EndGroup();
+
+                if (ImGui.IsItemHovered())
+                {
+                    ImGui_ToolTip(info);
+                    MouseClickToSendChatFlag(mob);
+                }
+                ImGui.EndChild();              
+
                 ImGui.PopStyleColor(2);
             });
         }
@@ -1625,7 +1624,7 @@ namespace HuntHelper.Gui
             var nearbyMobs = _huntManager.CurrentMobs;
             if (nearbyMobs.Count == 0) return;
 
-            var size = new Vector2(200f, 40f * nearbyMobs.Count);
+            var size = new Vector2(200f, 40f * nearbyMobs.Count) * ImGuiHelpers.GlobalScale;
 
             ImGuiUtil.DoStuffWithMonoFont(() =>
             {
@@ -1636,12 +1635,17 @@ namespace HuntHelper.Gui
                 var colour = _useMapImages ? _nearbyMobListColourAlt : _nearbyMobListColour; //if using map image, use alt colour.
                 ImGui.Separator();
                 foreach (var (rank, mob) in nearbyMobs)
-                {
-                    var labelVector = ImGui.GetCursorPos() + ImGui.GetWindowPos() + new Vector2(size.X / 2, size.Y / nearbyMobs.Count / 2);
+                {                                   
+                    ImGui.BeginGroup();
+                    ImGui.SetCursorPosY(ImGui.GetCursorPosY() - 2.5f);
+                    ImGuiUtil.ImGui_CentreText($"{rank} | {mob.Name} | {_huntManager.GetHPP(mob):0}%% \n", colour);
+                    ImGui.SetCursorPosY(ImGui.GetCursorPosY() - 2.5f);
+                    ImGuiUtil.ImGui_CentreText($"({ConvertPosToCoordinate(mob.Position.X):0.0}, {ConvertPosToCoordinate(mob.Position.Z):0.0})", colour);
+                    ImGui.SetCursorPosY(ImGui.GetCursorPosY() + 5f);
+                    ImGui.Separator();
+                    ImGui.EndGroup();
 
-                    //MOUSE OVER TOOLTIP
-                    if (ImGui.GetMousePos().X - labelVector.X is < 100 and > -100 && //this is a mess, but it works.
-                        ImGui.GetMousePos().Y - labelVector.Y < size.Y / nearbyMobs.Count / 2 - 4f && ImGui.GetMousePos().Y - labelVector.Y > -(size.Y / nearbyMobs.Count / 2) - 5f)
+                    if (ImGui.IsItemHovered())
                     {
                         ImGui_ToolTip(new string[]
                         {
@@ -1653,14 +1657,6 @@ namespace HuntHelper.Gui
 
                         MouseClickToSendChatFlag(mob);
                     }
-
-                    //ACTUAL LABEL SHOWN ON SCREEN - how to format, so ugly - how to change font size? :(
-                    ImGui.SetCursorPosY(ImGui.GetCursorPosY() - 2.5f);
-                    ImGuiUtil.ImGui_CentreText($"{rank} | {mob.Name} | {_huntManager.GetHPP(mob):0}%% \n", colour);
-                    ImGui.SetCursorPosY(ImGui.GetCursorPosY() - 2.5f);
-                    ImGuiUtil.ImGui_CentreText($"({ConvertPosToCoordinate(mob.Position.X):0.0}, {ConvertPosToCoordinate(mob.Position.Z):0.0})", colour);
-                    ImGui.SetCursorPosY(ImGui.GetCursorPosY() + 5f);
-                    ImGui.Separator();
                 }
                 ImGui.EndChild();
                 ImGui.PopStyleColor(2);

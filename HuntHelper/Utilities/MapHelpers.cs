@@ -76,7 +76,7 @@ public class MapHelpers
             var client = new HttpClient();
             client.DefaultRequestHeaders.Add("Cache-Control", "no-cache");
             var ver = await client.GetStringAsync(ImageVerUrl);
-            PluginLog.Warning(@"map images latest ver: " + ver);
+            PluginLog.Warning($"map images latest ver: {ver} Local ver: {currentVersion}"  );
             return currentVersion == ver;
         }
         catch (Exception ex)
