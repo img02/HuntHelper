@@ -1505,14 +1505,14 @@ namespace HuntHelper.Gui
             #region DAWNTRAIL API GATHING SPAWN POINTS STUFF TEST TEST TEST
 
             //if (_huntManager.IsDawntrailHunt(mobId))
-            if (_territoryId >= 139 && _configuration.DawntrailSubmitPositionsData) //todo update for dawntrail map ids
+            if (_territoryId > 961 && _configuration.DawntrailSubmitPositionsData) //todo update for dawntrail map ids
             {
                 foreach (var m in _huntManager.CurrentMobs)
                 {
                     var mob = m.Mob;
                     if (_huntManager.GetHPP(mob) < 100) continue;
 
-                    SpawnDataGatherer.AddFoundMob(mob.NameId, mob.Name.ToString(),
+                    SpawnDataGatherer.AddFoundMob(mob.NameId, _huntManager.GetMobNameInEnglish(mob.NameId),
                     new Vector3(ConvertPosToCoordinate(mob.Position.X), ConvertPosToCoordinate(mob.Position.Z), ConvertPosToCoordinate(mob.Position.Y)),
                     $"{m.Rank}", _territoryId,
                     MapHelpers.GetMapNameInEnglish(_territoryId, _clientState.ClientLanguage), _clientState.LocalContentId);

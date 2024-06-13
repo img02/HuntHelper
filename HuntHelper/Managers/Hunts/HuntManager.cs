@@ -614,4 +614,27 @@ public class HuntManager : IDisposable
         return _dtDict.Any(kvp => kvp.Value.Any(m => m.ModelID == mobId));
     }
 
+    public string GetMobNameInEnglish(uint mobId)
+    {
+        string searchList (List<Mob> list)
+        {            
+            var m = list.FirstOrDefault(m => m.ModelID == mobId)!.Name;
+            PluginLog.Error(m);
+            return m;
+        }
+
+        var kvp = SearchDictionaryForModelID(_arrDict, mobId);
+        if (!kvp.Equals(default(KeyValuePair<HuntRank, List<Mob>>))) return searchList(kvp.Value);
+        kvp = SearchDictionaryForModelID(_hwDict, mobId);
+        if (!kvp.Equals(default(KeyValuePair<HuntRank, List<Mob>>))) return searchList(kvp.Value);
+        kvp = SearchDictionaryForModelID(_sbDict, mobId);
+        if (!kvp.Equals(default(KeyValuePair<HuntRank, List<Mob>>))) return searchList(kvp.Value);
+        kvp = SearchDictionaryForModelID(_shbDict, mobId);
+        if (!kvp.Equals(default(KeyValuePair<HuntRank, List<Mob>>))) return searchList(kvp.Value);
+        kvp = SearchDictionaryForModelID(_ewDict, mobId);
+        if (!kvp.Equals(default(KeyValuePair<HuntRank, List<Mob>>))) return searchList(kvp.Value);
+
+        return "mob id not found";
+    }
+
 }
