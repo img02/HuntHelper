@@ -144,7 +144,7 @@
 		"TeleButtons": "传送键",
 		"TeleButtonsToolTip": "显示传送按键，可能相比点击传送更好",
 		"TeleportOnClick": "点击传送",
-		"TeleportOnClickToolTip": "当点击狩猎时，启动传送到最近的以太水晶。这将开始传送，即使你试图重新排序或点击只是为了聊天链接。",
+		"TeleportOnClickToolTip": "当点击狩猎时，启动传送到最近的以太水晶",
 		"TeleportOnCommand": "当使用/hhn时，启动传送到最近的以太水晶。",
 		"TeleportToAetheryte": "Initiate teleport to closest Aetheryte when /hhna used. This will override the /hhn teleport.",
 		"RemoveDeadButton": "移除已死亡",

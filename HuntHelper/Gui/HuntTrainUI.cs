@@ -126,11 +126,6 @@ public class HuntTrainUI : IDisposable
         if (!HuntTrainWindowVisible) return;
         if (_trainManager.ImportFromIPC) ImGui.SetNextWindowCollapsed(false);
 
-        var numOfColumns = 2;
-        if (_showLastSeen) numOfColumns++;
-        if (_showTeleButtons) numOfColumns++;
-
-
         ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, new Vector2(0, 0));
         ImGui.SetNextWindowSize(_huntTrainWindowSize, ImGuiCond.FirstUseEver);
         ImGui.SetWindowPos(_huntTrainWindowPos);
@@ -159,9 +154,10 @@ public class HuntTrainUI : IDisposable
                 ImGui.SetCursorPosX(moveCursorX(ref x, 6)); //random padding
                 ImGui.BeginGroup();
 
+                ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing, new Vector2(0, 6));
                 if (_showMapName)
                 {
-                    ImGui.Selectable($"「{m.MapName}」##{m.Name} {m.Instance.GetInstanceGlyph()}", n == _selectedIndex, ImGuiSelectableFlags.None);
+                    ImGui.Selectable($"「{m.MapName}」##{m.Name} {m.Instance.GetInstanceGlyph()}", n == _selectedIndex);
                     ImGui.SetItemAllowOverlap();
                     ImGui.SameLine();
                     ImGui.SetCursorPosX(moveCursorX(ref x, 160));
@@ -172,6 +168,7 @@ public class HuntTrainUI : IDisposable
                 {
                     ImGui.Selectable($"{m.Name} {m.Instance.GetInstanceGlyph()}", n == _selectedIndex);
                 }
+                ImGui.PopStyleVar();
 
                 ImGui.SetItemAllowOverlap();
                 ImGui.SameLine();
@@ -213,12 +210,30 @@ public class HuntTrainUI : IDisposable
                 //mouse pos calc so it doesn't glitch out when clicking outside group -- far right in expanded window
                 var rightSideOfNamePosX = ImGui.GetMousePos().X - ImGui.GetWindowPos().X;
 
-                if (ImGui.IsItemActive() && ImGui.IsMouseClicked(ImGuiMouseButton.Left) && rightSideOfNamePosX < x)
+                // click = send flag / tele, drag = move in list
+                if (ImGui.IsItemFocused()  && rightSideOfNamePosX < x)
                 {
-                    _trainManager.SendTrainFlag(n, _openMap, _showInChat);
-                    if (_teleportMe) _teleportManager.TeleportToHunt(m);
-                }
+                    //PluginLog.Warning($"{ImGui.IsItemFocused()} {ImGui.GetMouseDragDelta().Y}");
+                    if (ImGui.IsMouseReleased(ImGuiMouseButton.Left) && Math.Abs(ImGui.GetMouseDragDelta().Y) < 0.1f)
+                    {
+                        _trainManager.SendTrainFlag(n, _openMap, _showInChat);
+                        if (_teleportMe) _teleportManager.TeleportToHunt(m);
+                    }
 
+                    if (!ImGui.IsItemHovered())
+                    {
+                        PluginLog.Error($"{ImGui.GetMouseDragDelta(0).Y}");
+                        int n_next = n;
+                        if (ImGui.GetMouseDragDelta(0).Y < 0f) n_next -= 1;
+                        else if (ImGui.GetMouseDragDelta(0).Y > 0f) n_next += 1;
+                        if (n_next >= 0 && n_next < _mobList.Count)
+                        {
+                            _mobList[n] = _mobList[n_next];
+                            _mobList[n_next] = m;
+                            ImGui.ResetMouseDragDelta();
+                        }
+                    }
+                }
 
                 if (ImGui.BeginPopupContextItem($"ContextMenu##{m.Name}:{m.Instance}", ImGuiPopupFlags.MouseButtonRight))
                 {
@@ -228,18 +243,7 @@ public class HuntTrainUI : IDisposable
                     if (ImGui.MenuItem(GuiResources.HuntTrainGuiText["ContextMenuRemove"], true)) _trainManager.TrainRemove(m);
                     ImGui.EndPopup();
                     ImGui.PopStyleColor();
-                }
-                
-                if (ImGui.IsItemActive() && !ImGui.IsItemHovered() && rightSideOfNamePosX < x)
-                {
-                    int n_next = n + (ImGui.GetMouseDragDelta(0).Y < 0f ? -1 : 1);
-                    if (n_next >= 0 && n_next < _mobList.Count)
-                    {
-                        _mobList[n] = _mobList[n_next];
-                        _mobList[n_next] = m;
-                        ImGui.ResetMouseDragDelta();
-                    }
-                }
+                }             
 
                 ImGui.PopStyleColor();
             }

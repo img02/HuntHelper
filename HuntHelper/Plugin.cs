@@ -195,8 +195,8 @@ namespace HuntHelper
                 SpawnPointFinderUI.Draw();
                 PointerUI.Draw();
                 
-                //todo uncomment when dawntrail drops
-                //SubmitDataPrompt.Draw();
+                //todo remove after dawntrail maps avail
+                SubmitDataPrompt.Draw();
             }
             catch (Exception e)
             {
