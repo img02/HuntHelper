@@ -129,13 +129,14 @@ public class HuntTrainUI : IDisposable
         ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, new Vector2(0, 0));
         ImGui.SetNextWindowSize(_huntTrainWindowSize, ImGuiCond.FirstUseEver);
         ImGui.SetWindowPos(_huntTrainWindowPos);
+        ImGui.PushStyleVar(ImGuiStyleVar.ScrollbarSize, 10);
         if (ImGui.Begin($"{GuiResources.HuntTrainGuiText["MainWindowTitle"]}##Window", ref _huntTrainWindowVisible))
-        {      
+        {
             ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing, new Vector2(0, 0));
+           
 
             float moveCursorX(ref float x, float move)
             {
-                //x /= ImGuiHelpers.GlobalScale;
                 x += move * ImGuiHelpers.GlobalScale;
                 return x;
             }
@@ -154,10 +155,11 @@ public class HuntTrainUI : IDisposable
                 ImGui.SetCursorPosX(moveCursorX(ref x, 6)); //random padding
                 ImGui.BeginGroup();
 
-                ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing, new Vector2(0, 6));
+                ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing, new Vector2(0, 0));
                 if (_showMapName)
                 {
-                    ImGui.Selectable($"「{m.MapName}」##{m.Name} {m.Instance.GetInstanceGlyph()}", n == _selectedIndex);
+                    ImGui.Selectable($"「{MapHelpers.GetMapName(m.TerritoryID)}」##{m.Name} {m.Instance.GetInstanceGlyph()}", n == _selectedIndex,
+                        ImGuiSelectableFlags.None, new Vector2(ImGui.GetWindowWidth(), trainItemY));
                     ImGui.SetItemAllowOverlap();
                     ImGui.SameLine();
                     ImGui.SetCursorPosX(moveCursorX(ref x, 160));
@@ -166,7 +168,8 @@ public class HuntTrainUI : IDisposable
                 }
                 else
                 {
-                    ImGui.Selectable($"{m.Name} {m.Instance.GetInstanceGlyph()}", n == _selectedIndex);
+                    ImGui.Selectable($"{m.Name} {m.Instance.GetInstanceGlyph()}", n == _selectedIndex,
+                        ImGuiSelectableFlags.None, new Vector2(ImGui.GetWindowWidth(), trainItemY));
                 }
                 ImGui.PopStyleVar();
 
@@ -197,14 +200,17 @@ public class HuntTrainUI : IDisposable
                     ImGui.SetCursorPosX(moveCursorX(ref x, 60));
                 }
 
-
+                ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, 99);
+                ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, Vector2.Zero);
+                ImGui.SetCursorPosY(ImGui.GetCursorPosY() + 3 * ImGuiHelpers.GlobalScale);
                 var d = m.Dead;
                 ImGui.Checkbox($"##DeadCheckBox{m.Name}:{m.Instance}", ref d);
-                ImGui.Separator();
+                ImGui.PopStyleVar(2);
                 m.Dead = d;
                 if (m.Dead && _mobList.IndexOf(m) == _selectedIndex) SelectNext();//infinite if all dead
                 ImGui.SetItemAllowOverlap();
 
+                ImGui.Separator();
                 ImGui.EndGroup();
 
                 //mouse pos calc so it doesn't glitch out when clicking outside group -- far right in expanded window
@@ -212,19 +218,20 @@ public class HuntTrainUI : IDisposable
 
                 // click = send flag / tele, drag = move in list
                 if (ImGui.IsItemFocused()  && rightSideOfNamePosX < x)
-                {
-                    //PluginLog.Warning($"{ImGui.IsItemFocused()} {ImGui.GetMouseDragDelta().Y}");
+                {                    
                     if (ImGui.IsMouseReleased(ImGuiMouseButton.Left) && Math.Abs(ImGui.GetMouseDragDelta().Y) < 0.1f)
                     {
                         _trainManager.SendTrainFlag(n, _openMap, _showInChat);
                         if (_teleportMe) _teleportManager.TeleportToHunt(m);
                     }
-
+                    
                     if (!ImGui.IsItemHovered())
                     {
+#if DEBUG
                         PluginLog.Error($"{ImGui.GetMouseDragDelta(0).Y}");
+#endif
                         int n_next = n;
-                        if (ImGui.GetMouseDragDelta(0).Y < 0f) n_next -= 1;
+                        if (ImGui.GetMouseDragDelta(0, 0f).Y < 0.3f) n_next -= 1;
                         else if (ImGui.GetMouseDragDelta(0).Y > 0f) n_next += 1;
                         if (n_next >= 0 && n_next < _mobList.Count)
                         {
@@ -391,6 +398,7 @@ public class HuntTrainUI : IDisposable
             ImGui.PopStyleVar(); //pop itemspacing
 
             ImGui.End();
+            ImGui.PopStyleVar(); //scrollbar sizing
         }
         ImGui.PopStyleVar();//pop window padding
     }
