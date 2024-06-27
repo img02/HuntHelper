@@ -1,13 +1,49 @@
 [
 	{
-		"Name": "tbd",
-		"ModelID": 99999999,
+		"Name": "Kirlirger the Abhorrent",
+		"ModelID": 13360,
 		"Rank": "S",
 		"IsEnabled": "true"
 	},
 	{
-		"Name": "tbd",
-		"ModelID": 99999999,
+		"Name": "Ihnuxokiy",
+		"ModelID": 13444,
+		"Rank": "S",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Neyoozoteel",
+		"ModelID": 12754,
+		"Rank": "S",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Sansheya",
+		"ModelID": 13399,
+		"Rank": "S",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Atticus the Primogenitor",
+		"ModelID": 13156,
+		"Rank": "S",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "the Forecaster",
+		"ModelID": 13437,
+		"Rank": "S",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "arch aethereater",
+		"ModelID": 13406,
+		"Rank": "S",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "crystal incarnation",
+		"ModelID": 13407,
 		"Rank": "S",
 		"IsEnabled": "true"
 	}

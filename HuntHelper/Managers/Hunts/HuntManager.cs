@@ -23,7 +23,8 @@ namespace HuntHelper.Managers.Hunts;
 
 public class HuntManager : IDisposable
 {
-    public static int HuntMapCount = 41; //todo update this for dawntrail, also update all those data jsons :(
+    //todo 6 new dawntrail maps? double check this later
+    public static int HuntMapCount = 47; 
     public readonly string ImageFolderPath;
 
     private readonly Dictionary<HuntRank, List<Mob>> _arrDict;

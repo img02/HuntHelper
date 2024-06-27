@@ -1,13 +1,73 @@
 [
 	{
-		"Name": "tbd",
-		"ModelID": 99999999,
+		"Name": "queen hawk",
+		"ModelID": 13361,
 		"Rank": "A",
 		"IsEnabled": "true"
 	},
 	{
-		"Name": "tbd",
-		"ModelID": 99999999,
+		"Name": "Nechuciho",
+		"ModelID": 13362,
+		"Rank": "A",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "the Raintriller",
+		"ModelID": 13442,
+		"Rank": "A",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Pkuucha",
+		"ModelID": 13443,
+		"Rank": "A",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Rrax Yity'a",
+		"ModelID": 12753,
+		"Rank": "A",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Starcrier",
+		"ModelID": 12692,
+		"Rank": "A",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Yehehetoaua'pyo",
+		"ModelID": 13400,
+		"Rank": "A",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Keheniheyamewi",
+		"ModelID": 13401,
+		"Rank": "A",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "heshuala",
+		"ModelID": 13157,
+		"Rank": "A",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Urna Variabilis",
+		"ModelID": 13158,
+		"Rank": "A",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Sally the Sweeper",
+		"ModelID": 13435,
+		"Rank": "A",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Cat's Eye",
+		"ModelID": 13436,
 		"Rank": "A",
 		"IsEnabled": "true"
 	}

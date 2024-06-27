@@ -4670,5 +4670,77 @@
 			}
 		],
 		"Recording": false
+	},
+	{
+		"MapName": "Urqopacha",
+		"MapID": 1187,
+		"Positions": [
+			{
+				"X": 0,
+				"Y": 0,
+				"Taken": false
+			}
+		],
+		"Recording": false
+	},
+	{
+		"MapName": "Kozama'uka",
+		"MapID": 1188,
+		"Positions": [
+			{
+				"X": 0,
+				"Y": 0,
+				"Taken": false
+			}
+		],
+		"Recording": false
+	},
+	{
+		"MapName": "Yak T'el",
+		"MapID": 1189,
+		"Positions": [
+			{
+				"X": 0,
+				"Y": 0,
+				"Taken": false
+			}
+		],
+		"Recording": false
+	},
+	{
+		"MapName": "Shaaloani",
+		"MapID": 1190,
+		"Positions": [
+			{
+				"X": 0,
+				"Y": 0,
+				"Taken": false
+			}
+		],
+		"Recording": false
+	},
+	{
+		"MapName": "Heritage Found",
+		"MapID": 1191,
+		"Positions": [
+			{
+				"X": 0,
+				"Y": 0,
+				"Taken": false
+			}
+		],
+		"Recording": false
+	},
+	{
+		"MapName": "Living Memory",
+		"MapID": 1192,
+		"Positions": [
+			{
+				"X": 0,
+				"Y": 0,
+				"Taken": false
+			}
+		],
+		"Recording": false
 	}
 ]

@@ -1,13 +1,73 @@
 [
 	{
-		"Name": "tbd",
-		"ModelID": 99999999,
+		"Name": "mad maguey",
+		"ModelID": 13144,
 		"Rank": "B",
 		"IsEnabled": "true"
 	},
 	{
-		"Name": "tbd",
-		"ModelID": 99999999,
+		"Name": "Chupacabra",
+		"ModelID": 13145,
+		"Rank": "B",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "the Slammer",
+		"ModelID": 13146,
+		"Rank": "B",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "go'ozoabek'be",
+		"ModelID": 13147,
+		"Rank": "B",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Leafscourge Hadoll Ja",
+		"ModelID": 13148,
+		"Rank": "B",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Xty'iinbek",
+		"ModelID": 13149,
+		"Rank": "B",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "nopalitender Fabuloso",
+		"ModelID": 13150,
+		"Rank": "B",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Uktena",
+		"ModelID": 13151,
+		"Rank": "B",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "Gallowsbeak",
+		"ModelID": 13152,
+		"Rank": "B",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "gargant",
+		"ModelID": 13153,
+		"Rank": "B",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "jewel bearer",
+		"ModelID": 13154,
+		"Rank": "B",
+		"IsEnabled": "true"
+	},
+	{
+		"Name": "13th Child",
+		"ModelID": 13155,
 		"Rank": "B",
 		"IsEnabled": "true"
 	}

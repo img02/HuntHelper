@@ -34,7 +34,7 @@ namespace HuntHelper.Managers.NewExpansion
             {
                 ImGuiUtil.DoStuffWithMonoFont(() =>
                 {
-                    ImGui.TextWrapped("Opt in to submit found spawn points to help make dawntrail hunt map images?\n(this is from hunthelper btw)");
+                    ImGui.TextWrapped("submit found spawn points to help make dawntrail hunt map images?\n(this is from hunthelper btw)");
                
                 ImGui.NewLine();
 
