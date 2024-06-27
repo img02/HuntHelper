@@ -65,6 +65,14 @@ public enum MapID
     Garlemald = 958,
     MareLamentorum = 959,
     UltimaThule = 960,
-    Elpis = 961
+    Elpis = 961,
+
+    // dawntrail
+    Urqopacha = 1187,
+    Kozamauka = 1188,
+    YakTel = 1189,
+    Shaaloani = 1190,
+    HeritageFound = 1191,
+    LivingMemory = 1192,
 
 }
