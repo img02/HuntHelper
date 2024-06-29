@@ -15,7 +15,6 @@
   "InternalName": "Hunt Helper",
   "RepoUrl": "https://github.com/img02/HuntHelper",
   "ApplicableVersion": "any",
-  "DalamudApiLevel": 9,
   "LoadPriority": 0,
   "ImageUrls": [
     "https://raw.githubusercontent.com/img02/HuntHelper/main/Images/image1.png",
