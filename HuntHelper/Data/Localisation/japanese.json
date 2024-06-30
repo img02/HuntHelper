@@ -111,17 +111,17 @@
 		"RankLabel": "Rank",
 		"NearbyMobListFlagToolTip": "Click to send flag",
 
-		"ImageDownloadWindowTitle": "Images do not exist, download?",
+		"ImageDownloadWindowTitle": "Download Images?",
 		"ImageDownloadingMessage": "Attempting to download, please wait.\n\nIf there seems to be a problem, please manually download from:",
 		"ImageDownloadErrorMessageOne": "The following errors occurred:",
 		"ImageDownloadErrorMessageTwo": "Please download the images manually,\n or try deleting the Images/Map folder + RESET PLUGIN, and attempt download again:\n",
 		"ImageDownloadErrorButton": "Okay, Don't Show Me This Again. Thanks.",
-		"ImageDownloadPromptMessage": "Could not find map images\nThis is expected if this is your first time.\nWould you like to try to download them? (~23.2MB)",
+		"ImageDownloadPromptMessage": "Could not find map images\nThis is expected if this is your first time.\nWould you like to try to download them? (~25.5MB)",
 		"ImageDownloadButton": "Download",
 		"ImageDownloadManualMessageOne": "Or you can view and manually download from:",
 		"ImageDownloadManualMessageTwo": "and place in:",
 		"ImagesMissingPromptMessage": "Some map images are missing (maybe a new expansion has released?).\n\nRedownload images.",
-		"OutOfDateMaps": "New map images have been released, please redownload to update. *requires restarting plugin to use new images."
+		"OutOfDateMaps": "Map images have been updated."
 	},
 
 	"HuntTrain": {

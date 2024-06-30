@@ -1,11 +1,9 @@
 ﻿using Dalamud.Game.ClientState.Objects.Types;
 using Dalamud.Game.Gui.FlyText;
 using Dalamud.Game.Text.SeStringHandling;
-using Dalamud.Interface.Internal;
+using Dalamud.Interface.Textures.TextureWraps;
 using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
-using Dalamud.Utility;
-using HuntHelper.Gui;
 using HuntHelper.Managers.Hunts.Models;
 using HuntHelper.Managers.MapData.Models;
 using HuntHelper.Utilities;
@@ -19,12 +17,13 @@ using System.Speech.Synthesis;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
+
 namespace HuntHelper.Managers.Hunts;
 
 public class HuntManager : IDisposable
 {
     //todo 6 new dawntrail maps? double check this later
-    public static int HuntMapCount = 47; 
+    public static int HuntMapCount = 47;
     public readonly string ImageFolderPath;
 
     private readonly Dictionary<HuntRank, List<Mob>> _arrDict;
@@ -33,24 +32,23 @@ public class HuntManager : IDisposable
     private readonly Dictionary<HuntRank, List<Mob>> _sbDict;
     private readonly Dictionary<HuntRank, List<Mob>> _ewDict;
     private readonly Dictionary<HuntRank, List<Mob>> _dtDict;
-    private readonly Dictionary<string, IDalamudTextureWrap> _mapImages;
-    private readonly DalamudPluginInterface _pluginInterface;
+    private readonly IDalamudPluginInterface _pluginInterface;
     private readonly IChatGui _chatGui;
     private readonly IFlyTextGui _flyTextGui;
     private readonly TrainManager _trainManager;
 
-    private readonly List<(HuntRank Rank, BattleNpc Mob)> _currentMobs;
-    private readonly List<(HuntRank Rank, BattleNpc Mob)> _previousMobs;
+    private readonly List<(HuntRank Rank, IBattleNpc Mob)> _currentMobs;
+    private readonly List<(HuntRank Rank, IBattleNpc Mob)> _previousMobs;
 
-    private BattleNpc? _priorityMob;
+    private IBattleNpc? _priorityMob;
     private HuntRank _highestRank;
 
     public int ACount;
     public int SCount;
     public int BCount;
 
-    public bool ImagesLoaded { get; private set; } = false;
     public bool NotAllImagesFound { get; private set; } = false;
+    public bool ImageFolderDoesntExist { get; private set; } = false;
     public bool ErrorPopUpVisible = false;
     public string ErrorMessage = string.Empty;
 
@@ -73,9 +71,9 @@ public class HuntManager : IDisposable
     public List<HuntTrainMob> HuntTrain { get; init; }
     public List<HuntTrainMob> ImportedTrain { get; init; }
 
-    public List<(HuntRank Rank, BattleNpc Mob)> CurrentMobs => _currentMobs;
+    public List<(HuntRank Rank, IBattleNpc Mob)> CurrentMobs => _currentMobs;
 
-    public HuntManager(DalamudPluginInterface pluginInterface, TrainManager trainManager, IChatGui chatGui, IFlyTextGui flyTextGui, int ttsVolume)
+    public HuntManager(IDalamudPluginInterface pluginInterface, TrainManager trainManager, IChatGui chatGui, IFlyTextGui flyTextGui, int ttsVolume)
     {
         _arrDict = new Dictionary<HuntRank, List<Mob>>();
         _hwDict = new Dictionary<HuntRank, List<Mob>>();
@@ -83,9 +81,8 @@ public class HuntManager : IDisposable
         _sbDict = new Dictionary<HuntRank, List<Mob>>();
         _ewDict = new Dictionary<HuntRank, List<Mob>>();
         _dtDict = new Dictionary<HuntRank, List<Mob>>();
-        _mapImages = new Dictionary<string, IDalamudTextureWrap>();
-        _currentMobs = new List<(HuntRank, BattleNpc)>();
-        _previousMobs = new List<(HuntRank, BattleNpc)>();
+        _currentMobs = new List<(HuntRank, IBattleNpc)>();
+        _previousMobs = new List<(HuntRank, IBattleNpc)>();
         _pluginInterface = pluginInterface;
         _chatGui = chatGui;
         _flyTextGui = flyTextGui;
@@ -109,9 +106,29 @@ public class HuntManager : IDisposable
         }
 
         LoadHuntData();
+        CheckImageStatus();
     }
 
-    public (HuntRank Rank, BattleNpc? Mob) GetPriorityMob()
+    public void CheckImageStatus()
+    {
+        //PluginLog.Warning($"allfound:{NotAllImagesFound} | folder:{ImageFolderDoesntExist}");
+        if (!Directory.Exists(ImageFolderPath))
+        {
+            ImageFolderDoesntExist = true;
+            return;
+        }
+
+        var files = Directory.EnumerateFiles(ImageFolderPath).ToList();
+        if (files.Count != HuntMapCount)
+        {
+            if (DownloadingImages) return; //wait until all images downloaded
+            if (files.Count > 0) NotAllImagesFound = true;
+        }
+        else NotAllImagesFound = false;
+
+    }
+
+    public (HuntRank Rank, IBattleNpc? Mob) GetPriorityMob()
     {
         if (_priorityMob == null) return (_highestRank, null);
         if (_currentMobs.Count == 0) return (_highestRank, null);
@@ -122,12 +139,12 @@ public class HuntManager : IDisposable
         }
         return (_highestRank, _priorityMob);
     }
-    public List<(HuntRank Rank, BattleNpc Mob)> GetAllCurrentMobsWithRank()
+    public List<(HuntRank Rank, IBattleNpc Mob)> GetAllCurrentMobsWithRank()
     {
         return _currentMobs;
     }
 
-    public void AddToTrain(BattleNpc mob, uint territoryid, uint mapid, uint instance, string mapName, float zoneMapCoordSize)
+    public void AddToTrain(IBattleNpc mob, uint territoryid, uint mapid, uint instance, string mapName, float zoneMapCoordSize)
     {
         //if mob already exists, update last seen - even if not recording
         if (_trainManager.UpdateLastSeen(mob, instance)) return;
@@ -140,7 +157,7 @@ public class HuntManager : IDisposable
     }
 
     //bit much, grew big because I don't plan
-    public void AddNearbyMobs(List<BattleNpc> nearbyMobs, float zoneMapCoordSize, uint territoryId, uint mapid,
+    public void AddNearbyMobs(List<IBattleNpc> nearbyMobs, float zoneMapCoordSize, uint territoryId, uint mapid,
         bool aTTS, bool bTTS, bool sTTS, string aTTSmsg, string bTTSmsg, string sTTSmsg,
         bool chatA, bool chatB, bool chatS, string chatAmsg, string chatBmsg, string chatSmsg,
         bool flyTxtA, bool flyTxtB, bool flyTxtS, uint instance)
@@ -191,7 +208,7 @@ public class HuntManager : IDisposable
     #region rework later?
 
     //sent fly text in-game on the player  -- move these sestring colours from here and chatmsg to consts or something
-    private void SendFlyText(HuntRank rank, BattleNpc mob, bool enabled)
+    private void SendFlyText(HuntRank rank, IBattleNpc mob, bool enabled)
     {
         if (!enabled) return;
         var rankSB = new SeStringBuilder();
@@ -217,7 +234,7 @@ public class HuntManager : IDisposable
         }
     }
 
-    public void SendChatMessage(bool enabled, string msg, uint territoryId, uint mapid, uint instance, BattleNpc mob, float zoneCoordSize)
+    public void SendChatMessage(bool enabled, string msg, uint territoryId, uint mapid, uint instance, IBattleNpc mob, float zoneCoordSize)
     {
         if (!enabled) return;
 
@@ -307,7 +324,7 @@ public class HuntManager : IDisposable
         _chatGui.Print(sb.BuiltString);
     }
 
-    private void NewMobFoundTTS(bool enabled, string msg, BattleNpc mob)
+    private void NewMobFoundTTS(bool enabled, string msg, IBattleNpc mob)
     {
         if (!enabled) return;
         var message = FormatMessageFlags(msg, mob);
@@ -324,7 +341,7 @@ public class HuntManager : IDisposable
             });
     }
 
-    private string FormatMessageFlags(string msg, BattleNpc mob)
+    private string FormatMessageFlags(string msg, IBattleNpc mob)
     {
         msg = msg.Replace("<rank>", $"{GetHuntRank(mob.NameId)}-Rank", true, CultureInfo.InvariantCulture);
         msg = msg.Replace("<name>", $"{mob.Name}", true, CultureInfo.InvariantCulture);
@@ -334,7 +351,7 @@ public class HuntManager : IDisposable
 
     #endregion
 
-    public List<BattleNpc> GetCurrentMobs()
+    public List<IBattleNpc> GetCurrentMobs()
     {
         return _currentMobs.Select(hunt => hunt.Mob).ToList();
     }
@@ -420,30 +437,19 @@ public class HuntManager : IDisposable
         return exists;
     }
 
-
-    public IDalamudTextureWrap GetMapImage(string mapName)
-    {
-        if (!_mapImages.ContainsKey(mapName)) return null;
-        return _mapImages[mapName];
-    }
-
     public void Dispose()
     {
-        foreach (var kvp in _mapImages)
-        {
-            kvp.Value.Dispose();
-        }
         _trainManager.SaveHuntTrainRecord();
         if (!DontUseSynthesizer)
             TTS.Dispose();
     }
 
-    public double GetHPP(BattleNpc mob)
+    public double GetHPP(IBattleNpc mob)
     {
         return Math.Round(((1.0 * mob.CurrentHp) / mob.MaxHp) * 100, 2);
     }
 
-    private void PriorityCheck(BattleNpc mob)
+    private void PriorityCheck(IBattleNpc mob)
     {
         var rank = GetHuntRank(mob.NameId);
         if (rank >= _highestRank)
@@ -459,30 +465,25 @@ public class HuntManager : IDisposable
         _priorityMob = null;
     }
 
-    private string GetMapNameFromPath(string path)
-    { //all files end with '-data.jpg', img source - http://cablemonkey.us/huntmap2/
-        var pathRemoved = path.Remove(0, ImageFolderPath.Length).Replace("_", " ");
-        return pathRemoved.Remove(pathRemoved.Length - 9);
-    }
-
     public HuntRank GetHuntRank(uint modelID)
     {
         //just default to B if for some reason mob can't be found - shouldn't happen tho...
         var rank = HuntRank.B;
         var found = false;
-        if (!found) //?????? why is this here
-        {   //ugly and repetitive
-            var kvp = SearchDictionaryForModelID(_arrDict, modelID);
-            if (!kvp.Equals(default(KeyValuePair<HuntRank, List<Mob>>))) return kvp.Key;
-            kvp = SearchDictionaryForModelID(_hwDict, modelID);
-            if (!kvp.Equals(default(KeyValuePair<HuntRank, List<Mob>>))) return kvp.Key;
-            kvp = SearchDictionaryForModelID(_sbDict, modelID);
-            if (!kvp.Equals(default(KeyValuePair<HuntRank, List<Mob>>))) return kvp.Key;
-            kvp = SearchDictionaryForModelID(_shbDict, modelID);
-            if (!kvp.Equals(default(KeyValuePair<HuntRank, List<Mob>>))) return kvp.Key;
-            kvp = SearchDictionaryForModelID(_ewDict, modelID);
-            if (!kvp.Equals(default(KeyValuePair<HuntRank, List<Mob>>))) return kvp.Key;
-        }
+
+        var kvp = SearchDictionaryForModelID(_arrDict, modelID);
+        if (!kvp.Equals(default(KeyValuePair<HuntRank, List<Mob>>))) return kvp.Key;
+        kvp = SearchDictionaryForModelID(_hwDict, modelID);
+        if (!kvp.Equals(default(KeyValuePair<HuntRank, List<Mob>>))) return kvp.Key;
+        kvp = SearchDictionaryForModelID(_sbDict, modelID);
+        if (!kvp.Equals(default(KeyValuePair<HuntRank, List<Mob>>))) return kvp.Key;
+        kvp = SearchDictionaryForModelID(_shbDict, modelID);
+        if (!kvp.Equals(default(KeyValuePair<HuntRank, List<Mob>>))) return kvp.Key;
+        kvp = SearchDictionaryForModelID(_ewDict, modelID);
+        if (!kvp.Equals(default(KeyValuePair<HuntRank, List<Mob>>))) return kvp.Key;
+        kvp = SearchDictionaryForModelID(_dtDict, modelID);
+        if (!kvp.Equals(default(KeyValuePair<HuntRank, List<Mob>>))) return kvp.Key;
+
         return rank;
     }
 
@@ -534,45 +535,34 @@ public class HuntManager : IDisposable
         if (S != null) dict.Add(HuntRank.S, S);
     }
 
-    public void LoadMapImages()
+
+    private bool reload = false;
+    public IDalamudTextureWrap? GetMapImage(string mapName)
     {
-        if (ImagesLoaded) return;
-        //if images/map folder doesn't exist, or is empty
-        if (!Directory.Exists(ImageFolderPath)) return;
+        // won't reload if image updated but texture used in last 2 secs
+        //https://github.com/goatcorp/Dalamud/blob/ee362acf70d47dd30c46da931f55958010fbf502/Dalamud/Interface/Internal/TextureManager.cs#L416
+        //https://github.com/goatcorp/Dalamud/blob/ee362acf70d47dd30c46da931f55958010fbf502/Dalamud/Interface/Internal/TextureManager.cs#L425
+        //https://github.com/goatcorp/Dalamud/blob/ee362acf70d47dd30c46da931f55958010fbf502/Dalamud/Interface/Internal/TextureManager.cs#L36
 
-        var files = Directory.EnumerateFiles(ImageFolderPath).ToList();
+        if (reload) return null;
 
-        if (files.Count != HuntMapCount)
-        {
-            if (DownloadingImages) return; //wait until all images downloaded
-            if (files.Count > 0) NotAllImagesFound = true;
-            return;
-        }
-
-        var paths = Directory.EnumerateFiles(ImageFolderPath, "*", SearchOption.TopDirectoryOnly);
-        foreach (var path in paths)
-        {
-            var name = GetMapNameFromPath(path);
-            if (_mapImages.ContainsKey(name)) continue;
-            _mapImages.Add(name, _pluginInterface.UiBuilder.LoadImage(path));
-        }
-        NotAllImagesFound = false;
-        ImagesLoaded = true;
-        return;
+        var fileName = mapName.Replace(" ", "_") + ("-data.jpg");
+        //Default because Empty can override user window opacity 
+        return Plugin.TextureProvider.GetFromFile(ImageFolderPath + fileName).GetWrapOrDefault();
     }
 
     public bool DownloadingImages = false;
     public bool HasDownloadErrors = false;
     public List<string> DownloadErrors = new List<string>();
 
-    //only called from GUI
     public async void DownloadImages(List<MapSpawnPoints> spawnpointdata, Configuration _configuration)
     {
         DownloadingImages = true;
         try
         {   // if redownloading, delete all files first.
-            if (Directory.Exists(ImageFolderPath)) Directory.Delete(ImageFolderPath, true); 
-            Directory.CreateDirectory(ImageFolderPath);   
+            if (Directory.Exists(ImageFolderPath)) Directory.Delete(ImageFolderPath, true);
+            Directory.CreateDirectory(ImageFolderPath);
+            ImageFolderDoesntExist = false;
         }
         catch (Exception ex)
         {
@@ -596,10 +586,12 @@ public class HuntManager : IDisposable
         else
         {
             UpdateImageVer(_configuration);
+
+            // for updating current map image drawn, if redownloaded
+            reload = true;
+            Task.Run(async () => { await Task.Delay(2222); reload = false; });
         }
         DownloadingImages = false;
-
-        
     }
 
     private async void UpdateImageVer(Configuration config)
@@ -617,10 +609,10 @@ public class HuntManager : IDisposable
 
     public string GetMobNameInEnglish(uint mobId)
     {
-        string searchList (List<Mob> list)
-        {            
+        string searchList(List<Mob> list)
+        {
             var m = list.FirstOrDefault(m => m.ModelID == mobId)!.Name;
-            PluginLog.Error(m);
+            //PluginLog.Error(m);
             return m;
         }
 
@@ -633,6 +625,8 @@ public class HuntManager : IDisposable
         kvp = SearchDictionaryForModelID(_shbDict, mobId);
         if (!kvp.Equals(default(KeyValuePair<HuntRank, List<Mob>>))) return searchList(kvp.Value);
         kvp = SearchDictionaryForModelID(_ewDict, mobId);
+        if (!kvp.Equals(default(KeyValuePair<HuntRank, List<Mob>>))) return searchList(kvp.Value);
+        kvp = SearchDictionaryForModelID(_dtDict, mobId);
         if (!kvp.Equals(default(KeyValuePair<HuntRank, List<Mob>>))) return searchList(kvp.Value);
 
         return "mob id not found";

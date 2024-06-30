@@ -1,5 +1,4 @@
-﻿using Dalamud;
-using Dalamud.IoC;
+﻿using Dalamud.Game;
 using Dalamud.Plugin.Services;
 using HuntHelper.Managers.Hunts.Models;
 using Lumina.Data;
@@ -46,7 +45,8 @@ public class MapHelpers
        return DataManager.Excel.GetSheet<TerritoryType>(Language.English)?.GetRow(territoryID)?.PlaceName?.Value?.Name.ToString() ?? "location not found";        */
 
         var row = DataManager.Excel.GetSheet<TerritoryType>(Language.English)?.GetRow(territoryID)?.PlaceName.Row ?? 0;
-        if (languages.Contains(clientLanguage)){
+        if (languages.Contains(clientLanguage))
+        {
             return DataManager.Excel.GetSheet<PlaceName>(Language.English)?.GetRow(row)?.Name.ToString() ?? "location not found";
         }
 
@@ -70,13 +70,14 @@ public class MapHelpers
     }
 
     public static async Task<bool> MapImageVerUpToDate(string currentVersion)
-    {        
+    {
         try
         {
             var client = new HttpClient();
             client.DefaultRequestHeaders.Add("Cache-Control", "no-cache");
+
             var ver = await client.GetStringAsync(ImageVerUrl);
-            PluginLog.Warning($"map images latest ver: {ver} Local ver: {currentVersion}"  );
+            PluginLog.Warning($"map images latest ver: {ver} Local ver: {currentVersion}");
             return currentVersion == ver;
         }
         catch (Exception ex)
@@ -89,7 +90,7 @@ public class MapHelpers
 
     public static async Task<string> GetMapImageVer()
     {
-      
+
         try
         {
             var client = new HttpClient();
@@ -105,5 +106,9 @@ public class MapHelpers
         return "0";
     }
 
+#if DEBUG
+    private static readonly string ImageVerUrl = @"https://raw.githubusercontent.com/img02/HuntHelper-Resources/test/version";
+#else
     private static readonly string ImageVerUrl = @"https://raw.githubusercontent.com/img02/HuntHelper-Resources/main/version";
+#endif
 }

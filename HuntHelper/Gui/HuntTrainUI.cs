@@ -133,7 +133,7 @@ public class HuntTrainUI : IDisposable
         if (ImGui.Begin($"{GuiResources.HuntTrainGuiText["MainWindowTitle"]}##Window", ref _huntTrainWindowVisible))
         {
             ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing, new Vector2(0, 0));
-           
+
 
             float moveCursorX(ref float x, float move)
             {
@@ -144,7 +144,7 @@ public class HuntTrainUI : IDisposable
             #region main train list            
             ImGui.SetCursorPosY(ImGui.GetCursorPosY() + 6); //padding
 
-            for (int n = 0; n < _mobList.Count; n++)            
+            for (int n = 0; n < _mobList.Count; n++)
             {
                 var m = _mobList[n];
                 var x = 0f;
@@ -217,14 +217,14 @@ public class HuntTrainUI : IDisposable
                 var rightSideOfNamePosX = ImGui.GetMousePos().X - ImGui.GetWindowPos().X;
 
                 // click = send flag / tele, drag = move in list
-                if (ImGui.IsItemFocused()  && rightSideOfNamePosX < x)
-                {                    
+                if (ImGui.IsItemFocused() && rightSideOfNamePosX < x)
+                {
                     if (ImGui.IsMouseReleased(ImGuiMouseButton.Left) && Math.Abs(ImGui.GetMouseDragDelta().Y) < 0.1f)
                     {
                         _trainManager.SendTrainFlag(n, _openMap, _showInChat);
                         if (_teleportMe) _teleportManager.TeleportToHunt(m);
                     }
-                    
+
                     if (!ImGui.IsItemHovered())
                     {
 #if DEBUG
@@ -250,7 +250,7 @@ public class HuntTrainUI : IDisposable
                     if (ImGui.MenuItem(GuiResources.HuntTrainGuiText["ContextMenuRemove"], true)) _trainManager.TrainRemove(m);
                     ImGui.EndPopup();
                     ImGui.PopStyleColor();
-                }             
+                }
 
                 ImGui.PopStyleColor();
             }

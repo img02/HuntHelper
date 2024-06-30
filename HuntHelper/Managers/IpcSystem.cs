@@ -19,7 +19,7 @@ public class IpcSystem : IDisposable
     private const string IpcFuncNameGetTrainList = "HH.GetTrainList";
     private const string IpcFuncNameImportTrainList = "HH.ImportTrainList";
 
-    private readonly DalamudPluginInterface _pluginInterface;
+    private readonly IDalamudPluginInterface _pluginInterface;
     private readonly IFramework _framework;
     private readonly TrainManager _trainManager;
 
@@ -27,7 +27,7 @@ public class IpcSystem : IDisposable
     private readonly ICallGateProvider<List<MobRecord>> _cgGetTrainList;
     private readonly ICallGateProvider<List<MobRecord>, bool> _cgImportTrainList;
 
-    public IpcSystem(DalamudPluginInterface pluginInterface, IFramework framework, TrainManager trainManager)
+    public IpcSystem(IDalamudPluginInterface pluginInterface, IFramework framework, TrainManager trainManager)
     {
         _pluginInterface = pluginInterface;
         _framework = framework;

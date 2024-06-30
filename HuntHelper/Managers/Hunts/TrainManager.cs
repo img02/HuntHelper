@@ -15,7 +15,7 @@ namespace HuntHelper.Managers.Hunts;
 
 public class TrainList<T> : List<T>
 {
-    public event Action TrainChanged;   
+    public event Action TrainChanged;
     public new void Add(T item)
     {
         base.Add(item);
@@ -40,7 +40,7 @@ public class TrainList<T> : List<T>
     private void OnTrainChanged()
     {
         TrainChanged?.Invoke();
-    }    
+    }
 }
 
 public class TrainManager : IDisposable
@@ -50,7 +50,7 @@ public class TrainManager : IDisposable
 
     private readonly string _huntTrainFilePath;
 
-    public readonly TrainList<HuntTrainMob> HuntTrain; 
+    public readonly TrainList<HuntTrainMob> HuntTrain;
     public readonly List<HuntTrainMob> ImportedTrain;
     public bool RecordTrain = false;
     public bool ImportFromIPC = false;
@@ -78,7 +78,7 @@ public class TrainManager : IDisposable
     {
         HuntTrain.TrainChanged -= HuntTrain_TrainChanged;
     }
-    public void AddMob(BattleNpc mob, uint territoryid, uint mapid, uint instance, string mapName, float zoneMapCoordSize)
+    public void AddMob(IBattleNpc mob, uint territoryid, uint mapid, uint instance, string mapName, float zoneMapCoordSize)
     {   //if already exists in train, return
         if (HuntTrain.Any(m => m.IsSameAs(mob.NameId, instance))) return;
         var position = new Vector2(MapHelpers.ConvertToMapCoordinate(mob.Position.X, zoneMapCoordSize),
@@ -87,7 +87,7 @@ public class TrainManager : IDisposable
         HuntTrain.Add(trainMob);
     }
 
-    public bool UpdateLastSeen(BattleNpc mob, uint instance)
+    public bool UpdateLastSeen(IBattleNpc mob, uint instance)
     {
         var existing = HuntTrain.FirstOrDefault(m => m.IsSameAs(mob.NameId, instance));
         if (existing == null) return false;
