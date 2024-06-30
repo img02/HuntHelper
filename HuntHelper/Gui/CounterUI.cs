@@ -162,8 +162,7 @@ public unsafe partial class CounterUI : IDisposable
     }
 
     #endregion
-
-    private void ChatGui_ChatMessage(XivChatType type, uint senderId, ref Dalamud.Game.Text.SeStringHandling.SeString sender, ref Dalamud.Game.Text.SeStringHandling.SeString message, ref bool isHandled)
+    private void ChatGui_ChatMessage(XivChatType type, int timestamp, ref Dalamud.Game.Text.SeStringHandling.SeString sender, ref Dalamud.Game.Text.SeStringHandling.SeString message, ref bool isHandled)
     {
         if (!_countInBackground && !WindowVisible) return;
 

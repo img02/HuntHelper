@@ -1,11 +1,16 @@
-﻿using Dalamud;
+﻿using Dalamud.Game;
 
 namespace HuntHelper;
 
 public static class Constants
 {
     public const string BaseImageUrl = "https://raw.githubusercontent.com/img02/HuntHelper-Resources/main/Images/Maps/";
+#if DEBUG
+    public const string RepoUrl = "https://github.com/img02/HuntHelper-Resources/tree/test";
+#else
     public const string RepoUrl = "https://github.com/img02/HuntHelper-Resources/";
+#endif
+
     public const string translateUrl = "https://github.com/img02/HuntHelper/tree/main/Translate";
     public const string translateUrlCrowdIn = "https://crowdin.com/project/hunthelper";
     public const string kofiUrl = "https://ko-fi.com/img123";

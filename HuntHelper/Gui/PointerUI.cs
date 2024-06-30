@@ -56,7 +56,7 @@ public class PointerUI
         return 0;
     }
 
-    private void PointToMobs(HuntRank rank, BattleNpc mob)
+    private void PointToMobs(HuntRank rank, IBattleNpc mob)
     {
         var floatingPointingIconThingyColour = GetPointerColour(rank);
         if (floatingPointingIconThingyColour == 0) return;

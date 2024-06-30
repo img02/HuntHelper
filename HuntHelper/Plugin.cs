@@ -1,5 +1,5 @@
 ﻿using Dalamud.Game.Command;
-using Dalamud.Interface;
+using Dalamud.IoC;
 using Dalamud.Plugin;
 using Dalamud.Plugin.Ipc;
 using Dalamud.Plugin.Services;
@@ -30,8 +30,8 @@ namespace HuntHelper
         private const string CounterCommand = "/hhc";
         private const string SpawnPointCommand = "/hhr";
         private const string DebugCommand = "/hhdebug";
-
-        private DalamudPluginInterface PluginInterface { get; init; }
+        [PluginService] internal static ITextureProvider TextureProvider { get; private set; } = null!;
+        private IDalamudPluginInterface PluginInterface { get; init; }
         private ICommandManager CommandManager { get; init; }
         private Configuration Configuration { get; init; }
         private MapUI MapUi { get; init; }
@@ -59,7 +59,7 @@ namespace HuntHelper
 
 
         public Plugin(
-            DalamudPluginInterface pluginInterface,
+            IDalamudPluginInterface pluginInterface,
             IFramework framework,
             ICommandManager commandManager,
             IClientState clientState,
@@ -112,7 +112,7 @@ namespace HuntHelper
 
             IpcSystem = new IpcSystem(pluginInterface, framework, TrainManager);
             TeleportIpc = PluginInterface.GetIpcSubscriber<uint, byte, bool>("Teleport");
-                        
+
             CommandManager.AddHandler(MapWindowCommand, new CommandInfo(HuntMapCommand) { HelpMessage = GuiResources.PluginText["/hh helpmessage"] });
             CommandManager.AddHandler(MapWindowPresetOne, new CommandInfo(ApplyPresetOneCommand) { HelpMessage = GuiResources.PluginText["/hh1 helpmessage"] });
             CommandManager.AddHandler(MapWindowPresetTwo, new CommandInfo(ApplyPresetTwoCommand) { HelpMessage = GuiResources.PluginText["/hh2 helpmessage"] });
@@ -167,6 +167,9 @@ namespace HuntHelper
         {
             MapUi.MapVisible = !MapUi.MapVisible;
             Configuration.MapWindowVisible = MapUi.MapVisible;
+
+            //todo idk delete this or comment out after dawntrail maps done
+            if (MapUi.MapVisible) MapUi.CheckMapImageVer();
         }
         private void HuntMapCommandGetRidOfValidationMsg()
         {
@@ -194,7 +197,7 @@ namespace HuntHelper
                 CounterUI.Draw();
                 SpawnPointFinderUI.Draw();
                 PointerUI.Draw();
-                
+
                 //todo remove after dawntrail maps avail
                 SubmitDataPrompt.Draw();
             }

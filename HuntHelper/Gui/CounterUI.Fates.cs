@@ -18,9 +18,9 @@ public unsafe partial class CounterUI : IDisposable
 {
     #region Nunni - Fates - Southern Than
     private string _lastFailedFateInfo = string.Empty;
-    private int fateRemainingTimeOffset = 12; //changes every patch or something?
+    private int fateRemainingTimeOffset = 16; //changes every patch or something?
     private DateTime _startTime = DateTime.Now;
-    private HashSet<Fate> _currentFates = new HashSet<Fate>();
+    private HashSet<IFate> _currentFates = new HashSet<IFate>();
 
     private readonly Vector4 _green = new Vector4(0, 1, 0, 1);
     private readonly Vector4 _red = new Vector4(1, 0, 0, 1);
@@ -95,7 +95,7 @@ public unsafe partial class CounterUI : IDisposable
         {
             if (_currentFates.Add(fate))
             {
-                _currentFates = new HashSet<Fate>(_currentFates.OrderBy(f => f.TimeRemaining > 0 ? f.TimeRemaining : long.MaxValue));
+                _currentFates = new HashSet<IFate>(_currentFates.OrderBy(f => f.TimeRemaining > 0 ? f.TimeRemaining : long.MaxValue));
             }
         }
 
@@ -160,7 +160,7 @@ public unsafe partial class CounterUI : IDisposable
         }
         ImGuiUtil.ImGui_HoveredToolTip("Click a Fate to see it on the map.");
     }
-    private void DrawFateInfoUI(Fate cf)
+    private void DrawFateInfoUI(IFate cf)
     {
         var fateText = GetFateInfoString(cf);
         var fateTime = GetFateTimeString(cf);
@@ -186,21 +186,21 @@ public unsafe partial class CounterUI : IDisposable
         if (ImGui.IsItemClicked()) OpenMapOnFateClick(cf);
     }
 
-    private string GetFateInfoString(Fate fate)
+    private string GetFateInfoString(IFate fate)
     {
         var fateName = fate.Name.ToString();
         if (fateName.Length > 16) fateName = fateName.Substring(0, 14) + "..";
         return $"{fateName,-16} {fate.Progress,3}%  -> ";
     }
 
-    private string GetFateTimeString(Fate fate)
+    private string GetFateTimeString(IFate fate)
     {
         return fate.State != FateState.Preparation
             ? $"{new TimeSpan(0, 0, 0, (int)(fate.TimeRemaining - fateRemainingTimeOffset)).ToString(@"mm\:ss", CultureInfo.InvariantCulture)}"
             : "upcoming or requires activation - can fail if not activated in time";
     }
 
-    private void OpenMapOnFateClick(Fate fate)
+    private void OpenMapOnFateClick(IFate fate)
     {
         try
         {
@@ -227,7 +227,7 @@ public unsafe partial class CounterUI : IDisposable
         {
             Thread.Sleep(1000);
             return _currentFates =
-                new HashSet<Fate>(_currentFates.OrderBy(f =>
+                new HashSet<IFate>(_currentFates.OrderBy(f =>
                     f.TimeRemaining > 0 ? f.TimeRemaining : Int64.MaxValue));
         });
     }
