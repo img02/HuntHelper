@@ -1,8 +1,8 @@
-﻿using Dalamud.Game;
-using Dalamud.Game.ClientState.Objects.Enums;
+﻿using Dalamud.Game.ClientState.Objects.Enums;
 using Dalamud.Game.ClientState.Objects.Types;
 using Dalamud.Interface;
 using Dalamud.Interface.Components;
+using Dalamud.Interface.Textures.TextureWraps;
 using Dalamud.Interface.Utility;
 using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
@@ -291,20 +291,28 @@ namespace HuntHelper.Gui
             ImGui.End();
         }
 
-        private void DrawMapImage()
+        private void DrawMapImage(IDalamudTextureWrap? map)
         {
-            ClientLanguage clientLanguage = _clientState.ClientLanguage;
-            var mapNameEng = MapHelpers.GetMapNameInEnglish(_territoryId, clientLanguage);
-            var mapImg = _huntManager.GetMapImage(mapNameEng);
-            if (mapImg == null) return;
+
             ImGui.SetCursorPos(Vector2.Zero);
-            ImGui.Image(mapImg.ImGuiHandle, ImGui.GetWindowSize(), default,
+            if (map == null) return;
+            ImGui.Image(map.ImGuiHandle, ImGui.GetWindowSize(), default,
                 new Vector2(1f, 1f), new Vector4(1f, 1f, 1f, _mapImageOpacityAsPercentage / 100));
             ImGui.SetCursorPos(Vector2.Zero);
+        }
+        private IDalamudTextureWrap? GetMapTexture()
+        {
+            var mapNameEng = MapHelpers.GetMapNameInEnglish(_territoryId, _clientState.ClientLanguage);
+            return _huntManager.GetMapImage(mapNameEng);
         }
 
         public void DrawHuntMapWindow()
         {
+            // load and keep in use regardless of visibility, otherwise ugly flashes black for a fraction when reloading 
+            // because it gets disposed internally after 2 secs
+            // https://github.com/goatcorp/Dalamud/blob/ee362acf70d47dd30c46da931f55958010fbf502/Dalamud/Interface/Internal/TextureManager.cs#L425
+            var mapImage = GetMapTexture();
+
             if (!MapVisible)
             {
                 if (_enableBackgroundScan) UpdateMobInfo();
@@ -343,7 +351,7 @@ namespace HuntHelper.Gui
                     _huntManager.CheckImageStatus();
                     //if only something went wrong, such as only some maps images downloaded                    
                     if (_huntManager.ImageFolderDoesntExist || _huntManager.HasDownloadErrors || _huntManager.NotAllImagesFound || _outOfDateImages) MapImageDownloadWindow();
-                    DrawMapImage();
+                    DrawMapImage(mapImage);
                 }
 
                 //show map coordinates when mouse is over gui
@@ -1494,7 +1502,7 @@ namespace HuntHelper.Gui
             //todo disable after hunt maps avail.
             #region DAWNTRAIL API GATHING SPAWN POINTS STUFF TEST TEST TEST
 
-            if (_territoryId > 961 && _configuration.DawntrailSubmitPositionsData) 
+            if (_territoryId > 961 && _configuration.DawntrailSubmitPositionsData)
             {
                 foreach (var m in _huntManager.CurrentMobs)
                 {

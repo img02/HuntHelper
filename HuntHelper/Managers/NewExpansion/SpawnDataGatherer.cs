@@ -38,7 +38,7 @@ namespace HuntHelper.Managers.NewExpansion
                 // y = z, z = y. but i already swapped them. so y = y, z = z, z conversion is not correct btw
                 var url = baseUrl + $"map={mapName}&mapid={mapid}&mobid={mobid}&name={name}&rank={rank}&playerid={hash}&x={position.X}&y={position.Y}&z={position.Z}";
 
-                
+
 
                 using HttpClient client = new HttpClient();
                 client.Timeout = new TimeSpan(0, 10, 0);
