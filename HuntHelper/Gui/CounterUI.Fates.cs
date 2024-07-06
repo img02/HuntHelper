@@ -134,7 +134,7 @@ public unsafe partial class CounterUI : IDisposable
             }
 
             // fate failed or a (!) fate that required [user activation] was not activated in time and disappeared
-            if (cf.State == FateState.Failed || (cf.State == FateState.Preparation && _fateTable.All(f => f != cf)))
+            if (cf.State == FateState.Failed || (cf.State == FateState.Preparation && _fateTable.All(f => !f.Equals(cf))))
             {
                 var failReason = cf.State == FateState.Preparation ? $"FAIL: NOT INITIATED" : "FAIL";
 
