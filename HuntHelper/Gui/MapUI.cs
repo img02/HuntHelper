@@ -1,5 +1,4 @@
-﻿using Dalamud.Game.ClientState.Objects.Enums;
-using Dalamud.Game.ClientState.Objects.Types;
+﻿using Dalamud.Game.ClientState.Objects.Types;
 using Dalamud.Interface;
 using Dalamud.Interface.Components;
 using Dalamud.Interface.Textures.TextureWraps;
@@ -16,7 +15,6 @@ using ImGuiNET;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Speech.Synthesis;
@@ -207,11 +205,11 @@ namespace HuntHelper.Gui
         }
 
         public void Draw()
-        {          
+        {
             DrawSettingsWindow();
             DrawHuntMapWindow();
         }
-        
+
         private void DrawMapImage(IDalamudTextureWrap? map)
         {
 
@@ -1659,7 +1657,7 @@ namespace HuntHelper.Gui
                 ImGui_ToolTip(text);
             }
         }
-              
+
         private void ImGui_ToolTip(string[] text)
         {
             ImGui.BeginTooltip();

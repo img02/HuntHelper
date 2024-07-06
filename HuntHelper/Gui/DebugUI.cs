@@ -8,11 +8,7 @@ using HuntHelper.Utilities;
 using ImGuiNET;
 using Lumina.Excel.GeneratedSheets;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HuntHelper.Gui
 {
@@ -73,8 +69,8 @@ namespace HuntHelper.Gui
             var v3 = _clientState.LocalPlayer?.Position ?? new Vector3(0, 0, 0);
             ImGui.Text($"pos: X: ({ConvertPosToCoordinate(v3.X)}, Y: {ConvertPosToCoordinate(v3.X)})\n");
             ImGui.NewLine();
-            
-            if (ImGui.CollapsingHeader("nearby hunts & object table debug"))  
+
+            if (ImGui.CollapsingHeader("nearby hunts & object table debug"))
             {
                 ImGui.BeginGroup();
                 var nearby = _huntManager.GetCurrentMobs();
@@ -110,14 +106,14 @@ namespace HuntHelper.Gui
                 ImGui.NewLine();
                 ImGui.EndGroup();
             }
-            
+
         }
         private void PositionalInfo()
         {
             if (ImGui.CollapsingHeader("positional debug"))
             {
                 ImGui.BeginGroup();
-                ImGui.TextUnformatted("Random Debug Info?!:");                
+                ImGui.TextUnformatted("Random Debug Info?!:");
                 ImGui.Columns(2);
 
                 ImGui.TextUnformatted($"Content1 Region: {ImGui.GetContentRegionAvail()}");
@@ -182,7 +178,7 @@ namespace HuntHelper.Gui
         /// </summary>
         private unsafe void Aetherytes()
         {
-            var tele = Telepo.Instance();            
+            var tele = Telepo.Instance();
             if (ImGui.CollapsingHeader("aetherytes"))
             {
                 ImGui.BeginGroup();
@@ -203,7 +199,7 @@ namespace HuntHelper.Gui
                     ImGui.Separator();
                 }
                 ImGui.BeginGroup();
-            }            
+            }
         }
 
 

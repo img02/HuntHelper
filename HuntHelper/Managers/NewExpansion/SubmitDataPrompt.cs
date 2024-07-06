@@ -1,13 +1,12 @@
 ﻿using Dalamud.Interface.Utility;
 using HuntHelper.Utilities;
 using ImGuiNET;
-using System;
 using System.Numerics;
 
 namespace HuntHelper.Managers.NewExpansion
 {
     //todo make new config bool next expansion
-    internal class SubmitDataPrompt 
+    internal class SubmitDataPrompt
     {
 
         private Configuration _config;
