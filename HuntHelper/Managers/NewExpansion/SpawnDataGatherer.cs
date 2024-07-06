@@ -8,18 +8,15 @@ using System.Text;
 
 namespace HuntHelper.Managers.NewExpansion
 {
-    // actually just realised this might be slightly pointless if plugins aren't available due to new expansion, oops
-    // community made hunt data should be avail by end of first/second week, cablemonkey maps end of month? if still active
-
     internal static class SpawnDataGatherer
     {
         //&name= mobid=  &map= &mapid= &rank= &playerid= &x= &y= &z=
-        //todo remove url when no longer used
-        private static readonly string baseUrl = @"https://idklol-cqej.onrender.com/api/dawntrail?"; // freeeee tier render web service
+        private static readonly string baseUrl = @"she sells sea shells"; // freeeee tier render web service
         private static IList<MobFoundData> history = new List<MobFoundData>();
 
         public static void AddFoundMob(uint mobid, string name, Vector3 position, string rank, uint mapid, string mapName, ulong playerid)
         {
+            if (!Constants.NEW_EXPANSION) return;
 
             var currTime = DateTime.UtcNow;
 

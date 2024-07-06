@@ -56,6 +56,7 @@ namespace HuntHelper
         public static string PluginDir { get; set; } = string.Empty;
 
         private SubmitDataPrompt SubmitDataPrompt { get; set; }
+        private DebugUI DebugUI { get; set; }
 
 
         public Plugin(
@@ -69,7 +70,8 @@ namespace HuntHelper
             IFlyTextGui flyTextGui,
             IGameGui gameGui,
             IFateTable fateTable,
-            IPluginLog pluginLog)
+            IPluginLog pluginLog,
+            IAetheryteList aeth)
         {
             this.PluginInterface = pluginInterface;
             this.CommandManager = commandManager;
@@ -109,6 +111,7 @@ namespace HuntHelper
             SpawnPointFinderUI = new SpawnPointFinderUI(MapDataManager, Configuration);
             PointerUI = new PointerUI(HuntManager, Configuration, GameGui);
             SubmitDataPrompt = new SubmitDataPrompt(Configuration);
+            DebugUI = new DebugUI(aeth, dataManager, clientState, HuntManager, objectTable);
 
             IpcSystem = new IpcSystem(pluginInterface, framework, TrainManager);
             TeleportIpc = PluginInterface.GetIpcSubscriber<uint, byte, bool>("Teleport");
@@ -159,10 +162,9 @@ namespace HuntHelper
 
             HuntManager.Dispose();
             TrainManager.Dispose();
-            SubmitDataPrompt.Dispose();
         }
 
-        private void DebugWindowCommand(string command, string args) => this.MapUi.RandomDebugWindowVisisble = !MapUi.RandomDebugWindowVisisble;
+        private void DebugWindowCommand(string command, string args) => DebugUI.RandomDebugWindowVisisble = !DebugUI.RandomDebugWindowVisisble;
         private void HuntMapCommand(string command, string args)
         {
             MapUi.MapVisible = !MapUi.MapVisible;
@@ -197,9 +199,10 @@ namespace HuntHelper
                 CounterUI.Draw();
                 SpawnPointFinderUI.Draw();
                 PointerUI.Draw();
+                DebugUI.Draw();
 
-                //todo remove after dawntrail maps avail
-                SubmitDataPrompt.Draw();
+                //uhh keeping this around for future expansions
+                if (Constants.NEW_EXPANSION) SubmitDataPrompt.Draw();
             }
             catch (Exception e)
             {

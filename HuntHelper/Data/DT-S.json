@@ -38,13 +38,13 @@
 	{
 		"Name": "arch aethereater",
 		"ModelID": 13406,
-		"Rank": "S",
+		"Rank": "SS",
 		"IsEnabled": "true"
 	},
 	{
 		"Name": "crystal incarnation",
 		"ModelID": 13407,
-		"Rank": "S",
+		"Rank": "SS",
 		"IsEnabled": "true"
 	}
 ]

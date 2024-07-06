@@ -1,5 +1,9 @@
-﻿using Dalamud.Plugin.Ipc.Exceptions;
+﻿using Dalamud.Interface;
+using Dalamud.Plugin.Ipc.Exceptions;
+using Dalamud.Plugin.Services;
+using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using HuntHelper.Managers.Hunts.Models;
+using ImGuiNET;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
@@ -161,11 +165,11 @@ public unsafe class TeleportManager
 
         //the tempest
         new AetheryteData() {AetheryteID = 147, SubIndex = 0, TerritoryID = 818, Position = new Vector2(32.7f, 17.5f)}, //The Ondo Cups
-        //new AetheryteData() {AetheryteID = 148, Subindex = 0, TerritoryID = 818, Position = new Vector2()}, //The Macarenses Angle - super far away, don't tele here stupid
+        //new AetheryteData() {AetheryteID = 148, SubIndex = 0, TerritoryID = 818, Position = new Vector2()}, //The Macarenses Angle - super far away, don't tele here stupid
         #endregion
 
         #region Endwalker aetherytes
-        //End Walker
+        //Endwalker
         //thavnair
         new AetheryteData() {AetheryteID = 169, SubIndex = 0, TerritoryID = 957, Position = new Vector2(25.4f,34f)}, //Yedlihmad
         new AetheryteData() {AetheryteID = 170, SubIndex = 0, TerritoryID = 957, Position = new Vector2(10.9f,22.2f)}, //The Great Work
@@ -193,9 +197,39 @@ public unsafe class TeleportManager
 
         new AetheryteData() {AetheryteID = 176, SubIndex = 0, TerritoryID = 961, Position = new Vector2(24.6f, 24f)}, //Anagnorisis
         new AetheryteData() {AetheryteID = 177, SubIndex = 0, TerritoryID = 961, Position = new Vector2(8.7f, 32.3f)}, //The Twelve Wonders
-        new AetheryteData() {AetheryteID = 178, SubIndex = 0, TerritoryID = 961, Position = new Vector2(10.8f, 17f)} //Poieten Oikos
+        new AetheryteData() {AetheryteID = 178, SubIndex = 0, TerritoryID = 961, Position = new Vector2(10.8f, 17f)}, //Poieten Oikos
         
+        #endregion
 
+         #region Dawntrail aetherytes
+        //Dawntrail
+        //Urqopacha
+        new AetheryteData() { AetheryteID = 200, SubIndex = 0, TerritoryID = 1187, Position = new Vector2(28.1f, 13.1f)}, //Wachunpelo
+        new AetheryteData() { AetheryteID = 201, SubIndex = 0, TerritoryID = 1187, Position = new Vector2(30.8f, 34.2f)}, //Worlar's Echo
+
+        //Kozama'uka
+        new AetheryteData() { AetheryteID = 202, SubIndex = 0, TerritoryID = 1188, Position = new Vector2(18.0f, 11.9f)}, //Ok'hanu
+        new AetheryteData() { AetheryteID = 203, SubIndex = 0, TerritoryID = 1188, Position = new Vector2(32.2f, 25.6f)}, //Many Fires
+        new AetheryteData() { AetheryteID = 204, SubIndex = 0, TerritoryID = 1188, Position = new Vector2(11.9f, 27.7f)}, //Earthenshire
+
+        //Yak'tel
+        new AetheryteData() { AetheryteID = 205, SubIndex = 0, TerritoryID = 1189, Position = new Vector2(13.5f, 12.8f)}, //Iq Br'aax
+        new AetheryteData() { AetheryteID = 206, SubIndex = 0, TerritoryID = 1189, Position = new Vector2(35.8f, 32.0f)}, //Mamook
+
+        //Shaaloani
+        new AetheryteData() { AetheryteID = 207, SubIndex = 0, TerritoryID = 1190, Position = new Vector2(29.0f, 30.8f)}, //Hhusatahwi        
+        new AetheryteData() { AetheryteID = 208, SubIndex = 0, TerritoryID = 1190, Position = new Vector2(15.6f, 19.2f)}, //Sheshenewezi Springs
+        new AetheryteData() { AetheryteID = 209, SubIndex = 0, TerritoryID = 1190, Position = new Vector2(27.6f, 10.1f)}, //Mehwahhetsoan
+        
+        //Heritage Found
+        new AetheryteData() { AetheryteID = 210, SubIndex = 0, TerritoryID = 1191, Position = new Vector2(31.7f, 25.6f)}, //Yyasulani Station
+        new AetheryteData() { AetheryteID = 211, SubIndex = 0, TerritoryID = 1191, Position = new Vector2(17.0f, 9.8f)}, //The Outskirts
+        new AetheryteData() { AetheryteID = 212, SubIndex = 0, TerritoryID = 1191, Position = new Vector2(17.1f, 23.9f)}, //Electrope Strike
+
+        //Living Memory
+        new AetheryteData() { AetheryteID = 213, SubIndex = 0, TerritoryID = 1192, Position = new Vector2(21.4f, 37.4f)}, //Leynode Mnemo
+        new AetheryteData() { AetheryteID = 214, SubIndex = 0, TerritoryID = 1192, Position = new Vector2(34.6f, 15.8f)}, //Leynode Pyro
+        new AetheryteData() { AetheryteID = 215, SubIndex = 0, TerritoryID = 1192, Position = new Vector2(16.3f, 13.5f)}, //Leynode Aero
         #endregion
     };
 

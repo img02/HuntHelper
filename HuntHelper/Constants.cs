@@ -4,6 +4,9 @@ namespace HuntHelper;
 
 public static class Constants
 {
+    public static bool NEW_EXPANSION = false;
+    public static ushort NEW_EXPANSION_MIN_MAP_ID = 961;
+
     public const string BaseImageUrl = "https://raw.githubusercontent.com/img02/HuntHelper-Resources/main/Images/Maps/";
 #if DEBUG
     public const string RepoUrl = "https://github.com/img02/HuntHelper-Resources/tree/test";

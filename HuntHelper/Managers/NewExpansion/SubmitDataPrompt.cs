@@ -6,8 +6,8 @@ using System.Numerics;
 
 namespace HuntHelper.Managers.NewExpansion
 {
-    //todo disable this after hunt maps available
-    internal class SubmitDataPrompt : IDisposable
+    //todo make new config bool next expansion
+    internal class SubmitDataPrompt 
     {
 
         private Configuration _config;
@@ -20,6 +20,7 @@ namespace HuntHelper.Managers.NewExpansion
 
         public void Draw()
         {
+            if (!Constants.NEW_EXPANSION) return;
             if (!_visible) return;
 
             ImGui.SetNextWindowSize(new Vector2(630 * ImGuiHelpers.GlobalScale, 220 * ImGuiHelpers.GlobalScale));
@@ -27,7 +28,7 @@ namespace HuntHelper.Managers.NewExpansion
             {
                 ImGuiUtil.DoStuffWithMonoFont(() =>
                 {
-                    ImGui.TextWrapped("submit found spawn points to help make dawntrail hunt map images?\n(this is from hunthelper btw)");
+                    ImGui.TextWrapped("submit found spawn points to help make **INSERT EXPANSION NAME HERE** hunt map images?\n(this is from hunthelper btw)");
 
                     ImGui.NewLine();
 
@@ -48,11 +49,6 @@ namespace HuntHelper.Managers.NewExpansion
                 });
             }
             ImGui.End();
-        }
-
-        public void Dispose()
-        {
-
         }
     }
 }

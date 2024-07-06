@@ -16,6 +16,7 @@ using ImGuiNET;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Speech.Synthesis;
@@ -154,17 +155,10 @@ namespace HuntHelper.Gui
         private uint _inputTextMaxLength = 300;
         private readonly Vector4 _defaultTextColour = Vector4.One; //white
 
-        //window bools
-        private bool _randomDebugWindowVisible = false;
+        //window bools      
         private bool _showDatabaseListWindow = false;
 
         private Task _loadingImagesAttempt = Task.CompletedTask;
-
-        public bool RandomDebugWindowVisisble
-        {
-            get => _randomDebugWindowVisible;
-            set { _randomDebugWindowVisible = value; }
-        }
 
         private bool _mapVisible = false;
         public bool MapVisible
@@ -213,84 +207,11 @@ namespace HuntHelper.Gui
         }
 
         public void Draw()
-        {
-            DrawDebugWindow();
+        {          
             DrawSettingsWindow();
             DrawHuntMapWindow();
         }
-
-        public void DrawDebugWindow()
-        {
-            if (!RandomDebugWindowVisisble)
-            {
-                return;
-            }
-
-            ImGui.SetNextWindowSize(new Vector2(375, 330), ImGuiCond.FirstUseEver);
-            ImGui.SetNextWindowSizeConstraints(new Vector2(375, 330), new Vector2(float.MaxValue, float.MaxValue));
-            if (ImGui.Begin("Debug stuff", ref _randomDebugWindowVisible))
-            {
-
-                if (ImGui.Button("Settings"))
-                {
-                    SettingsVisible = true;
-                }
-
-                ImGui.Spacing();
-
-                ImGui.Indent(55);
-                ImGui.Unindent(55);
-
-                ImGui.Text($"Territory: {_territoryName}{LocInstance()}");
-                ImGui.Text($"Territory ID: {_clientState.TerritoryType}");
-
-                //PLAYER POS
-                var v3 = _clientState.LocalPlayer?.Position ?? new Vector3(0, 0, 0);
-                ImGui.Text($"v3: -----\n" +
-                           $"X: {ConvertPosToCoordinate(v3.X)} |" +
-                           $"Y: {ConvertPosToCoordinate(v3.Z)} |\n");
-                //END
-
-
-                var nearby = _huntManager.GetCurrentMobs();
-                ImGui.Text("Nearby Mobs");
-                nearby.ForEach(m => ImGui.TextUnformatted($"{m.Name} - {m.NameId}"));
-                ImGui.Text("============");
-
-                var (rank, mob) = _huntManager.GetPriorityMob();
-                ImGui.Text("priority:");
-                ImGui.TextUnformatted($"{rank} - {mob?.Name}");
-
-                ImGui.Text("============");
-
-                ShowDebugInfo();
-
-                ImGui.Indent(55);
-                ImGui.Text("");
-
-                var hunt = "";
-                foreach (var obj in _objectTable)
-                {
-                    if (obj is not IBattleNpc bobj) continue;
-                    if (bobj.MaxHp < 10000) continue; //not really needed if subkind is enemy, once matching to id / name
-                    if (bobj.BattleNpcKind != BattleNpcSubKind.Enemy) continue; //not really needed if matching to 'nameID'
-
-
-                    hunt += $"{obj.Name} \n" +
-                            $"KIND: {bobj.BattleNpcKind}\n" +
-                            $"NAMEID: {bobj.NameId}\n" +
-                            $"|HP: {bobj.CurrentHp}\n" +
-                            $"|HP%%: {bobj.CurrentHp * 1.0 / bobj.MaxHp * 100}%%\n" +
-                            //$"|object ID: {obj.ObjectId}\n| Data ID: {obj.DataId} \n| OwnerID: {obj.OwnerId}\n" +
-                            $"X: {ConvertPosToCoordinate(obj.Position.X)};\n" +
-                            $"Y: {ConvertPosToCoordinate(obj.Position.Y)}\n" +
-                            $"  --------------  \n";
-                }
-                ImGui.Text($"Found: {hunt}");
-            }
-            ImGui.End();
-        }
-
+        
         private void DrawMapImage(IDalamudTextureWrap? map)
         {
 
@@ -370,9 +291,6 @@ namespace HuntHelper.Gui
                 {
                     DrawOptionsWindow();
                 }
-
-                //putting this here instead because I want to draw it on this window, not a new one.
-                if (_showDebug) ShowDebugInfo();
 
                 //button to toggle bottom panel thing
                 //draw the button up a lil higher if dalamud scale set high, works fine up to 36pt, but sorta covers image credits :(
@@ -1499,20 +1417,22 @@ namespace HuntHelper.Gui
             UpdateStats();
 
 
-            //todo disable after hunt maps avail.
-            #region DAWNTRAIL API GATHING SPAWN POINTS STUFF TEST TEST TEST
 
-            if (_territoryId > 961 && _configuration.DawntrailSubmitPositionsData)
+            #region NEW EXPANSION GATHING SPAWN POINTS STUFF 
+            if (Constants.NEW_EXPANSION)
             {
-                foreach (var m in _huntManager.CurrentMobs)
+                if (_territoryId > Constants.NEW_EXPANSION_MIN_MAP_ID && _configuration.DawntrailSubmitPositionsData)
                 {
-                    var mob = m.Mob;
-                    if (_huntManager.GetHPP(mob) < 100) continue;
+                    foreach (var m in _huntManager.CurrentMobs)
+                    {
+                        var mob = m.Mob;
+                        if (_huntManager.GetHPP(mob) < 100) continue;
 
-                    SpawnDataGatherer.AddFoundMob(mob.NameId, _huntManager.GetMobNameInEnglish(mob.NameId),
-                    new Vector3(ConvertPosToCoordinate(mob.Position.X), ConvertPosToCoordinate(mob.Position.Z), ConvertPosToCoordinate(mob.Position.Y)),
-                    $"{m.Rank}", _territoryId,
-                    MapHelpers.GetMapNameInEnglish(_territoryId, _clientState.ClientLanguage), _clientState.LocalContentId);
+                        SpawnDataGatherer.AddFoundMob(mob.NameId, _huntManager.GetMobNameInEnglish(mob.NameId),
+                        new Vector3(ConvertPosToCoordinate(mob.Position.X), ConvertPosToCoordinate(mob.Position.Z), ConvertPosToCoordinate(mob.Position.Y)),
+                        $"{m.Rank}", _territoryId,
+                        MapHelpers.GetMapNameInEnglish(_territoryId, _clientState.ClientLanguage), _clientState.LocalContentId);
+                    }
                 }
             }
             #endregion
@@ -1739,75 +1659,7 @@ namespace HuntHelper.Gui
                 ImGui_ToolTip(text);
             }
         }
-
-        private void ShowDebugInfo()
-        {
-            ImGui.Spacing();
-            ImGui.Spacing();
-            ImGui.Spacing();
-            ImGui.Spacing();
-            ImGui.Spacing();
-            ImGui.Spacing();
-            ImGui.Spacing();
-            ImGui.TextUnformatted("Random Debug Info?!:");
-            ImGui.BeginChild("debug");
-            ImGui.Columns(2);
-            ImGui.TextUnformatted($"Content1 Region: {ImGui.GetContentRegionAvail()}");
-            ImGui.TextUnformatted($"Window Size: {ImGui.GetWindowSize()}");
-            ImGui.TextUnformatted($"Window  Pos: {ImGui.GetWindowPos()}");
-
-            if (_clientState?.LocalPlayer?.Position != null)
-            {
-                ImGui.TextUnformatted($"rotation: {_clientState!.LocalPlayer.Rotation}");
-                var rotation = Math.Abs(_clientState.LocalPlayer.Rotation - Math.PI);
-                ImGui.TextUnformatted($"rotation rad.: {Math.Round(rotation, 2):0.00}");
-                ImGui.TextUnformatted($"rotation sin.: {Math.Round(Math.Sin(rotation), 2):0.00}");
-                ImGui.TextUnformatted($"rotation cos.: {Math.Round(Math.Cos(rotation), 2):0.00}");
-                ImGui.TextUnformatted($"Player Pos: (" +
-                                   $"{MapHelpers.ConvertToMapCoordinate(_clientState.LocalPlayer.Position.X, _mapZoneMaxCoordSize):0.00}" +
-                                   $"," +
-                                   $" {MapHelpers.ConvertToMapCoordinate(_clientState.LocalPlayer.Position.Z, _mapZoneMaxCoordSize):0.00}" +
-                                   $")");
-                var playerPos = CoordinateToPositionInWindow(
-                    new Vector2(ConvertPosToCoordinate(_clientState.LocalPlayer.Position.X),
-                        ConvertPosToCoordinate(_clientState.LocalPlayer.Position.Z)));
-                ImGui.TextUnformatted($"Player Pos: {playerPos}");
-                ImGui.NextColumn();
-                ImGuiUtil.ImGui_RightAlignText($"Map: {_territoryName}{LocInstance()} - {_territoryId}");
-                ImGuiUtil.ImGui_RightAlignText($"Coord size: {_mapZoneMaxCoordSize} ");
-
-                //priority mob stuff
-                ImGuiUtil.ImGui_RightAlignText("Priority Mob:");
-                var priorityMob = _huntManager.GetPriorityMob().Mob;
-                if (priorityMob != null)
-                {
-                    ImGuiUtil.ImGui_RightAlignText($"Rank {_huntManager.GetPriorityMob().Rank} " +
-                                                        $"{priorityMob.Name} " +
-                                                        $"{Math.Round(1.0 * priorityMob.CurrentHp / priorityMob.MaxHp * 100, 2):0.00}% | " +
-                                                        $"({ConvertPosToCoordinate(priorityMob.Position.X):0.00}, " +
-                                                        $"{ConvertPosToCoordinate(priorityMob.Position.Z):0.00}) ");
-                }
-
-                var currentMobs = _huntManager.GetAllCurrentMobsWithRank();
-                ImGuiUtil.ImGui_RightAlignText("--");
-                ImGuiUtil.ImGui_RightAlignText("Other nearby mobs:");
-                foreach (var (rank, mob) in currentMobs)
-                {
-                    ImGuiUtil.ImGui_RightAlignText("--");
-                    ImGuiUtil.ImGui_RightAlignText($"Rank: {rank} | " +
-                                                        $"{mob.Name} {Math.Round(1.0 * mob.CurrentHp / mob.MaxHp * 100, 2):0.00}% | " +
-                                                        $"({ConvertPosToCoordinate(mob.Position.X):0.00}, " +
-                                                        $"{ConvertPosToCoordinate(mob.Position.Z):0.00})");
-                }
-                ImGui.EndChild();
-            }
-            else
-            {
-                ImGui.Text("Can't find local player");
-            }
-        }
-
-
+              
         private void ImGui_ToolTip(string[] text)
         {
             ImGui.BeginTooltip();
@@ -1823,7 +1675,6 @@ namespace HuntHelper.Gui
             ImGui.PopTextWrapPos();
             ImGui.EndTooltip();
         }
-
 
 
         //=================================================================

@@ -162,6 +162,8 @@ namespace HuntHelper
 
 
         #region dawntrail prompt stuff. idk reminder for future expansion
+
+        //todo rename/resuse this stuff in 5 years when the next expansion comes out if i'm still playing
         public bool DawntrailSubmitPositionsData = false;
         public bool DawntrailAlreadyPrompted = false;
         #endregion
