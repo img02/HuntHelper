@@ -31,7 +31,6 @@ namespace HuntHelper
         private const string SpawnPointCommand = "/hhr";
         private const string DebugCommand = "/hhdebug";
         [PluginService] internal static ITextureProvider TextureProvider { get; private set; } = null!;
-        private IDalamudPluginInterface PluginInterface { get; init; }
         private ICommandManager CommandManager { get; init; }
         private Configuration Configuration { get; init; }
         private MapUI MapUi { get; init; }
@@ -39,18 +38,11 @@ namespace HuntHelper
         private CounterUI CounterUI { get; init; }
         private PointerUI PointerUI { get; init; }
         private SpawnPointFinderUI SpawnPointFinderUI { get; init; }
-        private IClientState ClientState { get; init; }
-        private IObjectTable ObjectTable { get; init; }
-        private IDataManager DataManager { get; init; }
-        private IChatGui ChatGui { get; init; }
+
         private HuntManager HuntManager { get; init; }
         private TrainManager TrainManager { get; init; }
         private MapDataManager MapDataManager { get; init; }
         private IpcSystem IpcSystem { get; init; }
-        private IFlyTextGui FlyTextGui { get; init; }
-        private IGameGui GameGui { get; init; }
-
-        private IFateTable FateTable { get; init; }
 
         public static ICallGateSubscriber<uint, byte, bool> TeleportIpc { get; private set; }
         public static string PluginDir { get; set; } = string.Empty;
@@ -73,48 +65,40 @@ namespace HuntHelper
             IPluginLog pluginLog,
             IAetheryteList aeth)
         {
-            this.PluginInterface = pluginInterface;
             this.CommandManager = commandManager;
 
             PluginLog.Logger = pluginLog;
 
-            PluginDir = PluginInterface.AssemblyLocation.Directory?.FullName!;
+            PluginDir = pluginInterface.AssemblyLocation.Directory?.FullName!;
 
-            this.ClientState = clientState;
-
-            if (!GuiResources.LoadGuiText(ClientState.ClientLanguage))
+            if (!GuiResources.LoadGuiText(clientState.ClientLanguage))
             {
                 PluginLog.Error("Unable to find localisation file. What did you do?! gonna crash ok");
             }
 
-            FateTable = fateTable;
-            ObjectTable = objectTable;
-            DataManager = dataManager;
-            ChatGui = chatGui;
-            FlyTextGui = flyTextGui;
-            GameGui = gameGui;
+            MapHelpers.SetUp(dataManager);
 
-            MapHelpers.SetUp(DataManager);
+            Constants.SetCounterLanguage(clientState.ClientLanguage);
 
-            Constants.SetCounterLanguage(ClientState.ClientLanguage);
+            Configuration = pluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
+            Configuration.Initialize(pluginInterface);
 
-            Configuration = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
-            Configuration.Initialize(PluginInterface);
+            TrainManager = new TrainManager(chatGui, gameGui, Path.Combine(pluginInterface.AssemblyLocation.Directory?.FullName!, @"Data\HuntTrain.json"));
+            HuntManager = new HuntManager(pluginInterface, TrainManager, chatGui, flyTextGui, Configuration.TTSVolume);
+            MapDataManager = new MapDataManager(Path.Combine(pluginInterface.AssemblyLocation.Directory?.FullName!, @"Data\SpawnPointData.json"));
 
-            TrainManager = new TrainManager(ChatGui, GameGui, Path.Combine(PluginInterface.AssemblyLocation.Directory?.FullName!, @"Data\HuntTrain.json"));
-            HuntManager = new HuntManager(PluginInterface, TrainManager, chatGui, flyTextGui, Configuration.TTSVolume);
-            MapDataManager = new MapDataManager(Path.Combine(PluginInterface.AssemblyLocation.Directory?.FullName!, @"Data\SpawnPointData.json"));
-
-            MapUi = new MapUI(this.Configuration, ClientState, ObjectTable, HuntManager, MapDataManager, GameGui);
+            MapUi = new MapUI(this.Configuration, clientState, objectTable, HuntManager, MapDataManager, gameGui);
             HuntTrainUI = new HuntTrainUI(TrainManager, Configuration);
-            CounterUI = new CounterUI(ClientState, ChatGui, GameGui, Configuration, ObjectTable, FateTable);
+            CounterUI = new CounterUI(clientState, chatGui, gameGui, Configuration, objectTable, fateTable);
             SpawnPointFinderUI = new SpawnPointFinderUI(MapDataManager, Configuration);
-            PointerUI = new PointerUI(HuntManager, Configuration, GameGui);
+            PointerUI = new PointerUI(HuntManager, Configuration, gameGui);
             SubmitDataPrompt = new SubmitDataPrompt(Configuration);
+#if DEBUG
             DebugUI = new DebugUI(aeth, dataManager, clientState, HuntManager, objectTable);
+#endif
 
             IpcSystem = new IpcSystem(pluginInterface, framework, TrainManager);
-            TeleportIpc = PluginInterface.GetIpcSubscriber<uint, byte, bool>("Teleport");
+            TeleportIpc = pluginInterface.GetIpcSubscriber<uint, byte, bool>("Teleport");
 
             CommandManager.AddHandler(MapWindowCommand, new CommandInfo(HuntMapCommand) { HelpMessage = GuiResources.PluginText["/hh helpmessage"] });
             CommandManager.AddHandler(MapWindowPresetOne, new CommandInfo(ApplyPresetOneCommand) { HelpMessage = GuiResources.PluginText["/hh1 helpmessage"] });
@@ -130,9 +114,9 @@ namespace HuntHelper
             CommandManager.AddHandler(CounterCommand, new CommandInfo(CounterWindowCommand) { HelpMessage = GuiResources.PluginText["/hhc helpmessage"] });
             CommandManager.AddHandler(SpawnPointCommand, new CommandInfo(SpawnPointWindowCommand) { HelpMessage = GuiResources.PluginText["/hhr helpmessage"] });
 
-            PluginInterface.UiBuilder.Draw += DrawUI;
-            PluginInterface.UiBuilder.OpenConfigUi += DrawConfigUI;
-            PluginInterface.UiBuilder.OpenMainUi += HuntMapCommandGetRidOfValidationMsg;
+            pluginInterface.UiBuilder.Draw += DrawUI;
+            pluginInterface.UiBuilder.OpenConfigUi += DrawConfigUI;
+            pluginInterface.UiBuilder.OpenMainUi += HuntMapCommandGetRidOfValidationMsg;
         }
 
         public void Dispose()
@@ -199,7 +183,9 @@ namespace HuntHelper
                 CounterUI.Draw();
                 SpawnPointFinderUI.Draw();
                 PointerUI.Draw();
+#if DEBUG
                 DebugUI.Draw();
+#endif
 
                 //uhh keeping this around for future expansions
                 if (Constants.NEW_EXPANSION) SubmitDataPrompt.Draw();
@@ -220,7 +206,5 @@ namespace HuntHelper
         {
             MapUi.SettingsVisible = true;
         }
-
-
     }
 }

@@ -27,7 +27,6 @@ namespace HuntHelper.Gui
         private float _mapZoneMaxCoordSize;
         public float SingleCoordSize => ImGui.GetWindowSize().X / _mapZoneMaxCoordSize;
 
-        private bool _randomDebugWindowVisible = false;
         public bool RandomDebugWindowVisisble = false;
 
         public DebugUI(IAetheryteList aeth, IDataManager dataManager, IClientState clientState, HuntManager huntManager, IObjectTable objectTable)
