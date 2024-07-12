@@ -11,7 +11,7 @@ namespace HuntHelper.Managers.NewExpansion
     internal static class SpawnDataGatherer
     {
         //&name= mobid=  &map= &mapid= &rank= &playerid= &x= &y= &z=
-        private static readonly string baseUrl = @"she sells sea shells"; // freeeee tier render web service
+        private static readonly string baseUrl = @"https://idklol-cqej.onrender.com/api/dawntrail?"; // first 2 maps have S/SS disabled atm. still want data
         private static IList<MobFoundData> history = new List<MobFoundData>();
 
         public static void AddFoundMob(uint mobid, string name, Vector3 position, string rank, uint mapid, string mapName, ulong playerid)
