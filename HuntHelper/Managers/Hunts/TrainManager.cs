@@ -1,4 +1,4 @@
-﻿using Dalamud.Game.ClientState.Objects.Types;
+using Dalamud.Game.ClientState.Objects.Types;
 using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Game.Text.SeStringHandling.Payloads;
 using Dalamud.Plugin.Services;
@@ -45,6 +45,8 @@ public class TrainList<T> : List<T>
 
 public class TrainManager : IDisposable
 {
+    public event Action<HuntTrainMob> MobSeen;
+    
     private readonly IChatGui _chatGui;
     private readonly IGameGui _gameGui;
 
@@ -85,6 +87,7 @@ public class TrainManager : IDisposable
             MapHelpers.ConvertToMapCoordinate(mob.Position.Z, zoneMapCoordSize));
         var trainMob = new HuntTrainMob(mob.Name.TextValue, mob.NameId, territoryid, mapid, instance, mapName, position, DateTime.UtcNow, false);
         HuntTrain.Add(trainMob);
+        MobSeen?.Invoke(trainMob);
     }
 
     public bool UpdateLastSeen(IBattleNpc mob, uint instance)
@@ -92,6 +95,7 @@ public class TrainManager : IDisposable
         var existing = HuntTrain.FirstOrDefault(m => m.IsSameAs(mob.NameId, instance));
         if (existing == null) return false;
         existing.LastSeenUTC = DateTime.UtcNow;
+        MobSeen?.Invoke(existing);
         return true;
     }
     public void SendTrainFlag(int index, bool openMap, bool showInChat, ushort textColor = 24, ushort flagColour = 559, ushort countColour = 502) //make customizable in the future, maybe
