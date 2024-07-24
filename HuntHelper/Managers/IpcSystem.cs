@@ -18,6 +18,7 @@ public class IpcSystem : IDisposable
     private const string IpcFuncNameGetVersion = "HH.GetVersion";
     private const string IpcFuncNameGetTrainList = "HH.GetTrainList";
     private const string IpcFuncNameImportTrainList = "HH.ImportTrainList";
+    private const string IpcChannelNameMarkFound = "HH.channel.MarkFound";
 
     private readonly IDalamudPluginInterface _pluginInterface;
     private readonly IFramework _framework;
@@ -41,11 +42,15 @@ public class IpcSystem : IDisposable
         _cgGetTrainList.RegisterFunc(GetTrainList);
         _cgImportTrainList.RegisterAction(ImportTrainList);
 
+        _trainManager.MobSeen += MobSeen;
+
         pluginInterface.GetIpcProvider<uint, bool>(IpiFuncNameEnable).SendMessage(HuntHelperApiVersion);
     }
 
     public void Dispose()
     {
+        _trainManager.MobSeen -= MobSeen;
+        
         _cgGetVersion.UnregisterFunc();
         _cgGetTrainList.UnregisterFunc();
         _cgImportTrainList.UnregisterAction();
@@ -54,6 +59,9 @@ public class IpcSystem : IDisposable
     }
 
     private static uint GetVersion() => HuntHelperApiVersion;
+
+    private void MobSeen(HuntTrainMob mob) =>
+        _pluginInterface.GetIpcProvider<MobRecord, bool>(IpcChannelNameMarkFound).SendMessage(AsMobRecord(mob));
 
     private List<MobRecord> GetTrainList() =>
         _framework.RunOnFrameworkThread(() =>
