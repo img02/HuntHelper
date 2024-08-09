@@ -127,12 +127,14 @@ public class HuntTrainUI : IDisposable
         if (_trainManager.ImportFromIPC) ImGui.SetNextWindowCollapsed(false);
 
         ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, new Vector2(0, 0));
+        ImGui.PushStyleVar(ImGuiStyleVar.ScrollbarSize, 10);
+        ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing, new Vector2(0, 0));
+
         ImGui.SetNextWindowSize(_huntTrainWindowSize, ImGuiCond.FirstUseEver);
         ImGui.SetWindowPos(_huntTrainWindowPos);
-        ImGui.PushStyleVar(ImGuiStyleVar.ScrollbarSize, 10);
+
         if (ImGui.Begin($"{GuiResources.HuntTrainGuiText["MainWindowTitle"]}##Window", ref _huntTrainWindowVisible))
         {
-            ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing, new Vector2(0, 0));
 
 
             float moveCursorX(ref float x, float move)
@@ -395,12 +397,10 @@ public class HuntTrainUI : IDisposable
 
             if (_teleportManager.TeleportPluginNotFound) ImGui.OpenPopup($"{GuiResources.HuntTrainGuiText["TeleportWindowTitle"]}##ModalPopupWindowThingymajig");
             DrawTeleportPluginNotFoundModal();
-            ImGui.PopStyleVar(); //pop itemspacing
 
             ImGui.End();
-            ImGui.PopStyleVar(); //scrollbar sizing
         }
-        ImGui.PopStyleVar();//pop window padding
+        ImGui.PopStyleVar(3); // itemspacing,  scrollbar sizing, window padding
     }
 
     private void DrawTeleportPluginNotFoundModal()
