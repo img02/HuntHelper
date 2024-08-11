@@ -97,7 +97,7 @@ namespace HuntHelper
             DebugUI = new DebugUI(aeth, dataManager, clientState, HuntManager, objectTable);
 #endif
 
-            IpcSystem = new IpcSystem(pluginInterface, framework, TrainManager);
+            IpcSystem = new IpcSystem(pluginInterface, framework, TrainManager, HuntManager);
             TeleportIpc = pluginInterface.GetIpcSubscriber<uint, byte, bool>("Teleport");
 
             CommandManager.AddHandler(MapWindowCommand, new CommandInfo(HuntMapCommand) { HelpMessage = GuiResources.PluginText["/hh helpmessage"] });

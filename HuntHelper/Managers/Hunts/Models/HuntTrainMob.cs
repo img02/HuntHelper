@@ -2,6 +2,8 @@
 using Newtonsoft.Json;
 using System;
 using System.Numerics;
+using Dalamud.Game.ClientState.Objects.Types;
+using HuntHelper.Utilities;
 
 namespace HuntHelper.Managers.Hunts.Models;
 
@@ -59,4 +61,28 @@ public class HuntTrainMob
     {
         return MobID == mobID && Instance == instance;
     }
+}
+
+public static class HuntTrainMobExtensions
+{
+    public static HuntTrainMob ToHuntTrainMob(
+        this IBattleNpc mob,
+        uint territoryId,
+        uint mapId,
+        uint instance,
+        string mapName,
+        float zoneMapCoordSize,
+        bool isDead = false
+    ) =>
+        new(
+            mob.Name.TextValue,
+            mob.NameId,
+            territoryId,
+            mapId,
+            instance,
+            mapName,
+            MapHelpers.ConvertToMapCoordinate(mob.Position, zoneMapCoordSize),
+            DateTime.UtcNow,
+            isDead
+        );
 }
