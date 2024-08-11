@@ -163,7 +163,7 @@ public class HuntManager : IDisposable
     public void AddNearbyMobs(List<IBattleNpc> nearbyMobs, float zoneMapCoordSize, uint territoryId, uint mapid,
         bool aTTS, bool bTTS, bool sTTS, string aTTSmsg, string bTTSmsg, string sTTSmsg,
         bool chatA, bool chatB, bool chatS, string chatAmsg, string chatBmsg, string chatSmsg,
-        bool flyTxtA, bool flyTxtB, bool flyTxtS, uint instance, string territoryName)
+        bool flyTxtA, bool flyTxtB, bool flyTxtS, uint instance)
     {
         //compare with old list
         //move old mob set out
@@ -181,7 +181,7 @@ public class HuntManager : IDisposable
             //if exists in old mob set, skip tts + chat
             if (_previousMobs.Any(hunt => hunt.Mob.NameId == mob.NameId)) continue;
             
-            MarkSeen?.Invoke(mob.ToHuntTrainMob(territoryId, mapid, instance, territoryName, zoneMapCoordSize));
+            MarkSeen?.Invoke(mob.ToHuntTrainMob(territoryId, mapid, instance, MapHelpers.GetMapName(territoryId), zoneMapCoordSize));
 
             //Do tts and chat stuff
             var rank = GetHuntRank(mob.NameId);
