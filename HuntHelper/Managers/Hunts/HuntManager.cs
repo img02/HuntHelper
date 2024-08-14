@@ -72,6 +72,9 @@ public class HuntManager : IDisposable
     public List<HuntTrainMob> ImportedTrain { get; init; }
 
     public List<(HuntRank Rank, IBattleNpc Mob)> CurrentMobs => _currentMobs;
+    
+    public event Action<HuntTrainMob> MarkSeen;
+    
 
     public HuntManager(IDalamudPluginInterface pluginInterface, TrainManager trainManager, IChatGui chatGui, IFlyTextGui flyTextGui, int ttsVolume)
     {
@@ -177,6 +180,8 @@ public class HuntManager : IDisposable
 
             //if exists in old mob set, skip tts + chat
             if (_previousMobs.Any(hunt => hunt.Mob.NameId == mob.NameId)) continue;
+            
+            MarkSeen?.Invoke(mob.ToHuntTrainMob(territoryId, mapid, instance, MapHelpers.GetMapName(territoryId), zoneMapCoordSize));
 
             //Do tts and chat stuff
             var rank = GetHuntRank(mob.NameId);

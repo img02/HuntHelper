@@ -18,20 +18,23 @@ public class IpcSystem : IDisposable
     private const string IpcFuncNameGetVersion = "HH.GetVersion";
     private const string IpcFuncNameGetTrainList = "HH.GetTrainList";
     private const string IpcFuncNameImportTrainList = "HH.ImportTrainList";
+    private const string IpcChannelNameMarkSeen = "HH.channel.MarkSeen";
 
     private readonly IDalamudPluginInterface _pluginInterface;
     private readonly IFramework _framework;
     private readonly TrainManager _trainManager;
+    private readonly HuntManager _huntManager;
 
     private readonly ICallGateProvider<uint> _cgGetVersion;
     private readonly ICallGateProvider<List<MobRecord>> _cgGetTrainList;
     private readonly ICallGateProvider<List<MobRecord>, bool> _cgImportTrainList;
 
-    public IpcSystem(IDalamudPluginInterface pluginInterface, IFramework framework, TrainManager trainManager)
+    public IpcSystem(IDalamudPluginInterface pluginInterface, IFramework framework, TrainManager trainManager, HuntManager huntManager)
     {
         _pluginInterface = pluginInterface;
         _framework = framework;
         _trainManager = trainManager;
+        _huntManager = huntManager;
 
         _cgGetVersion = pluginInterface.GetIpcProvider<uint>(IpcFuncNameGetVersion);
         _cgGetTrainList = pluginInterface.GetIpcProvider<List<MobRecord>>(IpcFuncNameGetTrainList);
@@ -41,11 +44,15 @@ public class IpcSystem : IDisposable
         _cgGetTrainList.RegisterFunc(GetTrainList);
         _cgImportTrainList.RegisterAction(ImportTrainList);
 
+        _huntManager.MarkSeen += MarkSeen;
+
         pluginInterface.GetIpcProvider<uint, bool>(IpiFuncNameEnable).SendMessage(HuntHelperApiVersion);
     }
 
     public void Dispose()
     {
+        _huntManager.MarkSeen -= MarkSeen;
+        
         _cgGetVersion.UnregisterFunc();
         _cgGetTrainList.UnregisterFunc();
         _cgImportTrainList.UnregisterAction();
@@ -54,6 +61,9 @@ public class IpcSystem : IDisposable
     }
 
     private static uint GetVersion() => HuntHelperApiVersion;
+
+    private void MarkSeen(HuntTrainMob mob) =>
+        _pluginInterface.GetIpcProvider<MobRecord, bool>(IpcChannelNameMarkSeen).SendMessage(AsMobRecord(mob));
 
     private List<MobRecord> GetTrainList() =>
         _framework.RunOnFrameworkThread(() =>

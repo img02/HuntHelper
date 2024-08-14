@@ -6,6 +6,7 @@ using Lumina.Excel.GeneratedSheets;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Numerics;
 using System.Threading.Tasks;
 
 namespace HuntHelper.Utilities;
@@ -62,6 +63,14 @@ public class MapHelpers
     public static float ConvertToMapCoordinate(float pos, float zoneMaxCoordSize)
     {
         return (float)Math.Floor(((zoneMaxCoordSize + 1.96) / 2 + (pos / 50)) * 100) / 100;
+    }
+
+    public static Vector2 ConvertToMapCoordinate(Vector3 pos, float zoneMaxCoordSize)
+    {
+        return new Vector2(
+            ConvertToMapCoordinate(pos.X, zoneMaxCoordSize),
+            ConvertToMapCoordinate(pos.Z, zoneMaxCoordSize)
+        );
     }
 
     public static void LocaliseMobNames(List<HuntTrainMob> trainList)
