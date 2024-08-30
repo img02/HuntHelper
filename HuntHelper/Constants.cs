@@ -66,7 +66,7 @@ public static class Constants
     private const string SquonkRegex_ja = $"スクオンクの「チャープ」";
     private const string LeucrottaRegex_ja = $"(アラガン・キマイラ|レッサーハイドラ|メラシディアン・ヴィーヴル){BattleRegexBase_ja}";
     private const string GandaweraRegex_ja = $"(?i)(皇金鉱|アストラルフラワー){GatheringRegexBase_ja}";
-    private const string OkinaRegex_ja = $"{BattleRegexBase_ja}(カラナシ・ユメミ|ユメミガイ).";
+    private const string OkinaRegex_ja = $"(カラナシ・ユメミ|ユメミガイ){BattleRegexBase_ja}";
     private const string UdumbaraRegex_ja = $"(レーシー|ディアッカ){BattleRegexBase_ja}";
     private const string SaltAndLightRegex_ja = $".*を捨てた。";
     private const string ForgivenPedantryRegex_ja = $"ドワーフ綿花{GatheringRegexBase_ja}";
