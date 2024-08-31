@@ -146,7 +146,7 @@ namespace HuntHelper.Gui
         #endregion
 
         private bool _showDebug = false;
-        private float _mapZoneMaxCoordSize = 41; //default to 41 as thats most common for hunt zones
+        private float _mapZoneMaxCoordSize = 100; //default to 100 as thats most common for hunt zones
 
         public float SingleCoordSize => ImGui.GetWindowSize().X / _mapZoneMaxCoordSize;
         //message input lengths
