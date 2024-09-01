@@ -1,4 +1,4 @@
-﻿using Dalamud.Game.ClientState.Objects.Types;
+using Dalamud.Game.ClientState.Objects.Types;
 using Dalamud.Interface;
 using Dalamud.Interface.Components;
 using Dalamud.Interface.Textures.TextureWraps;
@@ -146,9 +146,11 @@ namespace HuntHelper.Gui
         #endregion
 
         private bool _showDebug = false;
-        private float _mapZoneMaxCoordSize = 100; //default to 100 as thats most common for hunt zones
+        private float _mapZoneScale = 100; //default to 100 as thats most common for hunt zones
 
-        public float SingleCoordSize => ImGui.GetWindowSize().X / _mapZoneMaxCoordSize;
+        public float MapZoneMaxCoord => MapHelpers.MapScaleToMaxCoord(_mapZoneScale);
+        
+        public float SingleCoordSize => ImGui.GetWindowSize().X / MapZoneMaxCoord;
         //message input lengths
         private uint _inputTextMaxLength = 300;
         private readonly Vector4 _defaultTextColour = Vector4.One; //white
@@ -1327,7 +1329,7 @@ namespace HuntHelper.Gui
             //_worldName = _clientState.LocalPlayer?.CurrentWorld?.GameData?.Name.ToString() ?? "Not Found";
             _territoryId = _clientState.TerritoryType;
             _instance = (uint)UIState.Instance()->PublicInstance.InstanceId;
-            _mapZoneMaxCoordSize = _huntManager.GetMapZoneCoordSize(_territoryId);
+            _mapZoneScale = _huntManager.GetMapZoneScale(_territoryId);
         }
 
         #region Draw Sub Windows
@@ -1399,7 +1401,7 @@ namespace HuntHelper.Gui
                 if (obj is not IBattleNpc mob) continue;
                 if (!_huntManager.IsHunt(mob.NameId)) continue;
                 nearbyMobs.Add(mob);
-                _huntManager.AddToTrain(mob, _territoryId, MapHelpers.GetMapID(_territoryId), _instance, _territoryName, _mapZoneMaxCoordSize);
+                _huntManager.AddToTrain(mob, _territoryId, MapHelpers.GetMapID(_territoryId), _instance, _territoryName, _mapZoneScale);
             }
 
             if (nearbyMobs.Count == 0)
@@ -1408,7 +1410,7 @@ namespace HuntHelper.Gui
                 return;
             }
 
-            _huntManager.AddNearbyMobs(nearbyMobs, _mapZoneMaxCoordSize, _territoryId, MapHelpers.GetMapID(_territoryId),
+            _huntManager.AddNearbyMobs(nearbyMobs, _mapZoneScale, _territoryId, MapHelpers.GetMapID(_territoryId),
                 _ttsAEnabled, _ttsBEnabled, _ttsSEnabled, _ttsAMessage, _ttsBMessage, _ttsSMessage,
                 _chatAEnabled, _chatBEnabled, _chatSEnabled, _chatAMessage, _chatBMessage, _chatSMessage,
                 _flyTxtAEnabled, _flyTxtBEnabled, _flyTxtSEnabled, _instance);
@@ -1588,7 +1590,7 @@ namespace HuntHelper.Gui
                 _huntManager.SendChatMessage(true,
                     "<exclamationrectangle> <name> <flag> -- <rank> <exclamationrectangle>",
                     _territoryId, MapHelpers.GetMapID(_territoryId), _instance,
-                    mob, _mapZoneMaxCoordSize);
+                    mob, _mapZoneScale);
             }
         }
         #endregion
@@ -1686,7 +1688,7 @@ namespace HuntHelper.Gui
 
         private float ConvertPosToCoordinate(float pos)
         {
-            return MapHelpers.ConvertToMapCoordinate(pos, _mapZoneMaxCoordSize);
+            return MapHelpers.ConvertToMapCoordinate(pos, _mapZoneScale);
         }
 
         private Vector2 CoordinateToPositionInWindow(Vector2 pos)

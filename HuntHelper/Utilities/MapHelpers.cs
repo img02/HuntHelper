@@ -1,4 +1,4 @@
-﻿using Dalamud.Game;
+using Dalamud.Game;
 using Dalamud.Plugin.Services;
 using HuntHelper.Managers.Hunts.Models;
 using Lumina.Data;
@@ -60,16 +60,19 @@ public class MapHelpers
         return DataManager!.GetExcelSheet<TerritoryType>()!.GetRow(territoryID)!.Map.Value!.RowId;
     }
 
-    public static float ConvertToMapCoordinate(float pos, float zoneMaxCoordSize)
+    //convert map scale (100/95) to map size (41/43.1)
+    public static float MapScaleToMaxCoord(float mapScale) => (-0.42f) * mapScale + 83f;
+
+    public static float ConvertToMapCoordinate(float pos, float mapScale)
     {
-        return 2048f / zoneMaxCoordSize + pos / 50f + 1f;
+        return 2048f / mapScale + pos / 50f + 1f;
     }
 
-    public static Vector2 ConvertToMapCoordinate(Vector3 pos, float zoneMaxCoordSize)
+    public static Vector2 ConvertToMapCoordinate(Vector3 pos, float mapScale)
     {
         return new Vector2(
-            ConvertToMapCoordinate(pos.X, zoneMaxCoordSize),
-            ConvertToMapCoordinate(pos.Z, zoneMaxCoordSize)
+            ConvertToMapCoordinate(pos.X, mapScale),
+            ConvertToMapCoordinate(pos.Z, mapScale)
         );
     }
 
