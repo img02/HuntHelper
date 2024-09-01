@@ -24,8 +24,9 @@ namespace HuntHelper.Gui
         private string _worldName;
         private ushort _territoryId;
         private uint _instance;
-        private float _mapZoneMaxCoordSize;
-        public float SingleCoordSize => ImGui.GetWindowSize().X / _mapZoneMaxCoordSize;
+        private float _mapZoneScale;
+        public float MapZoneMaxCoord => MapHelpers.MapScaleToMaxCoord(_mapZoneScale);
+        public float SingleCoordSize => ImGui.GetWindowSize().X / MapZoneMaxCoord;
 
         public bool RandomDebugWindowVisisble = false;
 
@@ -126,9 +127,9 @@ namespace HuntHelper.Gui
                     ImGui.TextUnformatted($"rotation sin.: {Math.Round(Math.Sin(rotation), 2):0.00}");
                     ImGui.TextUnformatted($"rotation cos.: {Math.Round(Math.Cos(rotation), 2):0.00}");
                     ImGui.TextUnformatted($"Player Pos: (" +
-                                       $"{MapHelpers.ConvertToMapCoordinate(_clientState.LocalPlayer.Position.X, _mapZoneMaxCoordSize):0.00}" +
+                                       $"{MapHelpers.ConvertToMapCoordinate(_clientState.LocalPlayer.Position.X, _mapZoneScale):0.00}" +
                                        $"," +
-                                       $" {MapHelpers.ConvertToMapCoordinate(_clientState.LocalPlayer.Position.Z, _mapZoneMaxCoordSize):0.00}" +
+                                       $" {MapHelpers.ConvertToMapCoordinate(_clientState.LocalPlayer.Position.Z, _mapZoneScale):0.00}" +
                                        $")");
                     var playerPos = CoordinateToPositionInWindow(
                         new Vector2(ConvertPosToCoordinate(_clientState.LocalPlayer.Position.X),
@@ -136,7 +137,7 @@ namespace HuntHelper.Gui
                     ImGui.TextUnformatted($"Player Pos: {playerPos}");
                     ImGui.NextColumn();
                     ImGuiUtil.ImGui_RightAlignText($"Map: {_territoryName}{_instance} - {_territoryId}");
-                    ImGuiUtil.ImGui_RightAlignText($"Coord size: {_mapZoneMaxCoordSize} ");
+                    ImGuiUtil.ImGui_RightAlignText($"Coord size: {_mapZoneScale} ");
 
                     //priority mob stuff
                     ImGuiUtil.ImGui_RightAlignText("Priority Mob:");
@@ -210,10 +211,10 @@ namespace HuntHelper.Gui
             _worldName = _clientState.LocalPlayer?.CurrentWorld?.GameData?.Name.ToString() ?? "Not Found";
             _territoryId = _clientState.TerritoryType;
             _instance = (uint)UIState.Instance()->PublicInstance.InstanceId;
-            _mapZoneMaxCoordSize = _huntManager.GetMapZoneCoordSize(_territoryId);
+            _mapZoneScale = _huntManager.GetMapZoneScale(_territoryId);
         }
 
-        private float ConvertPosToCoordinate(float coord) { return MapHelpers.ConvertToMapCoordinate(coord, _mapZoneMaxCoordSize); }
+        private float ConvertPosToCoordinate(float coord) { return MapHelpers.ConvertToMapCoordinate(coord, _mapZoneScale); }
 
         private Vector2 CoordinateToPositionInWindow(Vector2 pos)
         {
