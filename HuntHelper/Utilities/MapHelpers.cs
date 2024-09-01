@@ -62,7 +62,7 @@ public class MapHelpers
 
     public static float ConvertToMapCoordinate(float pos, float zoneMaxCoordSize)
     {
-        return (float)Math.Floor(((zoneMaxCoordSize + 1.96) / 2 + (pos / 50)) * 100) / 100;
+        return 2048f / zoneMaxCoordSize + pos / 50f + 1f;
     }
 
     public static Vector2 ConvertToMapCoordinate(Vector3 pos, float zoneMaxCoordSize)

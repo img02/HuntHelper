@@ -414,9 +414,9 @@ public class HuntManager : IDisposable
 
     public float GetMapZoneCoordSize(ushort mapID)
     {
-        //EVERYTHING EXCEPT HEAVENSWARD HAS 41 COORDS, BUT FOR SOME REASON HW HAS 43, WHYYYYYY
-        if (mapID is >= 397 and <= 402) return 43.1f;
-        return 41f;
+        //EVERYTHING EXCEPT HEAVENSWARD HAS A SCALE OF 100, BUT FOR SOME REASON HW HAS 95, WHYYYYYY
+        if (mapID is >= 397 and <= 402) return 95f;
+        return 100f;
     }
     //override tostring?
     public string GetDatabaseAsString()
