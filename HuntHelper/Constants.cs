@@ -4,7 +4,7 @@ namespace HuntHelper;
 
 public static class Constants
 {
-    public static bool NEW_EXPANSION = true;
+    public static bool NEW_EXPANSION = false;
     public static ushort NEW_EXPANSION_MIN_MAP_ID = 961; //just set this as highest mapid for prev expansion - 1192 - Living Memory - Dawntrail
 
     public const string BaseImageUrl = "https://raw.githubusercontent.com/img02/HuntHelper-Resources/main/Images/Maps/";
