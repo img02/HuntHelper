@@ -24,7 +24,8 @@ public class MapHelpers
         {"阿巴拉提亚云海","The Sea of Clouds"},{"魔大陆阿济兹拉","Azys Lla"},{"龙堡参天高地","The Dravanian Forelands"},{"翻云雾海","The Churning Mists"},{"龙堡内陆低地","The Dravanian Hinterlands"},{"库尔札斯西部高地","Coerthas Western Highlands"},//3.0
         {"基拉巴尼亚边区","The Fringes"},{"红玉海","The Ruby Sea"},{"基拉巴尼亚山区","The Peaks"},{"延夏","Yanxia"},{"基拉巴尼亚湖区","The Lochs"},{"太阳神草原","The Azim Steppe"},//4.0
         {"雷克兰德","Lakeland"},{"珂露西亚岛","Kholusia"},{"安穆·艾兰","Amh Araeng"},{"伊尔美格","Il Mheg"},{"拉凯提卡大森林","The Rak'tika Greatwood"},{"黑风海","The Tempest"},//5.0
-        {"迷津","Labyrinthos"},{"萨维奈岛","Thavnair"},{"加雷马","Garlemald"},{"叹息海","Mare Lamentorum"},{"厄尔庇斯","Elpis"},{"天外天垓","Ultima Thule"}//6.0
+        {"迷津","Labyrinthos"},{"萨维奈岛","Thavnair"},{"加雷马","Garlemald"},{"叹息海","Mare Lamentorum"},{"厄尔庇斯","Elpis"},{"天外天垓","Ultima Thule"},//6.0
+        {"奥阔帕恰山", "Urqopacha"}, {"克扎玛乌卡湿地", "Kozama'uka"}, {"亚克特尔树海", "Yak T'el"}, {"夏劳尼荒野", "Shaaloani"}, {"遗产之地", "Heritage Found"}, {"活着的记忆", "Living Memory"}//7.0
     };
 
     private static List<ClientLanguage> languages = new List<ClientLanguage> { ClientLanguage.English, ClientLanguage.Japanese, ClientLanguage.German, ClientLanguage.French };
