@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Authors>https://github.com/img02</Authors>
     <Company></Company>
-    <Version>1.0.0.23</Version>
+    <Version>1.0.0.24</Version>
     <Description>Hunt map with spawns points, A-Rank train recorder (w/ export/import sharing), TTS, Chat notifications, Counters for S-Rank</Description>
     <Copyright></Copyright>
     <PackageProjectUrl>https://github.com/img02/HuntHelper</PackageProjectUrl>
