@@ -4,124 +4,196 @@
 		"MapID": 134,
 		"Positions": [
 			{
+				"Taken": false,
 				"X": 16.55,
 				"Y": 7.9,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 18.6,
 				"Y": 9.45,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 15.95,
 				"Y": 10.85,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 17.15,
 				"Y": 11.5,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 13.9,
 				"Y": 11.65,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 18.35,
 				"Y": 13.3,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 13.9,
 				"Y": 13.6,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 20.4,
 				"Y": 13.75,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 16.35,
 				"Y": 14.0,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 15.2,
 				"Y": 15.3,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 20.75,
 				"Y": 15.6,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 18.7,
 				"Y": 16.3,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 23.3,
 				"Y": 17.0,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 17.15,
 				"Y": 17.15,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 18.45,
 				"Y": 18.25,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 21.0,
 				"Y": 18.3,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 23.9,
 				"Y": 19.7,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 19.25,
 				"Y": 20.3,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 24.4,
 				"Y": 20.95,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 20.25,
 				"Y": 21.3,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 19.9,
 				"Y": 22.4,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 22.9,
 				"Y": 22.55,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 25.1,
 				"Y": 23.45,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 23.2,
 				"Y": 24.2,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			}
 		],
 		"Recording": false
@@ -131,104 +203,164 @@
 		"MapID": 135,
 		"Positions": [
 			{
+				"Taken": false,
 				"X": 30.05,
 				"Y": 14.3,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
-				"X": 33,
+				"Taken": false,
+				"X": 33.0,
 				"Y": 16.05,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 31.5,
 				"Y": 16.45,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
-				"X": 29,
-				"Y": 17,
-				"Taken": false
+				"Taken": false,
+				"X": 29.0,
+				"Y": 17.0,
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 33.5,
 				"Y": 17.5,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 28.55,
 				"Y": 18.2,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 28.65,
 				"Y": 20.5,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 25.1,
 				"Y": 22.4,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 25.95,
 				"Y": 24.85,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 26.45,
 				"Y": 26.3,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 24.3,
 				"Y": 26.55,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 20.25,
-				"Y": 32,
-				"Taken": false
+				"Y": 32.0,
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 20.1,
 				"Y": 34.3,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 22.7,
 				"Y": 34.5,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 16.9,
 				"Y": 35.35,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 19.2,
 				"Y": 35.4,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 20.6,
 				"Y": 35.6,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 23.15,
-				"Y": 36,
-				"Taken": false
+				"Y": 36.0,
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
-				"X": 20,
+				"Taken": false,
+				"X": 20.0,
 				"Y": 37.5,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 22.9,
 				"Y": 38.2,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			}
 		],
 		"Recording": false
@@ -238,164 +370,260 @@
 		"MapID": 137,
 		"Positions": [
 			{
+				"Taken": false,
 				"X": 28.95,
 				"Y": 19.3,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 30.4,
 				"Y": 19.3,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 31.05,
 				"Y": 19.95,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 25.55,
 				"Y": 20.4,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 28.62,
 				"Y": 20.65,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 29.7,
 				"Y": 21.4,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 25.4,
 				"Y": 21.8,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 27.55,
-				"Y": 25,
-				"Taken": false
+				"Y": 25.0,
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 30.1,
-				"Y": 25,
-				"Taken": false
+				"Y": 25.0,
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 20.3,
 				"Y": 25.2,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 22.25,
 				"Y": 25.2,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 18.3,
 				"Y": 26.2,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 28.1,
 				"Y": 26.55,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 30.7,
 				"Y": 26.7,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 32.1,
 				"Y": 27.2,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 17.9,
 				"Y": 27.5,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 28.35,
-				"Y": 28,
-				"Taken": false
+				"Y": 28.0,
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 21.45,
 				"Y": 28.3,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 14.75,
 				"Y": 28.85,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 21.3,
 				"Y": 29.6,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 17.4,
 				"Y": 29.95,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
-				"X": 15,
+				"Taken": false,
+				"X": 15.0,
 				"Y": 30.6,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 26.6,
 				"Y": 30.9,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 21.3,
 				"Y": 31.05,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 19.55,
 				"Y": 31.35,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 16.5,
 				"Y": 32.7,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 20.5,
 				"Y": 33.15,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 26.7,
 				"Y": 33.15,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 25.9,
 				"Y": 33.8,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
-				"X": 17,
+				"Taken": false,
+				"X": 17.0,
 				"Y": 33.9,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 28.9,
 				"Y": 35.6,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 31.75,
 				"Y": 36.25,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			}
 		],
 		"Recording": false
@@ -405,124 +633,196 @@
 		"MapID": 138,
 		"Positions": [
 			{
+				"Taken": false,
 				"X": 14.55,
 				"Y": 14.25,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 16.1,
 				"Y": 14.5,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 12.9,
 				"Y": 14.55,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 14.2,
 				"Y": 15.85,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 14.35,
 				"Y": 17.05,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 20.2,
 				"Y": 18.4,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 17.05,
 				"Y": 19.4,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 19.6,
 				"Y": 19.55,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 23.15,
 				"Y": 21.75,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 19.85,
 				"Y": 21.95,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 24.7,
 				"Y": 22.7,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 26.1,
 				"Y": 23.55,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 27.65,
-				"Y": 24,
-				"Taken": false
+				"Y": 24.0,
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 27.65,
-				"Y": 24,
-				"Taken": false
+				"Y": 24.0,
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 23.3,
 				"Y": 24.65,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
-				"X": 29,
+				"Taken": false,
+				"X": 29.0,
 				"Y": 25.2,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 31.25,
 				"Y": 27.4,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 34.05,
 				"Y": 28.1,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 31.75,
 				"Y": 28.7,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 30.8,
 				"Y": 28.8,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 33.0,
 				"Y": 29.8,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 16.15,
 				"Y": 34.4,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 13.95,
 				"Y": 35.15,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 16.95,
 				"Y": 36.05,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			}
 		],
 		"Recording": false
@@ -532,89 +832,140 @@
 		"MapID": 139,
 		"Positions": [
 			{
+				"Taken": false,
 				"X": 27.7,
 				"Y": 19.85,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 29.05,
 				"Y": 21.2,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 28.2,
 				"Y": 21.4,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 10.55,
 				"Y": 21.45,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 12.15,
 				"Y": 21.75,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 28.75,
 				"Y": 22.25,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 11.6,
 				"Y": 22.65,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 12.65,
 				"Y": 23.55,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 35.2,
 				"Y": 23.7,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 27.35,
 				"Y": 23.75,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 29.45,
 				"Y": 23.95,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 33.4,
 				"Y": 24.1,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 30.45,
 				"Y": 25.3,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 28.05,
 				"Y": 25.6,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 12.7,
 				"Y": 25.7,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 33.25,
 				"Y": 25.8,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 13.85,
 				"Y": 25.9,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			}
 		],
 		"Recording": false
@@ -624,114 +975,180 @@
 		"MapID": 140,
 		"Positions": [
 			{
+				"Taken": false,
 				"X": 10.35,
 				"Y": 5.25,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 8.45,
 				"Y": 5.5,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 12.15,
 				"Y": 5.95,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 14.95,
-				"Y": 6,
-				"Taken": false
+				"Y": 6.0,
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 10.2,
 				"Y": 6.4,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
-				"X": 12,
+				"Taken": false,
+				"X": 12.0,
 				"Y": 7.5,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 14.05,
 				"Y": 7.85,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 18.3,
-				"Y": 15,
-				"Taken": false
+				"Y": 15.0,
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 16.95,
 				"Y": 16.45,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 26.85,
 				"Y": 16.95,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 18.3,
 				"Y": 17.4,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 26.2,
 				"Y": 19.15,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 22.85,
 				"Y": 20.1,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 21.95,
 				"Y": 22.05,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 21.25,
-				"Y": 24,
-				"Taken": false
+				"Y": 24.0,
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 22.3,
-				"Y": 24,
-				"Taken": false
+				"Y": 24.0,
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 22.75,
 				"Y": 24.75,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 20.65,
 				"Y": 25.6,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 26.1,
 				"Y": 26.35,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 21.3,
 				"Y": 27.8,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 18.9,
 				"Y": 29.35,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 20.3,
 				"Y": 29.35,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			}
 		],
 		"Recording": false
@@ -741,119 +1158,188 @@
 		"MapID": 141,
 		"Positions": [
 			{
+				"Taken": false,
 				"X": 16.3,
 				"Y": 12.4,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
-				"X": 18,
+				"Taken": false,
+				"X": 18.0,
 				"Y": 13.5,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 21.75,
 				"Y": 13.65,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 21.9,
 				"Y": 15.55,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 16.6,
 				"Y": 16.4,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 20.8,
 				"Y": 16.4,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 18.1,
 				"Y": 17.5,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 25.4,
 				"Y": 17.95,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 27.75,
-				"Y": 18,
-				"Taken": false
+				"Y": 18.0,
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 17.9,
 				"Y": 18.9,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 16.3,
 				"Y": 19.55,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 29.5,
 				"Y": 20.9,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 21.6,
 				"Y": 21.1,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 27.2,
 				"Y": 21.5,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 19.2,
 				"Y": 21.7,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 16.95,
 				"Y": 23.3,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 19.45,
 				"Y": 23.7,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 18.7,
 				"Y": 25.25,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 20.45,
 				"Y": 26.1,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 25.8,
 				"Y": 29.85,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 22.4,
 				"Y": 31.4,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 23.9,
 				"Y": 31.9,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 23.7,
-				"Y": 35,
-				"Taken": false
+				"Y": 35.0,
+				"A": true,
+				"B": true,
+				"S": true
 			}
 		],
 		"Recording": false
@@ -863,179 +1349,284 @@
 		"MapID": 145,
 		"Positions": [
 			{
+				"Taken": false,
 				"X": 12.8,
 				"Y": 15.85,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 14.5,
 				"Y": 16.25,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 29.6,
 				"Y": 17.3,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 29.6,
 				"Y": 17.3,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 25.8,
 				"Y": 17.65,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 27.35,
 				"Y": 17.9,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 14.65,
 				"Y": 18.7,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 12.7,
 				"Y": 18.9,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 24.3,
 				"Y": 18.95,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 10.4,
 				"Y": 19.1,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 26.7,
 				"Y": 19.25,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 22.8,
 				"Y": 19.65,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 17.4,
-				"Y": 20,
-				"Taken": false
+				"Y": 20.0,
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 15.65,
 				"Y": 20.15,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 23.95,
 				"Y": 21.25,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 28.1,
 				"Y": 21.3,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 17.5,
 				"Y": 21.4,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 18.95,
 				"Y": 22.5,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 23.45,
 				"Y": 22.85,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
-				"X": 25,
+				"Taken": false,
+				"X": 25.0,
 				"Y": 23.25,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 19.85,
 				"Y": 24.35,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 17.4,
 				"Y": 24.75,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 26.7,
 				"Y": 25.05,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 17.85,
 				"Y": 25.5,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 25.4,
 				"Y": 25.55,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 27.9,
 				"Y": 25.75,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 16.6,
 				"Y": 25.9,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 14.55,
 				"Y": 26.15,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 23.4,
 				"Y": 26.7,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 29.3,
 				"Y": 26.75,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 15.4,
 				"Y": 26.9,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 17.45,
-				"Y": 28,
-				"Taken": false
+				"Y": 28.0,
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 19.55,
 				"Y": 28.45,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 20.35,
 				"Y": 28.55,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 12.9,
-				"Y": 29,
-				"Taken": false
+				"Y": 29.0,
+				"A": true,
+				"B": true,
+				"S": true
 			}
 		],
 		"Recording": false
@@ -1045,214 +1636,340 @@
 		"MapID": 146,
 		"Positions": [
 			{
+				"Taken": false,
 				"X": 23.2,
 				"Y": 7.95,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 24.65,
 				"Y": 9.35,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
-				"X": 18,
+				"Taken": false,
+				"X": 18.0,
 				"Y": 10.2,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 21.25,
 				"Y": 10.85,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 18.25,
 				"Y": 11.2,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 24.65,
 				"Y": 11.45,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 17.2,
 				"Y": 11.7,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 23.8,
 				"Y": 12.45,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 17.2,
 				"Y": 16.95,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 19.55,
 				"Y": 17.2,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
-				"X": 31,
+				"Taken": false,
+				"X": 31.0,
 				"Y": 18.4,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 19.7,
 				"Y": 19.25,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 32.9,
 				"Y": 19.85,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 15.95,
 				"Y": 20.25,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 21.4,
 				"Y": 20.75,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 28.5,
 				"Y": 20.75,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 18.35,
 				"Y": 21.2,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 24.15,
 				"Y": 21.3,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 18.45,
 				"Y": 22.9,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 21.05,
 				"Y": 22.9,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 16.65,
 				"Y": 23.15,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
-				"X": 16,
+				"Taken": false,
+				"X": 16.0,
 				"Y": 24.45,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 19.8,
 				"Y": 24.7,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 24.4,
 				"Y": 24.85,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 17.05,
 				"Y": 25.7,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 21.15,
 				"Y": 26.35,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 20.25,
 				"Y": 28.5,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 21.6,
 				"Y": 29.9,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 23.85,
 				"Y": 30.4,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 18.85,
 				"Y": 30.55,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 21.2,
 				"Y": 32.15,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 16.85,
 				"Y": 33.05,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 23.45,
 				"Y": 33.3,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 21.8,
 				"Y": 34.3,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 28.5,
 				"Y": 34.7,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 13.8,
 				"Y": 34.85,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 16.1,
 				"Y": 36.8,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 24.45,
 				"Y": 36.9,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 19.1,
 				"Y": 38.4,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 22.5,
 				"Y": 38.65,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 14.75,
 				"Y": 38.85,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 25.1,
 				"Y": 40.85,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			}
 		],
 		"Recording": false
@@ -1262,89 +1979,140 @@
 		"MapID": 147,
 		"Positions": [
 			{
+				"Taken": false,
 				"X": 16.05,
 				"Y": 14.65,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 17.25,
 				"Y": 15.7,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 16.05,
 				"Y": 15.95,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 19.05,
 				"Y": 16.75,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 16.85,
 				"Y": 16.95,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 18.25,
 				"Y": 17.5,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 18.75,
-				"Y": 18,
-				"Taken": false
+				"Y": 18.0,
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 15.4,
 				"Y": 18.55,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 16.35,
 				"Y": 19.4,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 23.95,
 				"Y": 22.85,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 24.3,
 				"Y": 23.2,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 23.65,
 				"Y": 24.15,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 21.05,
-				"Y": 25,
-				"Taken": false
+				"Y": 25.0,
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 23.6,
 				"Y": 25.25,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 23.45,
 				"Y": 26.3,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 22.2,
-				"Y": 27,
-				"Taken": false
+				"Y": 27.0,
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 20.6,
 				"Y": 27.8,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			}
 		],
 		"Recording": false
@@ -1354,124 +2122,196 @@
 		"MapID": 148,
 		"Positions": [
 			{
+				"Taken": false,
 				"X": 28.75,
 				"Y": 14.45,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 21.75,
 				"Y": 16.35,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 9.55,
 				"Y": 16.9,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 16.65,
 				"Y": 17.8,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 19.1,
 				"Y": 18.3,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 31.1,
 				"Y": 18.6,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 10.05,
 				"Y": 18.9,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 12.1,
 				"Y": 19.4,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 29.1,
 				"Y": 19.45,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 14.25,
 				"Y": 19.5,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 14.25,
 				"Y": 19.5,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 15.8,
 				"Y": 19.65,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 26.75,
 				"Y": 20.6,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 12.75,
 				"Y": 20.75,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 16.05,
 				"Y": 21.15,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 10.45,
 				"Y": 21.7,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 28.25,
 				"Y": 22.05,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 27.05,
 				"Y": 22.6,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 29.65,
 				"Y": 23.35,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 11.6,
 				"Y": 23.55,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 15.85,
-				"Y": 24,
-				"Taken": false
+				"Y": 24.0,
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 22.05,
 				"Y": 24.5,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 23.4,
 				"Y": 27.5,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 21.6,
 				"Y": 30.05,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			}
 		],
 		"Recording": false
@@ -1481,179 +2321,284 @@
 		"MapID": 152,
 		"Positions": [
 			{
+				"Taken": false,
 				"X": 25.05,
 				"Y": 9.8,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 26.5,
 				"Y": 11.3,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 29.5,
 				"Y": 11.45,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 24.45,
 				"Y": 11.7,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 28.1,
 				"Y": 12.75,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 25.9,
 				"Y": 13.1,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 29.9,
 				"Y": 13.3,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 24.3,
 				"Y": 15.2,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 31.9,
 				"Y": 15.4,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 26.7,
 				"Y": 16.05,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 24.0,
 				"Y": 16.5,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 24.8,
 				"Y": 17.4,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 30.3,
 				"Y": 17.45,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 27.0,
 				"Y": 17.95,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 27.8,
 				"Y": 18.7,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 25.7,
 				"Y": 20.35,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 29.0,
 				"Y": 20.5,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 31.7,
 				"Y": 21.5,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 16.85,
 				"Y": 21.75,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 23.0,
 				"Y": 21.75,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 21.25,
 				"Y": 21.8,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 27.6,
 				"Y": 22.6,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 17.4,
 				"Y": 22.9,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 13.6,
 				"Y": 23.25,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 25.3,
 				"Y": 23.65,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 15.6,
 				"Y": 23.9,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 27.7,
 				"Y": 24.6,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 25.8,
 				"Y": 25.2,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 14.35,
 				"Y": 25.35,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 19.05,
 				"Y": 25.4,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 14.5,
 				"Y": 27.65,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 22.0,
 				"Y": 28.1,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 19.95,
 				"Y": 28.75,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 22.1,
 				"Y": 29.6,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 23.8,
 				"Y": 30.85,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			}
 		],
 		"Recording": false
@@ -1663,144 +2608,228 @@
 		"MapID": 153,
 		"Positions": [
 			{
+				"Taken": false,
 				"X": 27.75,
 				"Y": 17.65,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 24.35,
 				"Y": 18.2,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 16.9,
 				"Y": 18.4,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 18.8,
 				"Y": 18.45,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 22.15,
 				"Y": 19.25,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 15.8,
 				"Y": 19.7,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 26.95,
 				"Y": 19.9,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 17.0,
 				"Y": 21.45,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 21.4,
 				"Y": 21.6,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 18.6,
 				"Y": 22.05,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 22.65,
 				"Y": 22.65,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 27.05,
 				"Y": 22.75,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 16.9,
 				"Y": 23.65,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 31.7,
 				"Y": 23.75,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 32.7,
 				"Y": 23.95,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 23.0,
 				"Y": 24.15,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 28.85,
 				"Y": 24.65,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 30.55,
 				"Y": 25.6,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 22.65,
 				"Y": 25.65,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 19.4,
 				"Y": 27.4,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 16.15,
 				"Y": 27.6,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 21.4,
 				"Y": 27.65,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 15.7,
 				"Y": 28.55,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 19.0,
 				"Y": 28.65,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 17.25,
 				"Y": 30.5,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 18.25,
 				"Y": 30.9,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 16.3,
 				"Y": 32.05,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 17.15,
 				"Y": 32.45,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			}
 		],
 		"Recording": false
@@ -1810,104 +2839,164 @@
 		"MapID": 154,
 		"Positions": [
 			{
+				"Taken": false,
 				"X": 23.45,
 				"Y": 19.95,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 24.45,
 				"Y": 20.2,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 18.65,
 				"Y": 20.4,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 22.65,
 				"Y": 20.7,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 28.6,
 				"Y": 21.65,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 27.65,
 				"Y": 22.25,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 25.95,
 				"Y": 22.75,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 22.15,
 				"Y": 23.75,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 27.95,
 				"Y": 24.3,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 16.65,
 				"Y": 25.4,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 24.8,
 				"Y": 25.7,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 25.8,
 				"Y": 26.05,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 18.2,
 				"Y": 27.05,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 27.05,
 				"Y": 27.2,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 22.45,
 				"Y": 28.15,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 15.95,
 				"Y": 28.25,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 24.55,
 				"Y": 28.3,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 19.4,
 				"Y": 28.6,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 18.15,
 				"Y": 28.95,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 21.55,
 				"Y": 30.05,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			}
 		],
 		"Recording": false
@@ -1917,304 +3006,484 @@
 		"MapID": 155,
 		"Positions": [
 			{
+				"Taken": false,
 				"X": 32.05,
 				"Y": 7.1,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 28.9,
 				"Y": 7.75,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 22.95,
 				"Y": 8.05,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 24.65,
 				"Y": 9.1,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 30.15,
 				"Y": 10.6,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 25.3,
 				"Y": 11.2,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 28.1,
 				"Y": 11.45,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 8.95,
 				"Y": 11.9,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 30.2,
 				"Y": 12.6,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 10.8,
 				"Y": 12.85,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 27.05,
 				"Y": 13.45,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 8.85,
 				"Y": 13.5,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 24.8,
 				"Y": 13.5,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 11.75,
 				"Y": 14.25,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 31.5,
 				"Y": 14.3,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 8.85,
 				"Y": 14.8,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 28.4,
 				"Y": 14.85,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 35.05,
 				"Y": 15.3,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 5.25,
 				"Y": 16.0,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 20.55,
 				"Y": 16.25,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 4.15,
 				"Y": 16.6,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 31.9,
 				"Y": 16.95,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 5.6,
 				"Y": 18.05,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 14.3,
 				"Y": 18.05,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 10.5,
 				"Y": 18.25,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 15.4,
 				"Y": 18.5,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 19.55,
 				"Y": 18.65,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 21.55,
 				"Y": 18.8,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 17.5,
 				"Y": 18.85,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 11.55,
 				"Y": 19.65,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 14.3,
 				"Y": 19.8,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 6.45,
 				"Y": 19.85,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 24.6,
 				"Y": 20.0,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 16.85,
 				"Y": 20.5,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 27.1,
 				"Y": 20.65,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 8.35,
 				"Y": 21.0,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 24.15,
 				"Y": 21.7,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 27.4,
 				"Y": 22.15,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 34.8,
 				"Y": 22.75,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 35.8,
 				"Y": 23.05,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 32.8,
 				"Y": 23.6,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 24.65,
 				"Y": 23.75,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 13.4,
 				"Y": 25.25,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 14.9,
 				"Y": 25.6,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 28.1,
 				"Y": 25.6,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 25.65,
 				"Y": 25.65,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 23.45,
 				"Y": 26.8,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 9.0,
 				"Y": 27.25,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 11.0,
 				"Y": 27.3,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 15.8,
 				"Y": 27.45,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 29.3,
 				"Y": 27.65,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 12.65,
 				"Y": 28.05,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 21.4,
 				"Y": 28.2,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 6.6,
 				"Y": 28.7,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 15.5,
 				"Y": 28.7,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 11.05,
 				"Y": 28.95,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 19.8,
 				"Y": 29.2,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 17.7,
 				"Y": 29.35,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 30.3,
 				"Y": 29.8,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 30.75,
 				"Y": 31.05,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			}
 		],
 		"Recording": false
@@ -2224,174 +3493,276 @@
 		"MapID": 156,
 		"Positions": [
 			{
+				"Taken": false,
 				"X": 30.6,
 				"Y": 6.4,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 29.1,
 				"Y": 6.5,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 32.3,
 				"Y": 6.9,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 29.1,
 				"Y": 7.7,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 19.15,
 				"Y": 8.1,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 26.8,
 				"Y": 8.5,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 32.45,
 				"Y": 8.6,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 27.15,
 				"Y": 8.85,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 32.3,
 				"Y": 10.2,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 16.05,
 				"Y": 10.45,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 14.0,
 				"Y": 10.5,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 27.4,
 				"Y": 10.6,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 24.85,
 				"Y": 10.65,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 23.2,
 				"Y": 10.7,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 31.45,
 				"Y": 11.3,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 11.9,
 				"Y": 11.8,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 15.75,
 				"Y": 11.8,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 33.6,
 				"Y": 12.05,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 13.65,
 				"Y": 12.15,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 23.4,
 				"Y": 12.2,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 25.2,
 				"Y": 12.7,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 26.8,
 				"Y": 12.7,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 28.25,
 				"Y": 13.55,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 12.7,
 				"Y": 13.75,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 14.2,
 				"Y": 13.85,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 9.8,
 				"Y": 13.9,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 32.4,
 				"Y": 14.35,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 28.95,
 				"Y": 14.75,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 30.15,
 				"Y": 15.05,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 10.6,
 				"Y": 15.15,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 16.4,
 				"Y": 15.6,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 12.6,
 				"Y": 16.0,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 12.25,
 				"Y": 16.85,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 16.8,
 				"Y": 17.4,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			}
 		],
 		"Recording": false
@@ -2401,119 +3772,188 @@
 		"MapID": 180,
 		"Positions": [
 			{
-				"X": 27,
+				"Taken": false,
+				"X": 27.0,
 				"Y": 5.2,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 21.5,
 				"Y": 6.85,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 22.45,
 				"Y": 6.85,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 27.4,
 				"Y": 7.25,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 24.55,
 				"Y": 7.35,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 21.75,
 				"Y": 8.35,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 23.65,
 				"Y": 9.25,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 21.8,
 				"Y": 9.5,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 21.9,
 				"Y": 10.3,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 15.6,
 				"Y": 10.35,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 15.4,
 				"Y": 12.65,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
-				"X": 23,
+				"Taken": false,
+				"X": 23.0,
 				"Y": 13.2,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 14.1,
 				"Y": 14.05,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 21.35,
 				"Y": 14.6,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 15.25,
 				"Y": 14.8,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
-				"X": 19,
+				"Taken": false,
+				"X": 19.0,
 				"Y": 15.1,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 22.9,
 				"Y": 15.15,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 24.6,
 				"Y": 16.15,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 13.55,
 				"Y": 16.2,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
-				"X": 23,
+				"Taken": false,
+				"X": 23.0,
 				"Y": 16.2,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 14.7,
 				"Y": 16.85,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 16.45,
 				"Y": 17.8,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 15.1,
 				"Y": 18.05,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			}
 		],
 		"Recording": false
@@ -2523,124 +3963,196 @@
 		"MapID": 397,
 		"Positions": [
 			{
+				"Taken": false,
 				"X": 28.0,
 				"Y": 7.85,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 35.6,
 				"Y": 9.6,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 26.1,
 				"Y": 11.55,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 15.1,
 				"Y": 12.1,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 6.65,
 				"Y": 12.45,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 36.25,
 				"Y": 12.5,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 29.35,
 				"Y": 13.0,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 18.0,
 				"Y": 13.1,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 10.0,
 				"Y": 13.2,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 27.5,
 				"Y": 15.9,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 11.55,
 				"Y": 17.3,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 21.95,
 				"Y": 17.65,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 32.5,
 				"Y": 17.65,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 18.05,
 				"Y": 18.95,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 22.1,
 				"Y": 20.7,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 34.05,
 				"Y": 20.8,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 27.95,
 				"Y": 21.4,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 33.8,
 				"Y": 22.5,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 17.3,
 				"Y": 25.8,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 29.95,
 				"Y": 26.75,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 23.5,
 				"Y": 28.1,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 16.7,
 				"Y": 29.65,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 18.7,
 				"Y": 31.2,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 25.0,
 				"Y": 32.35,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			}
 		],
 		"Recording": false
@@ -2650,104 +4162,164 @@
 		"MapID": 398,
 		"Positions": [
 			{
+				"Taken": false,
 				"X": 26.4,
 				"Y": 7.5,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 33.9,
 				"Y": 8.55,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 16.9,
 				"Y": 11.3,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 34.85,
 				"Y": 13.55,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 13.6,
 				"Y": 15.05,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 32.5,
 				"Y": 18.25,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 21.4,
 				"Y": 19.8,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 28.9,
 				"Y": 21.8,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 25.7,
 				"Y": 24.85,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 38.6,
 				"Y": 25.6,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 12.35,
 				"Y": 27.6,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 34.6,
 				"Y": 28.75,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 20.05,
 				"Y": 30.2,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 27.75,
 				"Y": 30.8,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 14.3,
 				"Y": 31.35,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 24.9,
 				"Y": 32.4,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 21.15,
 				"Y": 33.8,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 10.25,
 				"Y": 35.25,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 27.4,
 				"Y": 37.25,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 17.95,
 				"Y": 38.75,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			}
 		],
 		"Recording": false
@@ -2757,114 +4329,180 @@
 		"MapID": 399,
 		"Positions": [
 			{
+				"Taken": false,
 				"X": 13.1,
 				"Y": 16.45,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 26.65,
 				"Y": 16.6,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 26.85,
 				"Y": 20.05,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 31.8,
 				"Y": 20.15,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 9.35,
 				"Y": 21.35,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 15.05,
 				"Y": 21.6,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 35.95,
 				"Y": 21.85,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 5.4,
 				"Y": 22.15,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 24.0,
 				"Y": 23.5,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 33.95,
 				"Y": 24.1,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 15.1,
 				"Y": 25.45,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 26.8,
 				"Y": 25.45,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 34.2,
 				"Y": 26.85,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 8.6,
 				"Y": 28.1,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 38.0,
 				"Y": 28.4,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 12.6,
 				"Y": 29.25,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 26.6,
 				"Y": 29.4,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 15.5,
 				"Y": 32.05,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 8.45,
 				"Y": 34.0,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 14.5,
 				"Y": 35.65,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 26.25,
 				"Y": 36.9,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 16.15,
 				"Y": 37.75,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			}
 		],
 		"Recording": false
@@ -2874,114 +4512,180 @@
 		"MapID": 400,
 		"Positions": [
 			{
+				"Taken": false,
 				"X": 25.85,
 				"Y": 7.95,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 9.5,
 				"Y": 8.5,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 28.25,
 				"Y": 10.6,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 7.4,
 				"Y": 11.7,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 15.2,
 				"Y": 14.5,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 7.9,
 				"Y": 15.8,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 6.85,
 				"Y": 20.25,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 11.9,
 				"Y": 20.3,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 28.5,
 				"Y": 20.35,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 24.9,
 				"Y": 20.5,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 33.5,
 				"Y": 20.85,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 14.0,
 				"Y": 23.55,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 18.2,
 				"Y": 24.35,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 37.2,
 				"Y": 26.2,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 26.4,
 				"Y": 27.6,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 16.9,
 				"Y": 28.0,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 36.05,
 				"Y": 29.05,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 15.8,
 				"Y": 30.25,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 22.45,
 				"Y": 31.1,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 31.95,
 				"Y": 32.65,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 6.45,
 				"Y": 35.65,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 10.05,
 				"Y": 38.7,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			}
 		],
 		"Recording": false
@@ -2991,134 +4695,212 @@
 		"MapID": 401,
 		"Positions": [
 			{
+				"Taken": false,
 				"X": 29.35,
 				"Y": 6.55,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 15.55,
 				"Y": 7.5,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 21.75,
 				"Y": 7.65,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 7.5,
 				"Y": 8.35,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 36.9,
 				"Y": 8.65,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 19.25,
 				"Y": 9.45,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 23.25,
 				"Y": 10.0,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 25.05,
 				"Y": 13.1,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 15.4,
 				"Y": 14.6,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 37.4,
 				"Y": 14.65,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 21.55,
 				"Y": 16.05,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 9.05,
 				"Y": 16.65,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 31.45,
 				"Y": 19.05,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 6.5,
 				"Y": 19.3,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 36.5,
 				"Y": 21.15,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 20.85,
 				"Y": 21.5,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 14.55,
 				"Y": 23.5,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 24.45,
 				"Y": 25.25,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 26.1,
 				"Y": 29.1,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 13.75,
 				"Y": 29.15,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 17.9,
 				"Y": 29.85,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 34.05,
 				"Y": 31.55,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 18.3,
 				"Y": 31.65,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 26.6,
 				"Y": 33.7,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 31.65,
 				"Y": 36.1,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 36.2,
 				"Y": 38.5,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			}
 		],
 		"Recording": false
@@ -3128,104 +4910,164 @@
 		"MapID": 402,
 		"Positions": [
 			{
+				"Taken": false,
 				"X": 32.7,
 				"Y": 5.75,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 37.7,
 				"Y": 7.1,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 17.3,
 				"Y": 8.55,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 27.65,
 				"Y": 11.15,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 33.8,
 				"Y": 12.85,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 18.5,
 				"Y": 13.25,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 27.4,
 				"Y": 15.8,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 13.9,
 				"Y": 16.9,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 9.45,
 				"Y": 26.5,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 34.35,
 				"Y": 26.65,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 38.95,
 				"Y": 27.6,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 29.85,
 				"Y": 28.75,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 16.1,
 				"Y": 29.4,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 11.3,
 				"Y": 30.35,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 35.9,
 				"Y": 30.8,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 8.25,
 				"Y": 34.0,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 36.25,
 				"Y": 34.15,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 29.65,
 				"Y": 35.05,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 36.35,
 				"Y": 37.15,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 12.85,
 				"Y": 38.2,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			}
 		],
 		"Recording": false
@@ -3235,104 +5077,164 @@
 		"MapID": 612,
 		"Positions": [
 			{
+				"Taken": false,
 				"X": 18.25,
 				"Y": 8.45,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 21.2,
 				"Y": 10.55,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 25.35,
 				"Y": 11.75,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 14.35,
 				"Y": 12.4,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 17.8,
 				"Y": 12.75,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 10.45,
 				"Y": 14.55,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 34.65,
 				"Y": 17.5,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 12.25,
 				"Y": 18.0,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 24.1,
 				"Y": 18.15,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 33.75,
 				"Y": 20.9,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 17.5,
 				"Y": 21.75,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 27.75,
 				"Y": 23.5,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 16.65,
 				"Y": 24.3,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 8.7,
 				"Y": 25.25,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 15.35,
 				"Y": 26.25,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 25.2,
 				"Y": 28.4,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 8.3,
 				"Y": 30.55,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 28.95,
 				"Y": 30.8,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 25.85,
 				"Y": 31.9,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 33.3,
 				"Y": 33.35,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			}
 		],
 		"Recording": false
@@ -3342,74 +5244,116 @@
 		"MapID": 613,
 		"Positions": [
 			{
+				"Taken": false,
 				"X": 7.5,
 				"Y": 5.9,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 25.95,
 				"Y": 7.05,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 18.85,
 				"Y": 8.65,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 16.55,
 				"Y": 10.6,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 14.45,
 				"Y": 13.9,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 36.5,
 				"Y": 17.95,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 34.95,
 				"Y": 21.15,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 5.05,
 				"Y": 22.95,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 32.05,
 				"Y": 24.3,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 25.3,
 				"Y": 26.2,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 6.9,
 				"Y": 29.8,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 27.25,
 				"Y": 31.6,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 23.95,
 				"Y": 33.2,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 31.05,
 				"Y": 38.75,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			}
 		],
 		"Recording": false
@@ -3419,74 +5363,116 @@
 		"MapID": 614,
 		"Positions": [
 			{
+				"Taken": false,
 				"X": 21.6,
 				"Y": 9.45,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 27.1,
 				"Y": 10.4,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 18.35,
 				"Y": 10.5,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 28.7,
 				"Y": 11.35,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 23.65,
 				"Y": 11.5,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 16.9,
 				"Y": 13.8,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 18.25,
 				"Y": 16.15,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 32.35,
 				"Y": 18.5,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 24.6,
 				"Y": 21.7,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 34.15,
 				"Y": 26.6,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 23.6,
 				"Y": 27.25,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 12.3,
 				"Y": 30.6,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 17.65,
 				"Y": 34.3,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 29.85,
 				"Y": 35.3,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			}
 		],
 		"Recording": false
@@ -3496,94 +5482,148 @@
 		"MapID": 620,
 		"Positions": [
 			{
+				"Taken": false,
 				"X": 26.95,
 				"Y": 7.95,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 11.2,
 				"Y": 8.2,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 32.05,
 				"Y": 8.3,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 26.25,
 				"Y": 12.0,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 8.7,
 				"Y": 12.25,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 36.35,
 				"Y": 12.45,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 5.65,
 				"Y": 14.75,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 23.35,
 				"Y": 14.95,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 25.35,
 				"Y": 20.15,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 16.65,
 				"Y": 23.1,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 23.75,
 				"Y": 24.25,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 7.8,
 				"Y": 25.85,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 18.1,
 				"Y": 26.7,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 12.6,
 				"Y": 28.3,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 26.65,
 				"Y": 29.85,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 11.75,
 				"Y": 32.85,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 5.85,
 				"Y": 34.8,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 23.65,
 				"Y": 36.6,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			}
 		],
 		"Recording": false
@@ -3593,99 +5633,156 @@
 		"MapID": 621,
 		"Positions": [
 			{
+				"Taken": false,
 				"X": 18.3,
 				"Y": 7.5,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 29.1,
 				"Y": 8.0,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 6.45,
 				"Y": 8.25,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 22.5,
 				"Y": 10.35,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 35.1,
 				"Y": 11.1,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 7.7,
 				"Y": 14.1,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 25.05,
 				"Y": 16.5,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 13.95,
 				"Y": 20.55,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 18.8,
 				"Y": 25.6,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 23.45,
 				"Y": 25.85,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 7.4,
 				"Y": 26.3,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 4.6,
 				"Y": 29.3,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 6.95,
 				"Y": 31.1,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 18.95,
 				"Y": 31.75,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 24.55,
 				"Y": 32.95,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 10.45,
 				"Y": 33.7,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 26.45,
 				"Y": 34.55,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 3.1,
 				"Y": 34.95,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 30.1,
 				"Y": 36.35,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			}
 		],
 		"Recording": false
@@ -3695,94 +5792,148 @@
 		"MapID": 622,
 		"Positions": [
 			{
+				"Taken": false,
 				"X": 27.35,
 				"Y": 9.0,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 13.5,
 				"Y": 10.15,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 19.35,
 				"Y": 10.25,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 34.65,
 				"Y": 15.05,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 22.35,
 				"Y": 15.95,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 12.45,
 				"Y": 17.25,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 27.9,
 				"Y": 18.8,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 17.4,
 				"Y": 18.9,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 9.65,
 				"Y": 22.35,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 14.95,
 				"Y": 25.5,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 27.9,
 				"Y": 25.7,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 9.75,
 				"Y": 25.9,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 11.4,
 				"Y": 28.35,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 15.6,
 				"Y": 30.3,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 24.25,
 				"Y": 30.3,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 21.85,
 				"Y": 34.2,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 26.7,
 				"Y": 34.25,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 17.6,
 				"Y": 34.4,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			}
 		],
 		"Recording": false
@@ -3792,94 +5943,148 @@
 		"MapID": 813,
 		"Positions": [
 			{
+				"Taken": false,
 				"X": 19.7,
 				"Y": 9.75,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 36.65,
 				"Y": 12.2,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 23.25,
 				"Y": 12.35,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 11.7,
 				"Y": 12.65,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 27.65,
 				"Y": 15.35,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 35.1,
 				"Y": 15.95,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 11.3,
 				"Y": 17.25,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 29.5,
 				"Y": 19.3,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 30.75,
 				"Y": 22.65,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 7.8,
 				"Y": 22.75,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 18.3,
 				"Y": 23.0,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 25.5,
 				"Y": 23.9,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 13.7,
 				"Y": 24.5,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 35.7,
 				"Y": 27.05,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 23.1,
 				"Y": 29.7,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 27.9,
 				"Y": 30.9,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 35.2,
 				"Y": 32.2,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 26.65,
 				"Y": 37.2,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			}
 		],
 		"Recording": false
@@ -3889,89 +6094,140 @@
 		"MapID": 814,
 		"Positions": [
 			{
+				"Taken": false,
 				"X": 17.05,
 				"Y": 6.9,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 19.6,
 				"Y": 10.6,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 24.8,
 				"Y": 11.4,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 21.8,
 				"Y": 14.05,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 14.9,
 				"Y": 15.75,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 22.95,
 				"Y": 17.55,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 11.6,
 				"Y": 18.7,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 26.7,
 				"Y": 19.25,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 31.45,
 				"Y": 19.65,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 21.2,
 				"Y": 22.5,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 34.45,
 				"Y": 24.15,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 15.0,
 				"Y": 24.3,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 26.8,
 				"Y": 24.35,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 9.0,
 				"Y": 25.6,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 24.7,
 				"Y": 29.85,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 30.05,
 				"Y": 30.05,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 20.9,
 				"Y": 31.3,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			}
 		],
 		"Recording": false
@@ -3981,94 +6237,148 @@
 		"MapID": 815,
 		"Positions": [
 			{
+				"Taken": false,
 				"X": 16.7,
 				"Y": 10.25,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 22.6,
 				"Y": 10.5,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 10.25,
 				"Y": 11.95,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 28.6,
 				"Y": 12.3,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 30.95,
 				"Y": 13.75,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 19.35,
 				"Y": 16.15,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 11.55,
 				"Y": 19.5,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 28.8,
 				"Y": 20.25,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 33.55,
 				"Y": 21.55,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 16.3,
 				"Y": 24.05,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 19.2,
 				"Y": 24.9,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 28.5,
 				"Y": 26.0,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 19.75,
 				"Y": 28.75,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 23.2,
 				"Y": 29.75,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 17.15,
 				"Y": 31.65,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 33.0,
 				"Y": 33.9,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 30.4,
 				"Y": 35.25,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 19.9,
 				"Y": 36.45,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			}
 		],
 		"Recording": false
@@ -4078,89 +6388,140 @@
 		"MapID": 816,
 		"Positions": [
 			{
+				"Taken": false,
 				"X": 29.25,
 				"Y": 5.45,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 25.5,
 				"Y": 7.1,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 33.8,
 				"Y": 7.3,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 20.2,
 				"Y": 8.5,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 31.6,
 				"Y": 13.65,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 11.2,
 				"Y": 15.9,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 27.2,
 				"Y": 19.0,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 10.8,
 				"Y": 20.35,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 7.45,
 				"Y": 23.0,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 7.85,
 				"Y": 27.05,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 19.1,
 				"Y": 27.15,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 22.8,
 				"Y": 28.85,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 9.65,
 				"Y": 30.65,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 24.55,
 				"Y": 32.75,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 13.6,
 				"Y": 34.1,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 19.7,
 				"Y": 34.9,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 24.7,
 				"Y": 37.25,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			}
 		],
 		"Recording": false
@@ -4170,79 +6531,124 @@
 		"MapID": 817,
 		"Positions": [
 			{
+				"Taken": false,
 				"X": 22.5,
 				"Y": 10.75,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 21.95,
 				"Y": 13.7,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 26.35,
 				"Y": 14.95,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 9.5,
 				"Y": 18.6,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 14.9,
 				"Y": 22.35,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 33.35,
 				"Y": 22.8,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 9.9,
 				"Y": 24.0,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 16.7,
 				"Y": 24.05,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 26.3,
 				"Y": 24.25,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 29.7,
 				"Y": 26.05,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 15.1,
 				"Y": 30.25,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 25.3,
 				"Y": 30.3,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 8.5,
 				"Y": 34.65,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 17.8,
 				"Y": 35.1,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 12.05,
 				"Y": 35.85,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			}
 		],
 		"Recording": false
@@ -4252,89 +6658,140 @@
 		"MapID": 818,
 		"Positions": [
 			{
+				"Taken": false,
 				"X": 31.2,
 				"Y": 4.05,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 11.4,
 				"Y": 5.25,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 21.0,
 				"Y": 7.7,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 8.35,
 				"Y": 8.35,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 28.4,
 				"Y": 8.45,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 15.7,
 				"Y": 10.3,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 30.75,
 				"Y": 10.95,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 36.6,
 				"Y": 11.55,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 25.3,
 				"Y": 12.95,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 18.2,
 				"Y": 13.35,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 37.75,
 				"Y": 16.7,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 13.45,
 				"Y": 17.4,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 36.1,
 				"Y": 19.95,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 15.4,
 				"Y": 20.4,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 33.7,
 				"Y": 21.6,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 29.1,
 				"Y": 22.85,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 24.7,
 				"Y": 24.7,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			}
 		],
 		"Recording": false
@@ -4344,54 +6801,84 @@
 		"MapID": 956,
 		"Positions": [
 			{
+				"Taken": false,
 				"X": 30.15,
 				"Y": 8.35,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 17.1,
 				"Y": 9.45,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 34.3,
 				"Y": 13.5,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 16.55,
 				"Y": 16.3,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 10.55,
 				"Y": 19.25,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 25.2,
 				"Y": 25.5,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 32.1,
 				"Y": 26.0,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 5.75,
 				"Y": 33.85,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 12.05,
 				"Y": 35.4,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 19.6,
 				"Y": 38.35,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			}
 		],
 		"Recording": false
@@ -4401,49 +6888,76 @@
 		"MapID": 957,
 		"Positions": [
 			{
+				"Taken": false,
 				"X": 18.65,
 				"Y": 11.55,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 14.55,
 				"Y": 12.2,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 29.5,
 				"Y": 13.65,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 18.15,
 				"Y": 16.35,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 32.8,
 				"Y": 20.3,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 26.5,
 				"Y": 20.85,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 18.4,
 				"Y": 23.35,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 27.65,
 				"Y": 25.8,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 20.25,
 				"Y": 31.05,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			}
 		],
 		"Recording": false
@@ -4453,49 +6967,76 @@
 		"MapID": 958,
 		"Positions": [
 			{
+				"Taken": false,
 				"X": 9.75,
 				"Y": 11.6,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 12.2,
 				"Y": 12.75,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 11.9,
 				"Y": 17.35,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 15.7,
 				"Y": 19.65,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 28.95,
 				"Y": 20.75,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 33.0,
 				"Y": 21.85,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 23.2,
 				"Y": 25.55,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 32.45,
 				"Y": 32.35,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 27.4,
 				"Y": 34.05,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			}
 		],
 		"Recording": false
@@ -4505,54 +7046,84 @@
 		"MapID": 959,
 		"Positions": [
 			{
+				"Taken": false,
 				"X": 18.45,
 				"Y": 21.5,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 24.3,
 				"Y": 23.35,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 10.3,
 				"Y": 24.1,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 17.15,
 				"Y": 24.7,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 28.3,
 				"Y": 26.65,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 36.4,
 				"Y": 27.2,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 16.55,
 				"Y": 28.85,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 29.8,
 				"Y": 29.85,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 24.25,
 				"Y": 33.5,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 21.1,
 				"Y": 34.7,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			}
 		],
 		"Recording": false
@@ -4562,49 +7133,76 @@
 		"MapID": 960,
 		"Positions": [
 			{
+				"Taken": false,
 				"X": 19.4,
 				"Y": 10.0,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 13.3,
 				"Y": 10.5,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 28.1,
 				"Y": 12.6,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 8.2,
 				"Y": 20.6,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 11.75,
 				"Y": 21.7,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 16.45,
 				"Y": 25.85,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 17.6,
 				"Y": 30.35,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 21.35,
 				"Y": 34.0,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 15.2,
 				"Y": 35.95,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			}
 		],
 		"Recording": false
@@ -4614,59 +7212,92 @@
 		"MapID": 961,
 		"Positions": [
 			{
+				"Taken": false,
 				"X": 21.7,
 				"Y": 6.05,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 12.85,
 				"Y": 9.8,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 33.95,
 				"Y": 10.85,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 21.35,
 				"Y": 13.45,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 34.35,
 				"Y": 14.2,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 32.55,
 				"Y": 18.6,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 18.5,
 				"Y": 24.45,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 29.4,
 				"Y": 27.65,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 7.05,
 				"Y": 29.05,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 17.8,
 				"Y": 30.15,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 12.85,
 				"Y": 32.1,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			}
 		],
 		"Recording": false
@@ -4676,49 +7307,76 @@
 		"MapID": 1187,
 		"Positions": [
 			{
+				"Taken": false,
 				"X": 7.53,
 				"Y": 25.48,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 11.54,
 				"Y": 8.95,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 15.73,
 				"Y": 24.14,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 19.13,
 				"Y": 14.15,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 21.88,
 				"Y": 20.73,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 22.02,
-				"Y": 16.80,
-				"Taken": false
+				"Y": 16.8,
+				"A": false,
+				"B": true,
+				"S": false
 			},
 			{
+				"Taken": false,
 				"X": 28.14,
 				"Y": 22.79,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 28.87,
 				"Y": 9.42,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 34.03,
-				"Y": 19.10,
-				"Taken": false
+				"Y": 19.1,
+				"A": false,
+				"B": true,
+				"S": false
 			}
 		],
 		"Recording": false
@@ -4728,49 +7386,76 @@
 		"MapID": 1188,
 		"Positions": [
 			{
+				"Taken": false,
 				"X": 5.26,
 				"Y": 28.77,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 6.43,
 				"Y": 12.03,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 9.51,
-				"Y": 7.80,
-				"Taken": false
+				"Y": 7.8,
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 15.81,
 				"Y": 23.63,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 16.31,
 				"Y": 17.27,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 20.29,
 				"Y": 28.37,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
-				"X": 24.00,
+				"Taken": false,
+				"X": 24.0,
 				"Y": 36.63,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 34.48,
 				"Y": 36.39,
-				"Taken": false
+				"A": false,
+				"B": true,
+				"S": false
 			},
 			{
+				"Taken": false,
 				"X": 36.82,
-				"Y": 17.40,
-				"Taken": false
+				"Y": 17.4,
+				"A": true,
+				"B": true,
+				"S": true
 			}
 		],
 		"Recording": false
@@ -4780,49 +7465,76 @@
 		"MapID": 1189,
 		"Positions": [
 			{
+				"Taken": false,
 				"X": 6.38,
 				"Y": 26.37,
-				"Taken": false
+				"A": false,
+				"B": true,
+				"S": false
 			},
 			{
-				"X": 8.60,
-				"Y": 19.50,
-				"Taken": false
+				"Taken": false,
+				"X": 8.6,
+				"Y": 19.5,
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 13.52,
 				"Y": 25.67,
-				"Taken": false
+				"A": false,
+				"B": true,
+				"S": false
 			},
 			{
+				"Taken": false,
 				"X": 21.31,
 				"Y": 36.38,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 21.71,
 				"Y": 28.39,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 23.36,
 				"Y": 14.21,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 24.63,
 				"Y": 33.02,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 26.22,
 				"Y": 9.48,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 33.12,
 				"Y": 16.18,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			}
 		],
 		"Recording": false
@@ -4832,49 +7544,76 @@
 		"MapID": 1190,
 		"Positions": [
 			{
+				"Taken": false,
 				"X": 8.99,
-				"Y": 16.50,
-				"Taken": false
+				"Y": 16.5,
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 13.31,
 				"Y": 27.45,
-				"Taken": false
+				"A": false,
+				"B": true,
+				"S": false
 			},
 			{
+				"Taken": false,
 				"X": 16.05,
 				"Y": 8.29,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
-				"X": 21.70,
+				"Taken": false,
+				"X": 21.7,
 				"Y": 33.34,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 22.05,
 				"Y": 28.19,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 23.04,
 				"Y": 18.84,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 25.14,
 				"Y": 23.29,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 31.39,
 				"Y": 23.16,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 34.31,
 				"Y": 6.49,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			}
 		],
 		"Recording": false
@@ -4884,49 +7623,76 @@
 		"MapID": 1191,
 		"Positions": [
 			{
+				"Taken": false,
 				"X": 8.17,
 				"Y": 33.35,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 12.67,
 				"Y": 20.78,
-				"Taken": false
+				"A": false,
+				"B": true,
+				"S": false
 			},
 			{
+				"Taken": false,
 				"X": 14.47,
 				"Y": 26.01,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 24.05,
-				"Y": 19.60,
-				"Taken": false
+				"Y": 19.6,
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 27.13,
 				"Y": 13.74,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
-				"X": 27.40,
+				"Taken": false,
+				"X": 27.4,
 				"Y": 33.62,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 29.57,
 				"Y": 19.52,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 29.53,
 				"Y": 29.77,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 36.65,
 				"Y": 13.01,
-				"Taken": false
+				"A": false,
+				"B": true,
+				"S": false
 			}
 		],
 		"Recording": false
@@ -4936,49 +7702,76 @@
 		"MapID": 1192,
 		"Positions": [
 			{
+				"Taken": false,
 				"X": 4.15,
 				"Y": 28.84,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 5.05,
 				"Y": 12.73,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 12.36,
 				"Y": 37.68,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 12.82,
 				"Y": 27.72,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 18.83,
 				"Y": 20.16,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 26.86,
 				"Y": 31.28,
-				"Taken": false
+				"A": true,
+				"B": true,
+				"S": true
 			},
 			{
+				"Taken": false,
 				"X": 32.88,
 				"Y": 20.96,
-				"Taken": false
+				"A": false,
+				"B": true,
+				"S": false
 			},
 			{
+				"Taken": false,
 				"X": 37.11,
 				"Y": 18.74,
-				"Taken": false
+				"A": false,
+				"B": true,
+				"S": false
 			},
 			{
+				"Taken": false,
 				"X": 38.87,
-				"Y": 30.00,
-				"Taken": false
+				"Y": 30.0,
+				"A": false,
+				"B": true,
+				"S": false
 			}
 		],
 		"Recording": false

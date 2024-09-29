@@ -28,7 +28,7 @@ namespace HuntHelper
 
 
         #region icon stuff
-        public Vector4 SpawnPointColour { get; set; } = new Vector4(0.24706f, 0.309804f, 0.741176f, 1); //purty blue
+        public Vector4 SpawnPointColour { get; set; } = new Vector4(1f, 0f, 127f / 255f, 1f); //red purple
         public Vector4 MobColour { get; set; } = new Vector4(0.4f, 1f, 0.567f, 1f); //green
         public Vector4 PlayerIconColour { get; set; } = new Vector4(0f, 0f, 0f, 1f); //black
         public Vector4 PlayerIconBackgroundColour { get; set; } = new Vector4(0.117647f, 0.5647f, 1f, 0.7f); //blue
@@ -83,6 +83,9 @@ namespace HuntHelper
         public bool UseMapImages { get; set; } = false;
         public bool EnableBackgroundScan { get; set; } = false;
         public bool ShowOptionsWindow { get; set; } = false;
+        public bool DisplayA { get; set; } = false;
+        public bool DisplayB { get; set; } = false;
+        public bool DisplayS { get; set; } = false;
         #endregion
 
         #region TTS

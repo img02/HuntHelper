@@ -54,7 +54,9 @@ namespace HuntHelper.Gui
         private float _mapImageOpacityAsPercentage = 100f;
 
         // icon colours
-        private Vector4 _spawnPointColour = new Vector4(0.24706f, 0.309804f, 0.741176f, 1); //purty blue
+        // private Vector4 _spawnPointColour = new Vector4(0.24706f, 0.309804f, 0.741176f, 1); //purty blue
+        private static Vector4 RedPurple = new Vector4(1f, 0f, 127f / 255f, 1f);
+        private Vector4 _spawnPointColour = RedPurple; //red purple
         private Vector4 _mobColour = new Vector4(0.4f, 1f, 0.567f, 1f); //green
         private Vector4 _playerIconColour = new Vector4(0f, 0f, 0f, 1f); //black
         private Vector4 _playerIconBackgroundColour = new Vector4(0.117647f, 0.5647f, 1f, 0.7f); //blue
@@ -135,6 +137,7 @@ namespace HuntHelper.Gui
         private bool _pointToARank = true;
         private bool _pointToBRank = true;
         private bool _pointToSRank = true;
+        private bool _ShowPointDisplaySettings = false;
 
         private float _diamondModifier = 2f;
 
@@ -143,6 +146,9 @@ namespace HuntHelper.Gui
 
         //window bools
         private bool _showOptionsWindow = true;
+        private bool _displayA = false;
+        private bool _displayB = false;
+        private bool _displayS = false;
         #endregion
 
         private bool _showDebug = false;
@@ -232,6 +238,16 @@ namespace HuntHelper.Gui
             // load and keep in use regardless of visibility, otherwise ugly flashes black for a fraction when reloading 
             // because it gets disposed internally after 2 secs
             // https://github.com/goatcorp/Dalamud/blob/ee362acf70d47dd30c46da931f55958010fbf502/Dalamud/Interface/Internal/TextureManager.cs#L425
+
+            // TODO: very strange Dalamud Error
+            // 01:00:22.320 | ERR | [HuntHelper] Cannot access a disposed object.
+            // 	Object name: 'TextureManagerPluginScoped(Hunt Helper, disposed)'.
+            // 01:00:22.320 | ERR | [HuntHelper]    at Dalamud.Interface.Textures.Internal.TextureManagerPluginScoped.get_ManagerOrThrow() in C:\goatsoft\companysecrets\dalamud\\Interface\Textures\Internal\TextureManagerPluginScoped.cs:line 83
+            // 	   at Dalamud.Interface.Textures.Internal.TextureManagerPluginScoped.GetFromFile(String path) in C:\goatsoft\companysecrets\dalamud\\Interface\Textures\Internal\TextureManagerPluginScoped.cs:line 303
+            // 	   at HuntHelper.Managers.Hunts.HuntManager.GetMapImage(String mapName) in C:\Users\Vanillaaaa\Documents\HuntHelper\HuntHelper\Managers\Hunts\HuntManager.cs:line 554
+            // 	   at HuntHelper.Gui.MapUI.DrawHuntMapWindow() in C:\Users\Vanillaaaa\Documents\HuntHelper\HuntHelper\Gui\MapUI.cs:line 251
+            // 	   at HuntHelper.Plugin.DrawUI() in C:\Users\Vanillaaaa\Documents\HuntHelper\HuntHelper\Plugin.cs:line 181
+
             var mapImage = GetMapTexture();
 
             if (!MapVisible)
@@ -362,6 +378,23 @@ namespace HuntHelper.Gui
 
                 if (ImGui.BeginChild("##Options left side", ImGui.GetContentRegionAvail(), false, ImGuiWindowFlags.HorizontalScrollbar))
                 {
+                    if (ImGui.Button("Point Display Settings")) _ShowPointDisplaySettings = !_ShowPointDisplaySettings;
+                    if (_ShowPointDisplaySettings)
+                    {
+                        ImGui.Checkbox("A", ref _displayA);
+                        ImGui.Checkbox("B", ref _displayB);
+                        ImGui.Checkbox("S", ref _displayS);
+                    }
+
+                    if (_spawnPointColour != RedPurple)
+                    {
+                        if (ImGui.Button("Use Recommended Point Color"))
+                        {
+                            _spawnPointColour = RedPurple;
+                            SaveSettings();
+                        }
+                    }
+
                     ImGui.Checkbox(GuiResources.MapGuiText["MapImageCheckbox"], ref _useMapImages);
                     ImGui.SameLine();
                     ImGuiUtil.ImGui_HelpMarker(GuiResources.MapGuiText["MapImageCheckboxToolTip"]);
@@ -1213,6 +1246,9 @@ namespace HuntHelper.Gui
             _configuration.PointToSRank = _pointToSRank;
             _configuration.PointerDiamondSizeModifier = _diamondModifier;
             _configuration.PlayerPathColour = _playerPathColour;
+            _configuration.DisplayA = _displayA;
+            _configuration.DisplayB = _displayB;
+            _configuration.DisplayS = _displayS;
 
 
             _configuration.Language = GuiResources.Language;
@@ -1291,6 +1327,9 @@ namespace HuntHelper.Gui
             _pointToSRank = _configuration.PointToSRank;
             _diamondModifier = _configuration.PointerDiamondSizeModifier;
             _playerPathColour = _configuration.PlayerPathColour;
+            _displayA = _configuration.DisplayA;
+            _displayB = _configuration.DisplayB;
+            _displayS = _configuration.DisplayS;
 
             //if voice name available on user's pc, set as tts voice. --else default already set.
             if (!_huntManager.DontUseSynthesizer && _huntManager.TTS.GetInstalledVoices().Any(v => v.VoiceInfo.Name == _configuration.TTSVoiceName))
@@ -1371,6 +1410,8 @@ namespace HuntHelper.Gui
             var recordingSpawnPos = _mapDataManager.IsRecording(mapID);
             foreach (var sp in spawnPoints)
             {
+                if (!((_displayA && sp.A)|| (_displayB && sp.B)|| (_displayS && sp.S))) continue;
+
                 var drawPos = CoordinateToPositionInWindow(sp.Position);
 
                 drawList.AddCircleFilled(drawPos, _spawnPointIconRadius,
