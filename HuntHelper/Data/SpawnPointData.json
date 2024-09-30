@@ -374,62 +374,62 @@
 				"X": 28.95,
 				"Y": 19.3,
 				"A": true,
-				"B": true,
-				"S": true
+				"B": false,
+				"S": false
 			},
 			{
 				"Taken": false,
 				"X": 30.4,
 				"Y": 19.3,
 				"A": true,
-				"B": true,
-				"S": true
+				"B": false,
+				"S": false
 			},
 			{
 				"Taken": false,
 				"X": 31.05,
 				"Y": 19.95,
 				"A": true,
-				"B": true,
-				"S": true
+				"B": false,
+				"S": false
 			},
 			{
 				"Taken": false,
 				"X": 25.55,
 				"Y": 20.4,
 				"A": true,
-				"B": true,
-				"S": true
+				"B": false,
+				"S": false
 			},
 			{
 				"Taken": false,
 				"X": 28.62,
 				"Y": 20.65,
 				"A": true,
-				"B": true,
-				"S": true
+				"B": false,
+				"S": false
 			},
 			{
 				"Taken": false,
 				"X": 29.7,
 				"Y": 21.4,
 				"A": true,
-				"B": true,
-				"S": true
+				"B": false,
+				"S": false
 			},
 			{
 				"Taken": false,
 				"X": 25.4,
 				"Y": 21.8,
 				"A": true,
-				"B": true,
-				"S": true
+				"B": false,
+				"S": false
 			},
 			{
 				"Taken": false,
 				"X": 27.55,
 				"Y": 25.0,
-				"A": true,
+				"A": false,
 				"B": true,
 				"S": true
 			},
@@ -437,7 +437,7 @@
 				"Taken": false,
 				"X": 30.1,
 				"Y": 25.0,
-				"A": true,
+				"A": false,
 				"B": true,
 				"S": true
 			},
@@ -469,7 +469,7 @@
 				"Taken": false,
 				"X": 28.1,
 				"Y": 26.55,
-				"A": true,
+				"A": false,
 				"B": true,
 				"S": true
 			},
@@ -477,7 +477,7 @@
 				"Taken": false,
 				"X": 30.7,
 				"Y": 26.7,
-				"A": true,
+				"A": false,
 				"B": true,
 				"S": true
 			},
@@ -485,7 +485,7 @@
 				"Taken": false,
 				"X": 32.1,
 				"Y": 27.2,
-				"A": true,
+				"A": false,
 				"B": true,
 				"S": true
 			},
@@ -501,7 +501,7 @@
 				"Taken": false,
 				"X": 28.35,
 				"Y": 28.0,
-				"A": true,
+				"A": false,
 				"B": true,
 				"S": true
 			},
@@ -549,7 +549,7 @@
 				"Taken": false,
 				"X": 26.6,
 				"Y": 30.9,
-				"A": true,
+				"A": false,
 				"B": true,
 				"S": true
 			},
@@ -589,7 +589,7 @@
 				"Taken": false,
 				"X": 26.7,
 				"Y": 33.15,
-				"A": true,
+				"A": false,
 				"B": true,
 				"S": true
 			},
@@ -597,7 +597,7 @@
 				"Taken": false,
 				"X": 25.9,
 				"Y": 33.8,
-				"A": true,
+				"A": false,
 				"B": true,
 				"S": true
 			},
@@ -613,7 +613,7 @@
 				"Taken": false,
 				"X": 28.9,
 				"Y": 35.6,
-				"A": true,
+				"A": false,
 				"B": true,
 				"S": true
 			},
@@ -621,7 +621,7 @@
 				"Taken": false,
 				"X": 31.75,
 				"Y": 36.25,
-				"A": true,
+				"A": false,
 				"B": true,
 				"S": true
 			}
@@ -638,7 +638,7 @@
 				"Y": 14.25,
 				"A": true,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
@@ -646,7 +646,7 @@
 				"Y": 14.5,
 				"A": true,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
@@ -654,7 +654,7 @@
 				"Y": 14.55,
 				"A": true,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
@@ -662,7 +662,7 @@
 				"Y": 15.85,
 				"A": true,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
@@ -670,7 +670,7 @@
 				"Y": 17.05,
 				"A": true,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
@@ -678,7 +678,7 @@
 				"Y": 18.4,
 				"A": true,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
@@ -686,7 +686,7 @@
 				"Y": 19.4,
 				"A": true,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
@@ -710,7 +710,7 @@
 				"Y": 21.95,
 				"A": true,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
@@ -980,7 +980,7 @@
 				"Y": 5.25,
 				"A": true,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
@@ -988,7 +988,7 @@
 				"Y": 5.5,
 				"A": true,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
@@ -996,7 +996,7 @@
 				"Y": 5.95,
 				"A": true,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
@@ -1004,7 +1004,7 @@
 				"Y": 6.0,
 				"A": true,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
@@ -1012,7 +1012,7 @@
 				"Y": 6.4,
 				"A": true,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
@@ -1020,7 +1020,7 @@
 				"Y": 7.5,
 				"A": true,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
@@ -1028,7 +1028,7 @@
 				"Y": 7.85,
 				"A": true,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
@@ -1546,7 +1546,7 @@
 				"Y": 25.55,
 				"A": true,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
@@ -1641,7 +1641,7 @@
 				"Y": 7.95,
 				"A": true,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
@@ -1649,7 +1649,7 @@
 				"Y": 9.35,
 				"A": true,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
@@ -1657,7 +1657,7 @@
 				"Y": 10.2,
 				"A": true,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
@@ -1665,7 +1665,7 @@
 				"Y": 10.85,
 				"A": true,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
@@ -1673,7 +1673,7 @@
 				"Y": 11.2,
 				"A": true,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
@@ -1681,7 +1681,7 @@
 				"Y": 11.45,
 				"A": true,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
@@ -1689,7 +1689,7 @@
 				"Y": 11.7,
 				"A": true,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
@@ -1697,7 +1697,7 @@
 				"Y": 12.45,
 				"A": true,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
@@ -1705,7 +1705,7 @@
 				"Y": 16.95,
 				"A": true,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
@@ -1713,7 +1713,7 @@
 				"Y": 17.2,
 				"A": true,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
@@ -1745,7 +1745,7 @@
 				"Y": 20.25,
 				"A": true,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
@@ -2947,7 +2947,7 @@
 				"X": 27.05,
 				"Y": 27.2,
 				"A": true,
-				"B": true,
+				"B": false,
 				"S": true
 			},
 			{
@@ -3498,7 +3498,7 @@
 				"Y": 6.4,
 				"A": true,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
@@ -3506,7 +3506,7 @@
 				"Y": 6.5,
 				"A": true,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
@@ -3514,7 +3514,7 @@
 				"Y": 6.9,
 				"A": true,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
@@ -3522,7 +3522,7 @@
 				"Y": 7.7,
 				"A": true,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
@@ -3538,7 +3538,7 @@
 				"Y": 8.5,
 				"A": true,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
@@ -3546,7 +3546,7 @@
 				"Y": 8.6,
 				"A": true,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
@@ -3554,7 +3554,7 @@
 				"Y": 8.85,
 				"A": true,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
@@ -3562,7 +3562,7 @@
 				"Y": 10.2,
 				"A": true,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
@@ -3586,7 +3586,7 @@
 				"Y": 10.6,
 				"A": true,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
@@ -3594,7 +3594,7 @@
 				"Y": 10.65,
 				"A": true,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
@@ -3602,7 +3602,7 @@
 				"Y": 10.7,
 				"A": true,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
@@ -3610,7 +3610,7 @@
 				"Y": 11.3,
 				"A": true,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
@@ -3634,7 +3634,7 @@
 				"Y": 12.05,
 				"A": true,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
@@ -3650,7 +3650,7 @@
 				"Y": 12.2,
 				"A": true,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
@@ -3658,7 +3658,7 @@
 				"Y": 12.7,
 				"A": true,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
@@ -3666,7 +3666,7 @@
 				"Y": 12.7,
 				"A": true,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
@@ -3674,7 +3674,7 @@
 				"Y": 13.55,
 				"A": true,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
@@ -3696,8 +3696,8 @@
 				"Taken": false,
 				"X": 9.8,
 				"Y": 13.9,
-				"A": true,
-				"B": true,
+				"A": false,
+				"B": false,
 				"S": true
 			},
 			{
@@ -3706,7 +3706,7 @@
 				"Y": 14.35,
 				"A": true,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
@@ -3714,7 +3714,7 @@
 				"Y": 14.75,
 				"A": true,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
@@ -3722,14 +3722,14 @@
 				"Y": 15.05,
 				"A": true,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
 				"X": 10.6,
 				"Y": 15.15,
-				"A": true,
-				"B": true,
+				"A": false,
+				"B": false,
 				"S": true
 			},
 			{
@@ -3744,16 +3744,16 @@
 				"Taken": false,
 				"X": 12.6,
 				"Y": 16.0,
-				"A": true,
-				"B": true,
+				"A": false,
+				"B": false,
 				"S": true
 			},
 			{
 				"Taken": false,
 				"X": 12.25,
 				"Y": 16.85,
-				"A": true,
-				"B": true,
+				"A": false,
+				"B": false,
 				"S": true
 			},
 			{
@@ -4096,7 +4096,7 @@
 				"Y": 21.4,
 				"A": true,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
@@ -4104,7 +4104,7 @@
 				"Y": 22.5,
 				"A": true,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
@@ -4120,7 +4120,7 @@
 				"Y": 26.75,
 				"A": true,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
@@ -4128,7 +4128,7 @@
 				"Y": 28.1,
 				"A": true,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
@@ -4144,7 +4144,7 @@
 				"Y": 31.2,
 				"A": true,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
@@ -4152,7 +4152,7 @@
 				"Y": 32.35,
 				"A": true,
 				"B": true,
-				"S": true
+				"S": false
 			}
 		],
 		"Recording": false
@@ -4182,14 +4182,14 @@
 				"X": 16.9,
 				"Y": 11.3,
 				"A": true,
-				"B": true,
+				"B": false,
 				"S": true
 			},
 			{
 				"Taken": false,
 				"X": 34.85,
 				"Y": 13.55,
-				"A": true,
+				"A": false,
 				"B": true,
 				"S": true
 			},
@@ -4198,14 +4198,14 @@
 				"X": 13.6,
 				"Y": 15.05,
 				"A": true,
-				"B": true,
+				"B": false,
 				"S": true
 			},
 			{
 				"Taken": false,
 				"X": 32.5,
 				"Y": 18.25,
-				"A": true,
+				"A": false,
 				"B": true,
 				"S": true
 			},
@@ -4237,7 +4237,7 @@
 				"Taken": false,
 				"X": 38.6,
 				"Y": 25.6,
-				"A": true,
+				"A": false,
 				"B": true,
 				"S": true
 			},
@@ -4253,7 +4253,7 @@
 				"Taken": false,
 				"X": 34.6,
 				"Y": 28.75,
-				"A": true,
+				"A": false,
 				"B": true,
 				"S": true
 			},
@@ -5088,15 +5088,15 @@
 				"Taken": false,
 				"X": 21.2,
 				"Y": 10.55,
-				"A": true,
+				"A": false,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
 				"X": 25.35,
 				"Y": 11.75,
-				"A": true,
+				"A": false,
 				"B": true,
 				"S": true
 			},
@@ -5106,7 +5106,7 @@
 				"Y": 12.4,
 				"A": true,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
@@ -5122,7 +5122,7 @@
 				"Y": 14.55,
 				"A": true,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
@@ -5130,7 +5130,7 @@
 				"Y": 17.5,
 				"A": true,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
@@ -5138,23 +5138,23 @@
 				"Y": 18.0,
 				"A": true,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
 				"X": 24.1,
 				"Y": 18.15,
-				"A": true,
+				"A": false,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
 				"X": 33.75,
 				"Y": 20.9,
-				"A": true,
+				"A": false,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
@@ -5162,7 +5162,7 @@
 				"Y": 21.75,
 				"A": true,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
@@ -5186,7 +5186,7 @@
 				"Y": 25.25,
 				"A": true,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
@@ -5194,7 +5194,7 @@
 				"Y": 26.25,
 				"A": true,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
@@ -5216,7 +5216,7 @@
 				"Taken": false,
 				"X": 28.95,
 				"Y": 30.8,
-				"A": true,
+				"A": false,
 				"B": true,
 				"S": true
 			},
@@ -5226,7 +5226,7 @@
 				"Y": 31.9,
 				"A": true,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
@@ -5234,7 +5234,7 @@
 				"Y": 33.35,
 				"A": true,
 				"B": true,
-				"S": true
+				"S": false
 			}
 		],
 		"Recording": false
@@ -5247,9 +5247,9 @@
 				"Taken": false,
 				"X": 7.5,
 				"Y": 5.9,
-				"A": true,
+				"A": false,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
@@ -5271,9 +5271,9 @@
 				"Taken": false,
 				"X": 16.55,
 				"Y": 10.6,
-				"A": true,
+				"A": false,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
@@ -5281,21 +5281,21 @@
 				"Y": 13.9,
 				"A": true,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
 				"X": 36.5,
 				"Y": 17.95,
-				"A": true,
+				"A": false,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
 				"X": 34.95,
 				"Y": 21.15,
-				"A": true,
+				"A": false,
 				"B": true,
 				"S": true
 			},
@@ -5305,7 +5305,7 @@
 				"Y": 22.95,
 				"A": true,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
@@ -5319,9 +5319,9 @@
 				"Taken": false,
 				"X": 25.3,
 				"Y": 26.2,
-				"A": true,
+				"A": false,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
@@ -5353,7 +5353,7 @@
 				"Y": 38.75,
 				"A": true,
 				"B": true,
-				"S": true
+				"S": false
 			}
 		],
 		"Recording": false
@@ -5382,9 +5382,9 @@
 				"Taken": false,
 				"X": 18.35,
 				"Y": 10.5,
-				"A": true,
+				"A": false,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
@@ -5416,39 +5416,39 @@
 				"Y": 16.15,
 				"A": true,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
 				"X": 32.35,
 				"Y": 18.5,
-				"A": true,
+				"A": false,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
 				"X": 24.6,
 				"Y": 21.7,
-				"A": true,
+				"A": false,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
 				"X": 34.15,
 				"Y": 26.6,
-				"A": true,
+				"A": false,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
 				"X": 23.6,
 				"Y": 27.25,
-				"A": true,
+				"A": false,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
@@ -5470,9 +5470,9 @@
 				"Taken": false,
 				"X": 29.85,
 				"Y": 35.3,
-				"A": true,
+				"A": false,
 				"B": true,
-				"S": true
+				"S": false
 			}
 		],
 		"Recording": false
@@ -5487,7 +5487,7 @@
 				"Y": 7.95,
 				"A": true,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
@@ -5511,7 +5511,7 @@
 				"Y": 12.0,
 				"A": true,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
@@ -5551,7 +5551,7 @@
 				"Y": 20.15,
 				"A": true,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
@@ -5559,7 +5559,7 @@
 				"Y": 23.1,
 				"A": true,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
@@ -5575,7 +5575,7 @@
 				"Y": 25.85,
 				"A": true,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
@@ -5597,9 +5597,9 @@
 				"Taken": false,
 				"X": 26.65,
 				"Y": 29.85,
-				"A": true,
+				"A": false,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
@@ -5615,7 +5615,7 @@
 				"Y": 34.8,
 				"A": true,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
@@ -5636,16 +5636,16 @@
 				"Taken": false,
 				"X": 18.3,
 				"Y": 7.5,
-				"A": true,
+				"A": false,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
 				"X": 29.1,
 				"Y": 8.0,
 				"A": true,
-				"B": true,
+				"B": false,
 				"S": true
 			},
 			{
@@ -5660,9 +5660,9 @@
 				"Taken": false,
 				"X": 22.5,
 				"Y": 10.35,
-				"A": true,
+				"A": false,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
@@ -5670,7 +5670,7 @@
 				"Y": 11.1,
 				"A": true,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
@@ -5678,15 +5678,15 @@
 				"Y": 14.1,
 				"A": true,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
 				"X": 25.05,
 				"Y": 16.5,
-				"A": true,
+				"A": false,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
@@ -5708,16 +5708,16 @@
 				"Taken": false,
 				"X": 23.45,
 				"Y": 25.85,
-				"A": true,
+				"A": false,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
 				"X": 7.4,
 				"Y": 26.3,
 				"A": true,
-				"B": true,
+				"B": false,
 				"S": true
 			},
 			{
@@ -5726,7 +5726,7 @@
 				"Y": 29.3,
 				"A": true,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
@@ -5734,7 +5734,7 @@
 				"Y": 31.1,
 				"A": true,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
@@ -5742,7 +5742,7 @@
 				"Y": 31.75,
 				"A": true,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
@@ -5756,7 +5756,7 @@
 				"Taken": false,
 				"X": 10.45,
 				"Y": 33.7,
-				"A": true,
+				"A": false,
 				"B": true,
 				"S": true
 			},
@@ -5766,14 +5766,14 @@
 				"Y": 34.55,
 				"A": true,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
 				"X": 3.1,
 				"Y": 34.95,
 				"A": true,
-				"B": true,
+				"B": false,
 				"S": true
 			},
 			{
@@ -5781,7 +5781,7 @@
 				"X": 30.1,
 				"Y": 36.35,
 				"A": true,
-				"B": true,
+				"B": false,
 				"S": true
 			}
 		],
@@ -6020,7 +6020,7 @@
 				"Y": 22.75,
 				"A": true,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
@@ -6052,7 +6052,7 @@
 				"Y": 27.05,
 				"A": true,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
@@ -6076,7 +6076,7 @@
 				"Y": 32.2,
 				"A": true,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
@@ -6248,9 +6248,9 @@
 				"Taken": false,
 				"X": 22.6,
 				"Y": 10.5,
-				"A": true,
+				"A": false,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
@@ -6338,7 +6338,7 @@
 				"Y": 28.75,
 				"A": true,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
@@ -6346,7 +6346,7 @@
 				"Y": 29.75,
 				"A": true,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
@@ -6671,7 +6671,7 @@
 				"Y": 5.25,
 				"A": true,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
@@ -6687,7 +6687,7 @@
 				"Y": 8.35,
 				"A": true,
 				"B": true,
-				"S": true
+				"S": false
 			},
 			{
 				"Taken": false,
