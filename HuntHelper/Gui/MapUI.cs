@@ -54,9 +54,8 @@ namespace HuntHelper.Gui
         private float _mapImageOpacityAsPercentage = 100f;
 
         // icon colours
-        // private Vector4 _spawnPointColour = new Vector4(0.24706f, 0.309804f, 0.741176f, 1); //purty blue
-        private static Vector4 RedPurple = new Vector4(1f, 0f, 127f / 255f, 1f);
-        private Vector4 _spawnPointColour = RedPurple; //red purple
+        private Vector4 _spawnPointColour = new Vector4(0.24706f, 0.309804f, 0.741176f, 1); //purty blue
+        private static Vector4 HighConstrastRedPurple = new Vector4(1f, 0f, 127f / 255f, 1f); // high contrast recommended colour for spawn points
         private Vector4 _mobColour = new Vector4(0.4f, 1f, 0.567f, 1f); //green
         private Vector4 _playerIconColour = new Vector4(0f, 0f, 0f, 1f); //black
         private Vector4 _playerIconBackgroundColour = new Vector4(0.117647f, 0.5647f, 1f, 0.7f); //blue
@@ -378,22 +377,30 @@ namespace HuntHelper.Gui
 
                 if (ImGui.BeginChild("##Options left side", ImGui.GetContentRegionAvail(), false, ImGuiWindowFlags.HorizontalScrollbar))
                 {
-                    if (ImGui.Button("Point Display Settings")) _ShowPointDisplaySettings = !_ShowPointDisplaySettings;
+                    
+                    if (ImGui.Button("Spawn Point Filter")) _ShowPointDisplaySettings = !_ShowPointDisplaySettings;
+                    ImGuiUtil.ImGui_HoveredToolTip("Select which Rank to display Spawn Points for");
                     if (_ShowPointDisplaySettings)
                     {
                         ImGui.Checkbox("A", ref _displayA);
+                        ImGui.SameLine();
                         ImGui.Checkbox("B", ref _displayB);
+                        ImGui.SameLine();
                         ImGui.Checkbox("S", ref _displayS);
-                    }
 
-                    if (_spawnPointColour != RedPurple)
-                    {
-                        if (ImGui.Button("Use Recommended Point Color"))
-                        {
-                            _spawnPointColour = RedPurple;
-                            SaveSettings();
+                        ImGui.Separator();
+                        if (_spawnPointColour != HighConstrastRedPurple)
+                        {                           
+                            if (ImGui.Button("Use High-Contrast Colour"))
+                            {
+                                _spawnPointColour = HighConstrastRedPurple;
+                                SaveSettings();
+                            }
+                            ImGuiUtil.ImGui_HoveredToolTip("Use a high-contrast colour for Spawn Points,\n\nCan be changed from Visuals > Colours");
                         }
+                        ImGui.Separator();
                     }
+                   
 
                     ImGui.Checkbox(GuiResources.MapGuiText["MapImageCheckbox"], ref _useMapImages);
                     ImGui.SameLine();
@@ -430,16 +437,18 @@ namespace HuntHelper.Gui
                     //default height, increase in individual tabs as needed
                     _bottomPanelHeight = tabBarHeight + 90f * ImGuiHelpers.GlobalScale;
 
-                    //todo disable this later
-                    if (ImGui.BeginTabItem("Dawntrail"))
+                    //todo update for next expac later
+                    if (Constants.NEW_EXPANSION)
                     {
-                        ImGui.TextWrapped("submit found hunt position data?");
+                        if (ImGui.BeginTabItem("Dawntrail"))
+                        {
+                            ImGui.TextWrapped("submit found hunt position data?");
 
-                        ImGui.Checkbox("opt in", ref _configuration.DawntrailSubmitPositionsData);
+                            ImGui.Checkbox("opt in", ref _configuration.DawntrailSubmitPositionsData);
 
-                        ImGui.EndTabItem();
+                            ImGui.EndTabItem();
+                        }
                     }
-
 
                     if (ImGui.BeginTabItem(GuiResources.MapGuiText["GeneralTab"]))
                     {
@@ -1389,8 +1398,7 @@ namespace HuntHelper.Gui
 
                 if (ImGui.BeginTabItem(GuiResources.MapGuiText["LoadedHuntDataSpawnPointsTab"]))
                 {
-                    ImGui.TextUnformatted(_mapDataManager.ToString());
-                    ImGui.TextUnformatted("ik it's ugly, i'm sorry");
+                    ImGuiUtil.DoStuffWithMonoFont(() => ImGuiUtil.ImGui_CentreText(_mapDataManager.ToString()));
                     ImGui.EndTabItem();
                 }
                 ImGui.EndTabBar();
@@ -1410,14 +1418,21 @@ namespace HuntHelper.Gui
             var recordingSpawnPos = _mapDataManager.IsRecording(mapID);
             foreach (var sp in spawnPoints)
             {
-                if (!((_displayA && sp.A)|| (_displayB && sp.B)|| (_displayS && sp.S))) continue;
+                var col = _spawnPointColour;
+
+                if (!((_displayA && sp.A) || (_displayB && sp.B) || (_displayS && sp.S)))
+                {
+                    col = _useMapImages ? 
+                        new Vector4(0.7843f, 0.7843f, 0.7843f, _mapImageOpacityAsPercentage/100f) :
+                        Vector4.Zero;
+                }
 
                 var drawPos = CoordinateToPositionInWindow(sp.Position);
 
                 drawList.AddCircleFilled(drawPos, _spawnPointIconRadius,
                     sp.Taken && recordingSpawnPos
                         ? ImGui.ColorConvertFloat4ToU32(new Vector4(1f, 0f, 0f, 1f)) //red for taken spawn point
-                        : ImGui.ColorConvertFloat4ToU32(_spawnPointColour));
+                        : ImGui.ColorConvertFloat4ToU32(col));
                 DoubleClickToToggleSpawnPointTaken(drawPos, sp);
             }
         }

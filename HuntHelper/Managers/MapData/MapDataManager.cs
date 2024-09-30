@@ -140,7 +140,7 @@ public class MapDataManager
                     $"-------------------\n";
             foreach (var sp in map.Positions)
             {
-                text += $"({sp.Position.X}), ({sp.Position.Y})\n";
+                text += $"({sp.Position.X:00.00}), ({sp.Position.Y:00.00}) \t {sp.A} {sp.B} {sp.S}\n";
             }
             text += $"-----------------------------------------\n";
         }
