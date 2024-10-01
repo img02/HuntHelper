@@ -145,9 +145,9 @@ namespace HuntHelper.Gui
 
         //window bools
         private bool _showOptionsWindow = true;
-        private bool _displayA = false;
-        private bool _displayB = false;
-        private bool _displayS = false;
+        private bool _displayA = true;
+        private bool _displayB = true;
+        private bool _displayS = true;
         #endregion
 
         private bool _showDebug = false;
@@ -200,6 +200,20 @@ namespace HuntHelper.Gui
 
             LoadSettings();
             CheckMapImageVer();
+
+            if (!_configuration.ughresetdisplaypls)
+            {
+                PluginLog.Warning($"{_configuration.ughresetdisplaypls}");
+                _configuration.DisplayA = true;
+                _configuration.DisplayB = true;
+                _configuration.DisplayS = true;
+
+                _displayA = true;
+                _displayB = true;
+                _displayS = true;
+
+                _configuration.ughresetdisplaypls = true;
+            }
         }
 
         public void Dispose()

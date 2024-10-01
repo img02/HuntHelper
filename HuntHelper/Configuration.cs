@@ -83,9 +83,11 @@ namespace HuntHelper
         public bool UseMapImages { get; set; } = false;
         public bool EnableBackgroundScan { get; set; } = false;
         public bool ShowOptionsWindow { get; set; } = false;
-        public bool DisplayA { get; set; } = false;
-        public bool DisplayB { get; set; } = false;
-        public bool DisplayS { get; set; } = false;
+        public bool DisplayA { get; set; } = true;
+        public bool DisplayB { get; set; } = true;
+        public bool DisplayS { get; set; } = true;
+
+        public bool ughresetdisplaypls = false;
         #endregion
 
         #region TTS
