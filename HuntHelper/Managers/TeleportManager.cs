@@ -207,6 +207,7 @@ public unsafe class TeleportManager
         new AetheryteData() { AetheryteID = 202, SubIndex = 0, TerritoryID = 1188, Position = new Vector2(18.0f, 11.9f)}, //Ok'hanu
         new AetheryteData() { AetheryteID = 203, SubIndex = 0, TerritoryID = 1188, Position = new Vector2(32.2f, 25.6f)}, //Many Fires
         new AetheryteData() { AetheryteID = 204, SubIndex = 0, TerritoryID = 1188, Position = new Vector2(11.9f, 27.7f)}, //Earthenshire
+        new AetheryteData() { AetheryteID = 237, SubIndex = 0, TerritoryID = 1188, Position = new Vector2(36.5f, 17.2f)}, //Dock Poga
 
         //Yak'tel
         new AetheryteData() { AetheryteID = 205, SubIndex = 0, TerritoryID = 1189, Position = new Vector2(13.5f, 12.8f)}, //Iq Br'aax
