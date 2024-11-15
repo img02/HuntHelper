@@ -34,7 +34,7 @@ namespace HuntHelper.Gui
         private readonly IGameGui _gameGui;
 
         private string _territoryName;
-        private string WorldName => _clientState.LocalPlayer?.CurrentWorld?.GameData?.Name.ToString() ?? "Not Found";
+        private string WorldName => _clientState.LocalPlayer?.CurrentWorld.ValueNullable?.Name.ToString() ?? "Not Found";
         private ushort _territoryId;
         private uint _instance;
 

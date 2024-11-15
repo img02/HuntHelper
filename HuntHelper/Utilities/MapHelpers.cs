@@ -2,7 +2,7 @@ using Dalamud.Game;
 using Dalamud.Plugin.Services;
 using HuntHelper.Managers.Hunts.Models;
 using Lumina.Data;
-using Lumina.Excel.GeneratedSheets;
+using Lumina.Excel.Sheets;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -39,26 +39,26 @@ public class MapHelpers
 
     public static string GetMapName(uint territoryID) //map id... territory id... confusing ...
     {
-        return DataManager.Excel.GetSheet<TerritoryType>()?.GetRow(territoryID)?.PlaceName?.Value?.Name.ToString() ?? "location not found";
+        return DataManager.Excel.GetSheet<TerritoryType>()?.GetRowOrDefault(territoryID)?.PlaceName.ValueNullable?.Name.ToString() ?? "location not found";
     }
     public static string GetMapNameInEnglish(uint territoryID, ClientLanguage clientLanguage)
     {
         /*DataManager.Excel.RemoveSheetFromCache<TerritoryType>();
        return DataManager.Excel.GetSheet<TerritoryType>(Language.English)?.GetRow(territoryID)?.PlaceName?.Value?.Name.ToString() ?? "location not found";        */
 
-        var row = DataManager.Excel.GetSheet<TerritoryType>(Language.English)?.GetRow(territoryID)?.PlaceName.Row ?? 0;
+        var row = DataManager.Excel.GetSheet<TerritoryType>(Language.English)?.GetRowOrDefault(territoryID)?.PlaceName.RowId ?? 0;
         if (languages.Contains(clientLanguage))
         {
-            return DataManager.Excel.GetSheet<PlaceName>(Language.English)?.GetRow(row)?.Name.ToString() ?? "location not found";
+            return DataManager.Excel.GetSheet<PlaceName>(Language.English)?.GetRowOrDefault(row)?.Name.ToString() ?? "location not found";
         }
 
-        var mapName = DataManager.Excel.GetSheet<PlaceName>()?.GetRow(row)?.Name.ToString() ?? "location not found";
+        var mapName = DataManager.Excel.GetSheet<PlaceName>()?.GetRowOrDefault(row)?.Name.ToString() ?? "location not found";
         return ChineseToEnglish.ContainsKey(mapName) ? ChineseToEnglish[mapName] : "location not found";
     }
 
     public static uint GetMapID(uint territoryID) //createmaplink doesn't work with "Mor Dhona" :(
     {
-        return DataManager!.GetExcelSheet<TerritoryType>()!.GetRow(territoryID)!.Map.Value!.RowId;
+        return DataManager.GetExcelSheet<TerritoryType>().GetRowOrDefault(territoryID)?.Map.RowId ?? 0;
     }
 
     //convert map scale (100/95) to map size (41/43.1)
@@ -79,7 +79,7 @@ public class MapHelpers
 
     public static void LocaliseMobNames(List<HuntTrainMob> trainList)
     {
-        trainList.ForEach(m => m.Name = DataManager.Excel.GetSheet<BNpcName>()?.GetRow(m.MobID)?.Singular.ToString() ?? m.Name);
+        trainList.ForEach(m => m.Name = DataManager.Excel.GetSheet<BNpcName>()?.GetRowOrDefault(m.MobID)?.Singular.ToString() ?? m.Name);
     }
 
     public static async Task<bool> MapImageVerUpToDate(string currentVersion)

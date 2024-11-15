@@ -6,7 +6,6 @@ using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using HuntHelper.Managers.Hunts;
 using HuntHelper.Utilities;
 using ImGuiNET;
-using Lumina.Excel.GeneratedSheets;
 using System;
 using System.Numerics;
 
@@ -184,17 +183,14 @@ namespace HuntHelper.Gui
                 ImGui.BeginGroup();
                 foreach (var a in _aeth)
                 {
-                    //ImGui.Text($"data: {a.AetheryteData}");
-                    var d = a.AetheryteData;
-                    var pn = _dataManager.Excel.GetSheet<Aetheryte>()?.GetRow(d.Id)?.PlaceName.Value;
-                    //var name = _dataManager.Excel.GetSheet<PlaceName>().GetRow(pn).Name;
+                    var pn = a.AetheryteData.ValueNullable?.PlaceName.Value;
                     ImGui.PushFont(UiBuilder.MonoFont);
-                    ImGui.Text($"{pn!.Name,26} | {"aetheryteid:",6}{a.AetheryteId,4} | {"subIndex:",6}{a.SubIndex,4} | {"territory:",6}{a.TerritoryId,4}");
+                    ImGui.Text($"{pn?.Name,26} | {"aetheryteid:",6}{a.AetheryteId,4} | {"subIndex:",6}{a.SubIndex,4} | {"territory:",6}{a.TerritoryId,4}");
                     ImGui.PopFont();
 
                     if (ImGui.Button($"clickme##{a.AetheryteId}"))
                     {
-                        ImGui.SetClipboardText($"new AetheryteData() {{ AetheryteID = {a.AetheryteId}, SubIndex = {a.SubIndex}, TerritoryID = {a.TerritoryId}, Position = new Vector2()}}, //{pn.Name}");
+                        ImGui.SetClipboardText($"new AetheryteData() {{ AetheryteID = {a.AetheryteId}, SubIndex = {a.SubIndex}, TerritoryID = {a.TerritoryId}, Position = new Vector2()}}, //{pn?.Name}");
                     }
                     ImGui.Separator();
                 }
@@ -208,7 +204,7 @@ namespace HuntHelper.Gui
         private unsafe void UpdateLocalStuff()
         {
             _territoryName = MapHelpers.GetMapName(_clientState.TerritoryType);
-            _worldName = _clientState.LocalPlayer?.CurrentWorld?.GameData?.Name.ToString() ?? "Not Found";
+            _worldName = _clientState.LocalPlayer?.CurrentWorld.ValueNullable?.Name.ToString() ?? "Not Found";
             _territoryId = _clientState.TerritoryType;
             _instance = (uint)UIState.Instance()->PublicInstance.InstanceId;
             _mapZoneScale = _huntManager.GetMapZoneScale(_territoryId);
