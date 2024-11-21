@@ -964,6 +964,8 @@ namespace HuntHelper.Gui
                                         if (ImGui.DragInt("##TTS Voice Volume", ref _ttsVoiceVolume, 1, 1,
                                                 100))
                                         {
+                                            if (_ttsVoiceVolume > 100) _ttsVoiceVolume = 100;
+                                            if (_ttsVoiceVolume < 0) _ttsVoiceVolume = 0;
                                             tts.Volume = _ttsVoiceVolume;
                                             _huntManager.TTSVolume = _ttsVoiceVolume;
                                         }

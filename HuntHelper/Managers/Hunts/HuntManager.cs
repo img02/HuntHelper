@@ -90,7 +90,7 @@ public class HuntManager : IDisposable
         _chatGui = chatGui;
         _flyTextGui = flyTextGui;
         _trainManager = trainManager;
-        TTSVolume = ttsVolume;
+        TTSVolume = ttsVolume > 100 ? 100 : ttsVolume < 0 ? 0 : ttsVolume;
 
         HuntTrain = new List<HuntTrainMob>();
         ImportedTrain = new List<HuntTrainMob>();
@@ -128,6 +128,7 @@ public class HuntManager : IDisposable
             if (files.Count > 0) NotAllImagesFound = true;
         }
         else NotAllImagesFound = false;
+        //uhh just noticed if imgs deleted so count < huntmapcount but > 0, not error or download popup occurs
 
     }
 
