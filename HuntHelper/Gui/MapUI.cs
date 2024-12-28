@@ -1503,7 +1503,7 @@ namespace HuntHelper.Gui
                         SpawnDataGatherer.AddFoundMob(mob.NameId, _huntManager.GetMobNameInEnglish(mob.NameId),
                         new Vector3(ConvertPosToCoordinate(mob.Position.X), ConvertPosToCoordinate(mob.Position.Z), ConvertPosToCoordinate(mob.Position.Y)),
                         $"{m.Rank}", _territoryId,
-                        MapHelpers.GetMapNameInEnglish(_territoryId, _clientState.ClientLanguage), _clientState.LocalContentId);
+                        MapHelpers.GetMapNameInEnglish(_territoryId), _clientState.LocalContentId);
                     }
                 }
             }

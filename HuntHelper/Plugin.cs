@@ -76,7 +76,7 @@ namespace HuntHelper
                 PluginLog.Error("Unable to find localisation file. What did you do?! gonna crash ok");
             }
 
-            MapHelpers.SetUp(dataManager);
+            MapHelpers.SetUp(dataManager, clientState);
 
             Constants.SetCounterLanguage(clientState.ClientLanguage);
 
