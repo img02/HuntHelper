@@ -242,7 +242,7 @@ namespace HuntHelper.Gui
         }
         private IDalamudTextureWrap? GetMapTexture()
         {
-            var mapNameEng = MapHelpers.GetMapNameInEnglish(_territoryId, _clientState.ClientLanguage);
+            var mapNameEng = MapHelpers.GetMapNameInEnglish(_territoryId);
             return _huntManager.GetMapImage(mapNameEng);
         }
 
