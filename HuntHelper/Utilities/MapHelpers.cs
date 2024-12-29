@@ -28,32 +28,35 @@ public class MapHelpers
         {"奥阔帕恰山", "Urqopacha"}, {"克扎玛乌卡湿地", "Kozama'uka"}, {"亚克特尔树海", "Yak T'el"}, {"夏劳尼荒野", "Shaaloani"}, {"遗产之地", "Heritage Found"}, {"活着的记忆", "Living Memory"}//7.0
     };
 
-    private static List<ClientLanguage> languages = new List<ClientLanguage> { ClientLanguage.English, ClientLanguage.Japanese, ClientLanguage.German, ClientLanguage.French };
-
     public static IDataManager DataManager;
+    private static IClientState _clientState;
 
-    public static void SetUp(IDataManager dataManager)
+    public static void SetUp(IDataManager dataManager, IClientState clientState)
     {
         DataManager = dataManager;
+        _clientState = clientState;
     }
 
-    public static string GetMapName(uint territoryID) //map id... territory id... confusing ...
+    public static string GetMapName(uint territoryID) 
+        //map id... territory id... confusing ...
+        // KirisameVanilla: Map refers to the texture of a map. Territory refers to the zone of a map, like Lakeland.
+        // KirisameVanilla: So in order to avoid confusing i suggest using 'Zone' instead of the word 'Map' in HuntHelper to distinguish texture map and zone map(territory)
     {
         return DataManager.Excel.GetSheet<TerritoryType>()?.GetRowOrDefault(territoryID)?.PlaceName.ValueNullable?.Name.ToString() ?? "location not found";
     }
-    public static string GetMapNameInEnglish(uint territoryID, ClientLanguage clientLanguage)
+    public static string GetMapNameInEnglish(uint territoryID)
     {
         /*DataManager.Excel.RemoveSheetFromCache<TerritoryType>();
        return DataManager.Excel.GetSheet<TerritoryType>(Language.English)?.GetRow(territoryID)?.PlaceName?.Value?.Name.ToString() ?? "location not found";        */
 
-        var row = DataManager.Excel.GetSheet<TerritoryType>(Language.English)?.GetRowOrDefault(territoryID)?.PlaceName.RowId ?? 0;
-        if (languages.Contains(clientLanguage))
+        var row = DataManager.Excel.GetSheet<TerritoryType>(Language.English).GetRowOrDefault(territoryID)?.PlaceName.RowId ?? 0;
+        if (_clientState.ClientLanguage != (ClientLanguage)4)
         {
-            return DataManager.Excel.GetSheet<PlaceName>(Language.English)?.GetRowOrDefault(row)?.Name.ToString() ?? "location not found";
+            return DataManager.Excel.GetSheet<PlaceName>(Language.English).GetRowOrDefault(row)?.Name.ToString() ?? "location not found";
         }
 
-        var mapName = DataManager.Excel.GetSheet<PlaceName>()?.GetRowOrDefault(row)?.Name.ToString() ?? "location not found";
-        return ChineseToEnglish.ContainsKey(mapName) ? ChineseToEnglish[mapName] : "location not found";
+        var mapName = DataManager.Excel.GetSheet<PlaceName>().GetRowOrDefault(row)?.Name.ToString() ?? "location not found";
+        return ChineseToEnglish.TryGetValue(mapName, out var value) ? value : "location not found";
     }
 
     public static uint GetMapID(uint territoryID) //createmaplink doesn't work with "Mor Dhona" :(
