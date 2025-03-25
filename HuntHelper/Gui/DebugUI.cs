@@ -3,6 +3,7 @@ using Dalamud.Game.ClientState.Objects.Types;
 using Dalamud.Interface;
 using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
+using FFXIVClientStructs.FFXIV.Client.System.Framework;
 using HuntHelper.Managers.Hunts;
 using HuntHelper.Utilities;
 using ImGuiNET;
@@ -36,7 +37,7 @@ namespace HuntHelper.Gui
             _clientState = clientState;
             _huntManager = huntManager;
             _objectTable = objectTable;
-            UpdateLocalStuff();
+           
         }
 
         public unsafe void Draw()
@@ -52,6 +53,7 @@ namespace HuntHelper.Gui
             ImGui.SetNextWindowSizeConstraints(new Vector2(375, 330), new Vector2(float.MaxValue, float.MaxValue));
             if (ImGui.Begin("Debug stuff", ref RandomDebugWindowVisisble))
             {
+                
                 LocalObjects();
                 PositionalInfo();
                 Aetherytes();
