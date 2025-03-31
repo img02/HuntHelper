@@ -18,7 +18,7 @@ public unsafe partial class CounterUI : IDisposable
 {
     #region Nunni - Fates - Southern Than
     private string _lastFailedFateInfo = string.Empty;
-    private int fateRemainingTimeOffset = 2; //changes every patch or something?
+    private readonly int fateRemainingTimeOffset = 0; //changes every patch or something? note to self: this is subtracted from time remaining
     private DateTime _startTime = DateTime.Now;
     private HashSet<IFate> _currentFates = new HashSet<IFate>();
 

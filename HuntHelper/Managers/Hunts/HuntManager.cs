@@ -72,9 +72,9 @@ public class HuntManager : IDisposable
     public List<HuntTrainMob> ImportedTrain { get; init; }
 
     public List<(HuntRank Rank, IBattleNpc Mob)> CurrentMobs => _currentMobs;
-    
+
     public event Action<HuntTrainMob> MarkSeen;
-    
+
 
     public HuntManager(IDalamudPluginInterface pluginInterface, TrainManager trainManager, IChatGui chatGui, IFlyTextGui flyTextGui, int ttsVolume)
     {
@@ -181,7 +181,7 @@ public class HuntManager : IDisposable
 
             //if exists in old mob set, skip tts + chat
             if (_previousMobs.Any(hunt => hunt.Mob.NameId == mob.NameId)) continue;
-            
+
             MarkSeen?.Invoke(mob.ToHuntTrainMob(territoryId, mapid, instance, MapHelpers.GetMapName(territoryId), zoneMapCoordSize));
 
             //Do tts and chat stuff
@@ -334,17 +334,18 @@ public class HuntManager : IDisposable
     {
         if (!enabled) return;
         var message = FormatMessageFlags(msg, mob);
-        //changed to creating a new tts each time because SpeakAsync just queues up to play...
         if (DontUseSynthesizer) return;
+
+        //changed to creating a new tts each time because SpeakAsync just queues up to play...
         var tts = new SpeechSynthesizer();
         tts.SelectVoice(TTSName);
         tts.Volume = TTSVolume;
-        var prompt = tts.SpeakAsync(message);
-        Task.Run(() =>
-            { //this works but looks weird?
-                while (!prompt.IsCompleted) ;
-                tts.Dispose();
-            });
+        tts.SpeakAsync(message);
+        tts.SpeakCompleted += (o, e) =>
+        {
+            tts.Dispose();
+            PluginLog.Verbose($"Finished message: {message} - tts disposed");
+        };
     }
 
     private string FormatMessageFlags(string msg, IBattleNpc mob)
