@@ -6810,6 +6810,14 @@
 			},
 			{
 				"Taken": false,
+				"X": 21.7,
+				"Y": 8.5,
+				"A": false,
+				"B": true,
+				"S": false
+			},
+			{
+				"Taken": false,
 				"X": 17.1,
 				"Y": 9.45,
 				"A": true,
@@ -6905,6 +6913,14 @@
 			},
 			{
 				"Taken": false,
+				"X": 6.7,
+				"Y": 12.9,
+				"A": false,
+				"B": true,
+				"S": false
+			},
+			{
+				"Taken": false,
 				"X": 29.5,
 				"Y": 13.65,
 				"A": true,
@@ -6966,6 +6982,14 @@
 		"MapName": "Garlemald",
 		"MapID": 958,
 		"Positions": [
+			{
+				"Taken": false,
+				"X": 26.8,
+				"Y": 7.9,
+				"A": false,
+				"B": true,
+				"S": false
+			},
 			{
 				"Taken": false,
 				"X": 9.75,
@@ -7190,6 +7214,14 @@
 			},
 			{
 				"Taken": false,
+				"X": 15.4,
+				"Y": 32.5,
+				"A": false,
+				"B": true,
+				"S": false
+			},
+			{
+				"Taken": false,
 				"X": 21.35,
 				"Y": 34.0,
 				"A": true,
@@ -7340,6 +7372,14 @@
 			},
 			{
 				"Taken": false,
+				"X": 20.60,
+				"Y": 23.60,
+				"A": false,
+				"B": true,
+				"S": false
+			},
+			{
+				"Taken": false,
 				"X": 21.88,
 				"Y": 20.73,
 				"A": true,
@@ -7443,6 +7483,14 @@
 			},
 			{
 				"Taken": false,
+				"X": 29.7,
+				"Y": 15.7,
+				"A": false,
+				"B": true,
+				"S": false
+			},
+			{
+				"Taken": false,
 				"X": 34.48,
 				"Y": 36.39,
 				"A": false,
@@ -7484,6 +7532,14 @@
 				"Taken": false,
 				"X": 13.52,
 				"Y": 25.67,
+				"A": false,
+				"B": true,
+				"S": false
+			},
+			{
+				"Taken": false,
+				"X": 13.7,
+				"Y": 5.4,
 				"A": false,
 				"B": true,
 				"S": false
@@ -7614,6 +7670,14 @@
 				"A": true,
 				"B": true,
 				"S": true
+			},
+			{
+				"Taken": false,
+				"X": 36.1,
+				"Y": 19.1,
+				"A": false,
+				"B": true,
+				"S": false
 			}
 		],
 		"Recording": false
@@ -7634,6 +7698,14 @@
 				"Taken": false,
 				"X": 12.67,
 				"Y": 20.78,
+				"A": false,
+				"B": true,
+				"S": false
+			},
+			{
+				"Taken": false,
+				"X": 13.7,
+				"Y": 37.8,
 				"A": false,
 				"B": true,
 				"S": false
@@ -7708,6 +7780,14 @@
 				"A": true,
 				"B": true,
 				"S": true
+			},
+			{
+				"Taken": false,
+				"X": 4.3,
+				"Y": 33.1,
+				"A": false,
+				"B": true,
+				"S": false
 			},
 			{
 				"Taken": false,
