@@ -52,7 +52,7 @@ public class IpcSystem : IDisposable
     public void Dispose()
     {
         _huntManager.MarkSeen -= MarkSeen;
-        
+
         _cgGetVersion.UnregisterFunc();
         _cgGetTrainList.UnregisterFunc();
         _cgImportTrainList.UnregisterAction();

@@ -1,4 +1,5 @@
-﻿using Dalamud.Game.Text;
+﻿using Dalamud.Bindings.ImGui;
+using Dalamud.Game.Text;
 using Dalamud.Interface;
 using Dalamud.Interface.Components;
 using Dalamud.Plugin.Services;
@@ -10,7 +11,6 @@ using HuntHelper.Managers.Counters.HW;
 using HuntHelper.Managers.Counters.SB;
 using HuntHelper.Managers.Counters.ShB;
 using HuntHelper.Utilities;
-using ImGuiNET;
 using System;
 using System.Collections.Generic;
 using System.Linq;

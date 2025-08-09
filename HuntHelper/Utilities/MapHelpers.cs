@@ -37,10 +37,10 @@ public class MapHelpers
         _clientState = clientState;
     }
 
-    public static string GetMapName(uint territoryID) 
-        //map id... territory id... confusing ...
-        // KirisameVanilla: Map refers to the texture of a map. Territory refers to the zone of a map, like Lakeland.
-        // KirisameVanilla: So in order to avoid confusing i suggest using 'Zone' instead of the word 'Map' in HuntHelper to distinguish texture map and zone map(territory)
+    public static string GetMapName(uint territoryID)
+    //map id... territory id... confusing ...
+    // KirisameVanilla: Map refers to the texture of a map. Territory refers to the zone of a map, like Lakeland.
+    // KirisameVanilla: So in order to avoid confusing i suggest using 'Zone' instead of the word 'Map' in HuntHelper to distinguish texture map and zone map(territory)
     {
         return DataManager.Excel.GetSheet<TerritoryType>()?.GetRowOrDefault(territoryID)?.PlaceName.ValueNullable?.Name.ToString() ?? "location not found";
     }

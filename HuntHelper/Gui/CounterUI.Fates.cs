@@ -1,9 +1,9 @@
-﻿using Dalamud.Game.ClientState.Fates;
+﻿using Dalamud.Bindings.ImGui;
+using Dalamud.Game.ClientState.Fates;
 using Dalamud.Game.Text.SeStringHandling.Payloads;
 using Dalamud.Interface;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using HuntHelper.Utilities;
-using ImGuiNET;
 using System;
 using System.Collections.Generic;
 using System.Globalization;

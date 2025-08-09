@@ -1,9 +1,9 @@
-﻿using Dalamud.Game.Text.SeStringHandling;
+﻿using Dalamud.Game.ClientState.Objects.Types;
+using Dalamud.Game.Text.SeStringHandling;
+using HuntHelper.Utilities;
 using Newtonsoft.Json;
 using System;
 using System.Numerics;
-using Dalamud.Game.ClientState.Objects.Types;
-using HuntHelper.Utilities;
 
 namespace HuntHelper.Managers.Hunts.Models;
 

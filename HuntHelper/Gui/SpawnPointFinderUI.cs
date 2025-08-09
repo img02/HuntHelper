@@ -1,11 +1,11 @@
-﻿using Dalamud.Interface;
+﻿using Dalamud.Bindings.ImGui;
+using Dalamud.Interface;
 using Dalamud.Interface.Components;
 using Dalamud.Interface.Utility;
 using HuntHelper.Gui.Resource;
 using HuntHelper.Managers.MapData;
 using HuntHelper.Managers.MapData.Models;
 using HuntHelper.Utilities;
-using ImGuiNET;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
@@ -37,8 +37,8 @@ public unsafe class SpawnPointFinderUI : IDisposable//idk what to call this
         _spawnPoints = _mapDataManager.SpawnPointsList;
         LoadSettings();
         _importList = _mapDataManager.ImportedList;
-        var filterPtr = ImGuiNative.ImGuiTextFilter_ImGuiTextFilter(null);
-        _filter = new ImGuiTextFilterPtr(filterPtr);
+        _filter = ImGui.ImGuiTextFilter();
+
     }
 
     public void Draw()
@@ -59,7 +59,7 @@ public unsafe class SpawnPointFinderUI : IDisposable//idk what to call this
 
     public void Dispose()
     {
-        ImGuiNative.ImGuiTextFilter_destroy(_filter.NativePtr);
+        _filter.Destroy();
     }
 
     public void DrawSpawnPointRefinementWindow()
@@ -87,7 +87,18 @@ public unsafe class SpawnPointFinderUI : IDisposable//idk what to call this
                     var k = 100;
                     foreach (var msp in _spawnPoints)
                     {
-                        if (_filter.PassFilter(MapHelpers.GetMapName(msp.MapID)))
+                        //if (_filter.PassFilter(MapHelpers.GetMapName(msp.MapID))) // currently passfilter returns voids, waiting for fix
+                        //ToDo fix this
+                        //temp fix
+                        var passed = false;
+                        var text = (ImU8String)MapHelpers.GetMapName(msp.MapID);
+                        fixed (byte* textPtr = text)
+                            passed = ImGuiNative.PassFilter(_filter.Handle, textPtr, textPtr + text.Length) == 1;
+                        text.Dispose();
+
+                        if (passed)
+
+                        //end temp
                         {
                             ImGui.TableNextColumn();
                             ImGui.TextUnformatted($"{MapHelpers.GetMapName(msp.MapID)}");

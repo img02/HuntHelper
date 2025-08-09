@@ -1,6 +1,6 @@
-﻿using Dalamud.Configuration;
+﻿using Dalamud.Bindings.ImGui;
+using Dalamud.Configuration;
 using Dalamud.Plugin;
-using ImGuiNET;
 using Newtonsoft.Json;
 using System;
 using System.Numerics;

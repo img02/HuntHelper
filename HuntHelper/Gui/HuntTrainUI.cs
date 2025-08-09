@@ -1,4 +1,5 @@
-﻿using Dalamud.Interface;
+﻿using Dalamud.Bindings.ImGui;
+using Dalamud.Interface;
 using Dalamud.Interface.Components;
 using Dalamud.Interface.Utility;
 using HuntHelper.Gui.Resource;
@@ -6,7 +7,6 @@ using HuntHelper.Managers;
 using HuntHelper.Managers.Hunts;
 using HuntHelper.Managers.Hunts.Models;
 using HuntHelper.Utilities;
-using ImGuiNET;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -230,11 +230,11 @@ public class HuntTrainUI : IDisposable
                     if (!ImGui.IsItemHovered())
                     {
 #if DEBUG
-                        PluginLog.Error($"{ImGui.GetMouseDragDelta(0).Y}");
+                        PluginLog.Error($"{ImGui.GetMouseDragDelta(ImGuiMouseButton.Left)).Y}");
 #endif
                         int n_next = n;
                         if (ImGui.GetMouseDragDelta(0, 0f).Y < 0.3f) n_next -= 1;
-                        else if (ImGui.GetMouseDragDelta(0).Y > 0f) n_next += 1;
+                        else if (ImGui.GetMouseDragDelta(ImGuiMouseButton.Left).Y > 0f) n_next += 1;
                         if (n_next >= 0 && n_next < _mobList.Count)
                         {
                             _mobList[n] = _mobList[n_next];
@@ -262,9 +262,9 @@ public class HuntTrainUI : IDisposable
             #endregion
 
 
-            if (ImGui.TreeNode($"options##treeeee", $"{GuiResources.HuntTrainGuiText["Settings"]}"))
+            if (ImGui.TreeNode($"{GuiResources.HuntTrainGuiText["Settings"]}"))
             {
-                if (ImGui.TreeNode("cosmetic##iwanttodeletethisbutmaybesomeusersactuallyuseit", "Cosmetic"))
+                if (ImGui.TreeNode("cosmetic##iwanttodeletethisbutmaybesomeusersactuallyuseit"))
                 {
                     if (ImGui.BeginTable("settingsalignment", 2))
                     {
@@ -284,7 +284,7 @@ public class HuntTrainUI : IDisposable
                     ImGui.TreePop();
                 }
 
-                if (ImGui.TreeNode("Teleport", "Teleport"))
+                if (ImGui.TreeNode("Teleport"))
                 {
                     if (ImGui.BeginTable("settingsalignment", 2))
                     {
@@ -308,7 +308,7 @@ public class HuntTrainUI : IDisposable
                     ImGui.TreePop();
                 }
 
-                if (ImGui.TreeNode("IPCRelatedStuffIdk", "IPC"))
+                if (ImGui.TreeNode("IPCRelatedStuffIdk"))
                 {
                     if (ImGui.BeginTable("settingsalignment", 1))
                     {
@@ -525,7 +525,8 @@ public class HuntTrainUI : IDisposable
             {
                 _importNew = true;
                 _importAll = false;
-            };
+            }
+            ;
             ImGui.SameLine(); ImGuiUtil.ImGui_HelpMarker(GuiResources.HuntTrainGuiText["UpdateLastSeenCheckboxToolTip"]);
 
             ImGui.Dummy(new Vector2(0, 100));
@@ -646,7 +647,7 @@ public class HuntTrainUI : IDisposable
 
             if (ImGui.IsItemActive() && !ImGui.IsItemHovered())
             {
-                int n_next = n + (ImGui.GetMouseDragDelta(0).Y < 0f ? -1 : 1);
+                int n_next = n + (ImGui.GetMouseDragDelta(ImGuiMouseButton.Left).Y < 0f ? -1 : 1);
                 if (n_next >= 0 && n_next < _mobList.Count)
                 {
                     _mobList[n] = _mobList[n_next];

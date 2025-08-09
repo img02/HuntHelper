@@ -1,3 +1,4 @@
+using Dalamud.Bindings.ImGui;
 using Dalamud.Game.ClientState.Objects.Types;
 using Dalamud.Interface;
 using Dalamud.Interface.Components;
@@ -11,7 +12,6 @@ using HuntHelper.Managers.MapData;
 using HuntHelper.Managers.MapData.Models;
 using HuntHelper.Managers.NewExpansion;
 using HuntHelper.Utilities;
-using ImGuiNET;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -154,7 +154,7 @@ namespace HuntHelper.Gui
         private float _mapZoneScale = 100; //default to 100 as thats most common for hunt zones
 
         public float MapZoneMaxCoord => MapHelpers.MapScaleToMaxCoord(_mapZoneScale);
-        
+
         public float SingleCoordSize => ImGui.GetWindowSize().X / MapZoneMaxCoord;
         //message input lengths
         private uint _inputTextMaxLength = 300;
@@ -236,7 +236,7 @@ namespace HuntHelper.Gui
 
             ImGui.SetCursorPos(Vector2.Zero);
             if (map == null) return;
-            ImGui.Image(map.ImGuiHandle, ImGui.GetWindowSize(), default,
+            ImGui.Image(map.Handle, ImGui.GetWindowSize(), default,
                 new Vector2(1f, 1f), new Vector4(1f, 1f, 1f, _mapImageOpacityAsPercentage / 100));
             ImGui.SetCursorPos(Vector2.Zero);
         }
@@ -391,7 +391,7 @@ namespace HuntHelper.Gui
 
                 if (ImGui.BeginChild("##Options left side", ImGui.GetContentRegionAvail(), false, ImGuiWindowFlags.HorizontalScrollbar))
                 {
-                    
+
                     if (ImGui.Button("Spawn Point Filter")) _ShowPointDisplaySettings = !_ShowPointDisplaySettings;
                     ImGuiUtil.ImGui_HoveredToolTip("Select which Rank to display Spawn Points for");
                     if (_ShowPointDisplaySettings)
@@ -404,7 +404,7 @@ namespace HuntHelper.Gui
 
                         ImGui.Separator();
                         if (_spawnPointColour != HighConstrastRedPurple)
-                        {                           
+                        {
                             if (ImGui.Button("Use High-Contrast Colour"))
                             {
                                 _spawnPointColour = HighConstrastRedPurple;
@@ -414,7 +414,7 @@ namespace HuntHelper.Gui
                         }
                         ImGui.Separator();
                     }
-                   
+
 
                     ImGui.Checkbox(GuiResources.MapGuiText["MapImageCheckbox"], ref _useMapImages);
                     ImGui.SameLine();
@@ -801,7 +801,7 @@ namespace HuntHelper.Gui
                                     ImGui.Dummy(new Vector2(0, 2f));
                                     ImGui.TextUnformatted(GuiResources.MapGuiText["ChatMessageLabel"]);
                                     ImGui.SameLine();
-                                    ImGui.InputText("##A Rank A Chat Msg", ref _chatAMessage, _inputTextMaxLength);
+                                    ImGui.InputText("##A Rank A Chat Msg", ref _chatAMessage, (int)_inputTextMaxLength);
                                     ImGui.SameLine();
                                     ImGui.Checkbox("##A Rank A Chat Checkbox", ref _chatAEnabled);
                                     ImGui.SameLine();
@@ -810,7 +810,7 @@ namespace HuntHelper.Gui
                                     ImGui.Dummy(new Vector2(0, 2f));
                                     ImGui.TextUnformatted(GuiResources.MapGuiText["TTSMessageLabel"]);
                                     ImGui.SameLine();
-                                    ImGui.InputText("##A Rank A TTS Msg", ref _ttsAMessage, _inputTextMaxLength);
+                                    ImGui.InputText("##A Rank A TTS Msg", ref _ttsAMessage, (int)_inputTextMaxLength);
                                     ImGui.SameLine();
                                     ImGui.Checkbox("##A Rank A TTS Checkbox", ref _ttsAEnabled);
                                     ImGui.SameLine();
@@ -843,7 +843,7 @@ namespace HuntHelper.Gui
                                     ImGui.Dummy(new Vector2(0, 2f));
                                     ImGui.TextUnformatted(GuiResources.MapGuiText["ChatMessageLabel"]);
                                     ImGui.SameLine();
-                                    ImGui.InputText("##A Rank B Chat Msg", ref _chatBMessage, _inputTextMaxLength);
+                                    ImGui.InputText("##A Rank B Chat Msg", ref _chatBMessage, (int)_inputTextMaxLength);
                                     ImGui.SameLine();
                                     ImGui.Checkbox("##A Rank B Chat Checkbox", ref _chatBEnabled);
                                     ImGui.SameLine();
@@ -852,7 +852,7 @@ namespace HuntHelper.Gui
                                     ImGui.Dummy(new Vector2(0, 2f));
                                     ImGui.TextUnformatted(GuiResources.MapGuiText["TTSMessageLabel"]);
                                     ImGui.SameLine();
-                                    ImGui.InputText("##A Rank B TTS Msg", ref _ttsBMessage, _inputTextMaxLength);
+                                    ImGui.InputText("##A Rank B TTS Msg", ref _ttsBMessage, (int)_inputTextMaxLength);
                                     ImGui.SameLine();
                                     ImGui.Checkbox("##A Rank B TTS Checkbox", ref _ttsBEnabled);
                                     ImGui.SameLine();
@@ -885,7 +885,7 @@ namespace HuntHelper.Gui
                                     ImGui.Dummy(new Vector2(0, 2f));
                                     ImGui.TextUnformatted(GuiResources.MapGuiText["ChatMessageLabel"]);
                                     ImGui.SameLine();
-                                    ImGui.InputText("##A Rank S Chat Msg", ref _chatSMessage, _inputTextMaxLength);
+                                    ImGui.InputText("##A Rank S Chat Msg", ref _chatSMessage, (int)_inputTextMaxLength);
                                     ImGui.SameLine();
                                     ImGui.Checkbox("##A Rank S Chat Checkbox", ref _chatSEnabled);
                                     ImGui.SameLine();
@@ -894,7 +894,7 @@ namespace HuntHelper.Gui
                                     ImGui.Dummy(new Vector2(0, 2f));
                                     ImGui.TextUnformatted(GuiResources.MapGuiText["TTSMessageLabel"]);
                                     ImGui.SameLine();
-                                    ImGui.InputText("##A Rank S TTS Msg", ref _ttsSMessage, _inputTextMaxLength);
+                                    ImGui.InputText("##A Rank S TTS Msg", ref _ttsSMessage, (int)_inputTextMaxLength);
                                     ImGui.SameLine();
                                     ImGui.Checkbox("##A Rank S TTS Checkbox", ref _ttsSEnabled);
                                     ImGui.SameLine();
@@ -1438,8 +1438,8 @@ namespace HuntHelper.Gui
 
                 if (!((_displayA && sp.A) || (_displayB && sp.B) || (_displayS && sp.S)))
                 {
-                    col = _useMapImages ? 
-                        new Vector4(0.7843f, 0.7843f, 0.7843f, _mapImageOpacityAsPercentage/100f) :
+                    col = _useMapImages ?
+                        new Vector4(0.7843f, 0.7843f, 0.7843f, _mapImageOpacityAsPercentage / 100f) :
                         Vector4.Zero;
                 }
 

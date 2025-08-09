@@ -1,7 +1,7 @@
-﻿using Dalamud.Interface.Utility;
+﻿using Dalamud.Bindings.ImGui;
+using Dalamud.Interface.Utility;
 using HuntHelper.Gui.Resource;
 using HuntHelper.Utilities;
-using ImGuiNET;
 using System.Diagnostics;
 
 namespace HuntHelper.Gui.GimmeMoney
