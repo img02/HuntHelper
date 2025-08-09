@@ -230,7 +230,7 @@ public class HuntTrainUI : IDisposable
                     if (!ImGui.IsItemHovered())
                     {
 #if DEBUG
-                        PluginLog.Error($"{ImGui.GetMouseDragDelta(ImGuiMouseButton.Left)).Y}");
+                        PluginLog.Error($"{ImGui.GetMouseDragDelta(ImGuiMouseButton.Left).Y}");
 #endif
                         int n_next = n;
                         if (ImGui.GetMouseDragDelta(0, 0f).Y < 0.3f) n_next -= 1;

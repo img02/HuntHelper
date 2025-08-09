@@ -87,18 +87,7 @@ public unsafe class SpawnPointFinderUI : IDisposable//idk what to call this
                     var k = 100;
                     foreach (var msp in _spawnPoints)
                     {
-                        //if (_filter.PassFilter(MapHelpers.GetMapName(msp.MapID))) // currently passfilter returns voids, waiting for fix
-                        //ToDo fix this
-                        //temp fix
-                        var passed = false;
-                        var text = (ImU8String)MapHelpers.GetMapName(msp.MapID);
-                        fixed (byte* textPtr = text)
-                            passed = ImGuiNative.PassFilter(_filter.Handle, textPtr, textPtr + text.Length) == 1;
-                        text.Dispose();
-
-                        if (passed)
-
-                        //end temp
+                        if (_filter.PassFilter(MapHelpers.GetMapName(msp.MapID)))
                         {
                             ImGui.TableNextColumn();
                             ImGui.TextUnformatted($"{MapHelpers.GetMapName(msp.MapID)}");
