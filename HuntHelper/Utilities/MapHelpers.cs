@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Numerics;
 using System.Threading.Tasks;
+using FFXIVClientStructs.FFXIV.Client.Game.UI;
 
 namespace HuntHelper.Utilities;
 /// <summary>
@@ -121,6 +122,8 @@ public class MapHelpers
         }
         return "0";
     }
+    
+    public static unsafe uint CurrentInstance => UIState.Instance()->PublicInstance.InstanceId;
 
 #if DEBUG
     private static readonly string ImageVerUrl = @"https://raw.githubusercontent.com/img02/HuntHelper-Resources/test/version";
