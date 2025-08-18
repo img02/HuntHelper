@@ -22,12 +22,12 @@ namespace HuntHelper.Gui
         private string _territoryName;
         private string _worldName;
         private ushort _territoryId;
-        private uint _instance;
         private float _mapZoneScale;
         public float MapZoneMaxCoord => MapHelpers.MapScaleToMaxCoord(_mapZoneScale);
         public float SingleCoordSize => ImGui.GetWindowSize().X / MapZoneMaxCoord;
 
         public bool RandomDebugWindowVisisble = false;
+        private uint Instance => MapHelpers.CurrentInstance;
 
         public DebugUI(IAetheryteList aeth, IDataManager dataManager, IClientState clientState, HuntManager huntManager, IObjectTable objectTable)
         {
@@ -62,7 +62,7 @@ namespace HuntHelper.Gui
 
         private void LocalObjects()
         {
-            ImGui.Text($"Territory: {_territoryName}{_instance}");
+            ImGui.Text($"Territory: {_territoryName}{Instance}");
             ImGui.Text($"Territory ID: {_clientState.TerritoryType}");
 
             //PLAYER POS
@@ -136,7 +136,7 @@ namespace HuntHelper.Gui
                             ConvertPosToCoordinate(_clientState.LocalPlayer.Position.Z)));
                     ImGui.TextUnformatted($"Player Pos: {playerPos}");
                     ImGui.NextColumn();
-                    ImGuiUtil.ImGui_RightAlignText($"Map: {_territoryName}{_instance} - {_territoryId}");
+                    ImGuiUtil.ImGui_RightAlignText($"Map: {_territoryName}{Instance} - {_territoryId}");
                     ImGuiUtil.ImGui_RightAlignText($"Coord size: {_mapZoneScale} ");
 
                     //priority mob stuff
@@ -207,7 +207,6 @@ namespace HuntHelper.Gui
             _territoryName = MapHelpers.GetMapName(_clientState.TerritoryType);
             _worldName = _clientState.LocalPlayer?.CurrentWorld.ValueNullable?.Name.ToString() ?? "Not Found";
             _territoryId = _clientState.TerritoryType;
-            _instance = (uint)UIState.Instance()->PublicInstance.InstanceId;
             _mapZoneScale = _huntManager.GetMapZoneScale(_territoryId);
         }
 

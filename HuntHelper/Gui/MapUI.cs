@@ -36,7 +36,6 @@ namespace HuntHelper.Gui
         private string _territoryName;
         private string WorldName => _clientState.LocalPlayer?.CurrentWorld.ValueNullable?.Name.ToString() ?? "Not Found";
         private ushort _territoryId;
-        private uint _instance;
 
         //used for combo box for language selection window
         private string _guiLanguage = GuiResources.Language;
@@ -154,6 +153,8 @@ namespace HuntHelper.Gui
         private float _mapZoneScale = 100; //default to 100 as thats most common for hunt zones
 
         public float MapZoneMaxCoord => MapHelpers.MapScaleToMaxCoord(_mapZoneScale);
+        
+        private uint Instance => MapHelpers.CurrentInstance;
 
         public float SingleCoordSize => ImGui.GetWindowSize().X / MapZoneMaxCoord;
         //message input lengths
@@ -1392,7 +1393,6 @@ namespace HuntHelper.Gui
             _territoryName = MapHelpers.GetMapName(_clientState.TerritoryType);
             //_worldName = _clientState.LocalPlayer?.CurrentWorld?.GameData?.Name.ToString() ?? "Not Found";
             _territoryId = _clientState.TerritoryType;
-            _instance = (uint)UIState.Instance()->PublicInstance.InstanceId;
             _mapZoneScale = _huntManager.GetMapZoneScale(_territoryId);
         }
 
@@ -1473,7 +1473,7 @@ namespace HuntHelper.Gui
                 if (obj is not IBattleNpc mob) continue;
                 if (!_huntManager.IsHunt(mob.NameId)) continue;
                 nearbyMobs.Add(mob);
-                _huntManager.AddToTrain(mob, _territoryId, MapHelpers.GetMapID(_territoryId), _instance, _territoryName, _mapZoneScale);
+                _huntManager.AddToTrain(mob, _territoryId, MapHelpers.GetMapID(_territoryId), Instance, _territoryName, _mapZoneScale);
             }
 
             if (nearbyMobs.Count == 0)
@@ -1485,7 +1485,7 @@ namespace HuntHelper.Gui
             _huntManager.AddNearbyMobs(nearbyMobs, _mapZoneScale, _territoryId, MapHelpers.GetMapID(_territoryId),
                 _ttsAEnabled, _ttsBEnabled, _ttsSEnabled, _ttsAMessage, _ttsBMessage, _ttsSMessage,
                 _chatAEnabled, _chatBEnabled, _chatSEnabled, _chatAMessage, _chatBMessage, _chatSMessage,
-                _flyTxtAEnabled, _flyTxtBEnabled, _flyTxtSEnabled, _instance);
+                _flyTxtAEnabled, _flyTxtBEnabled, _flyTxtSEnabled, Instance);
             UpdateStats();
 
 
@@ -1661,7 +1661,7 @@ namespace HuntHelper.Gui
             {
                 _huntManager.SendChatMessage(true,
                     "<exclamationrectangle> <name> <flag> -- <rank> <exclamationrectangle>",
-                    _territoryId, MapHelpers.GetMapID(_territoryId), _instance,
+                    _territoryId, MapHelpers.GetMapID(_territoryId), Instance,
                     mob, _mapZoneScale);
             }
         }
@@ -1852,7 +1852,7 @@ namespace HuntHelper.Gui
             _configuration.SFoundCount = _huntManager.SCount;
         }
 
-        private string LocInstance() => _instance.GetInstanceGlyph();
+        private string LocInstance() => Instance.GetInstanceGlyph();
 
 
 
