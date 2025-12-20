@@ -253,15 +253,6 @@ namespace HuntHelper.Gui
             // because it gets disposed internally after 2 secs
             // https://github.com/goatcorp/Dalamud/blob/ee362acf70d47dd30c46da931f55958010fbf502/Dalamud/Interface/Internal/TextureManager.cs#L425
 
-            // TODO: very strange Dalamud Error
-            // 01:00:22.320 | ERR | [HuntHelper] Cannot access a disposed object.
-            // 	Object name: 'TextureManagerPluginScoped(Hunt Helper, disposed)'.
-            // 01:00:22.320 | ERR | [HuntHelper]    at Dalamud.Interface.Textures.Internal.TextureManagerPluginScoped.get_ManagerOrThrow() in C:\goatsoft\companysecrets\dalamud\\Interface\Textures\Internal\TextureManagerPluginScoped.cs:line 83
-            // 	   at Dalamud.Interface.Textures.Internal.TextureManagerPluginScoped.GetFromFile(String path) in C:\goatsoft\companysecrets\dalamud\\Interface\Textures\Internal\TextureManagerPluginScoped.cs:line 303
-            // 	   at HuntHelper.Managers.Hunts.HuntManager.GetMapImage(String mapName) in C:\Users\Vanillaaaa\Documents\HuntHelper\HuntHelper\Managers\Hunts\HuntManager.cs:line 554
-            // 	   at HuntHelper.Gui.MapUI.DrawHuntMapWindow() in C:\Users\Vanillaaaa\Documents\HuntHelper\HuntHelper\Gui\MapUI.cs:line 251
-            // 	   at HuntHelper.Plugin.DrawUI() in C:\Users\Vanillaaaa\Documents\HuntHelper\HuntHelper\Plugin.cs:line 181
-
             var mapImage = GetMapTexture();
 
             if (!MapVisible)
