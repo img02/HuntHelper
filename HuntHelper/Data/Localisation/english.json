@@ -62,6 +62,10 @@
 		"DirectionLineThicknessToolTip": "default: 3.0",
 		"ResetButton": "Reset",
 		"ResetButtonToolTip": "Reset all sizes to default.",
+		"MaxVisitedPositions": "MaxVisitedPositions",
+		"MinDistanceToSavePosition": "MinDistanceToSavePosition",
+		"ResetButtonTracker": "TrackerDEL",
+		"ResetButtonTrackerCount": "Count: ",
 
 		"ColoursTab": "Colours",
 		"PlayerIcon": "Player Icon",
@@ -71,6 +75,7 @@
 		"PlayerBackgroundToolTip": "Background of the player / detection circle.\nChange the Alpha A: for opacity.",
 		"DirectionLineColourPicker": "Direction Line",
 		"DetectionCircleColourPicker": "Detection Circle",
+		"VisitedPositions": "Visited Positions",
 
 		"NotificationTab": "Notifications",
 		"ChatMessageLabel": "Chat Message",

@@ -48,6 +48,12 @@ namespace HuntHelper.Gui
         private float _spawnPointIconRadius;
 
         #region  User Customisable stuff - load and save to config
+        
+        // PlayerTracker
+        private List<Vector2> _visitedPositions = new List<Vector2>();
+        private float _minDistanceToSavePosition = 0.5f;  // Minimum distance to save a position
+        private int _maxVisitedPositions = 250;  // Maximum positions for drawing
+        private Vector4 _playerIconBackgroundColourPositions = new Vector4(1f, 0.27f, 0f, 0.1f); //orange (RGBA%)
 
         //map opacity - should be between 0-100f;
         private float _mapImageOpacityAsPercentage = 100f;
@@ -303,6 +309,10 @@ namespace HuntHelper.Gui
                     //if only something went wrong, such as only some maps images downloaded                    
                     if (_huntManager.ImageFolderDoesntExist || _huntManager.HasDownloadErrors || _huntManager.NotAllImagesFound || _outOfDateImages) MapImageDownloadWindow();
                     DrawMapImage(mapImage);
+
+                    // Draw the overlay with the visited areas
+                    var drawlist = ImGui.GetWindowDrawList();
+                    DrawVisitedAreas(drawlist);
                 }
 
                 //show map coordinates when mouse is over gui
@@ -719,6 +729,25 @@ namespace HuntHelper.Gui
                                     ImGui.SameLine();
                                     ImGuiUtil.ImGui_HelpMarker(GuiResources.MapGuiText["ResetButtonToolTip"]);
 
+                                    ImGui.TableNextColumn();
+                                    ImGui.Separator();
+                                    ImGui.Dummy(new Vector2(0, 1f));
+                                    ImGui.InputFloat(GuiResources.MapGuiText["MinDistanceToSavePosition"], ref _minDistanceToSavePosition, 0, 0,
+                                        "%.2f");
+
+                                    ImGui.TableNextColumn();
+                                    ImGui.Separator();
+                                    ImGui.Dummy(new Vector2(0, 1f));
+                                    ImGui.InputInt(GuiResources.MapGuiText["MaxVisitedPositions"], ref _maxVisitedPositions, 0);
+
+                                    ImGui.TableNextColumn();
+                                    ImGui.Separator();
+                                    ImGui.Dummy(new Vector2(0, 1f));
+                                    if (ImGui.Button(GuiResources.MapGuiText["ResetButtonTracker"] + " " + GuiResources.MapGuiText["ResetButtonTrackerCount"] + Convert.ToString(_visitedPositions.Count)))
+                                    {
+                                        ResetVisitedPositions();
+                                    }
+                                    
                                     ImGui.PopItemWidth();
 
                                     ImGui.EndTable();
@@ -749,6 +778,10 @@ namespace HuntHelper.Gui
 
                                     ImGui.TableNextColumn();
                                     ImGui.ColorEdit4(GuiResources.MapGuiText["SpawnPoint"], ref _spawnPointColour,
+                                        ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
+
+                                    ImGui.TableNextColumn();
+                                    ImGui.ColorEdit4(GuiResources.MapGuiText["VisitedPositions"], ref _playerIconBackgroundColourPositions,
                                         ImGuiColorEditFlags.NoInputs | ImGuiColorEditFlags.PickerHueWheel);
 
                                     ImGui.Dummy(new Vector2(0, 4f));
@@ -1394,7 +1427,14 @@ namespace HuntHelper.Gui
             //_worldName = _clientState.LocalPlayer?.CurrentWorld?.GameData?.Name.ToString() ?? "Not Found";
             _territoryId = _clientState.TerritoryType;
             _mapZoneScale = _huntManager.GetMapZoneScale(_territoryId);
+            // When changing the territory, clear the list
+            ResetVisitedPositions();
         }
+
+        private void ResetVisitedPositions()
+        {
+            _visitedPositions = new List<Vector2>();
+        } 
 
         #region Draw Sub Windows
 
@@ -1675,9 +1715,21 @@ namespace HuntHelper.Gui
             //if this stuff ain't null, draw player position
             if (_clientState?.LocalPlayer?.Position != null)
             {
-                var playerPos = CoordinateToPositionInWindow(
-                    new Vector2(ConvertPosToCoordinate(_clientState!.LocalPlayer.Position.X),
-                        ConvertPosToCoordinate(_clientState.LocalPlayer.Position.Z)));
+                var playerPosWithoutWindow = new Vector2(ConvertPosToCoordinate(_clientState!.LocalPlayer.Position.X),
+                    ConvertPosToCoordinate(_clientState.LocalPlayer.Position.Z));  // WithoutWindow is necessary so that no new position is saved when the window is moved.
+                var playerPos = CoordinateToPositionInWindow(playerPosWithoutWindow);
+                
+                // Save the location if it is new
+                if (!_visitedPositions.Any() ||
+                    Vector2.Distance(_visitedPositions.Last(), playerPosWithoutWindow) > _minDistanceToSavePosition)
+                {
+                    _visitedPositions.Add(playerPosWithoutWindow);
+                    // Shorten the list if it gets too long.
+                    if (_visitedPositions.Count > _maxVisitedPositions)
+                    {
+                        _visitedPositions.RemoveAt(0); // Remove the oldest entry
+                    }
+                }
 
                 var detectionRadius = 2 * SingleCoordSize * _detectionCircleModifier;
                 var rotation = Math.Abs(_clientState.LocalPlayer.Rotation - Math.PI);
@@ -1696,6 +1748,20 @@ namespace HuntHelper.Gui
                 #endregion
             }
 
+        }
+        
+        private void DrawVisitedAreas(ImDrawListPtr drawlist)
+        {
+            foreach (var pos in _visitedPositions)
+            {
+                // Draw a circle at each position visited.
+                var detectionRadius = 2 * SingleCoordSize * _detectionCircleModifier;
+                drawlist.AddCircleFilled(
+                    CoordinateToPositionInWindow(pos),
+                    detectionRadius,
+                    ImGui.ColorConvertFloat4ToU32(_playerIconBackgroundColourPositions)
+                );
+            }
         }
 
         private void DrawPlayerIcon(ImDrawListPtr drawlist, Vector2 playerPos, float detectionRadius, Vector2 lineEnding, Vector2 projectedPathEnd)
