@@ -62,6 +62,10 @@
 		"DirectionLineThicknessToolTip": "默认3",
 		"ResetButton": "重设",
 		"ResetButtonToolTip": "重设所有到默认设置",
+		"MaxVisitedPositions": "MaxVisitedPositions",
+		"MinDistanceToSavePosition": "MinDistanceToSavePosition",
+		"ResetButtonTracker": "TrackerDEL",
+		"ResetButtonTrackerCount": "Count: ",
 
 		"ColoursTab": "颜色",
 		"PlayerIcon": "玩家图标",
@@ -71,6 +75,7 @@
 		"PlayerBackgroundToolTip": "玩家/探测圈背景。\n修改Alpha A来设置透明度",
 		"DirectionLineColourPicker": "面向线",
 		"DetectionCircleColourPicker": "探测线",
+		"VisitedPositions": "Visited Positions",
 
 		"NotificationTab": "通知",
 		"ChatMessageLabel": "聊天信息",
