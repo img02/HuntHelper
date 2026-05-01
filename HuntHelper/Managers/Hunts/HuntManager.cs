@@ -414,7 +414,7 @@ public class HuntManager : IDisposable
         });
     }
 
-    public float GetMapZoneScale(ushort mapID)
+    public float GetMapZoneScale(uint mapID)
     {
         //EVERYTHING EXCEPT HEAVENSWARD HAS A SCALE OF 100, BUT FOR SOME REASON HW HAS 95, WHYYYYYY
         if (mapID is >= 397 and <= 402) return 95f;

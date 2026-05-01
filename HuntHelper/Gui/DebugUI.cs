@@ -21,7 +21,7 @@ namespace HuntHelper.Gui
 
         private string _territoryName;
         private string _worldName;
-        private ushort _territoryId;
+        private uint _territoryId;
         private float _mapZoneScale;
         public float MapZoneMaxCoord => MapHelpers.MapScaleToMaxCoord(_mapZoneScale);
         public float SingleCoordSize => ImGui.GetWindowSize().X / MapZoneMaxCoord;
@@ -66,7 +66,7 @@ namespace HuntHelper.Gui
             ImGui.Text($"Territory ID: {_clientState.TerritoryType}");
 
             //PLAYER POS
-            var v3 = _clientState.LocalPlayer?.Position ?? new Vector3(0, 0, 0);
+            var v3 = _objectTable.LocalPlayer?.Position ?? new Vector3(0, 0, 0);
             ImGui.Text($"pos: X: ({ConvertPosToCoordinate(v3.X)}, Y: {ConvertPosToCoordinate(v3.X)})\n");
             ImGui.NewLine();
 
@@ -89,7 +89,7 @@ namespace HuntHelper.Gui
                 {
                     if (obj is not IBattleNpc bobj) continue;
                     if (bobj.MaxHp < 10000) continue; //not really needed if subkind is enemy, once matching to id / name
-                    if (bobj.BattleNpcKind != BattleNpcSubKind.Enemy) continue; //not really needed if matching to 'nameID'
+                    if (bobj.BattleNpcKind != BattleNpcSubKind.Combatant) continue; //not really needed if matching to 'nameID'
 
 
                     hunt += $"{obj.Name} \n" +
@@ -119,21 +119,21 @@ namespace HuntHelper.Gui
                 ImGui.TextUnformatted($"Content1 Region: {ImGui.GetContentRegionAvail()}");
                 ImGui.TextUnformatted($"Window Size: {ImGui.GetWindowSize()}");
                 ImGui.TextUnformatted($"Window  Pos: {ImGui.GetWindowPos()}");
-                if (_clientState?.LocalPlayer?.Position != null)
+                if (_objectTable?.LocalPlayer?.Position != null)
                 {
-                    ImGui.TextUnformatted($"rotation: {_clientState!.LocalPlayer.Rotation}");
-                    var rotation = Math.Abs(_clientState.LocalPlayer.Rotation - Math.PI);
+                    ImGui.TextUnformatted($"rotation: {_objectTable!.LocalPlayer.Rotation}");
+                    var rotation = Math.Abs(_objectTable.LocalPlayer.Rotation - Math.PI);
                     ImGui.TextUnformatted($"rotation rad.: {Math.Round(rotation, 2):0.00}");
                     ImGui.TextUnformatted($"rotation sin.: {Math.Round(Math.Sin(rotation), 2):0.00}");
                     ImGui.TextUnformatted($"rotation cos.: {Math.Round(Math.Cos(rotation), 2):0.00}");
                     ImGui.TextUnformatted($"Player Pos: (" +
-                                       $"{MapHelpers.ConvertToMapCoordinate(_clientState.LocalPlayer.Position.X, _mapZoneScale):0.00}" +
+                                       $"{MapHelpers.ConvertToMapCoordinate(_objectTable.LocalPlayer.Position.X, _mapZoneScale):0.00}" +
                                        $"," +
-                                       $" {MapHelpers.ConvertToMapCoordinate(_clientState.LocalPlayer.Position.Z, _mapZoneScale):0.00}" +
+                                       $" {MapHelpers.ConvertToMapCoordinate(_objectTable.LocalPlayer.Position.Z, _mapZoneScale):0.00}" +
                                        $")");
                     var playerPos = CoordinateToPositionInWindow(
-                        new Vector2(ConvertPosToCoordinate(_clientState.LocalPlayer.Position.X),
-                            ConvertPosToCoordinate(_clientState.LocalPlayer.Position.Z)));
+                        new Vector2(ConvertPosToCoordinate(_objectTable.LocalPlayer.Position.X),
+                            ConvertPosToCoordinate(_objectTable.LocalPlayer.Position.Z)));
                     ImGui.TextUnformatted($"Player Pos: {playerPos}");
                     ImGui.NextColumn();
                     ImGuiUtil.ImGui_RightAlignText($"Map: {_territoryName}{Instance} - {_territoryId}");
@@ -205,7 +205,7 @@ namespace HuntHelper.Gui
         private unsafe void UpdateLocalStuff()
         {
             _territoryName = MapHelpers.GetMapName(_clientState.TerritoryType);
-            _worldName = _clientState.LocalPlayer?.CurrentWorld.ValueNullable?.Name.ToString() ?? "Not Found";
+            _worldName = _objectTable.LocalPlayer?.CurrentWorld.ValueNullable?.Name.ToString() ?? "Not Found";
             _territoryId = _clientState.TerritoryType;
             _mapZoneScale = _huntManager.GetMapZoneScale(_territoryId);
         }

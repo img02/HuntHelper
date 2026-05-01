@@ -74,7 +74,7 @@ public static class Constants
     private const string SphatikaRegex_ja = $"(アシュヴァッタ|ピシャーチャ|ヴァジュララングラ){BattleRegexBase_ja}";
     private const string RuinatorRegex_ja = $"(シンカー|ワンダラー|ウィーパー){BattleRegexBase_ja}";
     private const string BattleRegexBase_ja = "を倒した。"; //XXXは、シンカーを倒した。
-    private const string GatheringRegexBase_ja = "を入手した。";
+    private const string GatheringRegexBase_ja = ".*を入手した。";
     #endregion
 
 

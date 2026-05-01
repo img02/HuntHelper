@@ -134,9 +134,9 @@ public unsafe partial class CounterUI : IDisposable
             }
 
             // fate failed or a (!) fate that required [user activation] was not activated in time and disappeared
-            if (cf.State == FateState.Failed || (cf.State == FateState.Preparation && _fateTable.All(f => !f.Equals(cf))))
+            if (cf.State == FateState.Failed || (cf.State == FateState.Preparing && _fateTable.All(f => !f.Equals(cf))))
             {
-                var failReason = cf.State == FateState.Preparation ? $"FAIL: NOT INITIATED" : "FAIL";
+                var failReason = cf.State == FateState.Preparing ? $"FAIL: NOT INITIATED" : "FAIL";
 
                 _lastFailedFateInfo = $"{failReason}\n" +
                                       $"{cf.Name} @ {cf.Progress}%%\n\n" +
@@ -195,7 +195,7 @@ public unsafe partial class CounterUI : IDisposable
 
     private string GetFateTimeString(IFate fate)
     {
-        return fate.State != FateState.Preparation
+        return fate.State != FateState.Preparing
             ? $"{new TimeSpan(0, 0, 0, (int)(fate.TimeRemaining - fateRemainingTimeOffset)).ToString(@"mm\:ss", CultureInfo.InvariantCulture)}"
             : "upcoming or requires activation - can fail if not activated in time";
     }
@@ -217,7 +217,7 @@ public unsafe partial class CounterUI : IDisposable
             PluginLog.Error(e.ToString());
         }
     }
-    private void ClientState_TerritoryChanged(ushort e)
+    private void ClientState_TerritoryChanged(uint e)
     {
         _currentFates.Clear();
         _startTime = DateTime.Now;

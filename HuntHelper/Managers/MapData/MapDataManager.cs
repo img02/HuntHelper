@@ -50,19 +50,19 @@ public class MapDataManager
     }
 
     //search for relevant map, and return list of spawn points, or if null return blank
-    public List<SpawnPointPosition> GetSpawnPoints(ushort mapID)
+    public List<SpawnPointPosition> GetSpawnPoints(uint mapID)
     {
         return SpawnPointsList.FirstOrDefault(spawnPoints => spawnPoints.MapID == mapID)?.Positions ?? new List<SpawnPointPosition>();
     }
 
-    public bool IsRecording(ushort mapID)
+    public bool IsRecording(uint mapID)
     {
         var msp = SpawnPointsList.FirstOrDefault(msp => msp.MapID == mapID);
         if (msp == null) return false;
         return msp.Recording;
     }
 
-    public void ClearTakenSpawnPoints(ushort mapid)
+    public void ClearTakenSpawnPoints(uint mapid)
     {
         var map = SpawnPointsList.FirstOrDefault(msp => msp.MapID == mapid);
         if (map == null) return;

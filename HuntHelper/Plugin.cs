@@ -56,6 +56,7 @@ namespace HuntHelper
             IFramework framework,
             ICommandManager commandManager,
             IClientState clientState,
+            IPlayerState playerState,
             IObjectTable objectTable,
             IDataManager dataManager,
             IChatGui chatGui,
@@ -87,7 +88,7 @@ namespace HuntHelper
             HuntManager = new HuntManager(pluginInterface, TrainManager, chatGui, flyTextGui, Configuration.TTSVolume);
             MapDataManager = new MapDataManager(Path.Combine(pluginInterface.AssemblyLocation.Directory?.FullName!, @"Data\SpawnPointData.json"));
 
-            MapUi = new MapUI(this.Configuration, clientState, objectTable, HuntManager, MapDataManager, gameGui);
+            MapUi = new MapUI(this.Configuration, clientState, playerState, objectTable, HuntManager, MapDataManager, gameGui);
             HuntTrainUI = new HuntTrainUI(TrainManager, Configuration);
             CounterUI = new CounterUI(clientState, chatGui, gameGui, Configuration, objectTable, fateTable);
             SpawnPointFinderUI = new SpawnPointFinderUI(MapDataManager, Configuration);

@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Authors>https://github.com/img02</Authors>
     <Company></Company>
-    <Version>1.0.0.32</Version>
+    <Version>1.0.0.33</Version>
     <Description>Hunt map with spawns points, A-Rank train recorder (w/ export/import sharing), TTS, Chat notifications, Counters for S-Rank</Description>
     <Copyright></Copyright>
     <PackageProjectUrl>https://github.com/img02/HuntHelper</PackageProjectUrl>
@@ -121,7 +121,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Update="DalamudPackager" Version="14.0.1" />
+    <PackageReference Update="DalamudPackager" Version="15.0.0" />
   </ItemGroup>
 
   <ProjectExtensions><VisualStudio><UserProperties data_4arr-a_1json__JsonSchema="https://github.com/go-vela/types/releases/latest/download/schema.json" /></VisualStudio></ProjectExtensions>

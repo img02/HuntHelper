@@ -28,14 +28,15 @@ namespace HuntHelper.Gui
         private readonly Configuration _configuration;
 
         private readonly IClientState _clientState;
+        private readonly IPlayerState _playerState;
         private readonly IObjectTable _objectTable;
         private readonly HuntManager _huntManager;
         private readonly MapDataManager _mapDataManager;
         private readonly IGameGui _gameGui;
 
         private string _territoryName;
-        private string WorldName => _clientState.LocalPlayer?.CurrentWorld.ValueNullable?.Name.ToString() ?? "Not Found";
-        private ushort _territoryId;
+        private string WorldName => _playerState.CurrentWorld.ValueNullable?.Name.ToString() ?? "Not Found";
+        private uint _territoryId;
 
         //used for combo box for language selection window
         private string _guiLanguage = GuiResources.Language;
@@ -181,13 +182,14 @@ namespace HuntHelper.Gui
             set => _settingsVisible = value;
         }
 
-        public MapUI(Configuration configuration, IClientState clientState,
+        public MapUI(Configuration configuration, IClientState clientState, IPlayerState playerState,
             IObjectTable objectTable, HuntManager huntManager,
             MapDataManager mapDataManager, IGameGui gameGui)
         {
             _configuration = configuration;
 
             _clientState = clientState;
+            _playerState = playerState;
             _objectTable = objectTable;
             _huntManager = huntManager;
             _mapDataManager = mapDataManager;
@@ -1379,7 +1381,7 @@ namespace HuntHelper.Gui
         }
 
 
-        private unsafe void ClientState_TerritoryChanged(ushort e)
+        private unsafe void ClientState_TerritoryChanged(uint e)
         {
             _territoryName = MapHelpers.GetMapName(_clientState.TerritoryType);
             //_worldName = _clientState.LocalPlayer?.CurrentWorld?.GameData?.Name.ToString() ?? "Not Found";
@@ -1417,7 +1419,7 @@ namespace HuntHelper.Gui
         #endregion
 
         #region DrawList Stuff - Mob Icon, Player Icon
-        public void DrawSpawnPoints(ushort mapID)
+        public void DrawSpawnPoints(uint mapID)
         {
             var spawnPoints = _mapDataManager.GetSpawnPoints(mapID);
             if (spawnPoints.Count == 0) return;
@@ -1494,7 +1496,7 @@ namespace HuntHelper.Gui
                         SpawnDataGatherer.AddFoundMob(mob.NameId, _huntManager.GetMobNameInEnglish(mob.NameId),
                         new Vector3(ConvertPosToCoordinate(mob.Position.X), ConvertPosToCoordinate(mob.Position.Z), ConvertPosToCoordinate(mob.Position.Y)),
                         $"{m.Rank}", _territoryId,
-                        MapHelpers.GetMapNameInEnglish(_territoryId), _clientState.LocalContentId);
+                        MapHelpers.GetMapNameInEnglish(_territoryId), _playerState.ContentId);
                     }
                 }
             }
@@ -1664,14 +1666,14 @@ namespace HuntHelper.Gui
         private void UpdatePlayerInfo()
         {
             //if this stuff ain't null, draw player position
-            if (_clientState?.LocalPlayer?.Position != null)
+            if (_objectTable?.LocalPlayer?.Position != null)
             {
                 var playerPos = CoordinateToPositionInWindow(
-                    new Vector2(ConvertPosToCoordinate(_clientState!.LocalPlayer.Position.X),
-                        ConvertPosToCoordinate(_clientState.LocalPlayer.Position.Z)));
+                    new Vector2(ConvertPosToCoordinate(_objectTable!.LocalPlayer.Position.X),
+                        ConvertPosToCoordinate(_objectTable.LocalPlayer.Position.Z)));
 
                 var detectionRadius = 2 * SingleCoordSize * _detectionCircleModifier;
-                var rotation = Math.Abs(_clientState.LocalPlayer.Rotation - Math.PI);
+                var rotation = Math.Abs(_objectTable.LocalPlayer.Rotation - Math.PI);
                 var lineEnding =
                     new Vector2(
                         playerPos.X + (float)(detectionRadius * Math.Sin(rotation)),
