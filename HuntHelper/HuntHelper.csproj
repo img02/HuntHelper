@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project Sdk="Dalamud.NET.Sdk/14.0.1">
+<Project Sdk="Dalamud.NET.Sdk/15.0.0">
   <PropertyGroup>
     <Authors>https://github.com/img02</Authors>
     <Company></Company>
@@ -120,9 +120,6 @@
     <Folder Include="Gui\Resource\" />
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Update="DalamudPackager" Version="15.0.0" />
-  </ItemGroup>
 
   <ProjectExtensions><VisualStudio><UserProperties data_4arr-a_1json__JsonSchema="https://github.com/go-vela/types/releases/latest/download/schema.json" /></VisualStudio></ProjectExtensions>
 
