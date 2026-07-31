@@ -116,7 +116,7 @@ public static class Constants
     private static readonly string[] Okina_fr = { "yumemi nu", "Yumemi" };
     private static readonly string[] Udumbara_fr = { "liéchi", "Diakka" };
     private static readonly string[] SaltAndLight_fr = { "jetez" }; //shb
-    private static readonly string[] ForgivenPedantry_fr = { "Fleur de coton nain" };
+    private static readonly string[] ForgivenPedantry_fr = { "coton nain" };
     private static readonly string[] Ixtab_fr = { "poupée ronka fissurée", "épine ronka fissurée", "réceptacle ronka fissuré" };//lol//ew
     private static readonly string[] Sphatika_fr = { "Asvattha", "pishacha", "Vajralangula" };
     private static readonly string[] Ruinator_fr = { "penseur", "vagabond", "lamenteur" };
@@ -128,7 +128,7 @@ public static class Constants
     private const string OkinaRegex_fr = $"{BattleRegexBase_fr}(yumemi nu|Yumemi).";
     private const string UdumbaraRegex_fr = $"{BattleRegexBase_fr}(liéchi|Diakka).";
     private const string SaltAndLightRegex_fr = $"Vous jetez.*"; //Vous jetez un  morceau de minerai d'aurum regis
-    private const string ForgivenPedantryRegex_fr = $"{GatheringRegexBase_fr}Fleur de coton nain";
+    private const string ForgivenPedantryRegex_fr = $"{GatheringRegexBase_fr}(Fleur|fleurs) de coton nain";
     private const string IxtabRegex_fr = $"{BattleRegexBase_fr}(poupée ronka fissurée|épine ronka fissurée|réceptacle ronka fissuré).";
     private const string SphatikaRegex_fr = $"{BattleRegexBase_fr}(Asvattha|pishacha|Vajralangula).";
     private const string RuinatorRegex_fr = $"{BattleRegexBase_fr}(penseur|vagabond|lamenteur).";
