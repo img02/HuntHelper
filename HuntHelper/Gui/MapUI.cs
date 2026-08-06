@@ -255,7 +255,6 @@ namespace HuntHelper.Gui
             // because it gets disposed internally after 2 secs
             // https://github.com/goatcorp/Dalamud/blob/ee362acf70d47dd30c46da931f55958010fbf502/Dalamud/Interface/Internal/TextureManager.cs#L425
             
-            
             var mapImage = GetMapTexture();
 
             if (!MapVisible)
