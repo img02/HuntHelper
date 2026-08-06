@@ -254,7 +254,7 @@ namespace HuntHelper.Gui
             // load and keep in use regardless of visibility, otherwise ugly flashes black for a fraction when reloading 
             // because it gets disposed internally after 2 secs
             // https://github.com/goatcorp/Dalamud/blob/ee362acf70d47dd30c46da931f55958010fbf502/Dalamud/Interface/Internal/TextureManager.cs#L425
-
+            
             var mapImage = GetMapTexture();
 
             if (!MapVisible)
@@ -294,7 +294,10 @@ namespace HuntHelper.Gui
                 {
                     _huntManager.CheckImageStatus();
                     //if only something went wrong, such as only some maps images downloaded                    
-                    if (_huntManager.ImageFolderDoesntExist || _huntManager.HasDownloadErrors || _huntManager.NotAllImagesFound || _outOfDateImages) MapImageDownloadWindow();
+                    if (_huntManager.ImageFolderDoesntExist || _huntManager.HasDownloadErrors || _huntManager.NotAllImagesFound || _outOfDateImages) {
+                        MapImageDownloadWindow();
+                        //mapImage = GetMapTexture();
+                    }
                     DrawMapImage(mapImage);
                 }
 

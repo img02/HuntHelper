@@ -1,4 +1,4 @@
-﻿using Dalamud.Bindings.ImGui;
+using Dalamud.Bindings.ImGui;
 using Dalamud.Configuration;
 using Dalamud.Plugin;
 using Newtonsoft.Json;
