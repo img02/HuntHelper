@@ -29,13 +29,7 @@ public class ImageDownloader
         {
             var tasks = batch.Select(url => DownloadAsync(url));
             var batch_results = await Task.WhenAll(tasks);
-            var batch_results_list = batch_results.Where(s => s != string.Empty).ToList();
-            if(results.Count == 0) {
-                results = (List<string>)batch_results_list;
-            } else {
-                results = results.Concat((List<string>)batch_results_list).ToList();
-            }
-            
+            results.AddRange(batch_results.Where(s => s != string.Empty));            
         }
 
         return results; //return list of strings where failed
