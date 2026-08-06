@@ -23,9 +23,22 @@ public class ImageDownloader
 
     public async Task<List<string>> BeginDownloadAsync()
     {
-        var tasks = _urls.Select(url => DownloadAsync(url));
-        var results = await Task.WhenAll(tasks);
-        return results.Where(s => s != string.Empty).ToList(); //return list of strings where failed
+        var BATCH_SIZE = 4;
+        List<string> results = new List<string>();
+        foreach (var batch in _urls.Chunk(BATCH_SIZE))
+        {
+            var tasks = batch.Select(url => DownloadAsync(url));
+            var batch_results = await Task.WhenAll(tasks);
+            var batch_results_list = batch_results.Where(s => s != string.Empty).ToList();
+            if(results.Count == 0) {
+                results = (List<string>)batch_results_list;
+            } else {
+                results = results.Concat((List<string>)batch_results_list).ToList();
+            }
+            
+        }
+
+        return results; //return list of strings where failed
     }
 
     private async Task<string> DownloadAsync(string url)
